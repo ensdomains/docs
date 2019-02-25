@@ -3,6 +3,7 @@
 * [Introduction](README.md)
 * [Overview](overview.md)
 * [Terminology](terminology.md)
+* [Frequently Asked Questions](frequently-asked-questions.md)
 
 ## Dapp Developer Guide
 
