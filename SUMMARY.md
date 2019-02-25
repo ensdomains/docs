@@ -14,3 +14,7 @@
 * [Registering & Renewing Names](developer-guide/registering-and-renewing-names.md)
 * [ENS Deployments](developer-guide/ens-deployments.md)
 
+## Contract API Reference
+
+* [ENS](contract-api-reference/ens.md)
+
