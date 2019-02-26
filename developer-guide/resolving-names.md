@@ -67,7 +67,7 @@ YourSmartContract contract = YourSmartContract.load(
 
 Resolution without a library is a three step process:
 
-1. Normalise and hash the name - see name processing for details.
+1. Normalise and hash the name - see [name processing](../contract-api-reference/name-processing.md) for details.
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
 3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
 

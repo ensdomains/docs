@@ -38,5 +38,5 @@ Namehash is a recursive process that can generate a unique hash for any valid do
 
 Before being hashed with namehash, names are first normalised, using a process called UTS-46 normalisation. This ensures that upper- and lower-case names are treated equivalently, and that invalid characters are prohibited. Anything that hashes and resolves a name **must** first normalise it, to ensure that all users get a consistent view of ENS.
 
-For details on how namehash and normalisation works, see the developer documentation on name processing.
+For details on how namehash and normalisation works, see the developer documentation on [name processing](contract-api-reference/name-processing.md).
 
