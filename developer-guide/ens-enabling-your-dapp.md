@@ -36,3 +36,7 @@ To learn how to do this, see Writing a Registrar in the Smart Contract Developer
 
 By providing users with an easy way to update a name they own to point at your application’s resources, users can assign names they already own to your DApp's resources. See [Managing Names](managing-names.md) to learn how to do this.
 
+## Tell Us About Your Integration
+
+If you've ENS Enabled your app, let us know by emailing [nick@ens.domains](mailto:nick@ens.domains); we'll add your app to [our homepage](https://ens.domains/). 
+

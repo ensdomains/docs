@@ -12,3 +12,5 @@ Because of the hierarchal nature of ENS, anyone who owns a domain at any level m
 
 ENS is deployed on the Ethereum main network, and on several test networks. If you use a library such as the [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
 
+You can try ENS out for yourself now by using the [ENS manager](https://manager.ens.domains/), or by using any of the many ENS Enabled applications on [our homepage](https://ens.domains/).
+

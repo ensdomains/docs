@@ -4,6 +4,8 @@
 * [Overview](overview.md)
 * [Terminology](terminology.md)
 * [Frequently Asked Questions](frequently-asked-questions.md)
+* [ENS Discussion Forum](https://discuss.ens.domains/)
+* [ENS Support Chat](https://gitter.im/ethereum/go-ethereum/name-registry)
 
 ## Dapp Developer Guide
 
