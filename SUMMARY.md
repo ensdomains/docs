@@ -7,6 +7,7 @@
 
 ## Dapp Developer Guide
 
+* [ENS Enabling your DApp](developer-guide/ens-enabling-your-dapp.md)
 * [ENS Libraries](developer-guide/ens-libraries.md)
 * [Working with ENS](developer-guide/working-with-ens.md)
 * [Resolving Names](developer-guide/resolving-names.md)
