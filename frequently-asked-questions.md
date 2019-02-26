@@ -20,7 +20,9 @@ Yes, you can update the addresses and other resources pointed to by your name at
 
 ### Can I register a TLD of my own in the ENS?
 
-No, TLDs are restricted to only .eth \(on mainnet\), or .eth and .test \(on Ropsten\), plus any special purpose TLDs such as those required to permit reverse lookups. There are no immediate plans to invite proposals for additional TLDs. In large part this is to reduce the risk of a namespace collision with the IANA DNS namespace.
+No. We consider ENS to be part of the 'global namespace' inhabited by DNS, and so we do our best not to pollute that namespace. ENS-specific TLDs are restricted to only .eth \(on mainnet\), or .eth and .test \(on Ropsten\), plus any special purpose TLDs such as those required to permit reverse lookups.
+
+In addition to that, we are deploying support for importing DNS domains from the majority of DNS top-level domains using an integration that relies on DNSSEC. For details on those plans, please read [this post](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38).
 
 ### Who owns the ENS rootnode? What powers does that grant them?
 
@@ -39,6 +41,12 @@ This means that you can in theory register both ‘foo.eth’ and ‘FOO.eth’,
 ### Nameprep isn’t enforced in the ENS system, is this a security/spoofing/phishing concern?
 
 It’s not enforced by the ENS contracts, but as described, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
+
+### What are the differences between ENS and other naming services such as namecoin, blockstack, and handshake?
+
+ENS focuses first and foremost on providing decentralised, trustworthy name resolution for web3 resources such as blockchain addresses and distributed content, while Namecoin and Blockstack are efforts to replace DNS with a blockchain-based alternative.
+
+Handshake also has different goals, seeking to replace the global DNS root with one governed and distributed by a blockchain system.
 
 ## About the .eth Auction Registrar
 
