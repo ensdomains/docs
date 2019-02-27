@@ -24,4 +24,7 @@
 * [ReverseRegistrar](contract-api-reference/reverseregistrar.md)
 * [TestRegistrar](contract-api-reference/testregistrar.md)
 * [PublicResolver](contract-api-reference/publicresolver.md)
+* [.eth Permanent Registrar](contract-api-reference/.eth-permanent-registrar/README.md)
+  * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
+  * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 
