@@ -71,6 +71,10 @@ Resolution without a library is a three step process:
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
 3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
 
+{% hint style="warning" %}
+If you are resolving addr\(\) records, you MUST treat a return value from the resolver of 0x00…00 as that record being unset. Failing to do so could result in users accidentally sending funds to the null address if they have configured a resolver in ENS, but not set the resolver record!
+{% endhint %}
+
 ## Looking up other resources
 
 ENS supports many types of resources besides Ethereum addresses, including content hashes for data stored in Swarm or IPFS, contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.

@@ -28,3 +28,9 @@
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 
+## Contract Developer Guide
+
+* [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
+* [Writing a Resolver](contract-developer-guide/writing-a-resolver.md)
+* [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
+
