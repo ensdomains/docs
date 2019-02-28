@@ -4,6 +4,8 @@
 * [Overview](overview.md)
 * [Terminology](terminology.md)
 * [Frequently Asked Questions](frequently-asked-questions.md)
+* [ENS Deployments](ens-deployments.md)
+* [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [ENS Discussion Forum](https://discuss.ens.domains/)
 * [ENS Support Chat](https://gitter.im/ethereum/go-ethereum/name-registry)
 
@@ -15,7 +17,6 @@
 * [Resolving Names](developer-guide/resolving-names.md)
 * [Managing Names](developer-guide/managing-names.md)
 * [Registering & Renewing Names](developer-guide/registering-and-renewing-names.md)
-* [ENS Deployments](developer-guide/ens-deployments.md)
 
 ## Contract API Reference
 
