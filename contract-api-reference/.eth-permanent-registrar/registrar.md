@@ -36,7 +36,7 @@ When thinking about ownership, it's important to be clear whether you're conside
 function nameExpires(uint256 label) external view returns(uint);
 ```
 
-Returns the unix timestamp at which a registration currently expires. Names that do not exist or are not yet mirated from the legacy registrar will return 0.
+Returns the unix timestamp at which a registration currently expires. Names that do not exist or are not yet migrated from the legacy registrar will return 0.
 
 ### Check Name Availability
 
@@ -44,7 +44,7 @@ Returns the unix timestamp at which a registration currently expires. Names that
 function available(uint256 label) public view returns(bool);
 ```
 
-Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrarions than this contract \(for example, a minimum name length\), so this function should not be used to check if a name can be registered by a user.
+Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrations than this contract \(for example, a minimum name length\), so this function should not be used to check if a name can be registered by a user.
 
 ### Get Transfer Period End
 
@@ -60,7 +60,7 @@ uint public transferPeriodEnds;
 mapping(address=>bool) public controllers;
 ```
 
-`controllers` allows callers to check if the supplied address is authorised as a registrar controller.
+`controllers` allows callers to check if the supplied address is authorized as a registrar controller.
 
 ### Check Token Approval
 
@@ -78,7 +78,7 @@ This function is part of ERC721.
 function isApprovedForAll(address owner, address operator) public view returns (bool);
 ```
 
-Returns true if `operator` is authorised to transfer all tokens for `owner`.
+Returns true if `operator` is authorized to transfer all tokens for `owner`.
 
 This function is part of ERC721.
 
@@ -161,5 +161,5 @@ This event is emitted when a controller renews \(extends the registration of\) a
 event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
 ```
 
-This event is emitted when a registration is transferred to a new owner. This is distinct from the [ENS Registry](../ens.md)'s Transfer event, which records transfers of ownership of the ENS record.
+This event is emitted when registration is transferred to a new owner. This is distinct from the [ENS Registry](../ens.md)'s Transfer event, which records transfers of ownership of the ENS record.
 

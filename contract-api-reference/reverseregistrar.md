@@ -22,7 +22,7 @@ The reverse registrar is specified in [EIP 181](https://eips.ethereum.org/EIPS/e
 function claim(address owner) public returns (bytes32);
 ```
 
-Claims the caller's address in the reverse registrar, assigning ownership of the  reverse record to `owner`. Equivalent to calling `claimWithResolver(owner, 0)`.
+Claims the caller's address in the reverse registrar, assigning ownership of the reverse record to `owner`. Equivalent to calling `claimWithResolver(owner, 0)`.
 
 ## Claim Address with Resolver
 
@@ -53,7 +53,7 @@ This convenience function streamlines the process of setting up a reverse record
 
 In short, after calling this, a user has a fully configured reverse record claiming the provided `name` as that account's canonical name.
 
-Users wanting more flexibility will need to use `claim` or `claimWithResolver` and configure  records manually on their chosen resolver contract.
+Users wanting more flexibility will need to use `claim` or `claimWithResolver` and configure records manually on their chosen resolver contract.
 
 ## Get Reverse Record Node
 

@@ -1,20 +1,20 @@
 ---
-description: Describes how to normalise and hash ENS names.
+description: Describes how to normalize and hash ENS names.
 ---
 
 # Name Processing
 
-In place of human-readable names, ENS works purely with fixed length 256 bit cryptographic hashes. In order to derive the hash from a name while still preserving its hierarchal properties, a process called Namehash is used. For example, the namehash of 'alice.eth' is _0x787192fc5378cc32aa956ddfdedbf26b24e8d78e40109add0eea2c1a012c3dec_; this is the representation of names that is used exclusively inside ENS.
+In place of human-readable names, ENS works purely with fixed length 256-bit cryptographic hashes. In order to derive the hash from a name while still preserving its hierarchal properties, a process called Namehash is used. For example, the namehash of 'alice.eth' is _0x787192fc5378cc32aa956ddfdedbf26b24e8d78e40109add0eea2c1a012c3dec_; this is the representation of names that is used exclusively inside ENS.
 
-Before being hashed with namehash, names are first normalised, using a process called UTS-46 normalisation. This ensures that upper- and lower-case names are treated equivalently, and that invalid characters are prohibited. Anything that hashes and resolves a name **must** first normalise it, to ensure that all users get a consistent view of ENS.
+Before being hashed with namehash, names are first normalized, using a process called UTS-46 normalization. This ensures that upper- and lower-case names are treated equivalently, and that invalid characters are prohibited. Anything that hashes and resolves a name **must** first normalize it, to ensure that all users get a consistent view of ENS.
 
 ## Normalising Names
 
-Before a name can be converted to a node hash using Namehash, the name must first be normalised and checked for validity - for instance, converting _fOO.eth_ into _foo.eth_, and prohibiting names containing forbidden characters such as underscores. It is crucial that all applications follow the same set of rules for normalisation and validation, as otherwise two users entering the same name on different systems may resolve the same human-readable name into two different ENS names.
+Before a name can be converted to a node hash using Namehash, the name must first be normalized and checked for validity - for instance, converting _fOO.eth_ into _foo.eth_, and prohibiting names containing forbidden characters such as underscores. It is crucial that all applications follow the same set of rules for normalization and validation, as otherwise two users entering the same name on different systems may resolve the same human-readable name into two different ENS names.
 
-Applications using ENS and processing human-readable names must follow [UTS46](http://unicode.org/reports/tr46/) for normalisation and validation. Processing should be done with non-transitional rules, and with UseSTD3ASCIIRules=true.
+Applications using ENS and processing human-readable names must follow [UTS46](http://unicode.org/reports/tr46/) for normalization and validation. Processing should be done with non-transitional rules, and with UseSTD3ASCIIRules=true.
 
-The [eth-ens-namehash](https://www.npmjs.com/package/eth-ens-namehash) Javascript library performs both normalisation and hashing as described here. All of the [ENS libraries](../developer-guide/ens-libraries.md) covered in the DApp Developer Guide also perform normalisation and hashing.  
+The [eth-ens-namehash](https://www.npmjs.com/package/eth-ens-namehash) Javascript library performs both normalization and hashing as described here. All of the [ENS libraries](../developer-guide/ens-libraries.md) covered in the DApp Developer Guide also perform normalization and hashing.  
 
 
 ## Hashing Names
