@@ -34,7 +34,7 @@ Interface IDs are calculated as the exclusive-or of the four-byte function ident
 
 ERC 165 has an interface ID of _0x01ffc9a7_, so `supportsInterface(0x01ffc9a7)` will always return true for any ERC 165 supporting contract \(and hence for any resolver\).
 
-Note that the public resolver does not expose explicit interfaces for setter functions, so there is no automated means to check for support for a given setter function.
+Note that the public resolver does not expose explicit interfaces for setter functions, so there are no automated means to check for support for a given setter function.
 
 ## Get Ethereum Address
 
@@ -100,7 +100,7 @@ function contenthash(bytes32 node) external view returns (bytes memory);
 
 Returns the content hash for `node`, if one exists. Values are formatted as machine-readable [multicodecs](https://github.com/multiformats/multicodec), as specified in [EIP 1577](https://eips.ethereum.org/EIPS/eip-1577). 
 
-`contenthash` is used  to store IPFS and Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks.
+`contenthash` is used to store IPFS and Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks.
 
 This function has interface ID _0xbc1c58d1_.
 
@@ -167,7 +167,7 @@ event ABIChanged(bytes32 indexed node, uint256 indexed contentType);
 function pubkey(bytes32 node) external view returns (bytes32 x, bytes32 y)
 ```
 
-Returns the ECDSA SECP256k1 public key for `node`, as a 2-tuple `(x, y)`. If no public key are set, `(0, 0)` is returned.
+Returns the ECDSA SECP256k1 public key for `node`, as a 2-tuple `(x, y)`. If no public key is set, `(0, 0)` is returned.
 
 This function has interface ID _0xc8690233_.
 

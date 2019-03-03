@@ -4,7 +4,7 @@
 
 ### Why are names registered as hashes?
 
-Hashes are used for two main reasons. First, to prevent trivial enumeration of the entire set of domains, which helps preserve privacy of names \(for instance, so you can register the domain for your startup before you publicly launch\). Second, because hashes provide a fixed length identifier that can easily be passed around between contracts with fixed overhead and no issues around passing around variable-length strings.
+Hashes are used for two main reasons. First, to prevent trivial enumeration of the entire set of domains, which helps preserve the privacy of names \(for instance, so you can register the domain for your startup before you publicly launch\). Second, because hashes provide a fixed length identifier that can easily be passed around between contracts with fixed overhead and no issues around passing around variable-length strings.
 
 ### Which wallets and DApps support ENS so far?
 
@@ -42,7 +42,7 @@ This means that you can in theory register both ‘foo.eth’ and ‘FOO.eth’,
 
 It’s not enforced by the ENS contracts, but as described, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
 
-### What are the differences between ENS and other naming services such as namecoin, blockstack, and handshake?
+### What are the differences between ENS and other naming services such as Namecoin, Blockstack, and Handshake?
 
 ENS focuses first and foremost on providing decentralised, trustworthy name resolution for web3 resources such as blockchain addresses and distributed content, while Namecoin and Blockstack are efforts to replace DNS with a blockchain-based alternative.
 
@@ -85,9 +85,9 @@ If only one bid is revealed, that bidder deposits 0.01 ether, the minimum bid. T
 
 ### Instead of burning funds in the auction for bidding costs and penalties, shouldn’t they be donated to the Ethereum Foundation?
 
-Burning is fairly rare in the current registrar; it only burns fees if you reveal an illegal bid, or fail to reveal a bid during the reveal period. In all other circumstances they’re refunded to users, either when you’re outbid or when you relinquish the name. A small portion \(0.5%\) of the bids are burned with the intent of creating a cost for a large amount of domains or for highly valuable domains without the intention of buying them.
+Burning is fairly rare in the current registrar; it only burns fees if you reveal an illegal bid, or fail to reveal a bid during the reveal period. In all other circumstances they’re refunded to users, either when you’re outbid or when you relinquish the name. A small portion \(0.5%\) of the bids are burned with the intent of creating a cost for a large number of domains or for highly valuable domains without the intention of buying them.
 
-Burning fees is impartial, and avoids both political concerns over the destination of the funds, and perverse incentives for the beneficiary of the fees. The value of the ether burned is not destroyed, but rather equally distributed among all ether holders.
+Burning fees are impartial, and avoids both political concerns over the destination of the funds, and perverse incentives for the beneficiary of the fees. The value of the ether burned is not destroyed, but rather equally distributed among all ether holders.
 
 ### How was the minimum character length of 7 chosen?
 
@@ -105,7 +105,7 @@ This is something that the community will have to decide as part of the standard
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
-This is the most important aspect to be decided on the Permanent registrar and the one we want more open debate. At minimum we want the owner of a name to have to execute some periodical transaction, just to prove that name hasn’t been abandoned or keys have been lost. This transaction would probably also require additional ether to be locked or burned. The method to which that amount is calculated is yet to be determined but would probably be dependent on some \(but not necessarily all\) of these factors:
+This is the most important aspect to be decided on the Permanent registrar and the one we want more open debate. At the minimum we want the owner of a name to have to execute some periodical transaction, just to prove that name hasn’t been abandoned or keys have been lost. This transaction would probably also require additional ether to be locked or burned. The method to which that amount is calculated is yet to be determined but would probably be dependent on some \(but not necessarily all\) of these factors:
 
 > * The amount of ethers the domain was bought for originally
 > * The average cost of a domain back when it was first bought
