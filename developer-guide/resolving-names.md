@@ -13,7 +13,7 @@ var address = await ens.resolver('alice.eth').addr();
 
 {% tab title="web3.js" %}
 ```javascript
-var address = eth.getAddress('alice.eth');
+var address = ens.getAddress('alice.eth');
 ```
 {% endtab %}
 
