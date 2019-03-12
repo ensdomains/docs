@@ -42,7 +42,7 @@ Note that the public resolver does not expose explicit interfaces for setter fun
 function addr(bytes32 node) external view returns (address)
 ```
 
-Returns the Ethereum address associated with the provided `node`, or 0 if none. 
+Returns the Ethereum address associated with the provided `node`, or 0 if none.
 
 This function has interface ID _0x3b3b57de_.
 
@@ -56,7 +56,7 @@ function setAddr(bytes32 node, address addr) external;
 
 Sets the Ethereum address associated with the provided `node` to `addr`.
 
-Only callable by the owner of  `node`.
+Only callable by the owner of `node`.
 
 Emits the following event:
 
@@ -98,7 +98,7 @@ event NameChanged(bytes32 indexed node, string name);
 function contenthash(bytes32 node) external view returns (bytes memory);
 ```
 
-Returns the content hash for `node`, if one exists. Values are formatted as machine-readable [multicodecs](https://github.com/multiformats/multicodec), as specified in [EIP 1577](https://eips.ethereum.org/EIPS/eip-1577). 
+Returns the content hash for `node`, if one exists. Values are formatted as machine-readable [multicodecs](https://github.com/multiformats/multicodec), as specified in [EIP 1577](https://eips.ethereum.org/EIPS/eip-1577).
 
 `contenthash` is used to store IPFS and Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks.
 
@@ -151,9 +151,9 @@ This function is specified in [EIP 205](https://eips.ethereum.org/EIPS/eip-205).
 function setABI(bytes32 node, uint256 contentType, bytes calldata data) external
 ```
 
-Sets or updates ABI data for `node`. `contentType` specifies the content type ID \(see [Get Contract ABI](publicresolver.md#get-contract-abi) for valid values\); exactly one type ID must be specified. `data` contains the  encoded ABI data. To clear ABI data for a name, specify the empty string for `data`.
+Sets or updates ABI data for `node`. `contentType` specifies the content type ID \(see [Get Contract ABI](publicresolver.md#get-contract-abi) for valid values\); exactly one type ID must be specified. `data` contains the encoded ABI data. To clear ABI data for a name, specify the empty string for `data`.
 
-Only callable by the owner of `node`. 
+Only callable by the owner of `node`.
 
 Emits the following event:
 
@@ -181,7 +181,7 @@ function setPubkey(bytes32 node, bytes32 x, bytes32 y) external
 
 Sets the ECDSA SECP256k1 public key for `node` to `(x, y)`.
 
-Only callable by the owner of `node`. 
+Only callable by the owner of `node`.
 
 Emits the following event:
 
@@ -195,7 +195,7 @@ event PubkeyChanged(bytes32 indexed node, bytes32 x, bytes32 y);
 function text(bytes32 node, string calldata key) external view returns (string memory)
 ```
 
-Retrieves text metadata for `node`. Each name may have multiple pieces of metadata, identified by a unique string  `key`. If no text data exists for `node` with the key `key`, the empty string is returned.
+Retrieves text metadata for `node`. Each name may have multiple pieces of metadata, identified by a unique string `key`. If no text data exists for `node` with the key `key`, the empty string is returned.
 
 Standard values for `key` are:
 
@@ -229,7 +229,7 @@ Sets text metadata for `node` with the unique key `key` to `value`, overwriting 
 
 Only callable by the owner of `node`.
 
-Emits the following  event:
+Emits the following event:
 
 ```text
 event TextChanged(bytes32 indexed node, string indexedKey, string key);

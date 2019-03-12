@@ -1,6 +1,6 @@
 # Deploying ENS on a Private Chain
 
-If you’d like to deploy ENS on your own network, or deploy your own copy of ENS on a public network, this guide shows you how. If you want to use an existing ENS deployment, see [Resolving Names](developer-guide/resolving-names.md), [Managing Names](developer-guide/managing-names.md), and [Registering & Renewing Names](developer-guide/registering-and-renewing-names.md) instead.
+If you’d like to deploy ENS on your own network, or deploy your own copy of ENS on a public network, this guide shows you how. If you want to use an existing ENS deployment, see [Resolving Names](dapp-developer-guide/resolving-names.md), [Managing Names](dapp-developer-guide/managing-names.md), and [Registering & Renewing Names](dapp-developer-guide/registering-and-renewing-names.md) instead.
 
 On this page we will use Javascript, Web3 and [Truffle](https://truffleframework.com/) for simplicity.
 
@@ -14,7 +14,7 @@ const ens = await ENS.new();
 
 Once deployed, you will have a fresh ENS registry, whose root node is owned by the account that submitted the transaction. This account has total control over the ENS registry - it can create and replace any node in the entire tree.
 
-From here, it's possible to create and manage names by directly interacting with the registry, as described in [Managing Names](developer-guide/managing-names.md). However, you will probably want to [deploy a resolver](deploying-ens-on-a-private-chain.md#deploy-a-resolver), and you may want to [deploy a registrar](deploying-ens-on-a-private-chain.md#deploy-a-registrar) so other users can register names.
+From here, it's possible to create and manage names by directly interacting with the registry, as described in [Managing Names](dapp-developer-guide/managing-names.md). However, you will probably want to [deploy a resolver](deploying-ens-on-a-private-chain.md#deploy-a-resolver), and you may want to [deploy a registrar](deploying-ens-on-a-private-chain.md#deploy-a-registrar) so other users can register names.
 
 ## Deploy a Resolver
 

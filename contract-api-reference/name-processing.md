@@ -14,12 +14,11 @@ Before a name can be converted to a node hash using Namehash, the name must firs
 
 Applications using ENS and processing human-readable names must follow [UTS46](http://unicode.org/reports/tr46/) for normalization and validation. Processing should be done with non-transitional rules, and with UseSTD3ASCIIRules=true.
 
-The [eth-ens-namehash](https://www.npmjs.com/package/eth-ens-namehash) Javascript library performs both normalization and hashing as described here. All of the [ENS libraries](../developer-guide/ens-libraries.md) covered in the DApp Developer Guide also perform normalization and hashing.  
-
+The [eth-ens-namehash](https://www.npmjs.com/package/eth-ens-namehash) Javascript library performs both normalization and hashing as described here. All of the [ENS libraries](../dapp-developer-guide/ens-libraries.md) covered in the DApp Developer Guide also perform normalization and hashing.
 
 ## Hashing Names
 
-Namehash is a recursive process that can generate a unique hash for any valid domain name. Starting with the namehash of any domain - for example, 'alice.eth' - it's possible to derive the namehash  of any subdomain - for example 'iam.alice.eth' - without having to know or handle the original human-readable name. It is this property that makes it possible for ENS to provide a hierarchal system, without having to deal with human-readable text strings internally.
+Namehash is a recursive process that can generate a unique hash for any valid domain name. Starting with the namehash of any domain - for example, 'alice.eth' - it's possible to derive the namehash of any subdomain - for example 'iam.alice.eth' - without having to know or handle the original human-readable name. It is this property that makes it possible for ENS to provide a hierarchal system, without having to deal with human-readable text strings internally.
 
 ### Terminology
 
@@ -57,6 +56,4 @@ Namehash is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
 Because of the large number of characters in unicode, and the wide variety of scripts represented, inevitably there are different Unicode characters that are similar or even identical when shown in common fonts. This can be abused to trick users into thinking they are visiting one site or resource, when in fact they are visiting another. This is known as a [homoglyph attack](https://en.wikipedia.org/wiki/Internationalized_domain_name#ASCII_spoofing_concerns).
 
 User agents and other software that display names to users should take countermeasures against these attacks, such as by highlighting problematic characters, or showing warnings to users about mixed scripts. [Chromium’s IDNA strategy](https://www.chromium.org/developers/design-documents/idn-in-google-chrome) may serve as a useful reference for user-agent behaviour around rendering IDNA names.
-
-
 

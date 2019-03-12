@@ -11,12 +11,12 @@
 
 ## Dapp Developer Guide
 
-* [ENS Enabling your DApp](developer-guide/ens-enabling-your-dapp.md)
-* [ENS Libraries](developer-guide/ens-libraries.md)
-* [Working with ENS](developer-guide/working-with-ens.md)
-* [Resolving Names](developer-guide/resolving-names.md)
-* [Managing Names](developer-guide/managing-names.md)
-* [Registering & Renewing Names](developer-guide/registering-and-renewing-names.md)
+* [ENS Enabling your DApp](dapp-developer-guide/ens-enabling-your-dapp.md)
+* [ENS Libraries](dapp-developer-guide/ens-libraries.md)
+* [Working with ENS](dapp-developer-guide/working-with-ens.md)
+* [Resolving Names](dapp-developer-guide/resolving-names.md)
+* [Managing Names](dapp-developer-guide/managing-names.md)
+* [Registering & Renewing Names](dapp-developer-guide/registering-and-renewing-names.md)
 
 ## Contract API Reference
 
