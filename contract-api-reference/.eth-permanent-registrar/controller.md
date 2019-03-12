@@ -84,10 +84,10 @@ function available(string name) public view returns(bool);
 ### Calculate Commitment Hash
 
 ```text
-function makeCommitment(string name, bytes32 secret) pure public returns(bytes32);
+function makeCommitment(string name, address owner, bytes32 secret) pure public returns(bytes32);
 ```
 
-`makeCommitment` generates and returns a commitment hash from a name label \(eg, 'myname', not 'myname.eth'\) and secret value.
+`makeCommitment` generates and returns a commitment hash from a name label \(eg, 'myname', not 'myname.eth'\) owner, and secret value.
 
 ## Write Operations
 
