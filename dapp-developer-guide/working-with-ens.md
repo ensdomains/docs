@@ -2,16 +2,24 @@
 
 Before you can begin interacting with ENS, you will need to obtain a reference to the ENS registry. How you do this depends on the library you are using.
 
+Example code for the Javascript-based APIs \(ethereum-ens, web3.js, ethjs-ens, and ethers.js\) here expect that they are being run inside a DApp browser, such as Chrome with [metamask installed](https://metamask.github.io/metamask-docs/Main_Concepts/Getting_Started), which exposes the `ethereum` object.
+
 {% tabs %}
 {% tab title="ethereum-ens" %}
 ```javascript
 var ENS = require('ethereum-ens');
-var ens = new ENS(web3.currentProvider);
+
+var accounts = ethereum.enable();
+var ens = new ENS(ethereum);
 ```
 {% endtab %}
 
 {% tab title="web3.js" %}
 ```javascript
+var Web3 = require("web3")
+
+var accounts = ethereum.enable();
+var web3 = new Web3(ethereum);
 var ens = web3.eth.ens;
 ```
 {% endtab %}
@@ -21,12 +29,17 @@ var ens = web3.eth.ens;
 const ENS = require('ethjs-ens');
 // Currently requires both provider and
 // either a network or registryAddress param
-const ens = new ENS({ provider, network: '1' });
+var accounts = ethereum.enable();
+const ens = new ENS({ ethereum, network: '1' });
 ```
 {% endtab %}
 
 {% tab title="ethers.js" %}
-ENS functionality is provided directly on the core `provider` object.
+```javascript
+var ethers = require('ethers');
+var provider = new ethers.providers.Web3Provider(ethereum);
+// ENS functionality is provided directly on the core provider object.
+```
 {% endtab %}
 
 {% tab title="web3.py" %}
