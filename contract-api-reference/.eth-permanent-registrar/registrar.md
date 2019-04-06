@@ -44,7 +44,7 @@ Returns the unix timestamp at which a registration currently expires. Names that
 function available(uint256 label) public view returns(bool);
 ```
 
-Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrations than this contract \(for example, a minimum name length\), so this function should not be used to check if a name can be registered by a user.
+Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrations than this contract \(for example, a minimum name length\), so this function **should not** be used to check if a name can be registered by a user. To check if a name can be registered by a user, [check name availablility via the controller](https://docs.ens.domains/contract-api-reference/.eth-permanent-registrar/controller#check-name-availability).
 
 ### Get Transfer Period End
 
