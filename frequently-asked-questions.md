@@ -8,7 +8,7 @@ Hashes are used for two main reasons. First, to prevent trivial enumeration of t
 
 ### Which wallets and DApps support ENS so far?
 
-A full list can be seen on [our homepage](https://ens.domains/).
+A partial list can be seen on [our homepage](https://ens.domains/).
 
 ### Once I own a name, can I create my own subdomains?
 
