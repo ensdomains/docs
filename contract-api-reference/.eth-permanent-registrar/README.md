@@ -37,3 +37,19 @@ Users will interact with this controller for registering domains 7+ characters l
 
 Initially, a single pricing oracle will be deployed, the [StablePriceOracle](https://github.com/ensdomains/ethregistrar/blob/master/contracts/StablePriceOracle.sol). This contract permits its owner to set prices in USD for each permitted name length, and uses a USD:ETH price oracle to convert those prices into Ether at the current rate. Users will not have to interact with this oracle directly, as the controller provides functionality to determine pricing for a candidate name registration or renewal.
 
+## Discovery
+
+Finding the address of the new registrar is straightforward: look up the owner of the domain 'eth' in ENS, by calling `owner(namehash('eth'))` on the ENS registry.
+
+In order to support discovering the address of the controller, ENS supports interface discovery via [EIP 1844](https://eips.ethereum.org/EIPS/eip-1844). This mechanism permits looking up the address of the contract that implements a required interface via the following process:
+
+1. Set `node = namehash('eth')`.
+2. Look up the ENS resolver by calling `resolver(node)` on the ENS registry.
+3. Call the `interfaceImplementer(node, interfaceId)` method on that resolver, where `interfaceId` is the [EIP 165](https://eips.ethereum.org/EIPS/eip-165) interface ID of the interface you need.
+
+The following interface IDs are presently defined for the .eth permanent registrar:
+
+* `0x6ccb2df4`, the interface ID for [ERC721](https://eips.ethereum.org/EIPS/eip-721) \(NFTs\). This returns the address of the registrar itself \(which can also be fetched by doing an address lookup, or by looking up the owner of '.eth'.
+* `0x018fac06`, the interface ID for the controller. Returns the controller's address.
+* `0x7ba18ba1`, the interface ID for the legacy registrar's migration function. Returns the legacy registrar's address.
+
