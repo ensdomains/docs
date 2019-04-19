@@ -4,7 +4,7 @@ If you’d like to deploy ENS on your own network, or deploy your own copy of EN
 
 On this page we will use Javascript, Web3 and [Truffle](https://truffleframework.com/) for simplicity.
 
-## Including contracts
+## Importing contracts
 
 The majority of smart contrats are published as npm modules (eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)) which you can require at migration.
 
