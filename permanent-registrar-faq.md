@@ -71,7 +71,7 @@ It's ultimately up to the keyholders to allocate the funds. We hope they will fu
 
 ### Q: Where can I manage all my ENS names?
 
-ENS Listing have an interface for this here. We will be adding support for this to our manager Dapp soon.
+ENS Listing has [an interface for this here](https://enslisting.com/manage/home). We will be adding support for this to our manager Dapp soon.
 
 ### Q: Can I trade ENS domains on NFT exchanges?
 
@@ -79,7 +79,7 @@ Once we've migrated to the new registrar, you'll be able to trade .eth domains a
 
 ### Q: How can I transfer domains registered in the permanent registry to someone else?
 
-You will be able to do this using our manager interface here, or using any tool with NFT support.
+As of May 4, 2019, you will be able to do this using[our manager interface here](https://manager.ens.domains/), or using any tool with NFT support.
 
 ### Q: Are subdomains handled the same way as before?
 
