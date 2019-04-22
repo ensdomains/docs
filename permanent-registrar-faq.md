@@ -79,7 +79,7 @@ Once we've migrated to the new registrar, you'll be able to trade .eth domains a
 
 ### Q: How can I transfer domains registered in the permanent registry to someone else?
 
-As of May 4, 2019, you will be able to do this using[our manager interface here](https://manager.ens.domains/), or using any tool with NFT support.
+As of May 4, 2019, you will be able to do this using [our manager interface here](https://manager.ens.domains/), or using any tool with NFT support.
 
 ### Q: Are subdomains handled the same way as before?
 
