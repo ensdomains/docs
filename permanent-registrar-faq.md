@@ -85,10 +85,10 @@ You will be able to do this using our manager interface here, or using any tool 
 
 Only the registration and renewal process for .eth domains is changing. Resolution, and management of other names remains the same.
 
-Q: What prohibits large scale domain grabbing besides registration fees?
+### Q: What prohibits large scale domain grabbing besides registration fees?
 
 A: The cost of doing this is the only limitation in place.
 
-Q. What is a controller?
+### Q. What is a controller?
 
 A: This is a new concept introduced by the permanent registrar. The domain name owner can set different address as a controller to delegate the management of domain so that a non-owner can change the name’s resolver and set its address, etc.
