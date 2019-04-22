@@ -1,85 +1,89 @@
-# Q: When you say ‘Permanent’ what do you mean, i.e how ‘permanent’ is ‘permanent’?
+# Permanent Registrar Frequently Asked Questions
 
-## A: We intend for the permanent registrar to run until a deficiency is detected and/or determined. Unlike the interim registrar, which was intended to be replaced after two years, there are no plans to replace the permanent registrar - though changes may be made to registration and renewal fees as needed. 
+## About the ENS Permanent Registrar
 
-Q: What registration method does the permanent registrar use?
+### Q: When you say ‘Permanent’ what do you mean, i.e how ‘permanent’ is ‘permanent’?
 
-A: The permanent registrar uses a first-in-first-served (FIFS) registration system. It replaces the Vickery auction used in the interim registrar.
+We intend for the permanent registrar to run until a deficiency is detected and/or determined. Unlike the interim registrar, which was intended to be replaced after two years, there are no plans to replace the permanent registrar - though changes may be made to registration and renewal fees as needed. 
 
-Q: How many transactions are required to register a name using the permanent registrar?
+### Q: What registration method does the permanent registrar use?
 
-A: The permanent registrar uses two transactions (register and reveal) to register a name. This is one fewer transaction than the interim registrar required.
+The permanent registrar uses a first-in-first-served (FIFS) registration system. It replaces the Vickery auction used in the interim registrar.
 
-Q: How long does it take to register a name using the permanent registrar?
+### Q: How many transactions are required to register a name using the permanent registrar?
 
-A: It takes less than 5 minutes to register a name, given current block times. No more waiting 5 days, like the interim auction required!
+The permanent registrar uses two transactions (register and reveal) to register a name. This is one fewer transaction than the interim registrar required.
 
-Q: Do we need to do anything to ensure continued use of existing ENS names?
+### Q: How long does it take to register a name using the permanent registrar?
 
-A: If you have a .eth name, you will have a year (May 4 2019 to May 4 2020) to migrate your name to the new registrar. Migrated names are renewed for free from the date of migration until May 4, 2020.
+It takes less than 5 minutes to register a name, given current block times. No more waiting 5 days, like the interim auction required!
+
+### Q: Do we need to do anything to ensure continued use of existing ENS names?
+
+If you have a .eth name, you will have a year (May 4 2019 to May 4 2020) to migrate your name to the new registrar. Migrated names are renewed for free from the date of migration until May 4, 2020.
 
 In order to retain your name past May 4, 2020, you will need to renew your name at a cost of $5/name/year. If you don't migrate or renew, the name will become available for registration by others. 
 
-Q: When can I migrate my name from the interim registrar to the permanent registrar?
+### Q: When can I migrate my name from the interim registrar to the permanent registrar?
 
-A: You can migrate a name registered using the interim registrar to the permanent registrar after permanent registrar deployment on May 4, 2019 and once your name is at least 28 days old.
+You can migrate a name registered using the interim registrar to the permanent registrar after permanent registrar deployment on May 4, 2019 and once your name is at least 28 days old.
 
-Q: What happens if I have several ENS names with different renewal dates?
+### Q: What happens if I have several ENS names with different renewal dates?
 
-A: You can renew any existing name at any time.
+You can renew any existing name at any time.
 
-Q: What happens if I fail to migrate ENS names within the migration period?
+### Q: What happens if I fail to migrate ENS names within the migration period?
 A: Anyone can take ownership of the name, though you can always get your locked ETH back by pressing “Release” button on the manager.
 
-Q: Do I have to renew my name to keep it?
+### Q: Do I have to renew my name to keep it?
 
-A: Yes! Once you migrate your name to the permanent registrar, you will have to pay a fee to retain it. You can renew your name for any period of time at any time.
+Yes! Once you migrate your name to the permanent registrar, you will have to pay a fee to retain it. You can renew your name for any period of time at any time.
 
 Note: For simplicity, the ENS Dapp initially only allows renewals on an annual basis. The underlying smart contracts support renewal periods defined in seconds.
 
-Q: How do renewals work?
+### Q: How do renewals work?
 
-A: Anyone can extend the expiry date of any existing name by paying the required fee, at any time.
+Anyone can extend the expiry date of any existing name by paying the required fee, at any time.
 
 There is no maximum limitation of the renewal duration but there is a minimum renewal period of 28 days.
 
-Q: Can someone grab my domains at the end of my subscription period?
+### Q: Can someone grab my domains at the end of my subscription period?
 
-A: You can renew your name at any time during the period you own it. Making sure you renew before the name expires will prevent someone else from registering the name.
+You can renew your name at any time during the period you own it. Making sure you renew before the name expires will prevent someone else from registering the name.
 
 There will also be a 'grace period' of 30 days after your name expires. You can renew the name to retain ownership of it during the grace period.
 
-Q: How much will the yearly renewals cost?
+### Q: How much will the yearly renewals cost?
 
-A: Yearly renewals cost $5/year for names that are 7 characters or longer. Shorter names will renew at higher prices once they become available. Fees are paid in ETH. The ETH/USD exchange rate is set by the DAI USD oracle.
+Yearly renewals cost $5/year for names that are 7 characters or longer. Shorter names will renew at higher prices once they become available. Fees are paid in ETH. The ETH/USD exchange rate is set by the DAI USD oracle.
 
-Q: What happens to the renewal fees? Do I get them back?
+### Q: What happens to the renewal fees? Do I get them back?
 
-A: Rather than being locked and held, as in the interim registrar, renewal fees in the permanent registrar are fixed and spent. You will not get them back.
+Rather than being locked and held, as in the interim registrar, renewal fees in the permanent registrar are fixed and spent. You will not get them back.
 
-Q: How will ENS team manage and spend the funds? Will there be a foundation or transparent oversight?
+### Q: How will ENS team manage and spend the funds? Will there be a foundation or transparent oversight?
 
-A: Initially, funds will be sent to the ENS root multisig, for the keyholders to determine how funds get allocated. We're considering other options for the long-term, such as funding the core ENS team, as well as other teams building on ENS. There are also tax considerations to address.
+Initially, funds will be sent to the ENS root multisig, for the keyholders to determine how funds get allocated. We're considering other options for the long-term, such as funding the core ENS team, as well as other teams building on ENS. There are also tax considerations to address.
 
-Q: How are funds from rental income used?
+### Q: How are funds from rental income used?
 
-A: It's ultimately up to the keyholders to allocate the funds. We hope they will fund ENS ecosystems projects. If available funds exceed the reasonable needs of the ENS ecosystem, we hope other Ethereum projects will receive them.
+It's ultimately up to the keyholders to allocate the funds. We hope they will fund ENS ecosystems projects. If available funds exceed the reasonable needs of the ENS ecosystem, we hope other Ethereum projects will receive them.
 
-Q: Where can I manage all my ENS names?
+### Q: Where can I manage all my ENS names?
 
-A: ENS Listing have an interface for this here. We will be adding support for this to our manager Dapp soon.
+ENS Listing have an interface for this here. We will be adding support for this to our manager Dapp soon.
 
-Q: Can I trade ENS domains on NFT exchanges?
+### Q: Can I trade ENS domains on NFT exchanges?
 
-A: Once we've migrated to the new registrar, you'll be able to trade .eth domains as NFT tokens.
+Once we've migrated to the new registrar, you'll be able to trade .eth domains as NFT tokens.
 
-Q: How can I transfer domains registered in the permanent registry to someone else?
+### Q: How can I transfer domains registered in the permanent registry to someone else?
 
-A: You will be able to do this using our manager interface here, or using any tool with NFT support.
+You will be able to do this using our manager interface here, or using any tool with NFT support.
 
-Q: Are subdomains handled the same way as before?
+### Q: Are subdomains handled the same way as before?
 
-A: Only the registration and renewal process for .eth domains is changing. Resolution, and management of other names remains the same.
+Only the registration and renewal process for .eth domains is changing. Resolution, and management of other names remains the same.
 
 Q: What prohibits large scale domain grabbing besides registration fees?
 
@@ -88,4 +92,3 @@ A: The cost of doing this is the only limitation in place.
 Q. What is a controller?
 
 A: This is a new concept introduced by the permanent registrar. The domain name owner can set different address as a controller to delegate the management of domain so that a non-owner can change the name’s resolver and set its address, etc.
-
