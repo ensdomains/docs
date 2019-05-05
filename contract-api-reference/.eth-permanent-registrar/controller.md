@@ -10,10 +10,10 @@ To prevent frontrunning, the ETHRegistrarController requires a commit/reveal pro
 
 1. Generate a commitment hash from the name they want to register and a secret value.
 2. Submit the commitment hash from \#1 to the controller.
-3. Wait for at least 10 minutes, but no longer than 24 hours.
+3. Wait for at least 1 minute, but no longer than 24 hours.
 4. Submit a registration request for the name, along with the secret value from \#1.
 
-This process ensures that registrations cannot be frontrun unless the attacker is able to censor the user's transactions for at least 10 minutes.
+This process ensures that registrations cannot be frontrun unless the attacker is able to censor the user's transactions for at least 1 minute.
 
 ## Read Operations
 
@@ -111,7 +111,7 @@ function register(string name, address owner, uint duration, bytes32 secret) pub
 
 1. `available(name) == true`.
 2. `duration >= MIN_REGISTRATION_DURATION`.
-3. `secret` identifies a valid commitment \(eg, `commitments[makeCommitment(name, secret)]` exists and is between 10 minutes and 24 hours old.
+3. `secret` identifies a valid commitment \(eg, `commitments[makeCommitment(name, secret)]` exists and is between 1 minute and 24 hours old.
 4. `msg.value >= rentPrice(name, duration)`.
 
 Because the rent price may vary over time, callers are recommended to send slightly more than the value returned by `rentPrice` - a premium of 5-10% will likely be sufficient. Any excess funds are returned to the caller.

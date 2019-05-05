@@ -15,24 +15,23 @@ If you are already using web3.js, and do not require functionality such as creat
 
 If you are already using ethjs, and only need to do forward and reverse resolution of ENS names, use ethjs's ENS support.
 
-If you are already using ethers.js, and only need to do forward and  reverse  resolution of ENNS names, use ethers.js's ENS support.
+If you are already using ethers.js, and only need to do forward and reverse resolution of ENNS names, use ethers.js's ENS support.
 
 Otherwise, use ethereum-ens.
 
 #### Accessing smart contracts directly
 
-All the ENS smart contrats are [Truffle](https://truffleframework.com) projects and published as npm modules (eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)). If you want to access to functions none of the above libraries support you can install the smart contracts via npm.
+All the ENS smart contrats are [Truffle](https://truffleframework.com) projects and published as npm modules \(eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)\). If you want to access to functions none of the above libraries support you can install the smart contracts via npm.
 
-* [Resolver](https://www.npmjs.com/package/@ensdomains/resolver) = `Resolver.sol` contains all function names including the deprecated functions (eg: `content`)
+* [Resolver](https://www.npmjs.com/package/@ensdomains/resolver) = `Resolver.sol` contains all function names including the deprecated functions \(eg: `content`\)
 * [Permanent Registrar](https://www.npmjs.com/package/@ensdomains/ethregistrar)
 * [Registry and old Registrar](https://www.npmjs.com/package/@ensdomains/ens)
 
 The bytecode and abi are precompiled and can be imported from the modules.
 
-```
+```text
 import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
 ```
-
 
 ### Java
 
@@ -49,8 +48,6 @@ import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
 ### Delphi
 
 * [delphereum](https://github.com/svanas/delphereum)
-
-
 
 ## Next Steps
 

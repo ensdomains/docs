@@ -6,20 +6,19 @@ On this page we will use Javascript, Web3 and [Truffle](https://truffleframework
 
 ## Importing contracts
 
-The majority of smart contrats are published as npm modules (eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)) which you can require at migration.
+The majority of smart contrats are published as npm modules \(eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)\) which you can require at migration.
 
-```
+```text
 const ENS = require(`@ensdomains/ens/build/contracts/ENSRegistry.sol`)
 ```
 
 Including within your smart contract is as follows
 
-```
+```text
 import "@ensdomains/ens/contracts/ENS.sol";
 ```
 
 `ENS` contains only interface while `ENSRegistry` includes the actual implementation.
-
 
 ## Deploy the Registry
 

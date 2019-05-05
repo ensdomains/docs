@@ -4,15 +4,15 @@
 
 ### When you say ‘Permanent’ what do you mean, i.e how ‘permanent’ is ‘permanent’?
 
-We intend for the permanent registrar to run until a deficiency is detected and/or determined. Unlike the interim registrar, which was intended to be replaced after two years, there are no plans to replace the permanent registrar - though changes may be made to registration and renewal fees as needed. 
+We intend for the permanent registrar to run until a deficiency is detected and/or determined. Unlike the interim registrar, which was intended to be replaced after two years, there are no plans to replace the permanent registrar - though changes may be made to registration and renewal fees as needed.
 
 ### What registration method does the permanent registrar use?
 
-The permanent registrar uses a first-in-first-served (FIFS) registration system. It replaces the Vickery auction used in the interim registrar.
+The permanent registrar uses a first-in-first-served \(FIFS\) registration system. It replaces the Vickery auction used in the interim registrar.
 
 ### How many transactions are required to register a name using the permanent registrar?
 
-The permanent registrar uses two transactions (register and reveal) to register a name. This is one fewer transaction than the interim registrar required.
+The permanent registrar uses two transactions \(register and reveal\) to register a name. This is one fewer transaction than the interim registrar required.
 
 ### How long does it take to register a name using the permanent registrar?
 
@@ -20,9 +20,9 @@ It takes less than 5 minutes to register a name, given current block times. No m
 
 ### Do we need to do anything to ensure continued use of existing ENS names?
 
-If you have a .eth name, you will have a year (May 4 2019 to May 4 2020) to migrate your name to the new registrar. Migrated names are renewed for free from the date of migration until May 4, 2020.
+If you have a .eth name, you will have a year \(May 4 2019 to May 4 2020\) to migrate your name to the new registrar. Migrated names are renewed for free from the date of migration until May 4, 2020.
 
-In order to retain your name past May 4, 2020, you will need to renew your name at a cost of $5/name/year. If you don't migrate or renew, the name will become available for registration by others. 
+In order to retain your name past May 4, 2020, you will need to renew your name at a cost of $5/name/year. If you don't migrate or renew, the name will become available for registration by others.
 
 ### When can I migrate my name from the interim registrar to the permanent registrar?
 
@@ -33,6 +33,7 @@ You can migrate a name registered using the interim registrar to the permanent r
 You can renew any existing name at any time.
 
 ### What happens if I fail to migrate ENS names within the migration period?
+
 A: Anyone can take ownership of the name, though you can always get your locked ETH back by pressing “Release” button on the manager.
 
 ### Do I have to renew my name to keep it?
@@ -92,3 +93,4 @@ The cost of doing this is the only limitation in place.
 ### What is a controller?
 
 This is a new concept introduced by the permanent registrar. The domain name owner can set different address as a controller to delegate the management of domain so that a non-owner can change the name’s resolver and set its address, etc.
+
