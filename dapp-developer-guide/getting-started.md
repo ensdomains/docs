@@ -1,27 +1,37 @@
 ### Meaning of ENS
 
-The Ethereum Name Service (ENS) is a useful tool for dapp developers. ENS is like DNS (Domain Name System), in that it maps a memorable shortcut to an address. Using ENS we can map the friendly name ethereum.eth to the rather unfriendly 0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359. Subsequently, we can use the friendly name in-place of the address, making it easier to remember, and reducing the chance of errors.<br/>
-An ENS name has a root name ethereum.eth which can contain sub-names like wallet.ethereum.eth. Whoever successfully bid for the root name in a Vickrey auction owns it.<br/>
-ENS is the Ethereum Name Service, a distributed, open, and extensible naming system based on the Ethereum blockchain.
+ENS is the Ethereum Name Service. It's a distributed, open, and extensible naming system based on the Ethereum blockchain and useful tool for dapp developers. 
 
-### Why Developers need to use the ENS
-ENS doesn't just map to addresses. ENS is highly extensible and supports many types of mappings. It is possible to map the same friendly name to multiple endpoints at the same time. <br/>
-ENS gets rid of the necessity of copying or typing lengthy hexadecimal addresses. With ENS, you’ll be able to send funds to the domain name instead of the long address, engage with your smart contract at mycontract.eth, and check out swarm-hosted sites at swarmsite.eth. <br/>
+ENS for Ethereum is analogous to DNS (Domain Name System) for IP addresses, in that it maps a memorable shortcut to an address. It's is a completely decentralized system.
 
-ENS is a completely decentralized system. Creating new domains under the “.eth” top-level domain is possible by an auction process that takes place on the Ethereum blockchain, and anyone can procure a domain for themselves by taking part.
+Creating new domains under the “.eth” top-level domain is possible through a registration process that takes place on the Ethereum blockchain. Anyone can procure a domain for themselves by participating.
+
+Using ENS we can map a friendly ENS name, e.g. ethereum.eth, to an unfriendly Ethereum address, e.g. 0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359. The friendly name can be used instead of the address, making it easier to remember, and reducing the chance of errors.
+
+The reverse is true too. The address can also be mapped back to the name. This creates a bi-directional mapping between names and addresses.
+
+### Why Developers Should Use ENS
+
+ENS eliminates the need to copy or type lengthy hexadecimal addresses. With ENS, you can send funds directly to the ENS name instead of the long Ethereum address, engage with your smart contract at mycontract.eth and browse swarm-hosted sites at swarmsite.eth.
+
+ENS doesn't only map to Ethereum addresses. ENS is highly extensible and supports many types of endpoint mappings, e.g. IPFS and swarm hashes. It's possible to map the same friendly name to multiple endpoints at the same time.
 
 For example the ethereum.eth name could point to:
 - A multisig wallet contract address
 - Public encryption keys for secure communication
 - Website content (via IPFS hash or multihash)
 
-It could be described with a phone-book metaphor, top-level domains, like ‘.eth’ and ‘.test’ are owned by smart contracts called registrars, which specify rules governing the allocation of their subdomains. Anyone may, by following the rules imposed by these registrar contracts, obtain ownership of a domain for their own use.
+#### ENS Sub-names
+
+An ENS name has a root name, e.g. ethereum.eth, which can contain sub-names, e.g. wallet.ethereum.eth. The owner of an ENS name can allocate subdomains of the name.
+
 Because of the hierarchical nature of ENS, anyone who owns a domain at any level may configure subdomains - for themselves or others - as desired. For instance, if Alice owns 'alice.eth', she can create 'pay.alice.eth' and configure it as she wishes.
 
+ENS sub-names map to addresses the same way ENS names do, yet you don’t need to go through a registration process to create one. However, to register an ENS sub-name, you do have to be the owner of the ENS name itself.
 
-#### ENS Subdomains
-They can also give more of an organizational feel to users, where the domain represents the organization and the subdomain resembles the structure of email addresses. A novel use case currently being implemented by Tenzorum Project is to use your subdomain as a username/login to Ethereum ĐApps. <br/>
-Subdomains map names to addresses exactly the same way as domains do, but you don’t need to go through an auction process to create one. Luckily, there is no minimum length limit on ENS subdomains, either. To register a subdomain, you have to be the owner of the domain as a prerequisite.
+The sub-name to name relationship can also be described with a phone-book metaphor. Top-level ENS names, e.g. ‘myname.eth' are owned by smart contracts called registrars. The registrars specify rules governing the allocation of the corresponding top-level domain's subdomains, e.g. hello.myname.eth.
+
+Sub-names can also give more of an organizational feel to users. For example, the top-level name can represent an organization and the sub-name can resemble the structure of email addresses. A novel use case currently being implemented by [Tenzorum Project](https://tenzorum.org/), for example, is to use your sub-name as a username/login to Ethereum ĐApps.
 
 **Prerequisites**<br/>
 First install Node.js and npm by following the install instructions on the [Node.js website](https://nodejs.org/).
