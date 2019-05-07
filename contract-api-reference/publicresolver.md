@@ -74,7 +74,7 @@ Returns the canonical ENS name associated with the provided `node`. Used exclusi
 
 This function has interface ID _0x691f3431_.
 
-This function is specified in [EIP 181](https://eips.ethereum.org/EIPS/eip-137).
+This function is specified in [EIP 181](https://eips.ethereum.org/EIPS/eip-181).
 
 ## Set Canonical Name
 
@@ -104,7 +104,7 @@ Returns the content hash for `node`, if one exists. Values are formatted as mach
 
 This function has interface ID _0xbc1c58d1_.
 
-This function is specified in [EIP 1577](https://eips.ethereum.org/EIPS/eip-137).
+This function is specified in [EIP 1577](https://eips.ethereum.org/EIPS/eip-1157).
 
 ## Set Content Hash
 
