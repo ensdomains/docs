@@ -4,7 +4,7 @@ ENS is the Ethereum Name Service. It's a distributed, open, and extensible namin
 
 ENS for Ethereum is analogous to DNS (Domain Name System) for IP addresses, in that it maps a memorable shortcut to an address. It's is a completely decentralized system.
 
-Creating new domains under the “.eth” top-level domain is possible through a registration process that takes place on the Ethereum blockchain. Anyone can procure a domain for themselves by participating.
+Creating new domains under the ".eth" top-level domain is possible through a registration process that takes place on the Ethereum blockchain. Anyone can procure a domain for themselves by participating.
 
 Using ENS we can map a friendly ENS name, e.g. ethereum.eth, to an unfriendly Ethereum address, e.g. 0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359. The friendly name can be used instead of the address, making it easier to remember, and reducing the chance of errors.
 
@@ -29,7 +29,7 @@ Because of the hierarchical nature of ENS, anyone who owns a domain at any level
 
 ENS sub-names map to addresses the same way ENS names do, yet you don’t need to go through a registration process to create one. However, to register an ENS sub-name, you do have to be the owner of the ENS name itself.
 
-The sub-name to name relationship can also be described with a phone-book metaphor. Top-level ENS names, e.g. ‘myname.eth' are owned by smart contracts called registrars. The registrars specify rules governing the allocation of the corresponding top-level domain's subdomains, e.g. hello.myname.eth.
+The sub-name to name relationship can also be described with a phone-book metaphor. Top-level ENS names, e.g. 'myname.eth' are owned by smart contracts called registrars. The registrars specify rules governing the allocation of the corresponding top-level domain's subdomains, e.g. hello.myname.eth.
 
 Sub-names can also give more of an organizational feel to users. For example, the top-level name can represent an organization and the sub-name can resemble the structure of email addresses. A novel use case currently being implemented by [Tenzorum Project](https://tenzorum.org/), for example, is to use your sub-name as a username/login to Ethereum ĐApps.
 
@@ -178,7 +178,7 @@ In other to begin interacting with the ENS, your app would need to obtain a refe
 
 Usage:
 ```
-var ENS = require(“ethereum-ens”);
+var ENS = require("ethereum-ens");
 var accounts = ethereum.enable();
 var ens = new ENS(ethereum);
 ```
@@ -206,10 +206,10 @@ _Resolving Names_ <br/>
 Resolving a name to an Ethereum address using a library is simple, there are many available options such as;
 
 - Ethereum-ENS <br/>
-    `var address = await ens.resolver(“alice.eth”).addr();`
+    `var address = await ens.resolver("alice.eth").addr();`
 
 - Web3.js <br/>
-    `var address = ens.getAddress(“alice.eth”);`
+    `var address = ens.getAddress("alice.eth");`
 
 Resolution without a library is a three step process: <br/>
 1. Normalise and hash the name - see name processing for details.
@@ -230,7 +230,7 @@ reverse resolution maps from an address back to a name - or other metadata. It i
 
 - Ethereum-ENS <br/>
 ```
-const address = ‘0x1234….’;
+const address = '0x1234….';
 var name = await ens.reverse(address).name();
 
 //check to be sure the reverse record is correct
@@ -240,7 +240,7 @@ if(address != await ens.resolver(name).addr()){
 ```
 - Web3.py <br/>
 ```
-address = ‘0x1234…..’
+address = '0x1234…..'
 name = ns.reverse(address);
 
 //check to be sure the reverse record is correct.
