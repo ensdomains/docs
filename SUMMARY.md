@@ -3,11 +3,9 @@
 * [Introduction](README.md)
 * [Terminology](terminology.md)
 * [Frequently Asked Questions](frequently-asked-questions.md)
-* [Permanent Registrar Frequently Asked Questions](permanent-registrar-faq.md)
 * [ENS Deployments](ens-deployments.md)
+* [Permanent Registrar Frequently Asked Questions](permanent-registrar-faq.md)
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
-* [ENS Discussion Forum](https://discuss.ens.domains/)
-* [ENS Support Chat](https://gitter.im/ethereum/go-ethereum/name-registry)
 
 ## Dapp Developer Guide
 
@@ -17,6 +15,7 @@
 * [Resolving Names](dapp-developer-guide/resolving-names.md)
 * [Managing Names](dapp-developer-guide/managing-names.md)
 * [Registering & Renewing Names](dapp-developer-guide/registering-and-renewing-names.md)
+* [ENS Front-End Design Guidelines](dapp-developer-guide/front-end-design-guidelines.md)
 
 ## Contract API Reference
 
@@ -34,4 +33,6 @@
 * [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
 * [Writing a Resolver](contract-developer-guide/writing-a-resolver.md)
 * [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
+* [ENS Discussion Forum](https://discuss.ens.domains/)
+* [ENS Support Chat](https://gitter.im/ethereum/go-ethereum/name-registry)
 
