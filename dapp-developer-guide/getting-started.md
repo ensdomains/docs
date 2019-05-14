@@ -4,11 +4,15 @@
 
 ENS (Ethereum Name Service) is analogous to DNS (Domain Name System) for IP addresses, in that it maps a memorable shortcut to an address. ENS is a distributed, decentralized, open, and extensible naming system based on the Ethereum blockchain and a useful tool for developers to create more memorable names for their dapps.
 
-Creating new domains under the ".eth" top-level domain is possible through a registration process that takes place on the Ethereum blockchain. Anyone can procure a domain for themselves by participating.
+An ENS name can be a subdomain of the root .eth domain, like "example.eth" or any subdomain of a subdomain, like "sub.example.eth", or "wallet.username.example.eth"
 
 Using ENS we can map a friendly ENS name, e.g., "ethereum.eth", to an unfriendly Ethereum address, e.g., `0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359`. Users can then use the friendly name instead of the address, making it easier to remember, and reducing the chance of errors.
 
 The reverse is true too. The address can also be mapped back to the name. This creates a bi-directional mapping between names and addresses.
+
+Creating new domains under the ".eth" top-level domain used to be possible through auction only but now it is controlled via a [Permanent Registrar](https://docs.ens.domains/contract-api-reference/.eth-permanent-registrar), it is a code which governs allocation and renewal of names through Vickery Auction process to allocate names to registrants.
+
+Users can get subdomains of ENS Names through different dApps also that offer it such as (Status, Gitcoin, Argent, Tenzorum, Zinc, Aragon, etc).
 
 ## Why Developers Should Use ENS
 
@@ -30,7 +34,14 @@ Because of the hierarchical nature of ENS, anyone who owns a domain at any level
 
 Smart contracts called registrars own top-level ENS names like 'myname.eth'. The registrars specify rules governing the allocation of the corresponding top-level domain's subdomains, e.g., hello.myname.eth.
 
-Sub-names can also give more of an organizational feel to users. For example, the top-level name can represent an organization and the sub-name the structure of email addresses. For example, a novel use case currently implemented by the [Tenzorum Project](https://tenzorum.org/) is to use your sub-name as a username/login to Ethereum ĐApps.
+Sub-names can also give more of an organizational feel to users. For example, the top-level name can represent an organization and the sub-name the structure of email addresses.
+
+**Use Cases**
+
+- A novel use case currently implemented by the [Tenzorum Project](https://tenzorum.org/) is to use your sub-name as a username/login to Ethereum ĐApps.
+
+- Universal SignUp/Login: [EIP 1078](http://eips.ethereum.org/EIPS/eip-1078) proposes a new method to replace the usual signup/login design pattern with ens so that passwords, backing up private keys nor typing seed phrases would be required.
+
 
 ## Prerequisites
 
@@ -319,7 +330,8 @@ Example: <https://gitcoin.co/ens/>
 
 When users want to get a domain for the first time, they must interact with a registrar. Registrars are smart contracts that own a domain, and have a defined process for handing out subdomains. The registrar a user needs to interact with depends on the domain they want to obtain. For example, a user wanting a `.eth` name has to interact with the `.eth` registrar. Each registrar defines its own API for name registrations (and renewals, where appropriate).
 
-At present, there are no libraries for interacting with registrars. DApps wishing to do so must interact with the registrar contract using a generic Ethereum library such as web3.js or web3.py.
+At present, there are no libraries for interacting with registrars. DApps wishing to do so must interact with the registrar contract using a generic Ethereum library such as web3.js or web3.py.<br/>
+Read [registering and renewing](https://docs.ens.domains/dapp-developer-guide/registering-and-renewing-names) to know more.
 
 ### Name Updates
 
