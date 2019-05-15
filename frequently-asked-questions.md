@@ -91,7 +91,7 @@ Burning fees are impartial, and avoids both political concerns over the destinat
 
 ### How was the minimum character length of 7 chosen?
 
-By an informal survey of common ‘high value’ short names. This restriction is intended to be lifted once the permanent registrar is in place.
+By an informal survey of common ‘high value’ short names. The 3 - 6 character restriction is intended to be lifted once the permanent registrar and one time short name auction completes. The 1 - 2 character restriction will stay indefinitely.
 
 ### What values will the permanent registrar try to optimize for?
 
