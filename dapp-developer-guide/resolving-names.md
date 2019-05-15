@@ -124,10 +124,7 @@ if(address != await ens.lookup(name)) {
 ```text
 var address = '0x1234...';
 var name = await provider.lookupAddress(address);
-// Check to be sure the reverse record is correct.
-if(address != await provider.resolveName(name)) {
-  name = null;
-}
+// ethers.js automatically checks that the forward resolution matches.
 ```
 {% endtab %}
 
