@@ -71,7 +71,7 @@ Callers should use this function to obtain registration costs to display to the 
 function valid(string name) public view returns(bool);
 ```
 
-`valid` returns true iff name is valid for registration with this controller \(eg, it meets length requirements\).
+`valid` returns true if name is valid for registration with this controller \(eg, it meets length requirements\).
 
 ### Check Name Availability
 
@@ -79,7 +79,7 @@ function valid(string name) public view returns(bool);
 function available(string name) public view returns(bool);
 ```
 
-`available` returns true iff the name is both valid and available for registration by this controller. [Under the hood](https://github.com/ensdomains/ethregistrar/blob/master/contracts/ETHRegistrarController.sol#L55-L58), this call uses the `valid` function \(above\) and the `available` function on the [registrar](registrar.md#check-name-availability) contract, which checks for availability in both the legacy ENS registrar and current ENS registrar.
+`available` returns true if the name is both valid and available for registration by this controller. [Under the hood](https://github.com/ensdomains/ethregistrar/blob/master/contracts/ETHRegistrarController.sol#L55-L58), this call uses the `valid` function \(above\) and the `available` function on the [registrar](registrar.md#check-name-availability) contract, which checks for availability in both the legacy ENS registrar and current ENS registrar.
 
 Callers **should** use this function to check if a name is available for registration, rather than the `available` function on the registrar contract, which does not check name length.
 
