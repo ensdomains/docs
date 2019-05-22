@@ -11,6 +11,13 @@ await ens.setOwner('alice.eth', '0x1234...', {from: ...});
 ```
 {% endtab %}
 
+{% tab title="go-ens" %}
+```go
+// opts are go-ethereum's bind.TransactOpts
+err := registry.SetOwner(opts, "alice.eth", common.HexToAddress("0x1234..."))
+```
+{% endtab %}
+
 {% tab title="web3.py" %}
 ```python
 ns.setup_owner('alice.eth', '0x1234...')
@@ -26,6 +33,13 @@ The owner of any domain can configure subdomains as desired. This is achieved by
 {% tab title="ethereum-ens" %}
 ```text
 await ens.setSubnodeOwner('iam.alice.eth', '0x1234...', {from: ...});
+```
+{% endtab %}
+
+{% tab title="go-ens" %}
+```go
+// opts are go-ethereum's bind.TransactOpts
+err := registry.SetSubdomainOwner(opts, "alice.eth", "iam", common.HexToAddress("0x1234..."))
 ```
 {% endtab %}
 
@@ -64,6 +78,13 @@ await ens.setResolver('iam.alice.eth', resolver, {from: ...});
 ```
 {% endtab %}
 
+{% tab title="go-ens" %}
+```go
+// opts are go-ethereum's bind.TransactOpts
+err := registry.SetResolver(opts, "iam.alice.eth", common.HexToAddress("0x1234..."))
+```
+{% endtab %}
+
 {% tab title="web3.py" %}
 Not supported. web3.py automatically uses the public resolver when `setup_address` is called, and does not support setting custom resolvers.
 {% endtab %}
@@ -86,6 +107,14 @@ await ens.resolver('iam.alice.eth').setAddr('0x1234...', {from: ...});
 ```
 {% endtab %}
 
+{% tab title="go-ens" %}
+```go
+resolver, err := ens.NewResolver(client, "iam.alice.eth")
+// opts are go-ethereum's bind.TransactOpts
+err := resolver.SetAddress(opts, common.HexToAddress("0x1234..."))
+```
+{% endtab %}
+
 {% tab title="web3.js" %}
 ```javascript
 ens.setAddress('iam.alice.eth, '0x1234...', {from: ...});
@@ -101,12 +130,21 @@ ns.setup_address('iam.alice.eth', '0x1234...')
 
 ### Updating Other Records
 
-Some libraries - presently only ethereum-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set  or update a text record:
+Some libraries - presently only ethereum-ens, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set  or update a text record:
 
 {% tabs %}
 {% tab title="ethereum-ens" %}
 ```javascript
 ens.resolver('iam.alice.eth').setText('test', 'Test record', {from: ...});
+```
+{% endtab %}
+
+{% tab title="go-ens" %}
+```go
+// opts are go-ethereum's bind.TransactOpts
+err := resolver.SetContenthash(opts, []byte{0x12, 0x34...})
+err := resolver.SetAbi(opts, "Sample", `[{"constant":true,"inputs":...}]`, big.NewInt(1))
+err := resolver.SetText(opts, "Sample", `Hello, world`)
 ```
 {% endtab %}
 
@@ -123,9 +161,20 @@ While 'regular' resolution involves mapping from a name to an address, reverse r
 
 Before this can be done, the owner of the address has to configure reverse resolution for their address. This is done by calling the `claim()` method on the reverse resolver, found at the special name 'addr.reverse'.
 
-Most commonly this is accomplished via a user-interface such as the [ENS Manager DApp](https://manager.ens.domains/). web3.py also provides functionality for this:
+Most commonly this is accomplished via a user-interface such as the [ENS Manager DApp](https://manager.ens.domains/). go-ens and web3.py also provide functionality for this:
 
-```text
+{% tabs %}
+{% tab title="go-ens" %}
+```go
+reverseRegistrar, err := ens.NewReverseRegistrar(client)
+// opts are go-ethereum's bind.TransactOpts
+err := reverseRegistrar.SetName(opts, "iam.alice.eth")
+```
+{% endtab %}
+
+{% tab title="web3.py" %}
+```python
 ns.setup_name('iam.alice.eth', '0x1234...')
 ```
-
+{% endtab %}
+{% endtabs %}

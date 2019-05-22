@@ -45,6 +45,12 @@ const contract = new ethers.Contract('contract.alice.eth', abi, provider);
 ```
 {% endtab %}
 
+{% tab title="go-ens" %}
+```go
+address, err := ens.Resolve(client, "alice.eth")
+```
+{% endtab %}
+
 {% tab title="web3.py" %}
 ```text
 address = ns.address('alice.eth')
@@ -128,6 +134,12 @@ var name = await provider.lookupAddress(address);
 if(address != await provider.resolveName(name)) {
   name = null;
 }
+```
+{% endtab %}
+
+{% tab title="go-ens" %}
+```go
+name, err := ens.ReverseResolve(client, common.HexToAddress("0x1234...")
 ```
 {% endtab %}
 
