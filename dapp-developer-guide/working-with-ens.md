@@ -42,6 +42,19 @@ var provider = new ethers.providers.Web3Provider(ethereum);
 ```
 {% endtab %}
 
+{% tab title="go-ens" %}
+```go
+import (
+  ens "github.com/wealdtech/go-ens/v2"
+  ethereum "github.com/ethereum/go-ethereum"
+)
+
+// Can dial up a connection through either IPC or HTTP/HTTPS
+client, err := ethereum.Dial("/home/ethereum/.ethereum/geth.ipc")
+registry, err := ens.Registry(client)
+```
+{% endtab %}
+
 {% tab title="web3.py" %}
 ```python
 from ens.auto import ns

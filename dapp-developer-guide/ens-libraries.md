@@ -41,8 +41,13 @@ import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
 
 * [web3.py](https://github.com/ethereum/web3.py) - also see [web3.py ENS docs](https://web3py.readthedocs.io/en/stable/ens_overview.html)
 
+### Go
+
+* [go-ens](https://github.com/wealdtech/go-ens)
+
 ### Command-line
 
+* [ethereal](https://github.com/wealdtech/ethereal)
 * [ethers-ens](https://github.com/ethers-io/ethers-ens)
 
 ### Delphi
