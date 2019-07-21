@@ -62,7 +62,7 @@ In the common case that the name should be pointed to the owner's address, the s
 
 Before a newly created domain or subdomain can be used, a resolver address must be set. You may also want to do this if an updated resolver implementation is available that supports features that you want to make use of.
 
-Most commonly, names are set to use a 'standard' resolver called the public resolver,  which provides commonly-used functionality, but anyone may write and deploy their own special-purpose resolver; see the resolver interface definition for details.
+Most commonly, names are set to use a 'standard' resolver called the public resolver, which provides commonly-used functionality, but anyone may write and deploy their own special-purpose resolver; see the resolver interface definition for details.
 
 {% tabs %}
 {% tab title="ethereum-ens" %}
@@ -70,7 +70,7 @@ Most commonly, names are set to use a 'standard' resolver called the public reso
 await ens.setResolver('iam.alice.eth', '0x1234...', {from: ...});
 ```
 
-On mainnet and the Kovan test network, 'resolver.eth' is configured to point to the latest deployed version of the public resolver, making it possible to easily configure a name to  use the public resolver:
+On mainnet and the Kovan test network, 'resolver.eth' is configured to point to the latest deployed version of the public resolver, making it possible to easily configure a name to use the public resolver:
 
 ```text
 const resolver = await ens.resolver('resolver.eth').addr();
@@ -130,7 +130,7 @@ ns.setup_address('iam.alice.eth', '0x1234...')
 
 ### Updating Other Records
 
-Some libraries - presently only ethereum-ens, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set  or update a text record:
+Some libraries - presently only ethereum-ens, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set or update a text record:
 
 {% tabs %}
 {% tab title="ethereum-ens" %}
@@ -178,3 +178,4 @@ ns.setup_name('iam.alice.eth', '0x1234...')
 ```
 {% endtab %}
 {% endtabs %}
+
