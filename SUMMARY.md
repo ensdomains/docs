@@ -6,6 +6,7 @@
 * [ENS Deployments](ens-deployments.md)
 * [Permanent Registrar Frequently Asked Questions](permanent-registrar-faq.md)
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
+* [DNS Registrar guide](dns-registrar-guide.md)
 
 ## Dapp Developer Guide
 
@@ -27,6 +28,8 @@
 * [.eth Permanent Registrar](contract-api-reference/.eth-permanent-registrar/README.md)
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
+* [DNS Registrar](https://dnsregistrar.readthedocs.io/en/doc)
+* [DNSProvejs](https://dnsprovejs.readthedocs.io)
 
 ## Contract Developer Guide
 
