@@ -177,3 +177,58 @@ async function setupReverseRegistrar(ens, resolver, reverseRegistrar, accounts) 
 }
 ```
 
+### Deploying ENS in a single transaction
+
+Alternately you may wish to deploy a test registrar and its dependencies with a single transaction. This is useful for example in unit tests where you wish to start from a clean slate in each test. In many cases it will also be faster than sending a series of separate transactions.
+
+This can be done by deploying a new contract that creates and sets up all the other contracts in its constructor. The below code creates all the ENS contracts and assigns the eth TLD to the FIFS Registrar so that any eth domain may be registered in the unit tests.
+
+```solidity
+pragma solidity ^0.5.0;
+
+import "@ensdomains/ens/contracts/ENSRegistry.sol";
+import "@ensdomains/ens/contracts/FIFSRegistrar.sol";
+import "@ensdomains/ens/contracts/ReverseRegistrar.sol";
+import "@ensdomains/resolver/contracts/PublicResolver.sol";
+
+// Construct a set of test ENS contracts.
+contract TestDependencies {
+  bytes32 constant TLD_LABEL = keccak256("eth");
+  bytes32 constant RESOLVER_LABEL = keccak256("resolver");
+  bytes32 constant REVERSE_REGISTRAR_LABEL = keccak256("reverse");
+  bytes32 constant ADDR_LABEL = keccak256("addr");
+
+  ENSRegistry public ens;
+  FIFSRegistrar public fifsRegistrar;
+  ReverseRegistrar public reverseRegistrar;
+  PublicResolver public publicResolver;
+
+  function namehash(bytes32 node, bytes32 label) public pure returns (bytes32) {
+    return keccak256(abi.encodePacked(node, label));
+  }
+
+  constructor() public {
+    ens = new ENSRegistry();
+    publicResolver = new PublicResolver(ens);
+
+    // Set up the resolver
+    bytes32 resolverNode = namehash(bytes32(0), RESOLVER_LABEL);
+
+    ens.setSubnodeOwner(bytes32(0), RESOLVER_LABEL, address(this));
+    ens.setResolver(resolverNode, address(publicResolver));
+    publicResolver.setAddr(resolverNode, address(publicResolver));
+
+    // Create a FIFS registrar for the TLD
+    fifsRegistrar = new FIFSRegistrar(ens, namehash(bytes32(0), TLD_LABEL));
+
+    ens.setSubnodeOwner(bytes32(0), TLD_LABEL, address(fifsRegistrar));
+
+    // Construct a new reverse registrar and point it at the public resolver
+    reverseRegistrar = new ReverseRegistrar(ens, Resolver(address(publicResolver)));
+
+    // Set up the reverse registrar
+    ens.setSubnodeOwner(bytes32(0), REVERSE_REGISTRAR_LABEL, address(this));
+    ens.setSubnodeOwner(namehash(bytes32(0), REVERSE_REGISTRAR_LABEL), ADDR_LABEL, address(reverseRegistrar));
+  }
+}
+```
