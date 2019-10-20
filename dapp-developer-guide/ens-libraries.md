@@ -21,7 +21,7 @@ Otherwise, use ethereum-ens.
 
 #### Accessing smart contracts directly
 
-All the ENS smart contrats are [Truffle](https://truffleframework.com) projects and published as npm modules \(eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)\). If you want to access to functions none of the above libraries support you can install the smart contracts via npm.
+All the ENS smart contracts are [Truffle](https://truffleframework.com) projects and published as npm modules \(eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)\). If you want to access to functions none of the above libraries support you can install the smart contracts via npm.
 
 * [Resolver](https://www.npmjs.com/package/@ensdomains/resolver) = `Resolver.sol` contains all function names including the deprecated functions \(eg: `content`\)
 * [Permanent Registrar](https://www.npmjs.com/package/@ensdomains/ethregistrar)
