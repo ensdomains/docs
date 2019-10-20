@@ -16,7 +16,7 @@ The permanent registrar uses two transactions \(register and reveal\) to registe
 
 ### How long does it take to register a name using the permanent registrar?
 
-It takes less than 5 minutes to register a name, given current block times. No more waiting 5 days, like the interim auction required!
+It takes less than 5 minutes to register a name. No more waiting 5 days, like the interim auction required!
 
 ### Do we need to do anything to ensure continued use of existing ENS names?
 
@@ -26,7 +26,7 @@ In order to retain your name past May 4, 2020, you will need to renew your name 
 
 ### When can I migrate my name from the interim registrar to the permanent registrar?
 
-You can migrate a name registered using the interim registrar to the permanent registrar after permanent registrar deployment on May 4, 2019 and once your name is at least 28 days old.
+You can migrate a name registered using the interim registrar to the permanent registrar any time between now and May 3, 2020.
 
 ### What happens if I have several ENS names with different renewal dates?
 
@@ -34,7 +34,7 @@ You can renew any existing name at any time.
 
 ### What happens if I fail to migrate ENS names within the migration period?
 
-A: Anyone can take ownership of the name, though you can always get your locked ETH back by pressing “Release” button on the manager.
+Anyone can take ownership of the name, though you can always get your locked ETH back by pressing “Release” button on the manager.
 
 ### Do I have to renew my name to keep it?
 
@@ -52,7 +52,7 @@ There is no maximum limitation of the renewal duration but there is a minimum re
 
 You can renew your name at any time during the period you own it. Making sure you renew before the name expires will prevent someone else from registering the name.
 
-There will also be a 'grace period' of 30 days after your name expires. You can renew the name to retain ownership of it during the grace period.
+There is also a 'grace period' of 90 days after your name expires. You can renew the name to retain ownership of it during the grace period.
 
 ### How much will the yearly renewals cost?
 
@@ -60,7 +60,7 @@ Yearly renewals cost $5/year for names that are 7 characters or longer. Shorter 
 
 ### What happens to the renewal fees? Do I get them back?
 
-Rather than being locked and held, as in the interim registrar, renewal fees in the permanent registrar are fixed and spent. You will not get them back.
+Rather than being locked and held, as in the interim registrar, renewal fees in the permanent registrar are spent. You will not get them back.
 
 ### How will ENS team manage and spend the funds? Will there be a foundation or transparent oversight?
 
@@ -76,15 +76,15 @@ ENS Listing has [an interface for this here](https://enslisting.com/manage/home)
 
 ### Can I trade ENS domains on NFT exchanges?
 
-Once we've migrated to the new registrar, you'll be able to trade .eth domains as NFT tokens.
+Yes, .eth names are tradeable as NFT tokens.
 
 ### How can I transfer domains registered in the permanent registry to someone else?
 
-As of May 4, 2019, you will be able to do this using [our manager interface here](https://manager.ens.domains/), or using any tool with NFT support.
+You can do this using [our manager interface here](https://manager.ens.domains/), or using any tool with NFT support.
 
 ### Are subdomains handled the same way as before?
 
-Only the registration and renewal process for .eth domains is changing. Resolution, and management of other names remains the same.
+Only the registration and renewal process for .eth domains has changed. Resolution, and management of other names remains the same.
 
 ### What prohibits large scale domain grabbing besides registration fees?
 

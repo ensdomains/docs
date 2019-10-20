@@ -183,7 +183,7 @@ Alternately you may wish to deploy a test registrar and its dependencies with a 
 
 This can be done by deploying a new contract that creates and sets up all the other contracts in its constructor. The below code creates all the ENS contracts and assigns the eth TLD to the FIFS Registrar so that any eth domain may be registered in the unit tests.
 
-```solidity
+```text
 pragma solidity ^0.5.0;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
@@ -232,3 +232,4 @@ contract TestDependencies {
   }
 }
 ```
+
