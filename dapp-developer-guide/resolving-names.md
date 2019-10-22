@@ -75,7 +75,9 @@ Resolution without a library is a three step process:
 
 1. Normalise and hash the name - see [name processing](../contract-api-reference/name-processing.md) for details.
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
-3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
+3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
+
+Multicoin address resolution support is implemented with an additional overload on `addr()`.  To resolve a multicoin address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
 {% hint style="warning" %}
 If you are resolving addr\(\) records, you MUST treat a return value from the resolver of 0x00…00 as that record being unset. Failing to do so could result in users accidentally sending funds to the null address if they have configured a resolver in ENS, but not set the resolver record!
