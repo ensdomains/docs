@@ -15,6 +15,43 @@ To prevent frontrunning, the ETHRegistrarController requires a commit/reveal pro
 
 This process ensures that registrations cannot be frontrun unless the attacker is able to censor the user's transactions for at least 1 minute.
 
+## Examples
+
+### Name Registration
+
+The below example demonstrates the steps required to register a name.
+
+{% tabs %}
+{% tab title="web3.js" %}
+```javascript
+const controller = web3.eth.contract(controller_abi).at(controller_address);
+async function register(name, owner, duration) {
+  // Generate a random value to mask our commitment
+  const random = new Uint8Array(32);
+  crypto.getRandomValues(random);
+  const salt = "0x" + Array.from(random).map(b => b.toString(16).padStart(2, "0")).join("");
+  // Submit our commitment to the smart contract
+  const commitment = await controller.makeCommitment(name, owner, salt);
+  // Add 10% to account for price fluctuation; the difference is refunded.
+  const price = (await controller.rentPrice(name, duration)) * 1.1;
+  // Wait 60 seconds before registering
+  setTimeout(async () => {
+    // Submit our registration request
+    await controller.register(name, owner, duration, salt, {value: price});
+  }, 60000);
+}
+```
+
+{% hint style="info" %}
+For clarity, this example is written using async rather than callbacks. As a result, this example works in web3 1.0.x; note that it will not work in the web3 injected by MetaMask, as this presently is an older version lacking async support. 
+{% endhint %}
+{% endtab %}
+
+{% tab title="Second Tab" %}
+
+{% endtab %}
+{% endtabs %}
+
 ## Read Operations
 
 ### Get Minimum Commitment Age
