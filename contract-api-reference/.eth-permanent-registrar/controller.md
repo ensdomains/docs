@@ -46,10 +46,6 @@ async function register(name, owner, duration) {
 For clarity, this example is written using async rather than callbacks. As a result, this example works in web3 1.0.x; note that it will not work in the web3 injected by MetaMask, as this presently is an older version lacking async support. 
 {% endhint %}
 {% endtab %}
-
-{% tab title="Second Tab" %}
-
-{% endtab %}
 {% endtabs %}
 
 ## Read Operations
