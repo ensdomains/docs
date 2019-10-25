@@ -2,7 +2,7 @@
 description: The ENS registry.
 ---
 
-# ENS
+# Registry
 
 [Source](https://github.com/ensdomains/ens/blob/master/contracts/ENS.sol)
 

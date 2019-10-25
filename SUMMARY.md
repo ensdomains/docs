@@ -21,7 +21,7 @@
 ## Contract API Reference
 
 * [Name Processing](contract-api-reference/name-processing.md)
-* [ENS](contract-api-reference/ens.md)
+* [Registry](contract-api-reference/ens.md)
 * [ReverseRegistrar](contract-api-reference/reverseregistrar.md)
 * [TestRegistrar](contract-api-reference/testregistrar.md)
 * [PublicResolver](contract-api-reference/publicresolver.md)
