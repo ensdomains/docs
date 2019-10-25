@@ -17,6 +17,7 @@ The public resolver implements the following EIPs:
 * [EIP 619](https://github.com/ethereum/EIPs/pull/619) - SECP256k1 public keys \(`pubkey()`\).
 * [EIP 634](https://eips.ethereum.org/EIPS/eip-634) - Text records \(`text()`\).
 * [EIP 1577](https://eips.ethereum.org/EIPS/eip-1577) - Content hash support \(`contenthash()`\).
+* [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304) - Multicoin support  \(`addr()`\).
 
 {% hint style="warning" %}
 While the `PublicResolver`provides a convenient default implementation, many resolver implementations and versions exist. Callers **must not** assume that a domain uses the current version of the public resolver, or that all of the methods described here are present. To check if a resolver supports a feature, see [Check Interface Support](publicresolver.md#check-interface-support).
@@ -63,6 +64,44 @@ Emits the following event:
 ```text
 event AddrChanged(bytes32 indexed node, address a);
 ```
+
+## Get Blockchain Address
+
+```text
+function addr(bytes32 node, uint coinType) external view returns(bytes memory);
+```
+
+Returns the Blockchain address associated with the provided `node` and `cointType`, or 0 if none.
+
+This function has interface ID _0xf1cb7e06_.
+
+This function is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
+
+To convert the binary representation into the address, use `formatsByCoinType[0].encoder(binary)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
+
+## Set Blockchain Address
+
+```text
+function setAddr(bytes32 node, uint coinType, bytes calldata a) external;
+```
+
+Sets the blockchain address associated with the provided `node` and `coinType` to `addr`.
+
+
+`coinType` is the cryptocurrency coin type index from [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
+
+To convert the address into the binary representation , use `formatsByName['BTC'].decoder(text)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
+
+
+Only callable by the owner of `node`.
+
+
+Emits the following event:
+
+```text
+event AddressChanged(bytes32 indexed node, uint coinType, bytes newAddress);
+```
+
 
 ## Get Canonical Name
 
