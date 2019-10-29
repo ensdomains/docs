@@ -75,9 +75,15 @@ Returns the Blockchain address associated with the provided `node` and `cointTyp
 
 This function has interface ID _0xf1cb7e06_.
 
-This function is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
+This function is specified in [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
-To convert the binary representation into the address, use `formatsByCoinType[0].encoder(binary)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
+The return value is the cryptocurency address in its native binary format and each blockchain address has a different encoding and decoding method.
+
+For example, the Bitcoin address `1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa` base58check decodes to the 21 bytes `0062e907b15cbf27d5425399ebf6f0fb50ebb88f18` whereas the BNB address `bnb1grpf0955h0ykzq3ar5nmum7y6gdfl6lxfn46h2` Bech32 decodes to the binary representation `40c2979694bbc961023d1d27be6fc4d21a9febe6`.
+
+To convert the binary representation into the address, use `formatsByCoinType[SYMBOL].encoder(binary)` of [address-encoder](https://github.com/ensdomains/address-encoder).
+
+A zero-length string will be returned if the specified coin ID does not exist on the specified node.
 
 ## Set Blockchain Address
 
@@ -87,10 +93,9 @@ function setAddr(bytes32 node, uint coinType, bytes calldata a) external;
 
 Sets the blockchain address associated with the provided `node` and `coinType` to `addr`.
 
-
 `coinType` is the cryptocurrency coin type index from [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
 
-To convert the address into the binary representation , use `formatsByName['BTC'].decoder(text)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
+To convert the address into the binary representation , use `formatsByName[SYMBOL].decoder(text)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
 
 
 Only callable by the owner of `node`.
