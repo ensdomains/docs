@@ -17,6 +17,7 @@ The public resolver implements the following EIPs:
 * [EIP 619](https://github.com/ethereum/EIPs/pull/619) - SECP256k1 public keys \(`pubkey()`\).
 * [EIP 634](https://eips.ethereum.org/EIPS/eip-634) - Text records \(`text()`\).
 * [EIP 1577](https://eips.ethereum.org/EIPS/eip-1577) - Content hash support \(`contenthash()`\).
+* [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304) - Multicoin support  \(`addr()`\).
 
 {% hint style="warning" %}
 While the `PublicResolver`provides a convenient default implementation, many resolver implementations and versions exist. Callers **must not** assume that a domain uses the current version of the public resolver, or that all of the methods described here are present. To check if a resolver supports a feature, see [Check Interface Support](publicresolver.md#check-interface-support).
@@ -63,6 +64,49 @@ Emits the following event:
 ```text
 event AddrChanged(bytes32 indexed node, address a);
 ```
+
+## Get Blockchain Address
+
+```text
+function addr(bytes32 node, uint coinType) external view returns(bytes memory);
+```
+
+Returns the Blockchain address associated with the provided `node` and `cointType`, or 0 if none.
+
+This function has interface ID _0xf1cb7e06_.
+
+This function is specified in [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
+
+The return value is the cryptocurency address in its native binary format and each blockchain address has a different encoding and decoding method.
+
+For example, the Bitcoin address `1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa` base58check decodes to the 21 bytes `0062e907b15cbf27d5425399ebf6f0fb50ebb88f18` then scriptPubkey encodes to 25 bytes `76a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1888ac` whereas the BNB address `bnb1grpf0955h0ykzq3ar5nmum7y6gdfl6lxfn46h2` Bech32 decodes to the binary representation `40c2979694bbc961023d1d27be6fc4d21a9febe6`.
+
+To convert the binary representation into the address, use `formatsByCoinType[SYMBOL].encoder(binary)` of [address-encoder](https://github.com/ensdomains/address-encoder).
+
+A zero-length string will be returned if the specified coin ID does not exist on the specified node.
+
+## Set Blockchain Address
+
+```text
+function setAddr(bytes32 node, uint coinType, bytes calldata a) external;
+```
+
+Sets the blockchain address associated with the provided `node` and `coinType` to `addr`.
+
+`coinType` is the cryptocurrency coin type index from [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
+
+To convert the address into the binary representation , use `formatsByName[SYMBOL].decoder(text)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
+
+
+Only callable by the owner of `node`.
+
+
+Emits the following event:
+
+```text
+event AddressChanged(bytes32 indexed node, uint coinType, bytes newAddress);
+```
+
 
 ## Get Canonical Name
 
