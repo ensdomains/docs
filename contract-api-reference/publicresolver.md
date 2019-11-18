@@ -71,7 +71,7 @@ event AddrChanged(bytes32 indexed node, address a);
 function addr(bytes32 node, uint coinType) external view returns(bytes memory);
 ```
 
-Returns the Blockchain address associated with the provided `node` and `cointType`, or 0 if none.
+Returns the Blockchain address associated with the provided `node` and `coinType`, or 0 if none.
 
 This function has interface ID _0xf1cb7e06_.
 
