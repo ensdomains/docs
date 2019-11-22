@@ -32,6 +32,7 @@ async function register(name, owner, duration) {
   const salt = "0x" + Array.from(random).map(b => b.toString(16).padStart(2, "0")).join("");
   // Submit our commitment to the smart contract
   const commitment = await controller.makeCommitment(name, owner, salt);
+  const tx = await controller.commit(commitment);
   // Add 10% to account for price fluctuation; the difference is refunded.
   const price = (await controller.rentPrice(name, duration)) * 1.1;
   // Wait 60 seconds before registering

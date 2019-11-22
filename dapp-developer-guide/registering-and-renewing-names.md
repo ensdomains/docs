@@ -6,7 +6,7 @@ At present, there are no libraries for interacting with registrars; DApps wishin
 
 ## Deployed Registrars
 
-* .eth: Presently the Auction Registrar, though this will transition to the [Permanent Registrar](../contract-api-reference/.eth-permanent-registrar/) on May 4, 2019.
+* .eth: The [Permanent Registrar](../contract-api-reference/.eth-permanent-registrar/).
 * .test \(testnets only\): The [test registrar](../contract-api-reference/testregistrar.md).
 * .addr.reverse: The [reverse registrar](../contract-api-reference/reverseregistrar.md).
 

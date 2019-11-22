@@ -95,18 +95,15 @@ Sets the blockchain address associated with the provided `node` and `coinType` t
 
 `coinType` is the cryptocurrency coin type index from [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
 
-To convert the address into the binary representation , use `formatsByName[SYMBOL].decoder(text)` of  [address-encoder](https://github.com/ensdomains/address-encoder)
-
+To convert the address into the binary representation , use `formatsByName[SYMBOL].decoder(text)` of [address-encoder](https://github.com/ensdomains/address-encoder)
 
 Only callable by the owner of `node`.
-
 
 Emits the following event:
 
 ```text
 event AddressChanged(bytes32 indexed node, uint coinType, bytes newAddress);
 ```
-
 
 ## Get Canonical Name
 
