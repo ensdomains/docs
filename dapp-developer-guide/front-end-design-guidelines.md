@@ -38,7 +38,7 @@ When replacing Ethereum addresses with ENS names you should consider these facts
 {% endhint %}
 
 * **Design a truncated version of the ENS name:** ENS domains can be very long; besides not being character-limited, users can create an infinite number of subdomains and subdomains of subdomains. If you do show a truncated version of the name, you should provide a way to view the full name, such as expanding it on hover. 
-* **Not all ENS domains end with .eth**: ENS names normally end with .eth. However other Top Level Domains \(TLD\) are currently supported \(.xyz and .luxe\) and more will be in the future. Consider this if you are thinking about displaying the TLD part in the truncated view of long domains.
+* **Not all ENS domains end with .eth**: ENS names normally end with .eth. However other Top Level Domains \(TLD\) are currently supported \(.xyz, .luxe and .kred\) and more will be in the future. Consider this if you are thinking about displaying the TLD part in the truncated view of long domains.
 
 ### 1.2 - Always provide an option to see the Ethereum address associated with the ENS name
 
@@ -70,7 +70,7 @@ Input fields where a user is supposed to insert Ethereum addresses should also a
 
 Follow these guidelines to create the best experience: 
 
-* **Wait before resolving the ENS domain name**: Wait until the user has typed the last TLD, e.g. .eth, .xyz or .luxe before resolving the name. Alternatively wait until 0.2 - 1.0 seconds after the user has stopped typing in the input field \(avoid the [eager resolution problem](https://github.com/MetaMask/metamask-extension/issues/4380)\).  
+* **Wait before resolving the ENS domain name**: Wait until the user has typed the last TLD, e.g. .eth, .xyz, .luxe or .kred before resolving the name. Alternatively wait until 0.2 - 1.0 seconds after the user has stopped typing in the input field \(avoid the [eager resolution problem](https://github.com/MetaMask/metamask-extension/issues/4380)\).  
 * **Don't overwrite the input field with the Ethereum address:** Show the resolved ENS name near the input field instead. 
 * **Always display both the ENS name** _**and**_ **the Ethereum address together** : Do this after it has successfully been resolved and possibly add also a visual checksum following the suggestions in guideline 1.1.
 
