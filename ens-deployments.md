@@ -14,6 +14,7 @@ On mainnet, the following registrars are deployed:
 * .eth, using the auction registrar.
 * .xyz, via DNS integration
 * .luxe, via a [custom integration](http://join.luxe/) that allows any owner of a .luxe DNS name to use ENS.
+* .kred, via a [custom integration](http://domains.kred/) that synchs and changes to a .kred ENS token to DNS automatically.
 
 All test networks have the .test registrar deployed. This registrar permits anyone to instantly register a domain for testing purposes; these domains persist for 28 days.
 

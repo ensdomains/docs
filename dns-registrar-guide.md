@@ -40,9 +40,9 @@ Once you get to this stage, you can complete the rest from ENS manager. Simply p
 
 ### FAQ
 
-#### Why are only `.xyz` and `.luxe` domains supported?
+#### Why are only `.xyz`, `.luxe` and `kred` domains supported?
 
-Technically speaking, over 90% of domains can be supported. The initial support of `.xyz` and `.luxe` are deployed for each manually with the approval of our ENS root domain multisig holders but we are planning to deploy more generic contract to allow 1000s of domains without the manual approval. The more detailed explanation is [here](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38)
+Technically speaking, over 90% of domains can be supported. The initial support of `.xyz`, `.luxe` and `.kred` are deployed for each manually with the approval of our ENS root domain multisig holders but we are planning to deploy more generic contract to allow 1000s of domains without the manual approval. The more detailed explanation is [here](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38)
 
 #### If I own `myname.xyz` DNS name, can I claim for `myname.eth` ?
 
