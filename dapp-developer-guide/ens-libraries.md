@@ -52,7 +52,6 @@ import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
 ### Command-line
 
 * [ethereal](https://github.com/wealdtech/ethereal)
-* [ethers-ens](https://github.com/ethers-io/ethers-ens)
 
 ### Delphi
 
