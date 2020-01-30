@@ -8,6 +8,11 @@
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [DNS Registrar guide](dns-registrar-guide.md)
 
+## ENS Migration
+
+* [Guide for DApp Developers](ens-migration/guide-for-dapp-developers.md)
+* [Technical Description](ens-migration/technical-description.md)
+
 ## Dapp Developer Guide
 
 * [ENS Enabling your DApp](dapp-developer-guide/ens-enabling-your-dapp.md)
