@@ -18,10 +18,10 @@ In addition, the test networks also have a deployment of the .eth registrar for 
 
 Prior to the ENS migration, ENS registry addresses were:
 
-* Mainnet, at [0x314159265dd8dbb310642f98f50c066173c1259b](https://etherscan.io/address/0x314159265dd8dbb310642f98f50c066173c1259b#code).
-* Ropsten, at [0x112234455c3a32fd11230c42e7bccd4a84e02010](https://ropsten.etherscan.io/address/0x112234455c3a32fd11230c42e7bccd4a84e02010).
-* Rinkeby, at [0xe7410170f87102df0055eb195163a03b7f2bff4a](https://rinkeby.etherscan.io/address/0xe7410170f87102df0055eb195163a03b7f2bff4a).
-* Goerli, at [0x112234455c3a32fd11230c42e7bccd4a84e02010](https://goerli.etherscan.io/address/0x112234455c3a32fd11230c42e7bccd4a84e02010).
+* Mainnet, at [0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e](https://etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e#code).
+* Ropsten, at [0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e](https://ropsten.etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e).
+* Rinkeby, at [0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e](https://rinkeby.etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e).
+* Goerli, at [0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e](https://goerli.etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e).
 
 
 
