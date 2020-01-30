@@ -8,7 +8,7 @@ This vulnerability was reported via the Ethereum Foundation’s bug bounty proce
 
 Due to this, ENS is migrating to a new deployment. This document describes the exact technical steps being taken, along with a brief description of their implications for DApp authors and users.
 
-This document is intended to provide a detailed description for anyone interested in the low-level details of the migration. Understanding this is not necessary for most users or developers; for a description of the vulnerability and its effect on users, see our medium post; for a description of the migration steps for developers see the [guide for DApp developers](guide-for-dapp-developers.md).
+This document is intended to provide a detailed description for anyone interested in the low-level details of the migration. Understanding this is not necessary for most users or developers; for a description of the vulnerability and its effect on users, see [our medium post](https://medium.com/the-ethereum-name-service/ens-registry-migration-bug-fix-new-features-64379193a5a); for a description of the migration steps for developers see the [guide for DApp developers](guide-for-dapp-developers.md).
 
 ## New ENS deployment
 
