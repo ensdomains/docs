@@ -21,7 +21,7 @@ If your DApp or library allows users to register names, or to make changes to ex
 1. Simply switch over to the new registry address as soon as possible. When you do, users will be temporarily unable to make changes to their names using your app until their name is migrated between the 3rd and 5th of February.
 2. When making a change to a name, call the \`recordExists\` function on the new registry. If it returns \`true\`, send the modification transaction to the new registry; otherwise, send it to the old one. If you take this option, you should still prohibit transfers of .ETH ERC721 tokens; a transfer that happens as the name is migrated could result in confusing results for users.
 
-The migration process will automatically transfer .ETH second-level domains \(eg, foo.eth\) to the new registry and registrar. Subdomains \(eg, bar.foo.eth\) and other top level domains \(eg, foo.xyz\) will need to be migrated by their owners. For more details on this process, see [our documentation](technical-description.md), or reach out to us for help.
+The migration process will automatically transfer .ETH second-level domains \(eg, foo.eth\) to the new registry and registrar. Subdomains \(eg, bar.foo.eth\) and other top level domains \(eg, foo.xyz\) will need to be migrated by their owners. For more details on this process, see our documentation, or reach out to us for help.
 
 ### ENS Secondary Marketplaces
 

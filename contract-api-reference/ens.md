@@ -92,3 +92,43 @@ Emits the following event:
 event NewOwner(bytes32 indexed node, bytes32 indexed label, address owner);
 ```
 
+### Set Record
+
+```text
+function setRecord(bytes32 node, address owner, address resolver, uint64 ttl);
+```
+
+Sets the owner, resolver, and TTL for an ENS record in a single operation. This function is offered for convenience, and is exactly equivalent to calling `setResolver`, `setTTL` and `setOwner` in that order.
+
+### Set Subdomain Record
+
+```text
+function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl);
+```
+
+Sets the owner, resolver and TTL for a subdomain, creating it if necessary. This function is offered for convenience, and permits setting all three fields without first transferring ownership of the subdomain to the caller.
+
+### Set Approval
+
+```text
+function setApprovalForAll(address operator, bool approved);
+```
+
+Sets or clears an approval. Approved accounts can execute all ENS registry operations on behalf of the caller.
+
+### Check Approval
+
+```text
+function isApprovedForAll(address owner, address operator) external view returns (bool);
+```
+
+Returns true if `operator` is approved to make ENS registry operations on behalf of `owner`.
+
+### Check Record Existence
+
+```text
+function recordExists(bytes32 node) public view returns (bool);
+```
+
+Returns true if `node` exists in this ENS registry. This will return false for records that are in the legacy ENS registry but have not yet been migrated to the new one.
+
