@@ -47,7 +47,7 @@ A new instance of the .eth registrar \(BaseRegistrarImplementation\) has been de
 
 ### Migration Contract
 
-A new contract, designed specifically for the migration process, has been deployed and can be found at 0xA280c9d9482df1D80b7D9046774C8D84eC58B1f8. This contract is configured as a controller for the new .eth registrar, and will be set as the owner of .eth on the old registry once the migration process begins. Functions on this contract permit migrating .eth second-level names \(eg, foo.eth\) over from the old registry and registrar to the new ones.
+A new contract, designed specifically for the migration process, has been deployed and can be found at 0x6109DD117AA5486605FC85e040ab00163a75c662. This contract is configured as a controller for the new .eth registrar, and will be set as the owner of .eth on the old registry once the migration process begins. Functions on this contract permit migrating .eth second-level names \(eg, foo.eth\) over from the old registry and registrar to the new ones.
 
 Once activated, the ENS team will submit transactions to migrate over all presently registered .eth second-level domains to the new deployment. Registrations for all names will be automatically moved over to the new registrar, with the same expiry date as they had previously. Registry records will be automatically migrated over, unless they are controlled by a contract. Records controlled by contracts will not be automatically migrated in order to avoid breaking registrar contracts.
 
