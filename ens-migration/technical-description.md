@@ -21,7 +21,7 @@ A new version of the ENS registry has been deployed, and can be found at address
 * Addition of \`setRecord\` and \`setSubnodeRecord\` methods, which allow setting owner, resolver, and TTL in a single operation.
 * Addition of an approval mechanism based on ERC721, that allows users to delegate control over their names to another address, without having to transfer their names.
 
-The new registry implementation has been [audited by Sam Sun](https://gist.github.com/samczsun/2f0a2e266191042baada48c5407d8986), as well as being reviewed by Consensys dilligence; no issues were found by either auditor.
+The new registry implementation has been [audited by Sam Sun](https://gist.github.com/samczsun/2f0a2e266191042baada48c5407d8986), as well as reviewed by Consensys Diligence; no issues were found by either auditor.
 
 In order to make the migration as smooth as possible, the new registry has a fallback configured; if a record is not found in its own storage, it will look it up in the previous ENS registry contract. This fallback works only for read operations; if a record exists in the old registry but not yet in the new one, users cannot call functions to modify that record on the new registry.
 
