@@ -54,17 +54,15 @@ Handshake also has different goals, seeking to replace the global DNS root with 
 
 The DApp and the twitter bot have built in lists of common names, drawn from an English dictionary and Alexa’s list of top 1 million internet domain names. They use these lists to show you when common names are bought or renewed. We do this because if the app didn’t reveal these names, anyone with a little technical skill could find them out anyway, giving them an advantage over those who don’t have the capacity to build their own list and code to check names against it.
 
-### How was the minimum character length of 7 chosen?
+### What does it cost to register a .eth domain?
 
-By an informal survey of common ‘high value’ short names.
+Currently, registration costs are set at the following prices:
 
-We are currently working on making shorter names available. The timeline is as follows:
+* 5+ character names: $5 in ETH per year.
+* 4 character names: $160 in ETH per year.
+* 3 character names $640 in ETH per year.
 
- **July 11th - August 10th 2019**: Reservation process for existing projects desiring a 3-6 character name. More information available on [the reservations page](https://reserve.ens.domains/).
-
-**August 25th 2019**: Auctions for non-reserved 3-6 character names begin.
-
-**TBD:** General availability of 3-6 character names.
+3 and 4 character names have 'premium' pricing to reflect the small number of these names available.
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 

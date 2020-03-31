@@ -75,6 +75,5 @@ A new instance of the DNSSEC registrar has been deployed. The new instance retai
 
 ### Subdomain Registrar
 
-A new instance of the subdomain registrar has been deployed. This instance is largely unchanged from the previous version, except insofar as it supports migrating from that version to the new one.  
-
+A new instance of the subdomain registrar has been deployed. This instance is largely unchanged from the previous version, except insofar as it supports migrating from that version to the new one.
 

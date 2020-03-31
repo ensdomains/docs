@@ -20,8 +20,8 @@ Beyond these use cases, remember that the [ENS Public Resolver](../contract-api-
 ## 1. Replacing Ethereum Addresses with ENS Names
 
 {% hint style="warning" %}
-An ENS domain name \(as a substitute for an Ethereum Address\) **should only be shown** if the user has set a [Reverse Record](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) for their address, and if the reverse record \(address &gt; domain\) matches the [forward resolution](https://docs.ens.domains/dapp-developer-guide/resolving-names#looking-up-ethereum-addresses) \(domain &gt; address\).  
-  
+An ENS domain name \(as a substitute for an Ethereum Address\) **should only be shown** if the user has set a [Reverse Record](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) for their address, and if the reverse record \(address &gt; domain\) matches the [forward resolution](https://docs.ens.domains/dapp-developer-guide/resolving-names#looking-up-ethereum-addresses) \(domain &gt; address\).
+
 As a dApp developer you should therefore first check if the Reverse Record for a given address has been set by the user, and, because users can set the reverse record to be anything they want, even a domain they don't own or a random string, you should immediately after check that the resolved domain also resolves to the same address by performing the forward resolution. Read more [here](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) and in the _'other guidelines_' section further down.
 {% endhint %}
 
@@ -29,7 +29,7 @@ As a dApp developer you should therefore first check if the Reverse Record for a
 
 ![example of showing just the domain and the visual checksum](../.gitbook/assets/ensguidelines_01_onlydomain_2x.jpg)
 
-When replacing Ethereum addresses with ENS names you should consider these facts and best practices: 
+When replacing Ethereum addresses with ENS names you should consider these facts and best practices:
 
 * **Consider adding a visual checksum:** it is important to indicate to the user that a name is an ENS name that relates to an Ethereum address or other hash, rather than an http link. To do this, it is advisable to associate the ENS name with some form of visual checksum: [identicons, Blockies](http://discuss.conflux.network/t/comparing-the-efficacy-of-visual-checksums-identicons-vs-blockies-vs-custom/59) or other custom algorithmic representation of the address.
 
@@ -66,9 +66,9 @@ In some situations you might want to display both the ENS domain name _and_ the 
 
 ![when resolving an input show both the ENS name and the Address together](../.gitbook/assets/ensguidelines_02b_nameandaddressclear.jpg)
 
-Input fields where a user is supposed to insert Ethereum addresses should also accept and resolve ENS names. These inputs indicate that the user wants to interact with another user's Ethereum address or contract. 
+Input fields where a user is supposed to insert Ethereum addresses should also accept and resolve ENS names. These inputs indicate that the user wants to interact with another user's Ethereum address or contract.
 
-Follow these guidelines to create the best experience: 
+Follow these guidelines to create the best experience:
 
 * **Wait before resolving the ENS domain name**: Wait until the user has typed the last TLD, e.g. .eth, .xyz, .luxe or .kred before resolving the name. Alternatively wait until 0.2 - 1.0 seconds after the user has stopped typing in the input field \(avoid the [eager resolution problem](https://github.com/MetaMask/metamask-extension/issues/4380)\).  
 * **Don't overwrite the input field with the Ethereum address:** Show the resolved ENS name near the input field instead. 
@@ -78,10 +78,9 @@ Follow these guidelines to create the best experience:
 
 ### What to do if the Reverse Record doesn't correspond to the Forward Resolution?
 
-As mentioned before, user can set the [Reverse Record](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) to be anything they want, even a domain owned by another user or a completely random string. This is why, after retrieving the name written in the Reverse Record, a dApp developer should also check that it matches the forward resolution, which means the address that ENS domain name points to.   
+As mentioned before, user can set the [Reverse Record](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) to be anything they want, even a domain owned by another user or a completely random string. This is why, after retrieving the name written in the Reverse Record, a dApp developer should also check that it matches the forward resolution, which means the address that ENS domain name points to.  
 **If the two don't match, you MUST NOT show the human readable name and simply leave the plain Ethereum Address.** If you don't, users may be able to impersonate other users in your dApp.  
-The chapter on Reverse Resolution has [code](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) for you to do this check.  
-****
+The chapter on Reverse Resolution has [code](https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution) for you to do this check.
 
 ### Options for displaying usernames
 
@@ -89,11 +88,11 @@ The obvious choice is to use the user's ENS name as a username. You can do this 
 
 ### **Caching and Updating ENS Names**
 
-If your dApp needs to display many Ethereum Addresses or ENS Names in the UI, you can also consider **caching** the ENS Name after it has been resolved \(and verified\) or after the user has added the name in an input field.   
-  
-Your **optimistic UI** can safely display the names from cache **in all non-risky situations**, in which your user for example is simply browsing, but doesn't need to act or make decisions, especially risky ones, based on the information displayed.   
-However, **in all** _**risky**_ **situations** \(eg transferring ETH, tokens or other value\), or when the user is interacting with another ENS Name / Ethereum Address, you should **perform a direct live resolution** and get the most up to date information from the ENS Registry.  
-  
+If your dApp needs to display many Ethereum Addresses or ENS Names in the UI, you can also consider **caching** the ENS Name after it has been resolved \(and verified\) or after the user has added the name in an input field.
+
+Your **optimistic UI** can safely display the names from cache **in all non-risky situations**, in which your user for example is simply browsing, but doesn't need to act or make decisions, especially risky ones, based on the information displayed.  
+However, **in all** _**risky**_ **situations** \(eg transferring ETH, tokens or other value\), or when the user is interacting with another ENS Name / Ethereum Address, you should **perform a direct live resolution** and get the most up to date information from the ENS Registry.
+
 Also consider that users can change their information in the ENS registry at any time so you should **periodically validate the information you cached**. For this you can also subscribe to certain **Events** made available by the contracts \(especially [AddrChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-ethereum-address), and [NameChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-canonical-name)\).
 
 \*\*\*\*
@@ -103,10 +102,8 @@ Also consider that users can change their information in the ENS registry at any
 Even when ENS domain names are not available, [research](https://medium.com/@lyricalpolymath/web3designdecisionframework-e84075816515) [shows](https://medium.com/@lyricalpolymath/web3-design-principles-f21db2f240c1) that there are some good practices to follow when displaying Ethereum addresses in dApps.
 
 * **Always show the initial ' 0x '** to indicate it's an address. 
-* When displaying the name in shorthand versions, **show the first 4 and last 4 characters of the address**. This is not a security requirement as vanity addresses can be spoofed relatively simply; this is a good practice because ****some users check the beginning of the name and others check the end of the name. Also, four is the highest number of elements that our mind can easily chunk, parse and remember well. 
+* When displaying the name in shorthand versions, **show the first 4 and last 4 characters of the address**. This is not a security requirement as vanity addresses can be spoofed relatively simply; this is a good practice because _\*\*_some users check the beginning of the name and others check the end of the name. Also, four is the highest number of elements that our mind can easily chunk, parse and remember well. 
 * **Always provide a way to display the full Ethereum address.** Use the same pop-up component that you would use to display ENS domain names or a tooltip style.
-
-
 
 ![decentralandUI Tooltip showing the full Address](../.gitbook/assets/ensguidelines_03_expanded2simple_justatooltip2.jpg)
 
@@ -120,6 +117,4 @@ Other guidelines previously mentioned also apply for simple Ethereum addresses:
 * **ENS Badge** \(coming soon\) 
 * **Aragon-UI** - [Address Badge component](https://github.com/aragon/design/issues/3) \([Design Files](https://github.com/aragon/design) / [code](https://github.com/aragon/aragon-ui/tree/master/src/components/Badge)\)
 * **Decentraland-UI** - [address Tooltip](https://ui.decentraland.org/?selectedKind=Address&selectedStory=Tooltip&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Fstories%2Fstories-panel) \(not ENS specific\)
-
-
 

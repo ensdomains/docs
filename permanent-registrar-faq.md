@@ -20,13 +20,9 @@ It takes less than 5 minutes to register a name. No more waiting 5 days, like th
 
 ### Do we need to do anything to ensure continued use of existing ENS names?
 
-If you have a .eth name, you will have a year \(May 4 2019 to May 4 2020\) to migrate your name to the new registrar. Migrated names are renewed for free from the date of migration until May 4, 2020.
+Names that were registered under the legacy registrar expire on May 4, 2020. There is a 90 day grace period during which you can renew the name to retain control of it, extending the effective expiration to August 3rd 2020.
 
-In order to retain your name past May 4, 2020, you will need to renew your name at a cost of $5/name/year. If you don't migrate or renew, the name will become available for registration by others.
-
-### When can I migrate my name from the interim registrar to the permanent registrar?
-
-You can migrate a name registered using the interim registrar to the permanent registrar any time between now and May 3, 2020.
+In order to retain your name past May 4, 2020, you will need to renew your name at a cost of $5/name/year. If you don't renew your name, the name will become available for registration by others.
 
 ### What happens if I have several ENS names with different renewal dates?
 
@@ -56,7 +52,7 @@ There is also a 'grace period' of 90 days after your name expires. You can renew
 
 ### How much will the yearly renewals cost?
 
-Yearly renewals cost $5/year for names that are 7 characters or longer. Shorter names will renew at higher prices once they become available. Fees are paid in ETH. The ETH/USD exchange rate is set by the DAI USD oracle.
+Yearly renewals cost $5/year for names that are 5 characters or longer. 4 character names cost $160/year, and 3 character names cost $640/year. Fees are paid in ETH. The ETH/USD exchange rate is set by the DAI USD oracle.
 
 ### What happens to the renewal fees? Do I get them back?
 
