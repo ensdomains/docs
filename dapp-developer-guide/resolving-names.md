@@ -85,7 +85,7 @@ If you are resolving addr\(\) records, you MUST treat a return value from the re
 
 ## Looking up other resources
 
-ENS supports many types of resources besides Ethereum addresses, including content hashes for data stored in Swarm or IPFS, contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
+ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes for data stored in Swarm or IPFS, contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
 
 Resolving these content types without a library follows the same 3-step process detailed above; simply call the relevant method on the resolver in step 3 instead of `addr()`.
 
