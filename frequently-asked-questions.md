@@ -6,13 +6,13 @@
 
 Hashes are used for two main reasons. First, to prevent trivial enumeration of the entire set of domains, which helps preserve the privacy of names \(for instance, so you can register the domain for your startup before you publicly launch\). Second, because hashes provide a fixed length identifier that can easily be passed around between contracts with fixed overhead and no issues around passing around variable-length strings.
 
-### Which wallets and DApps support ENS so far?
+### Which wallets and dapps support ENS so far?
 
 A partial list can be seen on [our homepage](https://ens.domains/).
 
 ### Once I own a name, can I create my own subdomains?
 
-Yes! You can create whatever subdomains you wish, and assign ownership of them to other people if you desire. You can even set up your own registrar for your domain!
+Yes! You can create whatever subdomains you wish and assign ownership of them to other people if you desire. You can even set up your own registrar for your domain!
 
 ### Can I change the address my name points to after I’ve bought it?
 
@@ -36,11 +36,11 @@ Since the owner of a node can change ownership of any subnode, the owner of the 
 
 Since the ENS contracts only deal with hashes, they have no direct way to enforce limits on what can be registered; character length restrictions are implemented by allowing users to challenge a short name by providing its preimage to prove it’s too short.
 
-This means that you can in theory register both ‘foo.eth’ and ‘FOO.eth’, or even &lt;picture of my cat&gt;.eth. However, resolvers such as browsers and wallets should apply the nameprep algorithm to any names users enter before resolving; as a result, names that are not valid outputs of nameprep will not be resolvable by standard resolvers, making them effectively useless. DApps that assist users with registering names should prevent users from registering unresolvable names by using nameprep to preprocess names being requested for registration.
+This means that you can in theory register both ‘foo.eth’ and ‘FOO.eth’, or even &lt;picture of my cat&gt;.eth. However, resolvers such as browsers and wallets should apply the nameprep algorithm to any names users enter before resolving; as a result, names that are not valid outputs of nameprep will not be resolvable by standard resolvers, making them effectively useless. Dapps that assist users with registering names should prevent users from registering unresolvable names by using nameprep to preprocess names being requested for registration.
 
-### Nameprep isn’t enforced in the ENS system, is this a security/spoofing/phishing concern?
+### Nameprep isn’t enforced in the ENS system. Is this a security/spoofing/phishing concern?
 
-It’s not enforced by the ENS contracts, but as described, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
+It’s not enforced by the ENS contracts, but, as described, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
 
 ### What are the differences between ENS and other naming services such as Namecoin, Blockstack, and Handshake?
 
@@ -50,21 +50,20 @@ Handshake also has different goals, seeking to replace the global DNS root with 
 
 ## About the .eth Permanent Registrar
 
-### How do the DApp and the twitter bot know what names people are buying?
+### How do the dapp and the Twitter bot know what names people are buying?
 
-The DApp and the twitter bot have built in lists of common names, drawn from an English dictionary and Alexa’s list of top 1 million internet domain names. They use these lists to show you when common names are bought or renewed. We do this because if the app didn’t reveal these names, anyone with a little technical skill could find them out anyway, giving them an advantage over those who don’t have the capacity to build their own list and code to check names against it.
+The dapp and the twitter bot have built in lists of common names, drawn from an English dictionary and Alexa’s list of top 1 million internet domain names. They use these lists to show you when common names are bought or renewed. We do this because if the app didn’t reveal these names, anyone with a little technical skill could find them out anyway, giving them an advantage over those who don’t have the capacity to build their own list and code to check names against it.
 
 ### What does it cost to register a .eth domain?
 
 Currently, registration costs are set at the following prices:
 
-* 5+ character names: $5 in ETH per year.
-* 4 character names: $160 in ETH per year.
-* 3 character names $640 in ETH per year.
+* 5+ character .eth names: $5 in ETH per year.
+* 4 character .eth names: $160 in ETH per year.
+* 3 character .eth names $640 in ETH per year.
 
 3 and 4 character names have 'premium' pricing to reflect the small number of these names available.
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
 The permanent registrar is structured such that names, once issued, cannot be revoked so long as an active registration is maintained.
-
