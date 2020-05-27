@@ -1,8 +1,8 @@
 # Introduction
 
-ENS is the Ethereum Name Service, a distributed, open, and extensible naming system based on the Ethereum blockchain.
+The Ethereum Name Service (ENS) is a distributed, open, and extensible naming system based on the Ethereum blockchain.
 
-ENS’s job is to map human-readable names like ‘alice.eth’ to machine-readable identifiers such as Ethereum addresses, content hashes, and metadata. ENS also supports ‘reverse resolution’, making it possible to associate metadata such as canonical names or interface descriptions with Ethereum addresses.
+ENS’s job is to map human-readable names like ‘alice.eth’ to machine-readable identifiers such as Ethereum addresses, other cryptocurrency addresses, content hashes, and metadata. ENS also supports ‘reverse resolution’, making it possible to associate metadata such as canonical names or interface descriptions with Ethereum addresses.
 
 ENS has similar goals to DNS, the Internet’s Domain Name Service, but has significantly different architecture, due to the capabilities and constraints provided by the Ethereum blockchain. Like DNS, ENS operates on a system of dot-separated hierarchical names called domains, with the owner of a domain having full control over subdomains.
 
@@ -10,9 +10,9 @@ Top-level domains, like ‘.eth’ and ‘.test’ are owned by smart contracts 
 
 Because of the hierarchal nature of ENS, anyone who owns a domain at any level may configure subdomains - for themselves or others - as desired. For instance, if Alice owns 'alice.eth', she can create 'pay.alice.eth' and configure it as she wishes.
 
-ENS is deployed on the Ethereum main network, and on several test networks. If you use a library such as the [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
+ENS is deployed on the Ethereum main network and on several test networks. If you use a library such as the [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
 
-You can try ENS out for yourself now by using the [ENS manager](https://manager.ens.domains/), or by using any of the many ENS Enabled applications on [our homepage](https://ens.domains/).
+You can try ENS out for yourself now by using the [ENS manager](https://app.ens.domains/), or by using any of the many ENS enabled applications on [our homepage](https://ens.domains/).
 
 ## ENS Architecture
 
@@ -38,7 +38,7 @@ The ENS registry is deliberately straightforward and exists only to map from a n
 
 Resolvers are responsible for the actual process of translating names into addresses. Any contract that implements the relevant standards may act as a resolver in ENS. General-purpose resolver implementations are offered for users whose requirements are straightforward, such as serving an infrequently changed address for a name.
 
-Each record type - Ethereum address, Swarm content hash, and so forth - defines a method or methods that a resolver must implement in order to provide records of that kind. New record types may be defined at any time via the EIP standardization process, with no need to make changes to the ENS registry or to existing resolvers in order to support them.
+Each record type - cryptocurrency address, IPFS content hash, and so forth - defines a method or methods that a resolver must implement in order to provide records of that kind. New record types may be defined at any time via the EIP standardization process, with no need to make changes to the ENS registry or to existing resolvers in order to support them.
 
 Resolving a name in ENS is a two-step process: First, ask the registry what resolver is responsible for the name, and second, ask that resolver for the answer to your query.
 
@@ -58,11 +58,11 @@ For details on how namehash and normalization works, see the developer documenta
 
 ## Getting Started
 
-ENS has documentation for a variety of audiences, including DApp developers and contract developers, as well as reference documentation. 
+ENS has documentation for a variety of audiences, including dapp developers and contract developers, as well as reference documentation. 
 
-#### I'm a DApp developer and want to add ENS support to my DApp
+#### I'm a dapp developer and want to add ENS support to my dapp
 
-Check out the DApp developer guide, starting with [ENS Enabling your DApp](dapp-developer-guide/ens-enabling-your-dapp.md). You'll want to choose one of the many available [ENS Libraries](dapp-developer-guide/ens-libraries.md) to get started working with ENS.
+Check out the dapp developer guide, starting with [ENS Enabling your Dapp](dapp-developer-guide/ens-enabling-your-dapp.md). You'll want to choose one of the many available [ENS Libraries](dapp-developer-guide/ens-libraries.md) to get started working with ENS.
 
 #### I'm a contract developer and want to interact with ENS from my contract code
 
