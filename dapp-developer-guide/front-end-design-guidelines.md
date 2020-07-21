@@ -38,7 +38,7 @@ When replacing Ethereum addresses with ENS names you should consider these facts
 {% endhint %}
 
 * **Design a truncated version of the ENS name:** ENS names can be very long; besides not being character-limited, users can create an infinite number of subdomains and subdomains of subdomains. If you do show a truncated version of the name, you should provide a way to view the full name, such as expanding it on hover. 
-* **Not all ENS names end with .eth**: ENS names normally end with .eth. However other Top Level Domains \(TLD\) are currently supported \(.xyz, .luxe and .kred\) and more will be in the future. Consider this if you are thinking about displaying the TLD part in the truncated view of long names.
+* **Not all ENS names end with .eth**: ENS names normally end with .eth. However other top-level domains \(TLD\) are currently supported \(.xyz, .luxe, .kred, .art, .club\) and more will be in the future. Consider this if you are thinking about displaying the TLD part in the truncated view of long names.
 
 ### 1.2 - Always provide an option to see the Ethereum address associated with the ENS name
 
