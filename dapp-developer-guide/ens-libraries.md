@@ -4,20 +4,23 @@ ENS support is available in many popular languages. If you know of a library tha
 
 ### Javascript
 
-* [ethereum-ens](https://www.npmjs.com/package/ethereum-ens), maintained by the ENS developers
-* [ethjs-ens](https://www.npmjs.com/package/ethjs-ens)
+* [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs), maintained by the ENS developers
+* [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) (deprecated)
+* [react-ens-address](https://github.com/ensdomains/react-ens-address)
 * [ethers.js](https://github.com/ethers-io/ethers.js)
 * [web3.js](https://web3js.readthedocs.io/en/1.0/web3-eth-ens.html)
+* [embark.io](https://framework.embarklabs.io/docs/naming_configuration.html)
+* [waffle.io](https://ethereum-waffle.readthedocs.io/en/latest/ens.html)
 
 #### Which Javascript library should I use?
 
-If you are already using web3.js, and do not require functionality such as creating subdomains, transferring ownership, or updating resolvers, use web3.js's ENS support.
+If you are already using web3.js or ethers.js, and do not require functionality such as creating subdomains, transferring ownership, or updating resolvers, use built in ENS features of these libraries.
 
-If you are already using ethjs, and only need to do forward and reverse resolution of ENS names, use ethjs's ENS support.
+If you are using React and only need to do forward and reverse resolution of ENS names with built in UI, use react-ens-address.
 
-If you are already using ethers.js, and only need to do forward and reverse resolution of ENNS names, use ethers.js's ENS support.
+If you want to have ENS instance deployed into your dev environment, you may want to use emabark.io or waffle.io which allows you to configure/deploy ENS registry in your Ethereum test instance.
 
-Otherwise, use ethereum-ens.
+Otherwise, use ensjs.
 
 #### Accessing smart contracts directly
 

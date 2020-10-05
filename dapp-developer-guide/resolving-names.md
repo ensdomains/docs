@@ -5,9 +5,9 @@
 The simplest and most frequently used function in ENS is resolving a name. Names can have many types of data associated with them; the most common is an Ethereum address. Resolving a name to an Ethereum address using a library is simple:
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
-var address = await ens.resolver('alice.eth').addr();
+var address = await ens.name('resolver.eth').getAddress();
 ```
 {% endtab %}
 
@@ -102,12 +102,12 @@ ENS does not enforce the accuracy of reverse records - for instance, anyone may 
 Most libraries provide functionality for doing reverse resolution:
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
 const address = '0x1234...';
-var name = await ens.reverse(address).name()
+var name = await ens.getName(address)
 // Check to be sure the reverse record is correct.
-if(address != await ens.resolver(name).addr()) {
+if(address != await ens.name(name).getAddress()) {
   name = null;
 }
 ```
