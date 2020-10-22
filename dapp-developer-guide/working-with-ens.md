@@ -2,15 +2,14 @@
 
 Before you can begin interacting with ENS, you will need to obtain a reference to the ENS registry. How you do this depends on the library you are using.
 
-Example code for the Javascript-based APIs \(ethereum-ens, web3.js, ethjs-ens, and ethers.js\) here expect that they are being run inside a DApp browser, such as Chrome with [metamask installed](https://metamask.github.io/metamask-docs/Main_Concepts/Getting_Started), which exposes the `ethereum` object.
+Example code for the Javascript-based APIs \(ensjs, web3.js, ethjs-ens, and ethers.js\) here expect that they are being run inside a DApp browser, such as Chrome with [metamask installed](https://metamask.github.io/metamask-docs/Main_Concepts/Getting_Started), which exposes the `ethereum` object.
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
-var ENS = require('ethereum-ens');
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
-var accounts = ethereum.enable();
-var ens = new ENS(ethereum);
+const ens = new ENS({ provider, ensAddress: getEnsAddress('1') })
 ```
 {% endtab %}
 

@@ -10,7 +10,7 @@ Top-level domains, like ‘.eth’ and ‘.test’ are owned by smart contracts 
 
 Because of the hierarchal nature of ENS, anyone who owns a domain at any level may configure subdomains - for themselves or others - as desired. For instance, if Alice owns 'alice.eth', she can create 'pay.alice.eth' and configure it as she wishes.
 
-ENS is deployed on the Ethereum main network and on several test networks. If you use a library such as the [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
+ENS is deployed on the Ethereum main network and on several test networks. If you use a library such as the [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
 
 You can try ENS out for yourself now by using the [ENS manager](https://app.ens.domains/), or by using any of the many ENS enabled applications on [our homepage](https://ens.domains/).
 

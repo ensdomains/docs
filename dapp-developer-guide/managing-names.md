@@ -5,9 +5,9 @@
 Each name in ENS has an owner. This account or contract is the only one that may make changes to the name in the ENS registry. The owner of a name can transfer ownership to any other account.
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
-await ens.setOwner('alice.eth', '0x1234...', {from: ...});
+await ens.name('alice.eth').setOwner('0x1234...');
 ```
 {% endtab %}
 
@@ -30,9 +30,9 @@ ns.setup_owner('alice.eth', '0x1234...')
 The owner of any domain can configure subdomains as desired. This is achieved by creating a subdomain and setting its owner to the desired address - this can be the same as the owner of the parent domain, or any other address.
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```text
-await ens.setSubnodeOwner('iam.alice.eth', '0x1234...', {from: ...});
+await ens.name('alice.eth').createSubdomain('iam');
 ```
 {% endtab %}
 
@@ -65,9 +65,9 @@ Before a newly created domain or subdomain can be used, a resolver address must 
 Most commonly, names are set to use a 'standard' resolver called the public resolver, which provides commonly-used functionality, but anyone may write and deploy their own special-purpose resolver; see the resolver interface definition for details.
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```text
-await ens.setResolver('iam.alice.eth', '0x1234...', {from: ...});
+await ens.name('iam.alice.eth').setResolver('0x1234');
 ```
 
 On mainnet and the Kovan test network, 'resolver.eth' is configured to point to the latest deployed version of the public resolver, making it possible to easily configure a name to use the public resolver:
@@ -101,9 +101,9 @@ Each resolver may specify its own mechanism for updating records, but a standard
 ### Updating the Address Record
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
-await ens.resolver('iam.alice.eth').setAddr('0x1234...', {from: ...});
+await ens.name('iam.alice.eth').setAddr('ETH', '0x1234...');
 ```
 {% endtab %}
 
@@ -130,12 +130,12 @@ ns.setup_address('iam.alice.eth', '0x1234...')
 
 ### Updating Other Records
 
-Some libraries - presently only ethereum-ens, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set or update a text record:
+Some libraries - presently only ensjs, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set or update a text record:
 
 {% tabs %}
-{% tab title="ethereum-ens" %}
+{% tab title="ensjs" %}
 ```javascript
-ens.resolver('iam.alice.eth').setText('test', 'Test record', {from: ...});
+ens.name('iam.alice.eth').setText('test', 'Test record');
 ```
 {% endtab %}
 
