@@ -49,7 +49,7 @@ Currently, all the subdomains nor non `.eth` domains are not NFT, unless the dom
 
 1. Create a registrar contract as ERC721 compliant
 2. Set ENS registry address (mostly when you deploy the registrar)
-3. Create `registry` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
+3. Create `register` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
 
 
 ```sol
@@ -61,7 +61,7 @@ contract DCLRegistrar is ERC721Full, Ownable {
         updateRegistry(_registry);
     }
 
-    function _register(
+    function register(
         string memory _subdomain,
         bytes32 subdomainLabelHash,
         address _beneficiary,
