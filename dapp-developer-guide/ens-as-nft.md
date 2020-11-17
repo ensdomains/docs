@@ -6,7 +6,7 @@ When ENS .eth registrar migrated in May 2019, the registrar became an [ERC721](h
 
 The tokenId of ENS name is simply the uint256 representation of the hash of the label (`vitalik` for `vitalik.eth`).
 
-```
+```js
 const name = 'vitalik'
 const labelHash = web3.utils.sha3('vitalik')
 const tokenId = web3.utils.toBN(labelHash).toString()
@@ -21,7 +21,7 @@ Unlike deriving tokenId, deriving ENS name from tokenId is not as easy. This is 
 Our recommended way is to query via https://thegraph.com ENS subgraph. The graph decodes the hash to name as it indexes.
 The example code to query is as follows.
 
-```
+```js
 const Web3 = require('web3')
 const gr = require('graphql-request')
 const { request, gql } = gr
@@ -46,9 +46,11 @@ If you prefer not to rely on a third party like TheGraph, the team open-sourced 
 
 Currently, all the subdomains nor non `.eth` domains are not NFT, unless the domain registrar itself supports NFT such as (`dcl.eth`, and `.kred`). If you want to turn all subdomains which you own, you have to create a registrar 
 
-- 1. Create a registrar contract as ERC721 compliant
-- 2. Set ENS registry address (mostly when you deploy the registrar)
-- 3. Create `registry` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
+
+1. Create a registrar contract as ERC721 compliant
+2. Set ENS registry address (mostly when you deploy the registrar)
+3. Create `registry` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
+
 
 ```sol
 contract DCLRegistrar is ERC721Full, Ownable {
