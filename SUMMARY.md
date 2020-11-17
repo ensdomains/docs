@@ -22,6 +22,7 @@
 * [Managing Names](dapp-developer-guide/managing-names.md)
 * [Registering & Renewing Names](dapp-developer-guide/registering-and-renewing-names.md)
 * [ENS Front-End Design Guidelines](dapp-developer-guide/front-end-design-guidelines.md)
+* [ENS as NFT](dapp-developer-guide/ens-as-nft.md)
 
 ## Contract API Reference
 
