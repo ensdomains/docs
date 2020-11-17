@@ -46,6 +46,7 @@ If you prefer not to rely on a third party like TheGraph, the team open-sourced 
 
 Currently, all the subdomains nor non `.eth` domains are not NFT, unless the domain registrar itself supports NFT such as (`dcl.eth`, and `.kred`). If you want to turn all subdomains which you own, you have to create a registrar 
 
+
 1. Create a registrar contract as ERC721 compliant
 2. Set ENS registry address (mostly when you deploy the registrar)
 3. Create `registry` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
