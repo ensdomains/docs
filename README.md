@@ -1,6 +1,6 @@
 # Introduction
 
-The Ethereum Name Service (ENS) is a distributed, open, and extensible naming system based on the Ethereum blockchain.
+The Ethereum Name Service \(ENS\) is a distributed, open, and extensible naming system based on the Ethereum blockchain.
 
 ENS’s job is to map human-readable names like ‘alice.eth’ to machine-readable identifiers such as Ethereum addresses, other cryptocurrency addresses, content hashes, and metadata. ENS also supports ‘reverse resolution’, making it possible to associate metadata such as canonical names or interface descriptions with Ethereum addresses.
 
@@ -58,7 +58,7 @@ For details on how namehash and normalization works, see the developer documenta
 
 ## Getting Started
 
-ENS has documentation for a variety of audiences, including dapp developers and contract developers, as well as reference documentation. 
+ENS has documentation for a variety of audiences, including dapp developers and contract developers, as well as reference documentation.
 
 #### I'm a dapp developer and want to add ENS support to my dapp
 

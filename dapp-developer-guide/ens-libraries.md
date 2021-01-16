@@ -5,7 +5,7 @@ ENS support is available in many popular languages. If you know of a library tha
 ### Javascript
 
 * [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs), maintained by the ENS developers
-* [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) (deprecated)
+* [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) \(deprecated\)
 * [react-ens-address](https://github.com/ensdomains/react-ens-address)
 * [ethers.js](https://github.com/ethers-io/ethers.js)
 * [web3.js](https://web3js.readthedocs.io/en/1.0/web3-eth-ens.html)

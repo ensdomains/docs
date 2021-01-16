@@ -1,7 +1,5 @@
 # Terminology
 
-
-
 * _Controller_: The account that may edit the records of a name. The Controller may be changed by the Registrant or Controller.
 * _Label_: An individual component of a name, such as 'alice'.
 * _Labelhash_: The keccak256 hash of an individual label.

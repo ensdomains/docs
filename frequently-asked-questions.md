@@ -28,9 +28,13 @@ In addition to that, we are deploying support for importing DNS domains from the
 
 The root node is presently owned by a multisig contract, with keys held by trustworthy individuals in the Ethereum community. We expect that this will be very hands-off, with the root ownership only used to effect administrative changes, such as the introduction of a new TLD, or to recover from an emergency such as a critical vulnerability in a TLD registrar.
 
-In the long term, the plan is to define a governance process for operations on the root node, and transfer ownership to a contract that enforces this process.
+Since the owner of a node can change ownership of any subnode, the owner of the root can change any node in the ENS tree. This means that the keyholders can replace the contracts that govern issuing and managing domains \(on .eth or any other top-level domain\), giving them ultimate control over the structure of the ENS system and the names registered in it.
 
-Since the owner of a node can change ownership of any subnode, the owner of the root can change any node in the ENS tree.
+To reduce this risk, the keyholders are drawn from respected members of the community, and with the exception of Nick Johnson, founder of ENS, are unaffiliated with ENS. We ask and expect them to exercise their individual judgement acting in the interests of the ENS community, rather than rubber-stamping requests made to them by ENS developers.
+
+Over time, we plan to reduce and decentralise human control over the system. A first step towards that is disabling the ENS keyholders' ability to replace the .eth registrar contract, which would mean that even the keyholders could no longer affect the ownership of existing .eth domains. We plan to do this once the registrar contract has had an additional audit to assure us that there are no critical bugs in it.
+
+Other powers held by the ENS root, such as those to set pricing and renewal conditions for domains, or to create and assign additional top-level domains, will be decentralised as robust systems become available to permit doing so.
 
 ### What about foreign characters? What about upper case letters? Is any unicode character valid?
 
@@ -66,4 +70,5 @@ Currently, registration costs are set at the following prices:
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
-The permanent registrar is structured such that names, once issued, cannot be revoked so long as an active registration is maintained.
+The permanent registrar is structured such that names, once issued, cannot be revoked so long as an active registration is maintained. At present, the root keyholders can replace the registrar contract with one that implements different rules; this is a capability we intend to revoke in the future, once we are certain that the permanent registrar contract is safe and free of major bugs.
+

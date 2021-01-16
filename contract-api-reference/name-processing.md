@@ -53,9 +53,9 @@ Namehash is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
 
 ### How do I find the labelhash/namehash of a name?
 
-In some cases, you may need to know the hash of the name stored in ENS. labelhash means hash of the label of the domain (eg: `makoto` for `makoto.eth`) and namehash is the hash which combines labelhashes. We are currently working to include this information in our Manager app. In the meantime, you can query the information via https://thegraph.com/explorer/subgraph/ensdomains/ens with the following query.
- 
-```
+In some cases, you may need to know the hash of the name stored in ENS. labelhash means hash of the label of the domain \(eg: `makoto` for `makoto.eth`\) and namehash is the hash which combines labelhashes. We are currently working to include this information in our Manager app. In the meantime, you can query the information via [https://thegraph.com/explorer/subgraph/ensdomains/ens](https://thegraph.com/explorer/subgraph/ensdomains/ens) with the following query.
+
+```text
 {
   domains(where: {name:"vitalik.eth"}) {
     id
@@ -64,8 +64,7 @@ In some cases, you may need to know the hash of the name stored in ENS. labelhas
     labelhash
   }
 }
-``` 
-
+```
 
 ## Handling of Ambiguous Names
 
