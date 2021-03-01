@@ -68,7 +68,7 @@ It's ultimately up to the keyholders to allocate the funds. We hope they will fu
 
 ### Where can I manage all my ENS names?
 
-ENS Listing has [an interface for this here](https://enslisting.com/manage/home). We will be adding support for this to our manager Dapp soon.
+You can manage your ENS names by viewing your account in the [manager interface](https://manager.ens.domains/).
 
 ### Can I trade ENS domains on NFT exchanges?
 
@@ -89,4 +89,3 @@ The cost of doing this is the only limitation in place.
 ### What is a controller?
 
 This is a new concept introduced by the permanent registrar. The domain name owner can set different address as a controller to delegate the management of domain so that a non-owner can change the name’s resolver and set its address, etc.
-
