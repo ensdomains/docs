@@ -18,7 +18,7 @@ If you are already using web3.js or ethers.js, and do not require functionality 
 
 If you are using React and only need to do forward and reverse resolution of ENS names with built in UI, use react-ens-address.
 
-If you want to have ENS instance deployed into your dev environment, you may want to use emabark.io or waffle.io which allows you to configure/deploy ENS registry in your Ethereum test instance.
+If you want to have ENS instance deployed into your dev environment, you may want to use embark.io or waffle.io which allows you to configure/deploy ENS registry in your Ethereum test instance.
 
 Otherwise, use ensjs.
 

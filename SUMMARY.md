@@ -4,14 +4,9 @@
 * [Terminology](terminology.md)
 * [Frequently Asked Questions](frequently-asked-questions.md)
 * [ENS Deployments](ens-deployments.md)
-* [Permanent Registrar Frequently Asked Questions](permanent-registrar-faq.md)
+* [Frequently Asked Questions](permanent-registrar-faq.md)
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [DNS Registrar guide](dns-registrar-guide.md)
-
-## ENS Migration
-
-* [Guide for DApp Developers](ens-migration/guide-for-dapp-developers.md)
-* [Technical Description](ens-migration/technical-description.md)
 
 ## Dapp Developer Guide
 
@@ -44,4 +39,9 @@
 * [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
 * [ENS Discussion Forum](https://discuss.ens.domains/)
 * [ENS Support Chat](https://gitter.im/ethereum/go-ethereum/name-registry)
+
+## ENS Migration
+
+* [Guide for DApp Developers](ens-migration/guide-for-dapp-developers.md)
+* [Technical Description](ens-migration/technical-description.md)
 

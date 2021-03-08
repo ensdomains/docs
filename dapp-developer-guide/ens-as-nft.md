@@ -1,6 +1,6 @@
 # ENS as NFT
 
-When ENS .eth registrar migrated in May 2019, the registrar became an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant nonfungable token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
+When ENS .eth registrar migrated in May 2019, the .eth registrar became an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant nonfungable token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
 
 ## Deriving tokenId from ENS name
 
