@@ -95,7 +95,7 @@ mapping(bytes32=>uint) public commitments;
 function rentPrice(string name, uint duration) view public returns(uint);
 ```
 
-`rentPrice` returns the cost, in wei, to register or renew the provided name for the provided duration. Callers should note that this price may vary over time, particularly if the pricing oracle is relying on a fiat price conversion.
+`rentPrice` returns the cost, in wei, to register or renew the provided name for the provided duration, in seconds. Callers should note that this price may vary over time, particularly if the pricing oracle is relying on a fiat price conversion.
 
 Callers should use this function to obtain registration costs to display to the user rather than calculating them internally, as future changes to the pricing oracle may result in different pricing schemes, with registration cost-per-year depending on name length, registration duration, or other variables.
 
@@ -164,7 +164,7 @@ A successful call also results in the Registrar emitting a [Name Registered Even
 function renew(string name, uint duration) external payable;
 ```
 
-`renew` renews a name. This function can be called by anyone, as long as sufficient funds are provided. Because the rent price may vary over time, callers are recommended to send slightly more than the value returned by `rentPrice` - a premium of 5-10% will likely be sufficient. Any excess funds are returned to the caller.
+`renew` renews a name, extending the name's expiration by `duration` seconds. This function can be called by anyone, as long as sufficient funds are provided. Because the rent price may vary over time, callers are recommended to send slightly more than the value returned by `rentPrice` - a premium of 5-10% will likely be sufficient. Any excess funds are returned to the caller.
 
 Emits the following event on a successful call:
 
