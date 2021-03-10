@@ -166,3 +166,13 @@ if(address != ens.resolve(name)) {
 
 Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`\(where _1234..._ is the address you want to reverse-resolve\), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
+If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smartcontract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+
+
+```js
+const namehash = require('eth-ens-namehash');
+const allnames = await ReverseRecords.getNames(['0x123','0x124'])
+const validNames = allnames.filter((n) => namehash.normalize(n) === n )
+```
+
+Make sure to compare that the returned names match with the normalised names to prevent from [homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack) as well as people simply using capital letters.
