@@ -8,7 +8,7 @@ The tokenId of ENS name is simply the uint256 representation of the hash of the 
 
 ```javascript
 const name = 'vitalik'
-const labelHash = web3.utils.sha3('vitalik')
+const labelHash = web3.utils.sha3(name)
 const tokenId = web3.utils.toBN(labelHash).toString()
 ```
 
