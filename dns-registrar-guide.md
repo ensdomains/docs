@@ -10,39 +10,37 @@ DNSSEC \(The Domain Name System Security Extensions\) establishes a chain of tru
 
 When you first land on ENS manager, you will see something like below.
 
-![step1: dnnsec not enabled](https://discuss.ens.domains/uploads/default/optimized/1X/946d32d7bf60e53ccafc79eb93e4479d3437e307_2_1378x912.jpeg)
+![step1: dnnsec not enabled](./assets/dnssec_step1.png)
 
 If your DNS provider already supports DNSSEC-signed domains, all you do is to enable the option on the DNS manager.
-
-![google cloud](https://discuss.ens.domains/uploads/default/optimized/1X/9e7962d3ba098f1fcf49780ec1c5cafea28e7eb8_2_1380x660.png)
 
 If they don’t, you’ll need to migrate to someone who does. We recommend either [EasyDNS](https://www.easydns.com) or [Google Cloud DNS](https://cloudplatform.googleblog.com/2017/11/DNSSEC-now-available-in-Cloud-DNS.html). EasyDNS’s setup guide for DNSSEC is [here](https://fusion.easydns.com/Knowledgebase/Article/View/18/7/dnssec), while Google’s is [here](https://cloud.google.com/dns/dnssec-config).
 
 Whatever provider you need, make sure you select RSA signatures and SHA256 hashing.
 
-![sha\|690x468](https://discuss.ens.domains/uploads/default/original/1X/932bd16073756602187e200da3db7586555cd2e3.png)
+![sha\|690x468](./assets/dnssec_sha.png)
 
 ### Step 2: Adding a TXT record
 
 The DNS Registrar on ENS looks for a TXT record with a specific name and format in order to verify what Ethereum address should be given ownership of the domain. To claim ownership of mydomain.xyz, create a TXT record in your DNS zone, \_ens.mydomain.xyz, with text data of the form a=0x1234..., where 0x1234... is the Ethereum address you want to give control of the ENS record to.
 
-![step2: add text](https://discuss.ens.domains/uploads/default/optimized/1X/5177864685d2c4ca9b6e25bd23a1a7c3a80b7fbd_2_1378x940.jpeg)
+![step2: add text](./assets/dnssec_step2.png)
 
 ### Step 3: Registering the name into ENS
 
 Once you get to this stage, you can complete the rest from ENS manager. Simply press "Register" and send the transaction.
 
-![step3: owner submit proof](https://discuss.ens.domains/uploads/default/optimized/1X/a68033af4eb1d41e26b9d8b567d580d23a44dc7e_2_1380x924.jpeg)
+![step3: owner submit proof](./assets/dnssec_step3.png)
 
 ### Step 4: Go to the manager
 
-![step4: owner](https://discuss.ens.domains/uploads/default/optimized/1X/09baa8bb802c32de657aaa7da157bf141964cf02_2_1380x924.jpeg)
+![step4: owner](./assets/dnssec_step4.png)
 
 ## FAQ
 
-### Why are only `.xyz`, `.luxe` and `kred` domains supported?
+### Can I register any DNS domains through ENS app?
 
-Technically speaking, over 90% of domains can be supported. The initial support of `.xyz`, `.luxe` and `.kred` are deployed for each manually with the approval of our ENS root domain multisig holders but we are planning to deploy more generic contract to allow 1000s of domains without the manual approval. The more detailed explanation is [here](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38)
+Technically speaking, [over 90% of domains](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38) can be supported. Some tlds (`ceo`, `.art`, `.club`, `.luxe` and `.kred`) are operated by each DNS registry.
 
 ### If I own `myname.xyz` DNS name, can I claim for `myname.eth` ?
 
