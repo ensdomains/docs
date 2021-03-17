@@ -31,7 +31,7 @@ The owner of any domain can configure subdomains as desired. This is achieved by
 
 {% tabs %}
 {% tab title="ensjs" %}
-```text
+```javascript
 await ens.name('alice.eth').createSubdomain('iam');
 ```
 {% endtab %}
@@ -44,13 +44,13 @@ err := registry.SetSubdomainOwner(opts, "alice.eth", "iam", common.HexToAddress(
 {% endtab %}
 
 {% tab title="web3.py" %}
-```text
+```python
 ns.setup_owner('iam.alice.eth', '0x1234...')
 ```
 
 Additionally, web3.py provides a convenience method to create a subdomain, set a resolver, and configure an address record all at once:
 
-```text
+```python
 ns.setup_address('iam.alice.eth', '0x1234...')
 ```
 
@@ -66,13 +66,13 @@ Most commonly, names are set to use a 'standard' resolver called the public reso
 
 {% tabs %}
 {% tab title="ensjs" %}
-```text
+```javascript
 await ens.name('iam.alice.eth').setResolver('0x1234');
 ```
 
 On mainnet and the Kovan test network, 'resolver.eth' is configured to point to the latest deployed version of the public resolver, making it possible to easily configure a name to use the public resolver:
 
-```text
+```javascript
 const resolver = await ens.resolver('resolver.eth').addr();
 await ens.setResolver('iam.alice.eth', resolver, {from: ...});
 ```
