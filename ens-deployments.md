@@ -16,7 +16,7 @@ All test networks have the .test registrar deployed. This registrar permits anyo
 
 In addition, the test networks also have a deployment of the .eth registrar for testing purposes.
 
-Prior to the ENS migration, ENS registry addresses were:
+Back in February 2020, the ENS registry was migrated to the new contract address to patch security vulnabilities (Read more detail [here](ens-migration/technical-description.md)). The prior registry addresses were:
 
 * Mainnet, at [0x314159265dd8dbb310642f98f50c066173c1259b](https://etherscan.io/address/0x314159265dd8dbb310642f98f50c066173c1259b#code).
 * Ropsten, at [0x112234455c3a32fd11230c42e7bccd4a84e02010](https://ropsten.etherscan.io/address/0x112234455c3a32fd11230c42e7bccd4a84e02010).

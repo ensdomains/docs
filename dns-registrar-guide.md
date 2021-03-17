@@ -2,7 +2,7 @@
 
 ## Introduction
 
-DNSSEC \(The Domain Name System Security Extensions\) establishes a chain of trust from the root key which signed by ICANN \(.\) and down through each key. Given EDNSSEC is enabled and an ETH address is put into the subdomain of the domain you own \(eg: `_ens.yourdomain.tld`\), ENS manager allows anyone to submit the hash of the chain to `DNSSEC Oracle` smart contract
+DNSSEC \(The Domain Name System Security Extensions\) establishes a chain of trust from the root key which signed by ICANN \(.\) and down through each key. Given DNSSEC is enabled and an ETH address is put into the subdomain of the domain you own \(eg: `_ens.yourdomain.tld`\), ENS manager allows anyone to submit the hash of the chain to `DNSSEC Oracle` smart contract
 
 ## Steps
 
