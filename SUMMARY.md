@@ -40,7 +40,7 @@
 * [ENS Discussion Forum](https://discuss.ens.domains/)
 * [ENS Support Chat](https://discord.gg/AskZbFx)
 
-## ENS Migration
+## ENS Migration (February 2020)
 
 * [Guide for DApp Developers](ens-migration/guide-for-dapp-developers.md)
 * [Technical Description](ens-migration/technical-description.md)
