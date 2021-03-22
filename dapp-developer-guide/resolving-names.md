@@ -199,8 +199,6 @@ codec === 'ipfs-ns' // false
 
 Note for ipns: For security reasons, the encoding of ipns is only allowed for `libp2p-key` codec. Decoding with other formats will show a deprecation warning. Please read [here](https://github.com/ensdomains/content-hash/pull/5) for more detail.
 
-
-
 ### Coin type and encoding/decoding
 
 While some libraries allow you to query multicoin address via symbol (e.g.: `BTC`), others do not have the built-in support, and you have to call via each coin id (e.g.: `0` for `BTC`, `16` for `ETH). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert 
