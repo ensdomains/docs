@@ -179,7 +179,7 @@ Not supported.
 
 ### Encoding and decoding contenthash
 
-`contenthash` is used to store IPFSand Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a combinent way to encode/decode these hashes.
+`contenthash` is used to store IPFSand Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a convenient way to encode/decode these hashes.
 
 ```javascript
  const contentHash = require('content-hash')
@@ -197,13 +197,13 @@ const codec = contentHash.getCodec(encoded) // 'swarm-ns'
 codec === 'ipfs-ns' // false
 ```
 
-Note for ipns: For security reasons, encoding of ipns is only allowed for `libp2p-key` codec. Decoding with other formart will show deprecation warning. Please read [here](https://github.com/ensdomains/content-hash/pull/5) for more detail.
+Note for ipns: For security reasons, the encoding of ipns is only allowed for `libp2p-key` codec. Decoding with other formats will show a deprecation warning. Please read [here](https://github.com/ensdomains/content-hash/pull/5) for more detail.
 
 
 
 ### Coin type and encoding/decoding
 
-While some libraries allows you to query multicoin address via symbol (eg: `BTC`)  others do not have the built in support and you have to call via each coin id (eg: `0` for `BTC`, `16` for `ETH). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) liraby that allows you to convert 
+While some libraries allow you to query multicoin address via symbol (e.g.: `BTC`), others do not have the built-in support, and you have to call via each coin id (e.g.: `0` for `BTC`, `16` for `ETH). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert 
 
 ```javascript
 import { formatsByName, formatsByCoinType } from '@ensdomains/address-encoder';
@@ -217,7 +217,7 @@ formatsByName['BTC']
 // }
 ```
 
-To save storage space as well as prevent users from setting wrong token addres, the library has `encoder` and `decoder`
+To save storage space as well as prevent users from setting wrong token address, the library has `encoder` and `decoder`
 
 ```javascript
 const data = formatsByName['BTC'].decoder('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa');
@@ -228,7 +228,7 @@ console.log(addr); // 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
 
 ### Listing multicoins and text records
 
-For multicoins and text record, you need to know the coin type or key names to get the value. If you want to list down all the multicoins and text records the user has set, you have to either retrive the information from `Event` or query via [ENS subgraph](https://thegraph.com/explorer/subgraph/ensdomains/ens).
+For multicoins and text record, you need to know the coin type or key names to get the value. If you want to list down all the multicoins and text records the user has set, you have to either retrieve the information from `Event` or query via [ENS subgraph](https://thegraph.com/explorer/subgraph/ensdomains/ens).
 
 
 For example
