@@ -29,8 +29,7 @@
 * [.eth Permanent Registrar](contract-api-reference/.eth-permanent-registrar/README.md)
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
-* [DNS Registrar](https://dnsregistrar.readthedocs.io/en/doc)
-* [DNSProvejs](https://dnsprovejs.readthedocs.io)
+* [DNS Registrar](contract-api-reference/dns-registrar.md)
 
 ## Contract Developer Guide
 
