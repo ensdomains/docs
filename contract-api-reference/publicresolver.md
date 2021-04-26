@@ -276,3 +276,25 @@ Emits the following event:
 event TextChanged(bytes32 indexed node, string indexedKey, string key);
 ```
 
+
+
+## Multicall
+
+```text
+function multicall(bytes[] calldata data) external returns(bytes[] memory results)
+```
+
+Permits users to set multiple records in a single operation.
+
+Use `encodeABI` function to encode your contract calls and pass it to `data`.
+
+The frontend usage will be as follows:
+
+```javascript
+var addrSet = resolver.contract.methods['setAddr(bytes32,address)'](node, accounts[1]).encodeABI();
+var textSet = resolver.contract.methods.setText(node, "url", "https://ethereum.org/").encodeABI();
+var tx = await resolver.multicall([addrSet, textSet], {from: accounts[0]});
+```
+
+
+
