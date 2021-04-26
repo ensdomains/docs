@@ -155,6 +155,10 @@ ens.setText('iam.alice.eth', 'Test', 'Test record', {from: ...});
 {% endtab %}
 {% endtabs %}
 
+### Updating multiple records in one transaction
+
+Public Resolver has  `multicall`  that permits users to set multiple records in a single operation. Read [PublicResolver](https://docs.ens.domains/contract-api-reference/publicresolver#multicall) section for more detail.
+
 ## Configuring Reverse Resolution
 
 While 'regular' resolution involves mapping from a name to an address, reverse resolution maps from an address back to a name - or other metadata. ENS supports reverse resolution to allow applications to display ENS names in place of hexadecimal addresses.
