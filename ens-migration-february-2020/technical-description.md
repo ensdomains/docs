@@ -57,7 +57,7 @@ In addition, the ENS team is automatically migrating over records from the legac
 
 ### Public Resolver
 
-A new instance of the public resolver has been deployed, and can be found at 0xDaaF96c344f63131acadD0Ea35170E7892d3dfBA. This instance references the new ENS registry, and has an additional ‘multicall’ feature implemented, which permits users to set multiple records in a single operation.
+A new instance of the public resolver has been deployed, and can be found at 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41. This instance references the new ENS registry, and has an additional ‘multicall’ feature implemented, which permits users to set multiple records in a single operation.
 
 Since the public resolver looks up names in the ENS registry to determine who is permitted to configure records for them, while names - migrated or otherwise - pointed at an old instance of the public resolver will continue to function, they will need to migrate to the new public resolver in order to make changes. The ENS dapp at app.ens.domains facilitates this process using the new \`multicall\` function, making it possible to migrate over all records for a name in two transactions: the first one copying all records from the old resolver to the new one, and the second one updating the registry to point to the new resolver contract.
 
