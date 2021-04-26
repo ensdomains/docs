@@ -85,7 +85,7 @@ import { Oracle } from '@ensdomains/dnssecoraclejs'
 import { abi } from '@ensdomains/contracts/abis/dnsregistrar/DNSRegistrar.json'
 import { Contract } from 'ethers'
 
-// Tge registrar address nees to be hard-coded
+// The registrar address nees to be hard-coded
 const registrarAddress = '0x475e527d54b91b0b011DA573C69Ac54B2eC269ea'
 const registrar new Contract(registrarAddress, abi, provider)
 const oracleAddress = await registrar.oracle()
