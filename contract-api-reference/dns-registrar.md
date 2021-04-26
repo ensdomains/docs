@@ -23,7 +23,7 @@ Submitting proof to DNSSEC Oracle takes up a lot of gas because it is heavy comp
 
 ## Typescript/Javascript Libraries
 
-To help you interact with DNSSEC data and the DNSRegistrar, we prepare two libraries.
+To help you interact with DNSSEC data and the DNSRegistrar, we provide two libraries.
 
 - [DNSProvejs](https://github.com/ensdomains/dnsprovejs) = A library for querying and validating DNSSEC data from DNS
 - [dnssecoraclejs](https://github.com/ensdomains/dnssecoraclejs) = A library for generating proof data for the ENS DNSSEC Oracle.
@@ -86,7 +86,7 @@ import { Oracle } from '@ensdomains/dnssecoraclejs'
 import { abi } from '@ensdomains/contracts/abis/dnsregistrar/DNSRegistrar.json'
 import { Contract } from 'ethers'
 
-// Tge registrar address nees to be hard-coded
+// The registrar address nees to be hard-coded
 const registrarAddress = '0x475e527d54b91b0b011DA573C69Ac54B2eC269ea'
 const registrar new Contract(registrarAddress, abi, provider)
 const oracleAddress = await registrar.oracle()
