@@ -92,7 +92,6 @@ Resolving these content types without a library follows the same 3-step process 
 {% tabs %}
 {% tab title="ensjs" %}
 ```javascript
-
 // Getting contenthash
 await ens.name('abittooawesome.eth').getContent()
 // Setting contenthash
@@ -106,8 +105,6 @@ await ens.name('superawesome.eth').setAddress('ETC', '0x000000000000000000000000
 await ens.name('resolver.eth').getText('url')
 // Setting text
 await ens.name('superawesome.eth').setText('url', 'http://google.com')
-
-
 ```
 {% endtab %}
 
@@ -120,7 +117,6 @@ web3.eth.ens.getContenthash('ethereum.eth').then(function (result) {
 // Setting contenthash
 web3.eth.ens.setContenthash('ethereum.eth', hash);
 ```
-
 {% endtab %}
 
 {% tab title="ethjs-ens" %}
@@ -136,7 +132,6 @@ Not supported.
   const dogeAddress = await resolver.getAddress(3);
   const email = await resolver.getText("email");
 ```
-
 {% endtab %}
 
 {% tab title="go-ens" %}
@@ -159,7 +154,6 @@ resolver.SetMultiAddress(opts, address)
 resolver.SetText(opts, name, value)
 // Getting text
 resolver.Text(name)
-
 ```
 {% endtab %}
 
@@ -170,7 +164,6 @@ Not supported.
 {% endtab %}
 
 {% tab title="web3j" %}
-
 ```java
 Not supported.
 ```
@@ -201,7 +194,7 @@ Note for ipns: For security reasons, the encoding of ipns is only allowed for `l
 
 ### Coin type and encoding/decoding
 
-While some libraries allow you to query multicoin address via symbol (e.g.: `BTC`), others do not have the built-in support, and you have to call via each coin id (e.g.: `0` for `BTC`, `16` for `ETH). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert 
+While some libraries allow you to query multicoin address via symbol \(e.g.: `BTC`\), others do not have the built-in support, and you have to call via each coin id \(e.g.: `0` for `BTC`, `16` for \`ETH\). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert
 
 ```javascript
 import { formatsByName, formatsByCoinType } from '@ensdomains/address-encoder';
@@ -228,7 +221,6 @@ console.log(addr); // 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
 
 For multicoins and text record, you need to know the coin type or key names to get the value. If you want to list down all the multicoins and text records the user has set, you have to either retrieve the information from `Event` or query via [ENS subgraph](https://thegraph.com/explorer/subgraph/ensdomains/ens).
 
-
 For example
 
 ```javascript
@@ -246,7 +238,7 @@ For example
 
 will return the following result
 
-```json
+```javascript
 {
   "data": {
     "domains": [
@@ -344,13 +336,13 @@ if(address != ens.resolve(name)) {
 
 Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`\(where _1234..._ is the address you want to reverse-resolve\), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
-If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smartcontract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+If you need to process many addresses \(eg: showing reverse record of transaction histories\), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smartcontract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
 
-
-```js
+```javascript
 const namehash = require('eth-ens-namehash');
 const allnames = await ReverseRecords.getNames(['0x123','0x124'])
 const validNames = allnames.filter((n) => namehash.normalize(n) === n )
 ```
 
 Make sure to compare that the returned names match with the normalised names to prevent from [homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack) as well as people simply using capital letters.
+

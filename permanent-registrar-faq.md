@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# Registrar Frequently Asked Questions
 
 ## About the ENS Registrar
 

@@ -6,11 +6,13 @@ DNSSEC \(The Domain Name System Security Extensions\) establishes a chain of tru
 
 ## Steps
 
+Note: Currently only `.xyz`domain is supported. For other domains, please refer to the FAQ section. 
+
 ### Step 1 Setting up DNSSEC signing
 
 When you first land on ENS manager, you will see something like below.
 
-![step1: dnnsec not enabled](./assets/dnssec_step1.png)
+![step1: dnnsec not enabled](.gitbook/assets/dnssec_step1.png)
 
 If your DNS provider already supports DNSSEC-signed domains, all you do is to enable the option on the DNS manager.
 
@@ -18,29 +20,29 @@ If they don’t, you’ll need to migrate to someone who does. We recommend eith
 
 Whatever provider you need, make sure you select RSA signatures and SHA256 hashing.
 
-![sha\|690x468](./assets/dnssec_sha.png)
+![sha\|690x468](.gitbook/assets/dnssec_sha.png)
 
 ### Step 2: Adding a TXT record
 
 The DNS Registrar on ENS looks for a TXT record with a specific name and format in order to verify what Ethereum address should be given ownership of the domain. To claim ownership of mydomain.xyz, create a TXT record in your DNS zone, \_ens.mydomain.xyz, with text data of the form a=0x1234..., where 0x1234... is the Ethereum address you want to give control of the ENS record to.
 
-![step2: add text](./assets/dnssec_step2.png)
+![step2: add text](.gitbook/assets/dnssec_step2.png)
 
 ### Step 3: Registering the name into ENS
 
 Once you get to this stage, you can complete the rest from ENS manager. Simply press "Register" and send the transaction.
 
-![step3: owner submit proof](./assets/dnssec_step3.png)
+![step3: owner submit proof](.gitbook/assets/dnssec_step3.png)
 
 ### Step 4: Go to the manager
 
-![step4: owner](./assets/dnssec_step4.png)
+![step4: owner](.gitbook/assets/dnssec_step4.png)
 
 ## FAQ
 
 ### Can I register any DNS domains through ENS app?
 
-Technically speaking, [over 90% of domains](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38) can be supported. Some tlds (`ceo`, `.art`, `.club`, `.luxe` and `.kred`) are operated by each DNS registry.
+Technically speaking, [over 90% of domains](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38) can be supported. Some tlds \(`ceo`, `.art`, `.club`, `.luxe` and `.kred`\) are operated by each DNS registry. 
 
 ### If I own `myname.xyz` DNS name, can I claim for `myname.eth` ?
 
