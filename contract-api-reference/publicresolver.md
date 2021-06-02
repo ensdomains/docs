@@ -249,12 +249,12 @@ Standard values for `key` are:
 | notice | A notice regarding this name |
 | keywords | A list of comma-separated keywords, ordered by most significant first; clients that interpresent this field may choose a threshold beyond which to ignore |
 
-In addition, anyone may specify vendor-specific keys, which must be prefixed with `vnd.`.The following vendor-specific keys are currently known:
+In addition, anyone may specify vendor-specific keys, which must be prefixed with `com.`.The following vendor-specific keys are currently known:
 
 | key | Meaning |
 | :--- | :--- |
-| vnd.twitter | Twitter handle |
-| vnd.github | Github username |
+| com.twitter | Twitter handle |
+| com.github | Github username |
 
 This function has interface ID 0x59d1d43c.
 
