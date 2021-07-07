@@ -12,7 +12,7 @@ A partial list can be seen on [our homepage](https://ens.domains/).
 
 ### Once I own a name, can I create my own subdomains?
 
-Yes! You can create whatever subdomains you wish and assign ownership of them to other people if you desire. You can even set up your own registrar for your domain!
+Yes. You can create whatever subdomains you wish and assign ownership of them to other people if you desire. You can even set up your own registrar for your domain.
 
 ### Can I change the address my name points to after I’ve bought it?
 
@@ -26,15 +26,13 @@ In addition to that, we are deploying support for importing DNS domains from the
 
 ### Who owns the ENS rootnode? What powers does that grant them?
 
-The root node is presently owned by a multisig contract, with keys held by trustworthy individuals in the Ethereum community. We expect that this will be very hands-off, with the root ownership only used to effect administrative changes, such as the introduction of a new TLD, or to recover from an emergency such as a critical vulnerability in a TLD registrar.
+The root node is presently owned by a multisig contract, with keys held by trustworthy individuals in the Ethereum community. We expect that this will be hands-off, with the root ownership only used to effect administrative changes, such as the introduction of a new TLD, or to recover from an emergency such as a critical vulnerability in a TLD registrar.
 
-Since the owner of a node can change ownership of any subnode, the owner of the root can change any node in the ENS tree. This means that the keyholders can replace the contracts that govern issuing and managing domains \(on .eth or any other top-level domain\), giving them ultimate control over the structure of the ENS system and the names registered in it.
+The keyholders are drawn from respected members of the community, and with the exception of Nick Johnson, founder of ENS, are unaffiliated with ENS. We ask and expect them to exercise their individual judgement acting in the interests of the ENS community, rather than rubber-stamping requests made to them by ENS developers.
 
-To reduce this risk, the keyholders are drawn from respected members of the community, and with the exception of Nick Johnson, founder of ENS, are unaffiliated with ENS. We ask and expect them to exercise their individual judgement acting in the interests of the ENS community, rather than rubber-stamping requests made to them by ENS developers.
+Since the owner of a node can change ownership of a subnode (unless they have otherwise locked it from their control), the owner of the root can change any node in the ENS tree. This means that the keyholders can replace the contracts that govern issuing and managing domains, giving them ultimate control over the structure of the ENS system and the names registered in it. However, the root key holders have locked control of the .eth registrar contract, which means that even keyholders cannot affect the ownership of .eth domains.
 
-Over time, we plan to reduce and decentralise human control over the system. A first step towards that is disabling the ENS keyholders' ability to replace the .eth registrar contract, which would mean that even the keyholders could no longer affect the ownership of existing .eth domains. We plan to do this once the registrar contract has had an additional audit to assure us that there are no critical bugs in it.
-
-Other powers held by the ENS root, such as those to set pricing and renewal conditions for domains, or to create and assign additional top-level domains, will be decentralised as robust systems become available to permit doing so.
+Over time, we plan to reduce and decentralise human control over the system. Powers still held by the ENS root, such as those to set pricing and renewal conditions for domains, will be decentralised as robust systems become available to permit doing so.
 
 ### What about foreign characters? What about upper case letters? Is any unicode character valid?
 
@@ -44,19 +42,17 @@ This means that you can in theory register both ‘foo.eth’ and ‘FOO.eth’,
 
 ### Nameprep isn’t enforced in the ENS system. Is this a security/spoofing/phishing concern?
 
-It’s not enforced by the ENS contracts, but, as described, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
+It’s not enforced by the ENS contracts, but, as described above, resolvers are expected to use it before resolving names. This means that non-nameprep names will not be resolvable.
 
-### What are the differences between ENS and other naming services such as Namecoin, Blockstack, and Handshake?
+### What are the differences between ENS and other naming services such as Namecoin and Handshake?
 
-ENS focuses first and foremost on providing decentralised, trustworthy name resolution for web3 resources such as blockchain addresses and distributed content, while Namecoin and Blockstack are efforts to replace DNS with a blockchain-based alternative.
-
-Handshake also has different goals, seeking to replace the global DNS root with one governed and distributed by a blockchain system.
+ENS complements and extends the usefulness of DNS with decentralised, trustworthy name resolution for web3 resources such as blockchain addresses and distributed content, while Namecoin and Handshake are efforts to replace all or part of DNS with a blockchain-based alternative.
 
 ## About the .eth Permanent Registrar
 
-### How do the dapp and the Twitter bot know what names people are buying?
+### How do the ENS Manager App and the Twitter bot know what names people are buying?
 
-The dapp and the twitter bot have built in lists of common names, drawn from an English dictionary and Alexa’s list of top 1 million internet domain names. They use these lists to show you when common names are bought or renewed. We do this because if the app didn’t reveal these names, anyone with a little technical skill could find them out anyway, giving them an advantage over those who don’t have the capacity to build their own list and code to check names against it.
+The ENS Manager App and the Twitter bot have built in lists of common names, drawn from an English dictionary and Alexa’s list of top 1 million Internet domain names. They use these lists to show you when common names are bought or renewed. We do this because if the app didn’t reveal these names, anyone with a little technical skill could find them out anyway, giving them an advantage over those who don’t have the capacity to build their own list and code to check names against it.
 
 ### What does it cost to register a .eth domain?
 
@@ -66,9 +62,9 @@ Currently, registration costs are set at the following prices:
 * 4 character .eth names: $160 in ETH per year.
 * 3 character .eth names $640 in ETH per year.
 
-3 and 4 character names have 'premium' pricing to reflect the small number of these names available.
+3 and 4 character names have higher pricing to reflect the small number of these names available.
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
-The permanent registrar is structured such that names, once issued, cannot be revoked so long as an active registration is maintained. At present, the root keyholders can replace the registrar contract with one that implements different rules; this is a capability we intend to revoke in the future, once we are certain that the permanent registrar contract is safe and free of major bugs.
+The .eth registrar is structured such that names, once issued, cannot be revoked so long as an active registration is maintained.
 
