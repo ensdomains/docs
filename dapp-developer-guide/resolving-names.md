@@ -1,8 +1,10 @@
 # Resolving Names
 
-## Looking up Ethereum addresses
+## Looking up cryptocurrency addresses
 
-The simplest and most frequently used function in ENS is resolving a name. Names can have many types of data associated with them; the most common is an Ethereum address. Resolving a name to an Ethereum address using a library is simple:
+Names can have many types of data associated with them; the most common is cryptocurrency addresses. ENS supports storing and resolving the addresses of any arbitrary blockchain.
+
+**Resolving a name to an Ethereum address** using a library is simple:
 
 {% tabs %}
 {% tab title="ensjs" %}
@@ -77,7 +79,7 @@ Resolution without a library is a three step process:
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
 3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
 
-Multicoin address resolution support is implemented with an additional overload on `addr()`. To resolve a multicoin address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
+**Resolution support for the addresses of other blockchains** is implemented with an additional overload on `addr()`. To resolve a non-Ethereum address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
 {% hint style="warning" %}
 If you are resolving addr\(\) records, you MUST treat a return value from the resolver of 0x00…00 as that record being unset. Failing to do so could result in users accidentally sending funds to the null address if they have configured a resolver in ENS, but not set the resolver record!
@@ -85,7 +87,7 @@ If you are resolving addr\(\) records, you MUST treat a return value from the re
 
 ## Looking up other resources
 
-ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes for data stored in Swarm or IPFS, contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
+ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes (for data stored on IPFS, Skynet, Swarm, and Tor .onion addresses), contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
 
 Resolving these content types without a library follows the same 3-step process detailed above; simply call the relevant method on the resolver in step 3 instead of `addr()`.
 
@@ -194,7 +196,7 @@ Note for ipns: For security reasons, the encoding of ipns is only allowed for `l
 
 ### Coin type and encoding/decoding
 
-While some libraries allow you to query multicoin address via symbol \(e.g.: `BTC`\), others do not have the built-in support, and you have to call via each coin id \(e.g.: `0` for `BTC`, `16` for \`ETH\). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert
+While some libraries allow you to query cryptocurrency addresses via their symbol \(e.g.: `BTC`\), others do not have the built-in support, and you have to call via each coin id \(e.g.: `0` for `BTC`, `16` for \`ETH\). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert
 
 ```javascript
 import { formatsByName, formatsByCoinType } from '@ensdomains/address-encoder';
@@ -217,9 +219,9 @@ const addr = formatsByCoinType[0].encoder(data);
 console.log(addr); // 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
 ```
 
-### Listing multicoins and text records
+### Listing cryptocurrency addresses and text records
 
-For multicoins and text record, you need to know the coin type or key names to get the value. If you want to list down all the multicoins and text records the user has set, you have to either retrieve the information from `Event` or query via [ENS subgraph](https://thegraph.com/explorer/subgraph/ensdomains/ens).
+For cryptocurrency addresses and text records, you need to know the coin type or key names to get the value. If you want to list down all the cryptocurrency addresses and text records the user has set, you have to either retrieve the information from `Event` or query via [ENS subgraph](https://thegraph.com/explorer/subgraph/ensdomains/ens).
 
 For example
 
@@ -261,7 +263,7 @@ will return the following result
 
 ## Reverse Resolution
 
-While 'regular' resolution involves mapping from a name to an address, reverse resolution maps from an address back to a name - or other metadata. ENS supports reverse resolution to allow applications to display ENS names in place of hexadecimal addresses.
+While 'regular' resolution involves mapping from a name to an address, reverse resolution maps from an address back to a name. ENS supports reverse resolution to allow applications to display ENS names in place of hexadecimal addresses.
 
 Reverse resolution is accomplished via the special purpose domain _addr.reverse_ and the resolver function `name()`. _addr.reverse_ is owned by a special purpose registrar contract that allocates subdomains to the owner of the matching address - for instance, the address _0x314159265dd8dbb310642f98f50c066173c1259b_ may claim the name _314159265dd8dbb310642f98f50c066173c1259b.addr.reverse_, and configure a resolver and records on it. The resolver in turn supports the `name()` function, which returns the name associated with that address.
 
