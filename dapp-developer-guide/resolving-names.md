@@ -1,5 +1,7 @@
 # Resolving Names
 
+The ENS namespace includes both .eth names (which are native to ENS) and DNS names imported into ENS. Because the DNS suffix namespace expands over time, a hardcoded list of name suffixes for recognizing ENS names will regularly be out of date, leading to your application not recognizing all valid ENS names. To remain future-proof, **a correct integration of ENS treats any dot-separated name as a potential ENS name and will attempt a look-up**.
+
 ## Looking up cryptocurrency addresses
 
 Names can have many types of data associated with them; the most common is cryptocurrency addresses. ENS supports storing and resolving the addresses of any arbitrary blockchain.
