@@ -276,8 +276,6 @@ Emits the following event:
 event TextChanged(bytes32 indexed node, string indexedKey, string key);
 ```
 
-
-
 ## Multicall
 
 ```text
@@ -295,6 +293,4 @@ var addrSet = resolver.contract.methods['setAddr(bytes32,address)'](node, accoun
 var textSet = resolver.contract.methods.setText(node, "url", "https://ethereum.org/").encodeABI();
 var tx = await resolver.multicall([addrSet, textSet], {from: accounts[0]});
 ```
-
-
 

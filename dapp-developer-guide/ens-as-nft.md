@@ -7,9 +7,12 @@ When ENS .eth registrar migrated in May 2019, the .eth registrar became an [ERC7
 The tokenId of ENS name is simply the uint256 representation of the hash of the label \(`vitalik` for `vitalik.eth`\).
 
 ```javascript
+const ethers = require('ethers')
+const BigNumber = ethers.BigNumber
+const utils = ethers.utils
 const name = 'vitalik'
-const labelHash = web3.utils.sha3(name)
-const tokenId = web3.utils.toBN(labelHash).toString()
+const labelHash = utils.keccak256(utils.toUtf8Bytes('vitalik'))
+const tokenId = BigNumber.from(labelHash).toString()
 ```
 
 In the example above,[`79233663829379634837589865448569342784712482819484549289560981379859480642508`](https://opensea.io/assets/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/79233663829379634837589865448569342784712482819484549289560981379859480642508) is the tokenId of `vitalik.eth`
@@ -21,12 +24,14 @@ Unlike deriving tokenId, deriving ENS name from tokenId is not as easy. This is 
 Our recommended way is to query via [https://thegraph.com](https://thegraph.com) ENS subgraph. The graph decodes the hash to name as it indexes. The example code to query is as follows.
 
 ```javascript
-const Web3 = require('web3')
+const ethers = require('ethers')
+const BigNumber = ethers.BigNumber
 const gr = require('graphql-request')
 const { request, gql } = gr
-const web3 = new Web3()
 const tokenId = '79233663829379634837589865448569342784712482819484549289560981379859480642508'
-const labelHash = web3.utils.toHex(tokenId) 
+// Should return 0xaf2caa1c2ca1d027f1ac823b529d0a67cd144264b2789fa2ea4d63a67c7103cc
+const labelHash = BigNumber.from(tokenId).toHexString()
+
 const url = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 const GET_LABEL_NAME = gql`
 query{

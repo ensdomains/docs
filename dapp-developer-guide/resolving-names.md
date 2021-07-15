@@ -1,6 +1,6 @@
 # Resolving Names
 
-The ENS namespace includes both .eth names (which are native to ENS) and DNS names imported into ENS. Because the DNS suffix namespace expands over time, a hardcoded list of name suffixes for recognizing ENS names will regularly be out of date, leading to your application not recognizing all valid ENS names. To remain future-proof, **a correct integration of ENS treats any dot-separated name as a potential ENS name and will attempt a look-up**.
+The ENS namespace includes both .eth names \(which are native to ENS\) and DNS names imported into ENS. Because the DNS suffix namespace expands over time, a hardcoded list of name suffixes for recognizing ENS names will regularly be out of date, leading to your application not recognizing all valid ENS names. To remain future-proof, **a correct integration of ENS treats any dot-separated name as a potential ENS name and will attempt a look-up**.
 
 ## Looking up cryptocurrency addresses
 
@@ -89,7 +89,7 @@ If you are resolving addr\(\) records, you MUST treat a return value from the re
 
 ## Looking up other resources
 
-ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes (hashes for IPFS, Skynet, and Swarm, and Tor .onion addresses), contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
+ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes \(hashes for IPFS, Skynet, and Swarm, and Tor .onion addresses\), contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
 
 Resolving these content types without a library follows the same 3-step process detailed above; simply call the relevant method on the resolver in step 3 instead of `addr()`.
 
