@@ -7,6 +7,7 @@
 * [Registrar Frequently Asked Questions](permanent-registrar-faq.md)
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [DNS Registrar guide](dns-registrar-guide.md)
+* [Bug Bounty Program](bug-bounty-program.md)
 
 ## Dapp Developer Guide
 
