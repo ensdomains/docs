@@ -71,7 +71,7 @@ contract DCLRegistrar is ERC721Full, Ownable {
     ) internal {
         // Create new subdomain and assign the _beneficiary as the owner
         registry.setSubnodeOwner(domainNameHash, subdomainLabelHash, _beneficiary);
-        // Mint an ERC721 token with the sud domain label hash as its id
+        // Mint an ERC721 token with the subdomain label hash as its id
         _mint(_beneficiary, uint256(subdomainLabelHash));
     }
 }
