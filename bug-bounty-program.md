@@ -16,11 +16,11 @@ The value of rewards paid out will vary depending on Severity. The severity is c
 
 Reward sizes are _guided_ by the rules below, but are in the end, determined at the sole discretion of the ENS team
 
-* **Critical**: up to $100,000 USD
-* **High**: up to $60,000 USD
-* **Medium**: up to $40,000 USD
-* **Low**: up to $8,000 USD
-* **Note**: up to $2,000 USD
+* **Critical**: up to $250,000 USD
+* **High**: up to $150,000 USD
+* **Medium**: up to $100,000 USD
+* **Low**: up to $20,000 USD
+* **Note**: up to $5,000 USD
 
 The ENS team reserves the right to adjust bounty amounts at any time in the future.
 
