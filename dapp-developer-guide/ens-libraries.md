@@ -28,12 +28,12 @@ All the ENS smart contracts are [Truffle](https://truffleframework.com) projects
 
 * [Resolver](https://www.npmjs.com/package/@ensdomains/resolver) = `Resolver.sol` contains all function names including the deprecated functions \(eg: `content`\)
 * [Permanent Registrar](https://www.npmjs.com/package/@ensdomains/ethregistrar)
-* [Registry and old Registrar](https://www.npmjs.com/package/@ensdomains/ens)
+* [Registry and old Registrar](https://www.npmjs.com/package/@ensdomains/ens-contracts)
 
 The bytecode and abi are precompiled and can be imported from the modules.
 
 ```text
-import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
+import { abi , bytecode } from '@ensdomains/ens-contracts/build/contracts/ENS.json'
 ```
 
 ### Java
