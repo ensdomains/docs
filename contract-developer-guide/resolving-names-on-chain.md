@@ -3,12 +3,12 @@
 Solidity libraries for on-chain resolution are not yet available, but ENS resolution is straightforward enough it can be done trivially without a library. First, we define some pared-down interfaces containing only the methods we need:
 
 ```text
-contract ENS {
-    function resolver(bytes32 node) constant returns (Resolver);
+abstract contract ENS {
+    function resolver(bytes32 node) public virtual view returns (Resolver);
 }
 
-contract Resolver {
-    function addr(bytes32 node) constant returns (address);
+abstract contract Resolver {
+    function addr(bytes32 node) public virtual view returns (address);
 }
 ```
 
@@ -18,14 +18,11 @@ With these definitions, looking up a name given its node hash is straightforward
 
 ```text
 contract MyContract {
-    ENS ens;
+    // Same address for Mainet, Ropsten, Rinkerby, Gorli and other networks;
+    ENS ens = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
 
-    function MyContract(address ensAddress) {
-        ens = ENS(ensAddress);
-    }
-
-    function resolve(bytes32 node) constant returns(address) {
-        var resolver = ens.resolver(node)
+    function resolve(bytes32 node) public view returns(address) {
+        Resolver resolver = ens.resolver(node);
         return resolver.addr(node);
     }
 }
