@@ -18,11 +18,8 @@ With these definitions, looking up a name given its node hash is straightforward
 
 ```text
 contract MyContract {
-    ENS ens;
-
-    function MyContract(address ensAddress) public {
-        ens = ENS(ensAddress);
-    }
+    // Same address for Mainet, Ropsten, Rinkerby, Gorli and other networks;
+    ENS ens = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
 
     function resolve(bytes32 node) public view returns(address) {
         Resolver resolver = ens.resolver(node);
