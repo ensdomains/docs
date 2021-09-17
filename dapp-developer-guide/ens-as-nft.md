@@ -81,3 +81,13 @@ Once deployed, then you have to transfer the controller address to the contract.
 
 For non-technical users, we are currently working on upgrading our `SubdomainRegistrar` which allows you to turn your subdomain into NFT without any coding.
 
+## Metadata
+
+.eth does not have `.tokenURI` . However, we created a separate metadata service which NFT marketlpaces like OpenSea can fetch metadata for ENS such as registration data, expiration date, name length, etc. For more detail, please refer to the metadata documentation site.
+
+{% embed url="https://metadata.ens.domains/docs" %}
+
+
+
+
+
