@@ -2,34 +2,35 @@
 
 If you’d like to deploy ENS on your own network, or deploy your own copy of ENS on a public network, this guide shows you how. If you want to use an existing ENS deployment, see [Resolving Names](dapp-developer-guide/resolving-names.md), [Managing Names](dapp-developer-guide/managing-names.md), and [Registering & Renewing Names](dapp-developer-guide/registering-and-renewing-names.md) instead.
 
-On this page we will use Javascript, Web3, and [Truffle](https://truffleframework.com/) with npm for simplicity. You will find a complete migration file example [at the bottom of this page](deploying-ens-on-a-private-chain.md#migration-file-example).
+On this page we will use Javascript, Web3, and [Hardhat](https://hardhat.org/) with npm for simplicity. You will find a complete migration file example [at the bottom of this page](deploying-ens-on-a-private-chain.md#migration-file-example).
+
+Please be aware that existing frameworks such as [waffle](https://ethereum-waffle.readthedocs.io/en/latest/ens.html) and [embark](https://framework.embarklabs.io/docs/naming_configuration.html) have support for local ENS deployment as well.
 
 ## Importing contracts
 
-The essential smart contracts are published as npm modules \(eg: [ENS registry and registrar](https://www.npmjs.com/package/@ensdomains/ens), [resolvers](https://www.npmjs.com/package/@ensdomains/resolver)\). You can install them in your Truffle/npm project with `npm install @ensdomains/ens` and `npm install @ensdomains/resolver`. Now, you can require them in a migration script as follows \(see the [Truffle Documentation](https://truffleframework.com/docs/truffle/getting-started/package-management-via-npm) on working with contract artifacts and npm for details\)
+The essential smart contracts are published [as npm modules](https://www.npmjs.com/package/@ensdomains/ens-contracts). You can install them in your npm project with `npm install @ensdomains/ens-contracts`. Now, you can require them in a migration script as follows \(see the [Truffle Documentation](https://truffleframework.com/docs/truffle/getting-started/package-management-via-npm) on working with contract artifacts and npm for details\)
 
 ```javascript
-var ENS = artifacts.require("@ensdomains/ens/ENSRegistry");
+import {
+  ENS, ENSRegistry, PublicResolver
+} from '@ensdomains/ens-contracts'`
 ```
 
 Including them within your smart contract is as follows
 
 ```javascript
-import "@ensdomains/ens/contracts/ENS.sol";
+import '@ensdomains/ens-contracts/contracts/registry/ENS.sol
 ```
 
 `ENS` contains only an interface while `ENSRegistry` includes the actual implementation.
 
 ## Deploy the Registry
 
-The registry is ENS’s central component and stores, among other things, who owns which domain. You can deploy it in a Truffle migration script.
+The registry is ENS’s central component and stores, among other things, who owns which domain. This is the example using ethers and hardhat.
 
 ```javascript
-var ENS = artifacts.require("@ensdomains/ens/ENSRegistry");
-
-module.exports = function(deployer) {
-  deployer.deploy(ENS);
-};
+const ENSRegistry = await ethers.getContractFactory("ENSRegistry")
+await ENSRegistry.deploy()
 ```
 
 Once deployed, you will have a fresh ENS registry, whose root node is owned by the account that submitted the transaction. This account has total control over the ENS registry - it can create and replace any node in the entire tree.
@@ -41,30 +42,28 @@ From here, it's possible to create and manage names by directly interacting with
 Records in the registry can point to resolver contracts which store additional domain information. The most common use-case is to store an address for a domain, but storing a contract ABI or text is also possible. For most purposes on private networks it's convenient to have an unrestricted general-purpose resolver available. Deploying one is straightforward:
 
 ```javascript
-const ENS = artifacts.require("@ensdomains/ens/ENSRegistry");
-const PublicResolver = artifacts.require("@ensdomains/resolver/PublicResolver");
-
-module.exports = function(deployer, network, accounts) {
-  // Registry
-  deployer.deploy(ENS)
-  // Resolver
-  .then(function(ensInstance) {
-    return deployer.deploy(PublicResolver, ens.address);
-  })
-};
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const ENSRegistry = await ethers.getContractFactory("ENSRegistry")
+const registry = await ENSRegistry.deploy()
+await registry.deployed()
+const PublicResolver = await ethers.getContractFactory("PublicResolver")
+const resolver = await PublicResolver.deploy(registry.address, ZERO_ADDRESS);
+await resolver.deployed()
 ```
 
-The [`PublicResolver`](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol) looks up ownership in the registry, which is why the registry's address is required at deployment.
+The [`PublicResolver`](https://github.com/ensdomains/ens-contracts/blob/master/contracts/resolvers/PublicResolver.sol) looks up ownership in the registry, which is why the registry's address is required at deployment.
 
 For ease of use, we can give this resolver a name:
 
 ```javascript
-const utils = require('web3-utils');
+const ethers = require('ethers');
+const utils = ethers.utils;
+const labelhash = (label) => utils.keccak256(utils.toUtf8Bytes(label))
 const namehash = require('eth-ens-namehash');
 
 async function setupResolver(ens, resolver, accounts) {
   const resolverNode = namehash.hash("resolver");
-  const resolverLabel = utils.sha3("resolver");
+  const resolverLabel = labelhash("resolver");
 
   await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", resolverLabel, accounts[0]);
   await ens.setResolver(resolverNode, resolver.address);
@@ -80,11 +79,9 @@ So far, domains can only be registered manually by the owner of the registry's r
 
 ```javascript
 ...
-.then(function() {
-  return deployer.deploy(FIFSRegistrar, ens.address, ens.address, namehash.hash("test"));
-})
-.then(function(registrarInstance) {
-  return ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", sha3("test"), registrarInstance.address);
+  const registrar = await FIFSRegistrar.deploy(ens.address, ens.address, namehash.hash("test"));
+  await registrar.deployed();
+  await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", sha3("test"), registrar.address);
 })
 ...
 ```
@@ -95,14 +92,10 @@ Similarly, if you wish to enable reverse resolution on your deployment, you will
 
 ```javascript
 ...
-  .then(function() {
-    return deployer.deploy(ReverseRegistrar, ens.address, resolver.address);
-  })
-  .then(function(reverseRegistrarInstance) {
-    return setupReverseRegistrar(ens, resolver, reverseRegistrarInstance, accounts);
-  })
+const reverseRegistrar = await ReverseRegistrar.deploy(ens.address, resolver.address);
+await reverseRegistrar.deployed();
+setupReverseRegistrar(ens, resolver, reverseRegistrar, accounts);
 ...
-})
 
 async function setupReverseRegistrar(ens, resolver, reverseRegistrar, accounts) {
   await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", utils.sha3("reverse"), accounts[0]);
@@ -112,69 +105,81 @@ async function setupReverseRegistrar(ens, resolver, reverseRegistrar, accounts) 
 
 ## Migration File Example
 
-We can combine the steps above in a single Truffle migration file. This allows us to deploy ENS in one go:
+We can combine the steps above in a single hardhat migration file. This allows us to deploy ENS in one go:
+
+### contracts/deps.sol
+
+```
+//SPDX-License-Identifier: MIT
+// These imports are here to force Hardhat to compile contracts we depend on in our tests but don't need anywhere else.
+import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
+import "@ensdomains/ens-contracts/contracts/registry/FIFSRegistrar.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol";
+````
+
+### script/deploy.js
 
 ```javascript
-const ENS = artifacts.require("@ensdomains/ens/ENSRegistry");
-const FIFSRegistrar = artifacts.require("@ensdomains/ens/FIFSRegistrar");
-const ReverseRegistrar = artifacts.require("@ensdomains/ens/ReverseRegistrar");
-const PublicResolver = artifacts.require("@ensdomains/resolver/PublicResolver");
-
-const utils = require('web3-utils');
+const hre = require("hardhat");
 const namehash = require('eth-ens-namehash');
-
 const tld = "test";
-
-module.exports = function(deployer, network, accounts) {
-  let ens;
-  let resolver;
-  let registrar;
-
-  // Registry
-  deployer.deploy(ENS)
-  // Resolver
-  .then(function(ensInstance) {
-    ens = ensInstance;
-    return deployer.deploy(PublicResolver, ens.address);
-  })
-  .then(function(resolverInstance) {
-    resolver = resolverInstance;
-    return setupResolver(ens, resolver, accounts);
-  })
-  // Registrar
-  .then(function() {
-    return deployer.deploy(FIFSRegistrar, ens.address, namehash.hash(tld));
-  })
-  .then(function(registrarInstance) {
-    registrar = registrarInstance;
-    return setupRegistrar(ens, registrar);
-  })
-  // Reverse Registrar
-  .then(function() {
-    return deployer.deploy(ReverseRegistrar, ens.address, resolver.address);
-  })
-  .then(function(reverseRegistrarInstance) {
-    return setupReverseRegistrar(ens, resolver, reverseRegistrarInstance, accounts);
-  })
+const ethers = hre.ethers;
+const utils = ethers.utils;
+const labelhash = (label) => utils.keccak256(utils.toUtf8Bytes(label))
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const ZERO_HASH = "0x0000000000000000000000000000000000000000000000000000000000000000";
+async function main() {
+  const ENSRegistry = await ethers.getContractFactory("ENSRegistry")
+  const FIFSRegistrar = await ethers.getContractFactory("FIFSRegistrar")
+  const ReverseRegistrar = await ethers.getContractFactory("ReverseRegistrar")
+  const PublicResolver = await ethers.getContractFactory("PublicResolver")
+  const signers = await ethers.getSigners();
+  const accounts = signers.map(s => s.address)
+  
+  const ens = await ENSRegistry.deploy()
+  await ens.deployed()
+  const resolver = await PublicResolver.deploy(ens.address, ZERO_ADDRESS);
+  await resolver.deployed()
+  await setupResolver(ens, resolver, accounts)
+  const registrar = await  FIFSRegistrar.deploy(ens.address, namehash.hash(tld));
+  await registrar.deployed()
+  await setupRegistrar(ens, registrar);
+  const reverseRegistrar = await ReverseRegistrar.deploy(ens.address, resolver.address);
+  await reverseRegistrar.deployed()
+  await setupReverseRegistrar(ens, registrar, reverseRegistrar, accounts);
 };
 
 async function setupResolver(ens, resolver, accounts) {
   const resolverNode = namehash.hash("resolver");
-  const resolverLabel = utils.sha3("resolver");
-
-  await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", resolverLabel, accounts[0]);
+  const resolverLabel = labelhash("resolver");
+  await ens.setSubnodeOwner(ZERO_HASH, resolverLabel, accounts[0]);
   await ens.setResolver(resolverNode, resolver.address);
-  await resolver.setAddr(resolverNode, resolver.address);
+  await resolver['setAddr(bytes32,address)'](resolverNode, resolver.address);
 }
 
 async function setupRegistrar(ens, registrar) {
-  await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", utils.sha3(tld), registrar.address);
+  await ens.setSubnodeOwner(ZERO_HASH, labelhash(tld), registrar.address);
 }
 
-async function setupReverseRegistrar(ens, resolver, reverseRegistrar, accounts) {
-  await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", utils.sha3("reverse"), accounts[0]);
-  await ens.setSubnodeOwner(namehash.hash("reverse"), utils.sha3("addr"), reverseRegistrar.address);
+async function setupReverseRegistrar(ens, registrar, reverseRegistrar, accounts) {
+  await ens.setSubnodeOwner(ZERO_HASH, labelhash("reverse"), accounts[0]);
+  await ens.setSubnodeOwner(namehash.hash("reverse"), labelhash("addr"), reverseRegistrar.address);
 }
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+```
+
+To execute the migration file on hardhat, run the following command line.
+
+```
+npx hardhat run scripts/deploy.js
 ```
 
 ### Deploying ENS in a single transaction
@@ -184,12 +189,12 @@ Alternately you may wish to deploy a test registrar and its dependencies with a 
 This can be done by deploying a new contract that creates and sets up all the other contracts in its constructor. The below code creates all the ENS contracts and assigns the eth TLD to the FIFS Registrar so that any eth domain may be registered in the unit tests.
 
 ```text
-pragma solidity ^0.5.0;
+pragma solidity >=0.8.4;
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "@ensdomains/ens/contracts/FIFSRegistrar.sol";
-import "@ensdomains/ens/contracts/ReverseRegistrar.sol";
-import "@ensdomains/resolvers/contracts/PublicResolver.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
+import "@ensdomains/ens-contracts/contracts/registry/FIFSRegistrar.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol";
+import "@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol";
 
 // Construct a set of test ENS contracts.
 contract TestDependencies {
@@ -197,6 +202,7 @@ contract TestDependencies {
   bytes32 constant RESOLVER_LABEL = keccak256("resolver");
   bytes32 constant REVERSE_REGISTRAR_LABEL = keccak256("reverse");
   bytes32 constant ADDR_LABEL = keccak256("addr");
+  address constant ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
   ENSRegistry public ens;
   FIFSRegistrar public fifsRegistrar;
@@ -209,7 +215,7 @@ contract TestDependencies {
 
   constructor() public {
     ens = new ENSRegistry();
-    publicResolver = new PublicResolver(ens);
+    publicResolver = new PublicResolver(ens, ZERO_ADDRESS);
 
     // Set up the resolver
     bytes32 resolverNode = namehash(bytes32(0), RESOLVER_LABEL);
