@@ -109,13 +109,14 @@ We can combine the steps above in a single hardhat migration file. This allows u
 
 ### contracts/deps.sol
 
-```
+```text
 //SPDX-License-Identifier: MIT
 // These imports are here to force Hardhat to compile contracts we depend on in our tests but don't need anywhere else.
 import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
 import "@ensdomains/ens-contracts/contracts/registry/FIFSRegistrar.sol";
 import "@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol";
-````
+`
+```
 
 ### script/deploy.js
 
@@ -135,7 +136,7 @@ async function main() {
   const PublicResolver = await ethers.getContractFactory("PublicResolver")
   const signers = await ethers.getSigners();
   const accounts = signers.map(s => s.address)
-  
+
   const ens = await ENSRegistry.deploy()
   await ens.deployed()
   const resolver = await PublicResolver.deploy(ens.address, ZERO_ADDRESS);
@@ -178,7 +179,7 @@ main()
 
 To execute the migration file on hardhat, run the following command line.
 
-```
+```text
 npx hardhat run scripts/deploy.js
 ```
 
@@ -190,19 +191,17 @@ This can be done by deploying a new contract that creates and sets up all the ot
 
 ```text
 pragma solidity >=0.8.4;
-
-import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
-import "@ensdomains/ens-contracts/contracts/registry/FIFSRegistrar.sol";
-import "@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol";
-import "@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol";
+import {INameWrapper, PublicResolver} from '@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol';
+import '@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol';
+import '@ensdomains/ens-contracts/contracts/registry/FIFSRegistrar.sol';
+import {NameResolver, ReverseRegistrar} from '@ensdomains/ens-contracts/contracts/registry/ReverseRegistrar.sol';
 
 // Construct a set of test ENS contracts.
-contract TestDependencies {
-  bytes32 constant TLD_LABEL = keccak256("eth");
-  bytes32 constant RESOLVER_LABEL = keccak256("resolver");
-  bytes32 constant REVERSE_REGISTRAR_LABEL = keccak256("reverse");
-  bytes32 constant ADDR_LABEL = keccak256("addr");
-  address constant ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+contract ENSDeployer {
+  bytes32 public constant TLD_LABEL = keccak256('eth');
+  bytes32 public constant RESOLVER_LABEL = keccak256('resolver');
+  bytes32 public constant REVERSE_REGISTRAR_LABEL = keccak256('reverse');
+  bytes32 public constant ADDR_LABEL = keccak256('addr');
 
   ENSRegistry public ens;
   FIFSRegistrar public fifsRegistrar;
@@ -215,7 +214,7 @@ contract TestDependencies {
 
   constructor() public {
     ens = new ENSRegistry();
-    publicResolver = new PublicResolver(ens, ZERO_ADDRESS);
+    publicResolver = new PublicResolver(ens, INameWrapper(address(0)));
 
     // Set up the resolver
     bytes32 resolverNode = namehash(bytes32(0), RESOLVER_LABEL);
@@ -230,12 +229,21 @@ contract TestDependencies {
     ens.setSubnodeOwner(bytes32(0), TLD_LABEL, address(fifsRegistrar));
 
     // Construct a new reverse registrar and point it at the public resolver
-    reverseRegistrar = new ReverseRegistrar(ens, Resolver(address(publicResolver)));
+    reverseRegistrar = new ReverseRegistrar(
+      ens,
+      NameResolver(address(publicResolver))
+    );
 
     // Set up the reverse registrar
     ens.setSubnodeOwner(bytes32(0), REVERSE_REGISTRAR_LABEL, address(this));
-    ens.setSubnodeOwner(namehash(bytes32(0), REVERSE_REGISTRAR_LABEL), ADDR_LABEL, address(reverseRegistrar));
+    ens.setSubnodeOwner(
+      namehash(bytes32(0), REVERSE_REGISTRAR_LABEL),
+      ADDR_LABEL,
+      address(reverseRegistrar)
+    );
   }
 }
 ```
+
+
 
