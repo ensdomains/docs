@@ -13,13 +13,13 @@ The essential smart contracts are published [as npm modules](https://www.npmjs.c
 ```javascript
 import {
   ENS, ENSRegistry, PublicResolver
-} from '@ensdomains/ens-contracts'`
+} from '@ensdomains/ens-contracts'
 ```
 
 Including them within your smart contract is as follows
 
 ```javascript
-import '@ensdomains/ens-contracts/contracts/registry/ENS.sol
+import '@ensdomains/ens-contracts/contracts/registry/ENS.sol'
 ```
 
 `ENS` contains only an interface while `ENSRegistry` includes the actual implementation.
