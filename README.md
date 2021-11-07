@@ -1,6 +1,6 @@
 # Introduction
 
-The Ethereum Name Service \(ENS\) is a distributed, open, and extensible naming system based on the Ethereum blockchain.
+The Ethereum Name Service (ENS) is a distributed, open, and extensible naming system based on the Ethereum blockchain.
 
 ENS’s job is to map human-readable names like ‘alice.eth’ to machine-readable identifiers such as Ethereum addresses, other cryptocurrency addresses, content hashes, and metadata. ENS also supports ‘reverse resolution’, making it possible to associate metadata such as canonical names or interface descriptions with Ethereum addresses.
 
@@ -12,13 +12,13 @@ Because of the hierarchal nature of ENS, anyone who owns a domain at any level m
 
 ENS is deployed on the Ethereum main network and on several test networks. If you use a library such as the [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs) Javascript library, or an end-user application, it will automatically detect the network you are interacting with and use the ENS deployment on that network.
 
-You can try ENS out for yourself now by using the [ENS Manager App](https://app.ens.domains/), or by using any of the many ENS enabled applications on [our homepage](https://ens.domains/).
+You can try ENS out for yourself now by using the [ENS Manager App](https://app.ens.domains), or by using any of the many ENS enabled applications on [our homepage](https://ens.domains).
 
 ## ENS Architecture
 
 ENS has two principal components: the [registry](contract-api-reference/ens.md), and [resolvers](contract-api-reference/publicresolver.md).
 
-![](.gitbook/assets/ens-architecture.png)
+![](<.gitbook/assets/ens-architecture (1).png>)
 
 The ENS registry consists of a single smart contract that maintains a list of all domains and subdomains, and stores three critical pieces of information about each:
 
@@ -26,7 +26,7 @@ The ENS registry consists of a single smart contract that maintains a list of al
 > * The resolver for the domain
 > * The caching time-to-live for all records under the domain
 
-The owner of a domain may be either an external account \(a user\) or a smart contract. A registrar is simply a smart contract that owns a domain and issues subdomains of that domain to users that follow some set of rules defined in the contract.
+The owner of a domain may be either an external account (a user) or a smart contract. A registrar is simply a smart contract that owns a domain and issues subdomains of that domain to users that follow some set of rules defined in the contract.
 
 Owners of domains in the ENS registry may:
 
@@ -42,7 +42,7 @@ Each record type - cryptocurrency address, IPFS content hash, and so forth - def
 
 Resolving a name in ENS is a two-step process: First, ask the registry what resolver is responsible for the name, and second, ask that resolver for the answer to your query.
 
-![](https://lh5.googleusercontent.com/_OPPzaxTxKggx9HuxloeWtK8ggEfIIBKRCEA6BKMwZdzAfUpIY6cz7NK5CFmiuw7TwknbhFNVRCJsswHLqkxUEJ5KdRzpeNbyg8_H9d2RZdG28kgipT64JyPZUP--bAizozaDcxCq34)
+![](https://lh5.googleusercontent.com/\_OPPzaxTxKggx9HuxloeWtK8ggEfIIBKRCEA6BKMwZdzAfUpIY6cz7NK5CFmiuw7TwknbhFNVRCJsswHLqkxUEJ5KdRzpeNbyg8\_H9d2RZdG28kgipT64JyPZUP--bAizozaDcxCq34)
 
 In the above example, we're trying to find the Ethereum address pointed to by 'foo.eth'. First, we ask the registry which resolver is responsible for 'foo.eth'. Then, we query that resolver for the address of 'foo.eth'.
 
@@ -66,9 +66,8 @@ Check out the dapp developer guide, starting with [ENS Enabling your Dapp](dapp-
 
 #### I'm a contract developer and want to interact with ENS from my contract code
 
-Check out the Contract Developer Guide, starting with [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md). You can also [write your own resolver](contract-developer-guide/writing-a-resolver.md) \(to customise the process of looking up names\), or your own [registrar](contract-developer-guide/writing-a-registrar.md) \(to customise the process of registering new names\).
+Check out the Contract Developer Guide, starting with [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md). You can also [write your own resolver](contract-developer-guide/writing-a-resolver.md) (to customise the process of looking up names), or your own [registrar](contract-developer-guide/writing-a-registrar.md) (to customise the process of registering new names).
 
 #### I want reference documentation for the ENS smart contracts
 
 Check out the Contract API Reference. We have reference documentation for ENS's core contract, the [registry](contract-api-reference/ens.md), for [resolvers](contract-api-reference/publicresolver.md), and for commonly-used registrars such as the [Test registrar](contract-api-reference/testregistrar.md), [reverse registrar](contract-api-reference/reverseregistrar.md), and the [.eth registrar](contract-api-reference/.eth-permanent-registrar/).
-
