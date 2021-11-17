@@ -22,7 +22,7 @@ In addition, the test networks also have a deployment of the .eth registrar for 
 
 For other contract addresses such as root, mulisig, controller, public resolver, and so on, you can see their address under [https://app.ens.domains/name/ens.eth/subdomains](https://app.ens.domains/name/ens.eth/subdomains)
 
-Back in February 2020, the ENS registry was migrated to the new contract address to patch security vulnabilities \(Read more detail [here](ens-migration-february-2020/technical-description.md)\). The prior registry addresses were:
+Back in February 2020, the ENS registry was migrated to the new contract address to patch security vulnerabilities \(Read more detail [here](ens-migration-february-2020/technical-description.md)\). The prior registry addresses were:
 
 * Mainnet, at [0x314159265dd8dbb310642f98f50c066173c1259b](https://etherscan.io/address/0x314159265dd8dbb310642f98f50c066173c1259b#code).
 * Ropsten, at [0x112234455c3a32fd11230c42e7bccd4a84e02010](https://ropsten.etherscan.io/address/0x112234455c3a32fd11230c42e7bccd4a84e02010).
