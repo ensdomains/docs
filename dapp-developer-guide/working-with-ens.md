@@ -9,6 +9,7 @@ Example code for the Javascript-based APIs \(ensjs, web3.js, ethjs-ens, and ethe
 ```javascript
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
+// TODO(SOMEONE): Show a provider being instantiated or at least mention where it comes from.
 const ens = new ENS({ provider, ensAddress: getEnsAddress('1') })
 ```
 {% endtab %}
