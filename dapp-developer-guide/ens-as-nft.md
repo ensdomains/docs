@@ -4,7 +4,7 @@ When ENS .eth registrar migrated in May 2019, the .eth registrar became an [ERC7
 
 ## Deriving tokenId from ENS name
 
-The tokenId of ENS name is simply the uint256 representation of the hash of the label \(`vitalik` for `vitalik.eth`\).
+The tokenId of ENS name is simply the uint256 representation of the hash of the label (`vitalik` for `vitalik.eth`).
 
 ```javascript
 const ethers = require('ethers')
@@ -44,17 +44,17 @@ request(url, GET_LABEL_NAME).then((data) => console.log(data))
 // { domains: [ { labelName: 'vitalik' } ] }
 ```
 
-If you prefer not to rely on a third party like TheGraph, the team open-sourced [ens-rainbow](https://github.com/graphprotocol/ens-rainbow) containing a link to the original dataset \(6GB with 133 million entities\) so that you can host your own ENS name decoding service.
+If you prefer not to rely on a third party like TheGraph, the team open-sourced [ens-rainbow](https://github.com/graphprotocol/ens-rainbow) containing a link to the original dataset (6GB with 133 million entities) so that you can host your own ENS name decoding service.
 
 ## Turning subdomain into NFT
 
-Currently, all the subdomains nor non `.eth` domains are not NFT, unless the domain registrar itself supports NFT such as \(`dcl.eth`, and `.kred`\). If you want to turn all subdomains which you own, you have to create a registrar
+Currently, all the subdomains nor non `.eth` domains are not NFT, unless the domain registrar itself supports NFT such as (`dcl.eth`, and `.kred`). If you want to turn all subdomains which you own, you have to create a registrar
 
 1. Create a registrar contract as ERC721 compliant
-2. Set ENS registry address \(mostly when you deploy the registrar\)
+2. Set ENS registry address (mostly when you deploy the registrar)
 3. Create `register` function which calls `registry.setSubnodeOwner` then mint the token making the subdomain label hash as tokenId
 
-```text
+```
 contract DCLRegistrar is ERC721Full, Ownable {
     constructor(
         IENSRegistry _registry,
@@ -83,11 +83,6 @@ For non-technical users, we are currently working on upgrading our `SubdomainReg
 
 ## Metadata
 
-.eth does not have `.tokenURI` . However, we created a separate metadata service which NFT marketlpaces like OpenSea can fetch metadata for ENS such as registration data, expiration date, name length, etc. For more detail, please refer to the metadata documentation site.
+.eth does not have `.tokenURI` . However, we created a separate metadata service which NFT marketplaces like OpenSea can fetch metadata for ENS such as registration data, expiration date, name length, etc. For more detail, please refer to the metadata documentation site.
 
 {% embed url="https://metadata.ens.domains/docs" %}
-
-
-
-
-
