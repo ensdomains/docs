@@ -8,6 +8,17 @@
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [DNS Registrar guide](dns-registrar-guide.md)
 * [Bug Bounty Program](bug-bounty-program.md)
+* [ENS Improvement Proposals](ens-improvement-proposals/README.md)
+  * [ENSIP-1: ENS](ens-improvement-proposals/ensip-1-ens.md)
+  * [ENSIP-2: Initial Hash Registrar](ens-improvement-proposals/ensip-2-initial-hash-registrar.md)
+  * [ENSIP-3: Reverse Resolution](ens-improvement-proposals/ensip-3-reverse-resolution.md)
+  * [ENSIP-4: Support for contract ABIs](ens-improvement-proposals/ensip-4-support-for-contract-abis.md)
+  * [ENSIP-5: Text Records](ens-improvement-proposals/ensip-5-text-records.md)
+  * [ENSIP-6: DNS-in-ENS](ens-improvement-proposals/ensip-6-dns-in-ens.md)
+  * [ENSIP-7: Contenthash field](ens-improvement-proposals/ensip-7-contenthash-field.md)
+  * [ENSIP-8: Interface Discovery](ens-improvement-proposals/ensip-8-interface-discovery.md)
+  * [ENSIP-9: Multichain Address Resolution](ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
+  * [ENSIP-10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution.md)
 
 ## Dapp Developer Guide
 
@@ -31,17 +42,6 @@
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 * [DNS Registrar](contract-api-reference/dns-registrar.md)
-* [ENS Improvement Proposals](contract-api-reference/ens-improvement-proposals/README.md)
-  * [ENSIP-1: ENS](contract-api-reference/ens-improvement-proposals/ensip-1-ens.md)
-  * [ENSIP-2: Initial Hash Registrar](contract-api-reference/ens-improvement-proposals/ensip-2-initial-hash-registrar.md)
-  * [ENSIP-3: Reverse Resolution](contract-api-reference/ens-improvement-proposals/ensip-3-reverse-resolution.md)
-  * [ENSIP-4: Support for contract ABIs](contract-api-reference/ens-improvement-proposals/ensip-4-support-for-contract-abis.md)
-  * [ENSIP-5: Text Records](contract-api-reference/ens-improvement-proposals/ensip-5-text-records.md)
-  * [ENSIP-6: DNS-in-ENS](contract-api-reference/ens-improvement-proposals/ensip-6-dns-in-ens.md)
-  * [ENSIP-7: Contenthash field](contract-api-reference/ens-improvement-proposals/ensip-7-contenthash-field.md)
-  * [ENSIP-8: Interface Discovery](contract-api-reference/ens-improvement-proposals/ensip-8-interface-discovery.md)
-  * [ENSIP-9: Multichain Address Resolution](contract-api-reference/ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
-  * [ENSIP-10: Wildcard Resolution](contract-api-reference/ens-improvement-proposals/ensip-10-wildcard-resolution.md)
 
 ## Contract Developer Guide
 
