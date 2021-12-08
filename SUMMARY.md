@@ -31,17 +31,27 @@
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 * [DNS Registrar](contract-api-reference/dns-registrar.md)
+* [ENS Improvement Proposals](contract-api-reference/ens-improvement-proposals/README.md)
+  * [ENSIP-1: ENS](contract-api-reference/ens-improvement-proposals/ensip-1-ens.md)
+  * [ENSIP-2: Initial Hash Registrar](contract-api-reference/ens-improvement-proposals/ensip-2-initial-hash-registrar.md)
+  * [ENSIP-3: Reverse Resolution](contract-api-reference/ens-improvement-proposals/ensip-3-reverse-resolution.md)
+  * [ENSIP-4: Support for contract ABIs](contract-api-reference/ens-improvement-proposals/ensip-4-support-for-contract-abis.md)
+  * [ENSIP-5: Text Records](contract-api-reference/ens-improvement-proposals/ensip-5-text-records.md)
+  * [ENSIP-6: DNS-in-ENS](contract-api-reference/ens-improvement-proposals/ensip-6-dns-in-ens.md)
+  * [ENSIP-7: Contenthash field](contract-api-reference/ens-improvement-proposals/ensip-7-contenthash-field.md)
+  * [ENSIP-8: Interface Discovery](contract-api-reference/ens-improvement-proposals/ensip-8-interface-discovery.md)
+  * [ENSIP-9: Multichain Address Resolution](contract-api-reference/ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
+  * [ENSIP-10: Wildcard Resolution](contract-api-reference/ens-improvement-proposals/ensip-10-wildcard-resolution.md)
 
 ## Contract Developer Guide
 
 * [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
 * [Writing a Resolver](contract-developer-guide/writing-a-resolver.md)
 * [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
-* [ENS Discussion Forum](https://discuss.ens.domains/)
+* [ENS Discussion Forum](https://discuss.ens.domains)
 * [ENS Support Chat](https://discord.gg/AskZbFx)
 
-## ENS Migration \(February 2020\)
+## ENS Migration (February 2020)
 
 * [Guide for DApp Developers](ens-migration-february-2020/guide-for-dapp-developers.md)
 * [Technical Description](ens-migration-february-2020/technical-description.md)
-
