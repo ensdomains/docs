@@ -20,7 +20,7 @@ Ropsten test network has the .test registrar deployed. This registrar permits an
 
 In addition, the test networks also have a deployment of the .eth registrar for testing purposes.
 
-For other contract addresses such as root, mulisig, controller, public resolver, and so on, you can see their address under [https://app.ens.domains/name/ens.eth/subdomains](https://app.ens.domains/name/ens.eth/subdomains)
+For other contract addresses such as root, multisig, controller, public resolver, and so on, you can see their address under [https://app.ens.domains/name/ens.eth/subdomains](https://app.ens.domains/name/ens.eth/subdomains)
 
 Back in February 2020, the ENS registry was migrated to the new contract address to patch security vulnerabilities \(Read more detail [here](ens-migration-february-2020/technical-description.md)\). The prior registry addresses were:
 
