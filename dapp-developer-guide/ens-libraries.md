@@ -24,16 +24,21 @@ Otherwise, use ensjs.
 
 #### Accessing smart contracts directly
 
-All the ENS smart contracts are [Truffle](https://truffleframework.com) projects and published as npm modules \(eg: [ENS registry](https://www.npmjs.com/package/@ensdomains/ens)\). If you want to access to functions none of the above libraries support you can install the smart contracts via npm.
+All the ENS smart contracts are published as `@ensdomains/ens-contracts` [npm module.](https://github.com/ensdomains/ens-contracts)
 
-* [Resolver](https://www.npmjs.com/package/@ensdomains/resolver) = `Resolver.sol` contains all function names including the deprecated functions \(eg: `content`\)
-* [Permanent Registrar](https://www.npmjs.com/package/@ensdomains/ethregistrar)
-* [Registry and old Registrar](https://www.npmjs.com/package/@ensdomains/ens)
-
-The bytecode and abi are precompiled and can be imported from the modules.
+This is how you include abi into your frontend code.
 
 ```text
-import { abi , bytecode } from '@ensdomains/ens/build/contracts/ENS.json'
+import {
+  ENS,
+  PublicResolver
+} from '@ensdomains/ens-contracts'`
+```
+
+This is how you import our smartcontract within Solidity.
+
+```text
+import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 ```
 
 ### Java

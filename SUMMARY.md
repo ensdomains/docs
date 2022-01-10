@@ -8,6 +8,17 @@
 * [Deploying ENS on a Private Chain](deploying-ens-on-a-private-chain.md)
 * [DNS Registrar guide](dns-registrar-guide.md)
 * [Bug Bounty Program](bug-bounty-program.md)
+* [ENS Improvement Proposals](ens-improvement-proposals/README.md)
+  * [ENSIP-1: ENS](ens-improvement-proposals/ensip-1-ens.md)
+  * [ENSIP-2: Initial Hash Registrar](ens-improvement-proposals/ensip-2-initial-hash-registrar.md)
+  * [ENSIP-3: Reverse Resolution](ens-improvement-proposals/ensip-3-reverse-resolution.md)
+  * [ENSIP-4: Support for contract ABIs](ens-improvement-proposals/ensip-4-support-for-contract-abis.md)
+  * [ENSIP-5: Text Records](ens-improvement-proposals/ensip-5-text-records.md)
+  * [ENSIP-6: DNS-in-ENS](ens-improvement-proposals/ensip-6-dns-in-ens.md)
+  * [ENSIP-7: Contenthash field](ens-improvement-proposals/ensip-7-contenthash-field.md)
+  * [ENSIP-8: Interface Discovery](ens-improvement-proposals/ensip-8-interface-discovery.md)
+  * [ENSIP-9: Multichain Address Resolution](ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
+  * [ENSIP-10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution.md)
 
 ## Dapp Developer Guide
 
@@ -37,11 +48,10 @@
 * [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
 * [Writing a Resolver](contract-developer-guide/writing-a-resolver.md)
 * [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
-* [ENS Discussion Forum](https://discuss.ens.domains/)
+* [ENS Discussion Forum](https://discuss.ens.domains)
 * [ENS Support Chat](https://discord.gg/AskZbFx)
 
-## ENS Migration \(February 2020\)
+## ENS Migration (February 2020)
 
 * [Guide for DApp Developers](ens-migration-february-2020/guide-for-dapp-developers.md)
 * [Technical Description](ens-migration-february-2020/technical-description.md)
-
