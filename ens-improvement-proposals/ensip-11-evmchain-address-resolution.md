@@ -22,7 +22,7 @@ To compute the new coin type for EVM chains, you have to do 0x800000000 | chainI
 
 ```typescript
 export const convertEVMChainIdToCoinType = (chainId: number) =>{
-  return  (SLIP44_MSB | chainId) >>> 0
+  return  (0x80000000 | chainId) >>> 0
 }
 ```
 
