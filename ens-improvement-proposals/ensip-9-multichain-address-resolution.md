@@ -202,7 +202,6 @@ The table below specifies test vectors for valid address encodings for each cryp
 |                  |           | `AF8ekvSf6eiSBRspJjnfzK6d1EM6pnPq3G`                     | `a914f8f5d99a9fc21aa676e74d15e7b8134557615bda87`                 |
 | Monacoin         | 22        | `MHxgS2XMXjeJ4if2PRRbWYcdwZPWfdwaDT`                     | `76a9146e5bb7226a337fe8307b4192ae5c3fab9fa9edf588ac`             |
 | Ethereum         | 60        | `0x314159265dD8dbb310642f98f50C066173C1259b`             | `314159265dd8dbb310642f98f50c066173c1259b`                       |
-| Ethereum Classic | 61        | `0x314159265dD8dbb310642f98f50C066173C1259b`             | `314159265dd8dbb310642f98f50c066173c1259b`                       |
 | Rootstock        | 137       | `0x5aaEB6053f3e94c9b9a09f33669435E7ef1bEAeD`             | `5aaeb6053f3e94c9b9a09f33669435e7ef1beaed`                       |
 | Ripple           | 144       | `rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn`                     | `004b4e9c06f24296074f7bc48f92a97916c6dc5ea9`                     |
 |                  |           | `X7qvLs7gSnNoKvZzNWUT2e8st17QPY64PPe7zriLNuJszeg`        | `05444b4e9c06f24296074f7bc48f92a97916c6dc5ea9000000000000000000` |
