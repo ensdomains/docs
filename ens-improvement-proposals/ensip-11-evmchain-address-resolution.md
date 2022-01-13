@@ -1,8 +1,6 @@
 ---
 description: >-
-  Introduces new overloads for the the `addr` field for ENS resolvers, which
-  permit resolution of addresses for other blockchains via ENS (formerly
-  EIP-2304).
+  Introduces coinType for EVM compatible chains (ammending ENSIP9).
 ---
 
 # ENSIP-9: EVM compatible Chain Address Resolution
