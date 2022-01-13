@@ -1,6 +1,6 @@
 ---
 description: >-
-  Introduces coinType for EVM compatible chains (ammending ENSIP9).
+  Introduces coinType for EVM compatible chains (amending ENSIP9).
 ---
 
 # ENSIP-9: EVM compatible Chain Address Resolution
