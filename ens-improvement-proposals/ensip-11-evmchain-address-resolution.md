@@ -12,7 +12,7 @@ description: >-
 
 ### Motivation
 
-The existing [ENSIP9(multichain address resolution)](./ensip-9-multichain-address-resolution.md) relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM compatible chains into SLIP 44.
+The existing [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-address-resolution.md) relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM compatible chains into SLIP 44.
 
 ### Specification
 
