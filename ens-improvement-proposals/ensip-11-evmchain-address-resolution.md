@@ -3,7 +3,7 @@ description: >-
   Introduces coinType for EVM compatible chains (amending ENSIP9).
 ---
 
-# ENSIP-9: EVM compatible Chain Address Resolution
+# ENSIP-11: EVM compatible Chain Address Resolution
 
 | **Author**    | Makoto Inoue \<makoto@ens.domains> |
 | ------------- | -------------------------------- |
