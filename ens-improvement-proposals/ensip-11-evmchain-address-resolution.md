@@ -16,8 +16,9 @@ The existing [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-addr
 
 ### Specification
 
-This specification amends ENSIP9 by allocating all EVM cointype in the range of 0x800000000, which is currently reserved at SLIP44 as msb (most significant bit) and hence no coin types exist in that range.
-To compute the new coin type for EVM chains, you have to do 0x800000000 | chainId
+This specification amends ENSIP 9 to specify that coin types with the most-significant bit set are to be treated as EVM chain IDs. The MSB is reserved in SLIP44 for other purposes relating to HD wallet key derivation, so no coin types exist in this range.
+
+To compute the new coin type for EVM chains, bitwise-OR the chain ID with `0x800000000`: ` 0x800000000 | chainId`.
 
 
 ```typescript
