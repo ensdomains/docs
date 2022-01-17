@@ -27,6 +27,14 @@ export const convertEVMChainIdToCoinType = (chainId: number) =>{
 }
 ```
 
+And to reverse the operation, bitwise-AND the cointType with `0x7fffffff`: `0x7fffffff & coinType`.
+
+```typescript
+export const convertCoinTypeToEVMChainId = (coinType: number) =>{
+  return  (0x7fffffff & coinType) >> 0
+}
+```
+
 #### Implementation
 
 An implementation of this interface is provided in the [ensdomains/address-encoder](https://github.com/ensdomains/address-encoder/) repository.
