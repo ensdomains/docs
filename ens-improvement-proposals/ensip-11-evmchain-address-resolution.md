@@ -47,6 +47,8 @@ To compute the new coin type for EVM chains, call `convertEVMChainIdToCoinType(c
 const encoder = require('@ensdomains/address-encoder')
 >  encoder.convertEVMChainIdToCoinType(61)
 2147483709
+> encoder.convertCoinTypeToEVMChainId(2147483709)
+61
 ```
 
 You can also use existing functions formatsByName and formatsByCoinType to derive these chain IDs
