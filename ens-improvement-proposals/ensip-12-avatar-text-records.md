@@ -1,8 +1,8 @@
 ---
-description: A standard for storage of avatar text records in ENS.
+description: A standard for storage of the avatar text record in ENS.
 ---
 
-# ENSIP-12: Avatar Text Records
+# ENSIP-12: Avatar Text Record
 
 | **Author**    | Nick Johnson \<nick@ens.domains>, Makoto Inoue \<makoto@ens.domains> |
 | ------------- | -------------------------------------------------------------------- |
