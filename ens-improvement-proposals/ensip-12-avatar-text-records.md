@@ -2,12 +2,12 @@
 description: A standard for storage of avatar text records in ENS.
 ---
 
-# ENSIP-5: Avatar Text Records
+# ENSIP-12: Avatar Text Records
 
 | **Author**    | Nick Johnson \<nick@ens.domains>, Makoto Inoue \<makoto@ens.domains> |
-| ------------- | ----------------------- |
-| **Status**    | Draft                   |
-| **Submitted** | 2022-01-18              |
+| ------------- | -------------------------------------------------------------------- |
+| **Status**    | Draft                                                                |
+| **Submitted** | 2022-01-18                                                           |
 
 ### Abstract
 
@@ -15,7 +15,9 @@ This ENSIP defines a process for retrieving avatar URIs from ENS, several [URI](
 
 ### Motivation
 
-TBA
+ENS primary name (formely known as reverse record) has been widely integrated as a de facto web3 user name across many Ethereum based applications. As multiple apps started specifying avatar profile image as well as let users pick NFT as pfp (profile image), it became obvious to store such information within ENS so that the avatar information can be shared across different applications.
+
+This specification standardises a way store and retrieve these information using  [ENSIP-5: Avatar Text Records](ensip-5-text-records.md)
 
 ### Specification
 
