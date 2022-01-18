@@ -10,9 +10,15 @@ description: >-
 | **Status**    | Draft                            |
 | **Submitted** | 2022-01-13                       |
 
+### Abstract
+
+This ENSIP extends [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-address-resolution.md), dedicates a range of coin types for EVM compatible chains, and specifies a way to derive EVM chain IDs to the designated coint types.
+
+The dedicated range uses over 0x800000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ides will be deprecated.
+
 ### Motivation
 
-The existing [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-address-resolution.md) relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM compatible chains into SLIP 44. This specification standardises a way to derive coinType based on [Chain ID](https://chainlist.org).
+The existing ENSIP 9 relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM compatible chains into SLIP 44. This specification standardises a way to derive coinType based on [Chain ID](https://chainlist.org).
 
 ### Specification
 
