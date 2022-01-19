@@ -2,7 +2,7 @@
 
 ## IMPORTANT NOTE
 
-The development of ENS offchain data support is still in progress, and none of the solutions described below is not to be used in the production environment yet. Therefore, this section is written mainly for information purposes so that dapps and wallets developers can prepare for the integration once it is fully supported.
+The development of ENS offchain data support is still in progress, and none of the solutions described below is to be used in the production environment yet. Therefore, this section is written mainly for information purposes so that dapps and wallets developers can prepare for the integration once it is fully supported.
 
 ## Summary
 
@@ -14,11 +14,11 @@ With the proliferation of layer 2 solutions for Ethereum that are starting to re
 
 **EIP 3668** allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
 
-**ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain and eliminates the high gas fee on L1.
+**ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
 
 **ENSIP 11** allows a single name to hold different addresses across multiple EVM compatible chains. Contract addresses can use these EVM chain addresses so that clients can choose appropriate addresses on different chains.
 
-## Dapps and wallets supporting Layer 2/ offchain data resolution.
+## Steps required for Dapps and wallets to support offchain data lookup.
 
 If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in, so simply update the library when ready.
 
@@ -71,7 +71,7 @@ Work in progress
 
 If you use other libraries or custom integration, you have to add the support on your own. So please read each specification and support accordingly or contact the ENS team for help.
 
-## Dapps and wallets issuing subdomains on Layer 2 / offchain
+## Steps required for Dapps and wallets to issue subdomains offchain
 
 If you wish to issue subdomains using offchain data storage, please follow [offchain resolver](https://github.com/ensdomains/offchain-resolver) as a reference point. The example uses a flat file as a data source but can easily be replaced with database calls.
 
