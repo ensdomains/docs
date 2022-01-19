@@ -1,26 +1,26 @@
-# ENS Layer2 and offchain data support
+# ENS offchain data support (including layer 2)
 
 ## IMPORTANT NOTE
 
-The development of ENS Layer2 and offchain data support is still on progress and none of the solutions described below are not to be used in production environment yet. This section is written mostly for information purpose so that dapps and wallets developer can prepare for the integration once it is fully supported.
+The development of ENS offchain data support is still in progress, and none of the solutions described below is not to be used in the production environment yet. Therefore, this section is written mainly for information purposes so that dapps and wallets developers can prepare for the integration once it is fully supported.
 
 ## Summary
 
-With the proliferation of layer 2 solutions for Ethereum that are starting to reach maturity, it’s important that ENS is able to provide resolution services across the entire ecosystem, as well as making it possible for ENS users to take advantage of the efficiencies made possible by Layer 2 solutions. Subsequent to a post by [Vitalik](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591) that suggested a possible means for this, the ENS team and the wider ENS and L2 community have been working on a general-purpose "Layer 2 bridge" that makes cross-platform interoperability possible for both ENS and other applications that need to be able to retrieve data from a variety of offchain sources in a trustless fashion and came up with standards.
+With the proliferation of layer 2 solutions for Ethereum that are starting to reach maturity, it's important that ENS is able to provide resolution services across the entire ecosystem, as well as making it possible for ENS users to take advantage of the efficiencies made possible by Layer 2 solutions. Subsequent to a post by [Vitalik](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591) that suggested a possible means for this, the ENS team and the wider ENS and L2 community have been working on a general-purpose "Layer 2 bridge" that makes cross-platform interoperability possible for both ENS and other applications that need to be able to retrieve data from a variety of offchain sources (any data that resides outside of Ethereum Mainnet also known as layer 1/L1. This includes both propriety database and layer 2/L2 solutions such as Optimism, Arbitrum, Starkware, ZKSync, and so on) ) in a trustless fashion and came up with standards.
 
 - [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
 - [ENSIP 10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution)
 - [ENSIP-11: EVM compatible Chain Address Resolution](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md)
 
-**EIP 3668** allows for offchain (any data that resides outside of Ethereum Mainnet also known as layer 1/L1. This includes both prepriorty database and layer 2/L2 solutions such as Optimism, Arbitrum, Starkware, ZKSync, and so on) lookups of data in a way that is transparent to clients, and allows contract authors to implement whatever validation is necessary; in many cases this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
+**EIP 3668** allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
 
-**ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. By issuing subdomains and moving the resolution of the parent name offchain, it allows dapps to issue subdomains offchain and eliminates high gas fee on L1.
+**ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain and eliminates the high gas fee on L1.
 
-**ENSIP 11** allows a single name to hold different addresses across multiple EVM comptabile chains. Contract addresses can use these EVM chain addresses so that clients can choose appropriate address on different chains.
+**ENSIP 11** allows a single name to hold different addresses across multiple EVM compatible chains. Contract addresses can use these EVM chain addresses so that clients can choose appropriate addresses on different chains.
 
 ## Dapps and wallets supporting Layer 2/ offchain data resolution.
 
-If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in so simply update the library when ready.
+If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in, so simply update the library when ready.
 
 - [ethersjs](https://github.com/ethers-io/ethers.js)
 - [web3js](https://github.com/ethereum/web3.js)
@@ -31,7 +31,7 @@ Currently EIP 3668 is implemented as npm module as [@chainlink/ethers-ccip-read-
 ](@chainlink/ethers-ccip-read-provider
 )([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)).
 
-The basic usage example is as follows
+The basic usage example is as follows.
 
 ```js
 import { CCIPReadProvider } from '@chainlink/ethers-ccip-read-provider';
@@ -41,7 +41,7 @@ const baseProvider = ethers.getDefaultProvider(options.provider);
 const provider = new CCIPReadProvider(baseProvider);
 ```
 
-The wildcard is still not supported yet, but one can easily implemented as follows
+The wildcard is still not supported yet, but one can easily be implemented as follows.
 
 ```js
 const labels = name.split('.');
@@ -69,41 +69,41 @@ Work in progress
 
 ### Any other libraries
 
-If you use other libraries or custom integration, you have to add the support on your own. Please read each specification and support accordingly or contact ENS team for help.
+If you use other libraries or custom integration, you have to add the support on your own. So please read each specification and support accordingly or contact the ENS team for help.
 
 ## Dapps and wallets issuing subdomains on Layer 2 / offchain
 
-If you are wishing to issue subdomains using offchain datastorage, please follow [offchain resolver](https://github.com/ensdomains/offchain-resolver) as a reference point. The example uses flat file as a data source but can easily be replaced with database call.
+If you wish to issue subdomains using offchain data storage, please follow [offchain resolver](https://github.com/ensdomains/offchain-resolver) as a reference point. The example uses a flat file as a data source but can easily be replaced with database calls.
 
-L2 support is still work in progress.
+L2 support is still a work in progress.
 
 ## FAQ
 
 ### Is the change backwards compatible?
 
-Yes. The existing names on L1 will continute being resolved without clients nor applications supporting these standards. Only names on outside of L1 will not be resolved.
+Yes. The existing names on L1 will continue working without clients nor applications supporting these standards. Only names that are outside of L1 will not be resolved.
 
 ### Will L2/offchain data be supported by GraphQL?
 
 Once each L2 is officially supported, we will need to spin up a subgraph for each L2 bridge, and we will use schema stitching to make using them transparent to callers.
 
-For names that are not hosted on a supported L2, we won't be able to fetch data that's normally only available on the subgraph
+For names that are not hosted on a supported L2, we won't be able to fetch data that are normally only available on the subgraph
 
 ### How do you support other EVM compatible chains?
 
-Non L2 chains lacks ways to verify data on L1 trustlessly. The alternative is for chain bridge operators acts as a trusted third party and hosts the offchain gateway, or individual dapps hosts own gateway and sign each data with the private key of the ENS name.
+Non-L2 chains lack ways to verify data on L1 in the trustless manner. The alternative is for chain bridge operators to act as a trusted third-party and hosts the offchain gateway, or individual dapps hosts own gateway and sign each data with the private key of the ENS name.
 
 ### Can I issue a new tld unique to an offchain environment?
 
-No.Please read ["Why ENS Doesn’t Create More TLDs: Responsible Citizenship in the Global Namespace"](https://medium.com/the-ethereum-name-service/why-ens-doesnt-create-more-tlds-responsible-citizenship-in-the-global-namespace-7e66658fe2b1) for more detail
+No. Please read ["Why ENS Doesn't Create More TLDs: Responsible Citizenship in the Global Namespace"](https://medium.com/the-ethereum-name-service/why-ens-doesnt-create-more-tlds-responsible-citizenship-in-the-global-namespace-7e66658fe2b1) for more detail
 
-### Can I set primary name to names on offchain?
+### Can I set a primary name to names on offchain?
 
-Yes, you can. However, reverse registrar (it is a hidden top level domain starting with .addr.reverse) currently resides on L1 hence you have to pay gas on L1. We may consider moving the reverse registrar to L2 in future.
+Yes, you can. However, reverse registrar (it is a hidden top-level domain starting with .addr.reverse) currently resides on L1; hence you have to pay gas on L1. We may consider moving the reverse registrar to L2 in future.
 
 ### Can I register .eth name on offchain?
 
-Only when we migrate .eth name to a specific L2. This will be one of the last steps of our migration after we find out which L2 supports ENS integration the best.
+Only when we migrate .eth name to a specific L2 as one of the last steps of our migration after finding out which L2 supports ENS integration the best.
 
 ## References and previous discussions
 
