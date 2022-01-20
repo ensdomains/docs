@@ -38,25 +38,7 @@ const baseProvider = ethers.getDefaultProvider(options.provider);
 const provider = new CCIPReadProvider(baseProvider);
 ```
 
-The wildcard is still not supported yet, but one can easily be implemented as follows.
-
-```js
-const labels = name.split('.');
-let resolverAddress = undefined;
-for(let i = 0; i < labels.length; i++) {
-    resolverAddress = await registry.resolver(ethers.utils.namehash(labels.slice(i).join('.')));
-    if(resolverAddress !== "0x0000000000000000000000000000000000000000") {
-    break;
-    }
-}
-if(resolverAddress === undefined) {
-    console.log(`${name} could not be resolved`);
-}
-
-const data = Resolver.encodeFunctionData('addr(bytes32)', [node]);
-const responseData = await resolver.resolve(dnsName(name), data);
-const addr = Resolver.decodeFunctionResult('addr(bytes32)', responseData);
-```
+The wildcard is not supported yet.
 
 Please refer to [offchain resolver client example code](https://github.com/ensdomains/offchain-resolver/blob/main/packages/client/src/index.ts#L46) for more detail.
 
@@ -106,6 +88,10 @@ Only when we migrate .eth name to a specific L2 as one of the last steps of our 
 
 Unlike EOA (Externally Owned Account), contract based accounts such as multisig may only be accessible in certain chains.
 [ENSIP-11](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md) allows a single name to hold different addresses across multiple EVM compatible chains and recommendation is to store contract addresses to EVM chain specific address record field.
+
+### Can I use libraries from other name services that support .eth?
+
+`@unstoppabledomains/resolution` removed [ENS support as of December 2021](https://github.com/unstoppabledomains/resolution/releases/tag/v7.0.0). Other services tend not to support all ENS tlds especially DNS based tlds (.com, .net, etc) so we advise not to rely on these libraries resolving ENS names.
 
 ## References and previous discussions
 
