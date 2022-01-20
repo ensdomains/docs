@@ -10,13 +10,10 @@ With the proliferation of layer 2 solutions for Ethereum that are starting to re
 
 - [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
 - [ENSIP 10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution)
-- [ENSIP-11: EVM compatible Chain Address Resolution](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md)
 
 **EIP 3668** allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
 
 **ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
-
-**ENSIP 11** allows a single name to hold different addresses across multiple EVM compatible chains. Contract addresses can use these EVM chain addresses so that clients can choose appropriate addresses on different chains.
 
 ## Steps required for Dapps and wallets to support offchain data lookup.
 
@@ -69,7 +66,7 @@ Work in progress
 
 ### Any other libraries
 
-If you use other libraries or custom integration, you have to add the support on your own. So please read each specification and support accordingly or contact the ENS team for help.
+If you use other libraries or custom integration, please raise the github issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
 
 ## Steps required for Dapps and wallets to issue subdomains offchain
 
@@ -104,6 +101,11 @@ Yes, you can. However, reverse registrar (it is a hidden top-level domain starti
 ### Can I register .eth name on offchain?
 
 Only when we migrate .eth name to a specific L2 as one of the last steps of our migration after finding out which L2 supports ENS integration the best.
+
+### How do I handle contract addreses?
+
+Unlike EOA (Externally Owned Account), contract based accounts such as multisig may only be accessible in certain chains.
+[ENSIP-11](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md) allows a single name to hold different addresses across multiple EVM compatible chains and recommendation is to store contract addresses to EVM chain specific address record field.
 
 ## References and previous discussions
 
