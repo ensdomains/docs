@@ -66,7 +66,7 @@ address = ns.address('alice.eth')
 String address = ens.resolve("alice.eth");
 ```
 
-web3j also supports using ENS names anywhere you would use an address, meaning you often do not need to directly interact with the `EnsResolver` object. For example, t o instantiate a contract interface, you can do:
+web3j also supports using ENS names anywhere you would use an address, meaning you often do not need to directly interact with the `EnsResolver` object. For example, to instantiate a contract interface, you can do:
 
 ```java
 YourSmartContract contract = YourSmartContract.load(
