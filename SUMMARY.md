@@ -20,6 +20,7 @@
   * [ENSIP-9: Multichain Address Resolution](ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
   * [ENSIP-10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution.md)
   * [ENSIP-11: EVM compatible Chain Address Resolution](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md)
+  * [ENSIP-12: Avatar Text Records](ens-improvement-proposals/ensip-12-avatar-text-records.md)
 
 ## Dapp Developer Guide
 
