@@ -19,6 +19,7 @@
   * [ENSIP-8: Interface Discovery](ens-improvement-proposals/ensip-8-interface-discovery.md)
   * [ENSIP-9: Multichain Address Resolution](ens-improvement-proposals/ensip-9-multichain-address-resolution.md)
   * [ENSIP-10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution.md)
+  * [ENSIP-11: EVM compatible Chain Address Resolution](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md)
 
 ## Dapp Developer Guide
 
