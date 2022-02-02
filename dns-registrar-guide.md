@@ -6,8 +6,6 @@ DNSSEC (The Domain Name System Security Extensions) establishes a chain of trust
 
 ## Steps
 
-Note: Currently only `.xyz`domain is supported. For other domains, please refer to the FAQ section.
-
 ### Step 1 Setting up DNSSEC signing
 
 When you first land on ENS manager, you will see something like below.
