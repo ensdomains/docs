@@ -14,7 +14,7 @@ description: >-
 
 This ENSIP extends [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-address-resolution.md), dedicates a range of coin types for EVM compatible chains, and specifies a way to derive EVM chain IDs to the designated coint types.
 
-The dedicated range uses over 0x800000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ides will be deprecated.
+The dedicated range uses over 0x80000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ides will be deprecated.
 
 ### Motivation
 
@@ -24,7 +24,7 @@ The existing ENSIP 9 relies on the existence of coin types on [SLIP44](https://g
 
 This specification amends ENSIP 9 to specify that coin types with the most-significant bit set are to be treated as EVM chain IDs. The MSB is reserved in SLIP44 for other purposes relating to HD wallet key derivation, so no coin types exist in this range.
 
-To compute the new coin type for EVM chains, bitwise-OR the chain ID with `0x800000000`: ` 0x800000000 | chainId`.
+To compute the new coin type for EVM chains, bitwise-OR the chain ID with `0x80000000`: ` 0x80000000 | chainId`.
 
 
 ```typescript
