@@ -32,6 +32,13 @@ The keyholders are drawn from respected members of the community, and with the e
 
 Since the owner of a node can change ownership of a subnode \(unless they have otherwise locked it from their control\), the owner of the root can change any node in the ENS tree. This means that the keyholders can replace the contracts that govern issuing and managing domains, giving them ultimate control over the structure of the ENS system and the names registered in it. However, the root key holders have locked control of the .eth registrar contract, which means that even keyholders cannot affect the ownership of .eth domains.
 
+The keyholders are still capable of doing the followings:
+
+ - Control allocation and replacement of TLDs other than .eth - this is required to implement DNSSEC integration.
+ - Enable and disable controllers for the .eth registrar, which affect registration and renewal policies for .eth names.
+ - Update the pricing for .eth names.
+ - Receive and manage registration revenue.
+
 Over time, we plan to reduce and decentralise human control over the system. Powers still held by the ENS root, such as those to set pricing and renewal conditions for domains, will be decentralised as robust systems become available to permit doing so.
 
 ### What about foreign characters? What about upper case letters? Is any unicode character valid?
@@ -63,6 +70,10 @@ Currently, registration costs are set at the following prices:
 * 3 character .eth names $640 in ETH per year.
 
 3 and 4 character names have higher pricing to reflect the small number of these names available.
+
+### What happens if I forget to extend the registration of a name?
+
+After your name expires, there is a 90 day grace period in which the owner can't edit the records but can still re-register the name. After the grace period, the name is released for registration by anyone with a temporary premium which decreases over a 28 days period. The released name continues to resolve your ETH address until the new owner overwrites it.
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
