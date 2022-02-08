@@ -26,7 +26,7 @@ In addition to that, we are deploying support for importing DNS domains from the
 
 ### Who owns the ENS rootnode? What powers does that grant them?
 
-The root node is presently owned by a multisig contract, with keys held by trustworthy individuals in the Ethereum community. We expect that this will be hands-off, with the root ownership only used to effect administrative changes, such as the introduction of a new TLD, or to recover from an emergency such as a critical vulnerability in a TLD registrar.
+The root node is presently owned by a multisig contract, with keys held by [trustworthy individuals in the Ethereum community](https://ens.domains/about#about-root). We expect that this will be hands-off, with the root ownership only used to effect administrative changes, such as the introduction of a new TLD, or to recover from an emergency such as a critical vulnerability in a TLD registrar.
 
 The keyholders are drawn from respected members of the community, and with the exception of Nick Johnson, founder of ENS, are unaffiliated with ENS. We ask and expect them to exercise their individual judgement acting in the interests of the ENS community, rather than rubber-stamping requests made to them by ENS developers.
 
