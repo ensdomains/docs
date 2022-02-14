@@ -79,7 +79,7 @@ So far, domains can only be registered manually by the owner of the registry's r
 
 ```javascript
 ...
-  const registrar = await FIFSRegistrar.deploy(ens.address, ens.address, namehash.hash("test"));
+  const registrar = await FIFSRegistrar.deploy(ens.address, namehash.hash("test"));
   await registrar.deployed();
   await ens.setSubnodeOwner("0x0000000000000000000000000000000000000000", sha3("test"), registrar.address);
 })
