@@ -4,13 +4,13 @@
 
 ### How many transactions are required to register a .eth name?
 
-The registrar uses two transactions \(commit and reveal\) to register a name.
+The registrar uses two transactions (commit and reveal) to register a name.
 
 ### How long does it take to register a name using the .eth registrar?
 
 It takes less than 5 minutes to register a name, including a 1-minute delay between the first and second transactions to prevent frontrunning.
 
-### Do we need to do anything to ensure continued use of existing ENS names?
+### Do we need to do anything to ensure the continued use of existing ENS names?
 
 Make sure you renew your ENS names before they expire! You add registration years to any name at any time, and for any duration you'd like.
 
@@ -48,7 +48,7 @@ It's ultimately up to the keyholders to allocate the funds. We hope they will fu
 
 ### Where can I manage all my ENS names?
 
-Simply go to [app.ens.domains](https://app.ens.domains/) and click on "My Account".
+Simply go to [app.ens.domains](https://app.ens.domains) and click on "My Account".
 
 ### Can I trade ENS domains on NFT exchanges?
 
@@ -56,7 +56,7 @@ Yes, .eth names are tradeable as NFTs.
 
 ### How can I transfer domains registered in the .eth registry to someone else?
 
-You can do this using [our Manager interface here](https://app.ens.domains/), or using any tool with NFT support.
+You can do this using [our Manager interface here](https://app.ens.domains), or using any tool with NFT support.
 
 ### What prohibits large scale domain grabbing besides registration fees?
 
@@ -67,4 +67,3 @@ The cost of doing this is the only limitation in place.
 The registrant is the account that owns the .eth name. They can transfer ownership to another account, and they can replace the controller address. The registrant is the owner of the NFT token that represents the name.
 
 The controller is the account that controls day-to-day operations with the name: creating subdomains, setting the resolver and records, and so forth.
-

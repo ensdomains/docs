@@ -5,14 +5,14 @@
 This contract implements the core functionality of the permanent registrar, with the following features:
 
 * The owner of the registrar may add and remove 'controllers'.
-* Controllers may register new domains and extend the expiry of \(renew\) existing domains. They can not change the ownership or reduce the expiration time of existing domains.
+* Controllers may register new domains and extend the expiry of (renew) existing domains. They can not change the ownership or reduce the expiration time of existing domains.
 * Name owners may transfer ownership to another address.
 * Name owners may reclaim ownership in the ENS registry if they have lost it.
 * Owners of names in the legacy registrar may transfer them to the new registrar, during the 1 year transition period. When they do so, their deposit is returned to them in its entirety.
 
 This section documents the parts of the registrar interface relevant to implementers of tools that interact with it. Functionality exclusive to the registrar owner or to controllers is omitted for brevity.
 
-The registrar works exclusively with label hashes - the `keccak256` of the first component of the label \(eg, `keccak256('ens')` for `ens.eth`\). For compatibility with ERC721, these are expressed as uint256 values rather than bytes32, but can be cast backwards and forwards transparently. The namehash of a name can be derived by computing `keccak256(baseNode, labelHash)`, where `basenode` is the namehash of the TLD the registrar manages - eg, `namehash('eth')`.
+The registrar works exclusively with label hashes - the `keccak256` of the first component of the label (eg, `keccak256('ens')` for `ens.eth`). For compatibility with ERC721, these are expressed as uint256 values rather than bytes32, but can be cast backwards and forwards transparently. The namehash of a name can be derived by computing `keccak256(baseNode, labelHash)`, where `basenode` is the namehash of the TLD the registrar manages - eg, `namehash('eth')`.
 
 Registrations and renewals are handled via the [controller](controller.md).
 
@@ -20,7 +20,7 @@ Registrations and renewals are handled via the [controller](controller.md).
 
 All names inside ENS have an owner. The owner of a name can transfer the name to a new owner, set a resolver, and create and reassign subdomains. This functionality is all contained in the [ENS registry](../ens.md).
 
-Allocation of names directly under .eth \(eg, second-level domains ending with .eth, such as _alice.eth_\) is governed by the .eth Permanent Registrar, described here. While buying a name from the registrar grants ownership of it in ENS, the registrar itself keeps independent track of who owns the **registration**. The concept of a **registrant** - the owner of a registration - is unique to the .eth permanent registrar.
+Allocation of names directly under .eth (eg, second-level domains ending with .eth, such as _alice.eth_) is governed by the .eth Permanent Registrar, described here. While buying a name from the registrar grants ownership of it in ENS, the registrar itself keeps independent track of who owns the **registration**. The concept of a **registrant** - the owner of a registration - is unique to the .eth permanent registrar.
 
 The registrant of a name can transfer the registration to another account, and they can recover ownership of the name by calling [reclaim](registrar.md#reclaim-ens-record), which resets ownership of the ENS name to the registrant's account.
 
@@ -32,7 +32,7 @@ When thinking about ownership, it's important to be clear whether you're conside
 
 ### Get Name Expiry
 
-```text
+```
 function nameExpires(uint256 label) external view returns(uint);
 ```
 
@@ -40,15 +40,15 @@ Returns the unix timestamp at which a registration currently expires. Names that
 
 ### Check Name Availability
 
-```text
+```
 function available(uint256 label) public view returns(bool);
 ```
 
-Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrations than this contract \(for example, a minimum name length\), so this function **should not** be used to check if a name can be registered by a user. To check if a name can be registered by a user, [check name availablility via the controller](controller.md#check-name-availability).
+Returns `true` if a name is available for registration. Takes into account not-yet-migrated registrations from the legacy registrar. Registrar controllers may impose more restrictions on registrations than this contract (for example, a minimum name length), so this function **should not** be used to check if a name can be registered by a user. To check if a name can be registered by a user, [check name availability via the controller](controller.md#check-name-availability).
 
 ### Get Transfer Period End
 
-```text
+```
 uint public transferPeriodEnds;
 ```
 
@@ -56,7 +56,7 @@ uint public transferPeriodEnds;
 
 ### Get Controller Status
 
-```text
+```
 mapping(address=>bool) public controllers;
 ```
 
@@ -64,7 +64,7 @@ mapping(address=>bool) public controllers;
 
 ### Check Token Approval
 
-```text
+```
 function getApproved(uint256 tokenId) public view returns (address operator);
 ```
 
@@ -74,7 +74,7 @@ This function is part of ERC721.
 
 ### Check All Tokens Approval
 
-```text
+```
 function isApprovedForAll(address owner, address operator) public view returns (bool);
 ```
 
@@ -84,7 +84,7 @@ This function is part of ERC721.
 
 ### Get Name Owner
 
-```text
+```
 function ownerOf(uint256 label) external view returns(address);
 ```
 
@@ -96,7 +96,7 @@ This function is part of [ERC721](https://github.com/ensdomains/ens/blob/master/
 
 ### Transfer a Name
 
-```text
+```
 function transferFrom(address from, address to, uint256 tokenId) public;
 function safeTransferFrom(address from, address to, uint256 tokenId) public;
 function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public;
@@ -108,13 +108,13 @@ They behave as specified in [ERC721](https://github.com/ensdomains/ens/blob/mast
 
 Emits the following event on a successful transfer:
 
-```text
+```
 event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
 ```
 
 ### Approve Operator
 
-```text
+```
 function approve(address to, uint256 tokenId) public;
 function setApprovalForAll(address operator, bool _approved) public;
 ```
@@ -123,7 +123,7 @@ These functions manage approvals as documented in [ERC721](https://github.com/en
 
 ### Reclaim ENS Record
 
-```text
+```
 function reclaim(uint256 label) external;
 ```
 
@@ -133,7 +133,7 @@ Sets the owner record of the name in the ENS registry to match the owner of the 
 
 ### Name Migrated
 
-```text
+```
 event NameMigrated(uint256 indexed hash, address indexed owner, uint expires);
 ```
 
@@ -141,7 +141,7 @@ This event is emitted when a name is migrated from the legacy registrar.
 
 ### Name Registered
 
-```text
+```
 event NameRegistered(uint256 indexed hash, address indexed owner, uint expires);
 ```
 
@@ -149,17 +149,16 @@ This event is emitted when a controller registers a new name.
 
 ### Name Renewed
 
-```text
+```
 event NameRenewed(uint256 indexed hash, uint expires);
 ```
 
-This event is emitted when a controller renews \(extends the registration of\) a name.
+This event is emitted when a controller renews (extends the registration of) a name.
 
 ### Transfer
 
-```text
+```
 event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
 ```
 
 This event is emitted when registration is transferred to a new owner. This is distinct from the [ENS Registry](../ens.md)'s Transfer event, which records transfers of ownership of the ENS record.
-

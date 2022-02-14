@@ -1,4 +1,4 @@
-# ENS offchain data support (including layer 2)
+# ENS Layer2 and offchain data support
 
 ## IMPORTANT NOTE
 
@@ -8,25 +8,23 @@ The development of ENS offchain data support is still in progress, and none of t
 
 With the proliferation of layer 2 solutions for Ethereum that are starting to reach maturity, it's important that ENS is able to provide resolution services across the entire ecosystem, as well as making it possible for ENS users to take advantage of the efficiencies made possible by Layer 2 solutions. Subsequent to a post by [Vitalik](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591) that suggested a possible means for this, the ENS team and the wider ENS and L2 community have been working on a general-purpose "Layer 2 bridge" that makes cross-platform interoperability possible for both ENS and other applications that need to be able to retrieve data from a variety of offchain sources (any data that resides outside of Ethereum Mainnet also known as layer 1/L1. This includes both propriety database and layer 2/L2 solutions such as Optimism, Arbitrum, Starkware, ZKSync, and so on) ) in a trustless fashion and came up with standards.
 
-- [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
-- [ENSIP 10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution)
+* [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
+* [ENSIP 10: Wildcard Resolution](ens-improvement-proposals/ensip-10-wildcard-resolution/)
 
 **EIP 3668** allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
 
-**ENSIP 10** is a general way to resolve wildcard (eg: *.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
+**ENSIP 10** is a general way to resolve wildcard (eg: \*.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
 
 ## Steps required for Dapps and wallets to support offchain data lookup.
 
 If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in, so simply update the library when ready.
 
-- [ethersjs](https://github.com/ethers-io/ethers.js)
-- [web3js](https://github.com/ethereum/web3.js)
+* [ethersjs](https://github.com/ethers-io/ethers.js)
+* [web3js](https://github.com/ethereum/web3.js)
 
 ### ethersjs
 
-Currently EIP 3668 is implemented as npm module as [@chainlink/ethers-ccip-read-provider
-](@chainlink/ethers-ccip-read-provider
-)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)).
+Currently EIP 3668 is implemented as npm module as [@chainlink/ethers-ccip-read-provider ](@chainlink/ethers-ccip-read-provider/)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)).
 
 The basic usage example is as follows.
 
@@ -48,7 +46,7 @@ Work in progress
 
 ### Any other libraries
 
-If you use other libraries or custom integration, please raise the github issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
+If you use other libraries or custom integration, please raise the GitHub issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
 
 ## Steps required for Dapps and wallets to issue subdomains offchain
 
@@ -84,22 +82,21 @@ Yes, you can. However, reverse registrar (it is a hidden top-level domain starti
 
 Only when we migrate .eth name to a specific L2 as one of the last steps of our migration after finding out which L2 supports ENS integration the best.
 
-### How do I handle contract addreses?
+### How do I handle contract addresses?
 
-Unlike EOA (Externally Owned Account), contract based accounts such as multisig may only be accessible in certain chains.
-[ENSIP-11](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md) allows a single name to hold different addresses across multiple EVM compatible chains and recommendation is to store contract addresses to EVM chain specific address record field.
+Unlike EOA (Externally Owned Account), contract based accounts such as multisig may only be accessible in certain chains. [ENSIP-11](ens-improvement-proposals/ensip-11-evmchain-address-resolution.md) allows a single name to hold different addresses across multiple EVM compatible chains and recommendation is to store contract addresses to EVM chain specific address record field.
 
 ### Can I use libraries from other name services that support .eth?
 
-`@unstoppabledomains/resolution` removed [ENS support as of December 2021](https://github.com/unstoppabledomains/resolution/releases/tag/v7.0.0). Other services tend not to support all ENS tlds especially DNS based tlds (.com, .net, etc) so we advise not to rely on these libraries resolving ENS names.
+`@unstoppabledomains/resolution` removed [ENS support as of December 2021](https://github.com/unstoppabledomains/resolution/releases/tag/v7.0.0). Other services tend not to support all ENS TLDs especially DNS based TLDs (.com, .net, etc) so we advise not to rely on these libraries resolving ENS names.
 
 ## References and previous discussions
 
-- [MVP of ENS on L2 with Optimism: Demo Video + How to Try It Yourself](https://medium.com/the-ethereum-name-service/mvp-of-ens-on-l2-with-optimism-demo-video-how-to-try-it-yourself-b44c390cbd67)
-- [A general-purpose bridge for Ethereum Layer 2s](https://medium.com/the-ethereum-name-service/a-general-purpose-bridge-for-ethereum-layer-2s-e28810ec1d88)
-- [A general-purpose L2-friendly ENS standard](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591)
-- [Video: ENS Workshop on 18th Oct 2021 ](https://www.youtube.com/watch?v=L9N7U_bNmOU)
-- [Video: ENS Workshop on 6th April 2021](https://www.youtube.com/watch?v=9DdL7AQgXTM)
-- [Video: ENS on Layer 2 meeting #2 on 28th Oct 2020](https://www.youtube.com/watch?v=QwEiAedSNYI)
-- [Video: ENS on Layer 2 meeting on 13th Oct 2020](https://www.youtube.com/watch?v=vloI0VT8DXE)
-- [Video: ENS workshop on 29th Sep 2020](https://www.youtube.com/watch?v=65z_j4n8mTk&t=2s)
+* [MVP of ENS on L2 with Optimism: Demo Video + How to Try It Yourself](https://medium.com/the-ethereum-name-service/mvp-of-ens-on-l2-with-optimism-demo-video-how-to-try-it-yourself-b44c390cbd67)
+* [A general-purpose bridge for Ethereum Layer 2s](https://medium.com/the-ethereum-name-service/a-general-purpose-bridge-for-ethereum-layer-2s-e28810ec1d88)
+* [A general-purpose L2-friendly ENS standard](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591)
+* [Video: ENS Workshop on 18th Oct 2021](https://www.youtube.com/watch?v=L9N7U\_bNmOU)
+* [Video: ENS Workshop on 6th April 2021](https://www.youtube.com/watch?v=9DdL7AQgXTM)
+* [Video: ENS on Layer 2 meeting #2 on 28th Oct 2020](https://www.youtube.com/watch?v=QwEiAedSNYI)
+* [Video: ENS on Layer 2 meeting on 13th Oct 2020](https://www.youtube.com/watch?v=vloI0VT8DXE)
+* [Video: ENS workshop on 29th Sep 2020](https://www.youtube.com/watch?v=65z\_j4n8mTk\&t=2s)

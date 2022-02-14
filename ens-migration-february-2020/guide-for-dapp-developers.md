@@ -21,14 +21,12 @@ If your DApp or library allows users to register names, or to make changes to ex
 1. Simply switch over to the new registry address as soon as possible. When you do, users will be temporarily unable to make changes to their names using your app until their name is migrated between the 3rd and 5th of February.
 2. When making a change to a name, call the \`recordExists\` function on the new registry. If it returns \`true\`, send the modification transaction to the new registry; otherwise, send it to the old one. If you take this option, you should still prohibit transfers of .ETH ERC721 tokens; a transfer that happens as the name is migrated could result in confusing results for users.
 
-The migration process will automatically transfer .ETH second-level domains \(eg, foo.eth\) to the new registry and registrar. Subdomains \(eg, bar.foo.eth\) and other top level domains \(eg, foo.xyz\) will need to be migrated by their owners. For more details on this process, see [our documentation](technical-description.md), or reach out to us for help.
+The migration process will automatically transfer .ETH second-level domains (eg, foo.eth) to the new registry and registrar. Subdomains (eg, bar.foo.eth) and other top-level domains (eg, foo.xyz) will need to be migrated by their owners. For more details on this process, see [our documentation](technical-description.md), or reach out to us for help.
 
 ### ENS Secondary Marketplaces
 
-If you operate a marketplace that trades ENS names, you should immediately stop trading of them. Although this vulnerability has not been exploited so far, once its existence is publicised we expect that attackers will reverse-engineer it and exploit it. Halting trading on the current registrar will prevent your users being affected by this.
+If you operate a marketplace that trades ENS names, you should immediately stop trading them. Although this vulnerability has not been exploited so far, once its existence is publicised we expect that attackers will reverse-engineer it and exploit it. Halting trading on the current registrar will prevent your users being affected by this.
 
 After a name has been migrated, tokens on the old registrar at 0xfac7bea255a6990f749363002136af6556b31e04 no longer correspond to ENS names, and are worthless; as a result you must disable trading of these before February 3rd 00:00UTC at the very latest.
 
-You can immediately enable trading of names on the new registrar, at address 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85. When names are migrated to this contract starting on February 3rd 00:00 UTC, domain owners will automatically have new ERC721 tokens created on this new registrar, with the same ID as those on the current registrar.  
-
-
+You can immediately enable trading of names on the new registrar, at address 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85. When names are migrated to this contract starting on February 3rd 00:00 UTC, domain owners will automatically have new ERC721 tokens created on this new registrar, with the same ID as those on the current registrar.

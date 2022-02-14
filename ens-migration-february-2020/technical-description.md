@@ -25,17 +25,17 @@ The new registry implementation has been [audited by Sam Sun](https://gist.githu
 
 In order to make the migration as smooth as possible, the new registry has a fallback configured; if a record is not found in its own storage, it will look it up in the previous ENS registry contract. This fallback works only for read operations; if a record exists in the old registry but not yet in the new one, users cannot call functions to modify that record on the new registry.
 
-This means that to migrate each name over from the previous registry, the name must be recreated as if from scratch - so, for example, if ‘foo.eth’ does not yet exist in the new registry, the owner of ‘eth’ must create it in the same fashion as if it were a new domain, by calling \`setSubnodeOwner\` \(or the new \`setSubnodeRecord\`\). Other top-level domain owners \(eg, .luxe, .kred, .club and .art\) will need to do this on behalf of their users, so those users can recover write access to their domains.
+This means that to migrate each name over from the previous registry, the name must be recreated as if from scratch - so, for example, if ‘foo.eth’ does not yet exist in the new registry, the owner of ‘eth’ must create it in the same fashion as if it were a new domain, by calling \`setSubnodeOwner\` (or the new \`setSubnodeRecord\`). Other top-level domain owners (eg, .luxe, .kred, .club and .art) will need to do this on behalf of their users, so those users can recover write access to their domains.
 
 As a result of this fallback, if a record has not been migrated to the new registry, users and processes can continue to update records in the old registry; when they do, those changes will be reflected in the new one. At the point where a record is migrated to the new registry, it ceases to reflect any changes made in the old one. This ensures that names operated by smart contracts continue to function until their owners can take manual action to migrate them over.
 
 Migration strategies for each class of name are outlined below:
 
-* Top-level domains \(.eth, .luxe, .kred, .club, .art, .xyz, and .reverse\) were migrated over as part of the deployment process.
-* .eth second-level domains \(eg, foo.eth\) will be migrated over automatically for users - see the ‘migration contract’ section below for details.
+* Top-level domains (.eth, .luxe, .kred, .club, .art, .xyz, and .reverse) were migrated over as part of the deployment process.
+* .eth second-level domains (eg, foo.eth) will be migrated over automatically for users - see the ‘migration contract’ section below for details.
 * Subdomains managed by the Subdomain Registrar will also be migrated over automatically for users.
 * Subdomains created by other means will need to be recreated by the owner of the parent domain calling \`setSubnodeOwner\` or \`setSubnodeRecord\`. The ENS dapp at app.ens.domains provides a one-click button to to do this for domains that are owned directly by users.
-* Reverse records \(.addr.reverse domains\) will need to be recreated by repeating the ‘claim’ process in the ENS dapp UI.
+* Reverse records (.addr.reverse domains) will need to be recreated by repeating the ‘claim’ process in the ENS dapp UI.
 * .xyz records will need to be migrated by repeating the ‘claim’ process proving ownership of the corresponding DNS domain. This can be done via the ENS Manager UI.
 * .kred, .art, and .club domains will be migrated by the operators of those top-level domains.
 
@@ -43,23 +43,23 @@ Name resolution will continue to work normally for names that have not yet been 
 
 ### .ETH Registrar
 
-A new instance of the .eth registrar \(BaseRegistrarImplementation\) has been deployed, and can be found at 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85. This registrar is largely unchanged, with only a couple of minor modifications made to support the migration.
+A new instance of the .eth registrar (BaseRegistrarImplementation) has been deployed, and can be found at 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85. This registrar is largely unchanged, with only a couple of minor modifications made to support the migration.
 
 ### Migration Contract
 
-A new contract, designed specifically for the migration process, has been deployed and can be found at 0x6109DD117AA5486605FC85e040ab00163a75c662. This contract is configured as a controller for the new .eth registrar, and will be set as the owner of .eth on the old registry once the migration process begins. Functions on this contract permit migrating .eth second-level names \(eg, foo.eth\) over from the old registry and registrar to the new ones.
+A new contract, designed specifically for the migration process, has been deployed and can be found at 0x6109DD117AA5486605FC85e040ab00163a75c662. This contract is configured as a controller for the new .eth registrar, and will be set as the owner of .eth on the old registry once the migration process begins. Functions on this contract permit migrating .eth second-level names (eg, foo.eth) over from the old registry and registrar to the new ones.
 
 Once activated, the ENS team will submit transactions to migrate over all presently registered .eth second-level domains to the new deployment. Registrations for all names will be automatically moved over to the new registrar, with the same expiry date as they had previously. Registry records will be automatically migrated over, unless they are controlled by a contract. Records controlled by contracts will not be automatically migrated in order to avoid breaking registrar contracts.
 
-If you own a name that is controlled by a smart contract \(for example, you’re using a custom registrar to allocate subdomains\), you will need to deploy a new version of that contract that references the new ENS registry, then manually migrate the name yourself, by using the ‘Set controller’ functionality in the ENS manager dapp.
+If you own a name that is controlled by a smart contract (for example, you’re using a custom registrar to allocate subdomains), you will need to deploy a new version of that contract that references the new ENS registry, then manually migrate the name yourself, by using the ‘Set controller’ functionality in the ENS manager dapp.
 
-In addition, the ENS team is automatically migrating over records from the legacy \(auction-based\) registrar. Names on the legacy registrar that have not previously been migrated over will be automatically created in the new deployment, with their expiration dates set to their existing expiry of May 4, 2020, meaning users will no longer have to do this manually - though they will still have to send a transaction to recover their deposit, which they can do at any time. This permits the new ENS deployment to do away with legacy code for supporting this obsolete registrar.
+In addition, the ENS team is automatically migrating over records from the legacy (auction-based) registrar. Names on the legacy registrar that have not previously been migrated over will be automatically created in the new deployment, with their expiration dates set to their existing expiry of May 4, 2020, meaning users will no longer have to do this manually - though they will still have to send a transaction to recover their deposit, which they can do at any time. This permits the new ENS deployment to do away with legacy code for supporting this obsolete registrar.
 
 ### Public Resolver
 
 A new instance of the public resolver has been deployed, and can be found at 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41. This instance references the new ENS registry, and has an additional ‘multicall’ feature implemented, which permits users to set multiple records in a single operation.
 
-Since the public resolver looks up names in the ENS registry to determine who is permitted to configure records for them, while names - migrated or otherwise - pointed at an old instance of the public resolver will continue to function, they will need to migrate to the new public resolver in order to make changes. The ENS dapp at app.ens.domains facilitates this process using the new \`multicall\` function, making it possible to migrate over all records for a name in two transactions: the first one copying all records from the old resolver to the new one, and the second one updating the registry to point to the new resolver contract.
+Since the public resolver looks up names in the ENS registry to determine who is permitted to configure records for them, while names - migrated or otherwise - pointed at an old instance of the public resolver will continue to function, they will need to migrate to the new public resolver in order to make changes. The ENS dapp at app.ens.domains facilitates this process using the new `multicall` function, making it possible to migrate over all records for a name in two transactions: the first one copying all records from the old resolver to the new one, and the second one updating the registry to point to the new resolver contract.
 
 ### .ETH Registrar Controller
 
@@ -76,4 +76,3 @@ A new instance of the DNSSEC registrar has been deployed. The new instance retai
 ### Subdomain Registrar
 
 A new instance of the subdomain registrar has been deployed. This instance is largely unchanged from the previous version, except insofar as it supports migrating from that version to the new one.
-

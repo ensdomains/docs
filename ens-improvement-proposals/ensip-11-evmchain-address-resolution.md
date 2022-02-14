@@ -1,18 +1,17 @@
 ---
-description: >-
-  Introduces coinType for EVM compatible chains (amending ENSIP9).
+description: Introduces coinType for EVM compatible chains (amending ENSIP9).
 ---
 
 # ENSIP-11: EVM compatible Chain Address Resolution
 
 | **Author**    | Makoto Inoue \<makoto@ens.domains> |
-| ------------- | -------------------------------- |
-| **Status**    | Draft                            |
-| **Submitted** | 2022-01-13                       |
+| ------------- | ---------------------------------- |
+| **Status**    | Draft                              |
+| **Submitted** | 2022-01-13                         |
 
 ### Abstract
 
-This ENSIP extends [ENSIP 9 (multichain address resolution)](./ensip-9-multichain-address-resolution.md), dedicates a range of coin types for EVM compatible chains, and specifies a way to derive EVM chain IDs to the designated coint types.
+This ENSIP extends [ENSIP 9 (multichain address resolution)](ensip-9-multichain-address-resolution.md), dedicates a range of coin types for EVM compatible chains, and specifies a way to derive EVM chain IDs to the designated coin types.
 
 The dedicated range uses over 0x80000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ides will be deprecated.
 
@@ -24,8 +23,7 @@ The existing ENSIP 9 relies on the existence of coin types on [SLIP44](https://g
 
 This specification amends ENSIP 9 to specify that coin types with the most-significant bit set are to be treated as EVM chain IDs. The MSB is reserved in SLIP44 for other purposes relating to HD wallet key derivation, so no coin types exist in this range.
 
-To compute the new coin type for EVM chains, bitwise-OR the chain ID with `0x80000000`: ` 0x80000000 | chainId`.
-
+To compute the new coin type for EVM chains, bitwise-OR the chain ID with `0x80000000`: `0x80000000 | chainId`.
 
 ```typescript
 export const convertEVMChainIdToCoinType = (chainId: number) =>{
@@ -80,8 +78,8 @@ You can also use existing functions formatsByName and formatsByCoinType to deriv
 
 The following EVM chains are the exception to this standard.
 
-- AVAX = AVAX has multiple chain address formats, and only c chain is EVM compatible
-- RSK = RSK has its own additional validation
+* AVAX = AVAX has multiple chain address formats, and only c chain is EVM compatible
+* RSK = RSK has its own additional validation
 
 They will continue using coinType defined at SLIP44
 
@@ -89,18 +87,18 @@ They will continue using coinType defined at SLIP44
 
 The following EVM compatible cointypes existed before introducing this new standard.
 
-- NRG
-- POA
-- TT
-- CELO
-- CLO
-- TOMO
-- EWT
-- THETA
-- GO
-- FTM
-- XDAI
-- ETC
+* NRG
+* POA
+* TT
+* CELO
+* CLO
+* TOMO
+* EWT
+* THETA
+* GO
+* FTM
+* XDAI
+* ETC
 
 When you display them for backward compatibility purposes, append `_LEGACY` to the cointype and make them read only.
 

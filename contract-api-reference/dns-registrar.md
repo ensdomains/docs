@@ -1,10 +1,10 @@
 # DNS Registrar
 
-At ENS, we have two smartcontracts, [DNSSECOracle](https://github.com/ensdomains/dnssec-oracle) and [DNSRegistrar](https://github.com/ensdomains/dnsregistrar).
+At ENS, we have two smart contracts, [DNSSECOracle](https://github.com/ensdomains/dnssec-oracle) and [DNSRegistrar](https://github.com/ensdomains/dnsregistrar).
 
-DNSSEC (The Domain Name System Security Extensions) establishes a chain of trust from the root key which signed by ICANN (.) and down through each key. We start off knowing the hash of the root key of DNS (this is hard coded in the smart contract oracle). Given the hashes of that key, we can pass in the actual key, we can verify that it matches the hash and we can add it to the set of the trusted records.
+DNSSEC (The Domain Name System Security Extensions) establishes a chain of trust from the root key which is signed by ICANN (.) and down through each key. We start off knowing the hash of the root key of DNS (this is hard coded in the smart contract oracle). Given the hashes of that key, we can pass in the actual key, we can verify that it matches the hash and we can add it to the set of the trusted records.
 
-Given that key, we can now verify any record that is signed with that key, so in this case, it’s the hash of the root of the xyz top level domain. Given that, we can recognize the key, and so on and so forth.
+Given that key, we can now verify any record that is signed with that key, so in this case, it’s the hash of the root of the xyz top-level domain. Given that, we can recognize the key, and so on and so forth.
 
 ![](<../.gitbook/assets/diagram (1).png>)
 
@@ -19,7 +19,7 @@ When you register ENS names, you can look up the registrar contract address by l
 
 ## Gas cost
 
-Submitting proof to DNSSEC Oracle takes up a lot of gas because it is heavy computation work. It will take up even more gas if you submit the first domain under the specific TLD. This is because it submits proof of both your domain and its parent domain\(eg: `matoken.live`, as well as `.live`\). When tested on Ropsten network, [it cost 1,663,953 gas](https://ropsten.etherscan.io/tx/0x7ba91728530b2a9f325b330986265fd455639fd3f07e775cf68ee8c767b2637f)
+Submitting proof to DNSSEC Oracle takes up a lot of gas because it is heavy computation work. It will take up even more gas if you submit the first domain under the specific TLD. This is because it submits proof of both your domain and its parent domain(eg: `matoken.live`, as well as `.live`). When tested on Ropsten network, [it cost 1,663,953 gas](https://ropsten.etherscan.io/tx/0x7ba91728530b2a9f325b330986265fd455639fd3f07e775cf68ee8c767b2637f)
 
 ## Typescript/Javascript Libraries
 

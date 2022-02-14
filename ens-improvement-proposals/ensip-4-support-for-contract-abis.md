@@ -38,7 +38,7 @@ This table may be extended in future through the ENSIP process.
 
 Encoding type 1 specifies plaintext JSON, uncompressed; this is the standard format in which ABIs are typically encoded, but also the bulkiest, and is not easily parseable onchain.
 
-Encoding type 2 specifies zlib-compressed JSON. This is significantly smaller than uncompressed JSON, and is straightforward to decode offchain. However, it is impracticalfor onchain consumers to use.
+Encoding type 2 specifies zlib-compressed JSON. This is significantly smaller than uncompressed JSON, and is straightforward to decode offchain. However, it is impractical for onchain consumers to use.
 
 Encoding type 4 is [CBOR](https://cbor.io). CBOR is a binary encoding format that is a superset of JSON, and is both more compact and easier to parse in limited environments such as the EVM. Consumers that support CBOR are strongly encouraged to also support the [stringref extension](http://cbor.schmorp.de/stringref) to CBOR, which provides significant additional reduction in encoded size.
 

@@ -1,8 +1,7 @@
 ---
 description: >-
-  Introduces new overloads for the the `addr` field for ENS resolvers, which
-  permit resolution of addresses for other blockchains via ENS (formerly
-  EIP-2304).
+  Introduces new overloads for the `addr` field for ENS resolvers, which permit
+  resolution of addresses for other blockchains via ENS (formerly EIP-2304).
 ---
 
 # ENSIP-9: Multichain Address Resolution
@@ -30,7 +29,7 @@ When called on a resolver, this function must return the cryptocurrency address 
 
 `coinType` is the cryptocurrency coin type index from [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
 
-The return value is the cryptocurency address in its native binary format. Detailed descriptions of the binary encodings for several popular chains are provided in the Address Encoding section below.
+The return value is the cryptocurrency address in its native binary format. Detailed descriptions of the binary encodings for several popular chains are provided in the Address Encoding section below.
 
 A new event for resolvers is defined:
 
@@ -190,26 +189,26 @@ If the resolver supports the `addr(bytes32)` interface defined in ENSIP-1, the r
 
 The table below specifies test vectors for valid address encodings for each cryptocurrency described above.
 
-| Cryptocurrency   | Coin Type | Text                                                     | Onchain (hex)                                                    |
-| ---------------- | --------- | -------------------------------------------------------- | ---------------------------------------------------------------- |
-| Bitcoin          | 0         | `1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa`                     | `76a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1888ac`             |
-|                  |           | `3Ai1JZ8pdJb2ksieUV8FsxSNVJCpoPi8W6`                     | `a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1887`                 |
-|                  |           | `BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4`             | `0014751e76e8199196d454941c45d1b3a323f1433bd6`                   |
-| Litecoin         | 2         | `LaMT348PWRnrqeeWArpwQPbuanpXDZGEUz`                     | `76a914a5f4d12ce3685781b227c1f39548ddef429e978388ac`             |
-|                  |           | `MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441`                     | `a914b48297bff5dadecc5f36145cec6a5f20d57c8f9b87`                 |
-|                  |           | `ltc1qdp7p2rpx4a2f80h7a4crvppczgg4egmv5c78w8`            | `0014687c150c26af5493befeed7036043812115ca36c`                   |
-| Dogecoin         | 3         | `DBXu2kgc3xtvCUWFcxFE3r9hEYgmuaaCyD`                     | `76a9144620b70031f0e9437e374a2100934fba4911046088ac`             |
-|                  |           | `AF8ekvSf6eiSBRspJjnfzK6d1EM6pnPq3G`                     | `a914f8f5d99a9fc21aa676e74d15e7b8134557615bda87`                 |
-| Monacoin         | 22        | `MHxgS2XMXjeJ4if2PRRbWYcdwZPWfdwaDT`                     | `76a9146e5bb7226a337fe8307b4192ae5c3fab9fa9edf588ac`             |
-| Ethereum         | 60        | `0x314159265dD8dbb310642f98f50C066173C1259b`             | `314159265dd8dbb310642f98f50c066173c1259b`                       |
-| Rootstock        | 137       | `0x5aaEB6053f3e94c9b9a09f33669435E7ef1bEAeD`             | `5aaeb6053f3e94c9b9a09f33669435e7ef1beaed`                       |
-| Ripple           | 144       | `rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn`                     | `004b4e9c06f24296074f7bc48f92a97916c6dc5ea9`                     |
-|                  |           | `X7qvLs7gSnNoKvZzNWUT2e8st17QPY64PPe7zriLNuJszeg`        | `05444b4e9c06f24296074f7bc48f92a97916c6dc5ea9000000000000000000` |
-| Bitcoin Cash     | 145       | `1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu`                     | `76a91476a04053bda0a88bda5177b86a15c3b29f55987388ac`             |
-|                  |           | `bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a` | `76a91476a04053bda0a88bda5177b86a15c3b29f55987388ac`             |
-|                  |           | `3CWFddi6m4ndiGyKqzYvsFYagqDLPVMTzC`                     | `a91476a04053bda0a88bda5177b86a15c3b29f55987387`                 |
-|                  |           | `bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq` | `a91476a04053bda0a88bda5177b86a15c3b29f55987387`                 |
-| Binance          | 714       | `bnb1grpf0955h0ykzq3ar5nmum7y6gdfl6lxfn46h2`             | `40c2979694bbc961023d1d27be6fc4d21a9febe6`                       |
+| Cryptocurrency | Coin Type | Text                                                     | Onchain (hex)                                                    |
+| -------------- | --------- | -------------------------------------------------------- | ---------------------------------------------------------------- |
+| Bitcoin        | 0         | `1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa`                     | `76a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1888ac`             |
+|                |           | `3Ai1JZ8pdJb2ksieUV8FsxSNVJCpoPi8W6`                     | `a91462e907b15cbf27d5425399ebf6f0fb50ebb88f1887`                 |
+|                |           | `BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4`             | `0014751e76e8199196d454941c45d1b3a323f1433bd6`                   |
+| Litecoin       | 2         | `LaMT348PWRnrqeeWArpwQPbuanpXDZGEUz`                     | `76a914a5f4d12ce3685781b227c1f39548ddef429e978388ac`             |
+|                |           | `MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441`                     | `a914b48297bff5dadecc5f36145cec6a5f20d57c8f9b87`                 |
+|                |           | `ltc1qdp7p2rpx4a2f80h7a4crvppczgg4egmv5c78w8`            | `0014687c150c26af5493befeed7036043812115ca36c`                   |
+| Dogecoin       | 3         | `DBXu2kgc3xtvCUWFcxFE3r9hEYgmuaaCyD`                     | `76a9144620b70031f0e9437e374a2100934fba4911046088ac`             |
+|                |           | `AF8ekvSf6eiSBRspJjnfzK6d1EM6pnPq3G`                     | `a914f8f5d99a9fc21aa676e74d15e7b8134557615bda87`                 |
+| Monacoin       | 22        | `MHxgS2XMXjeJ4if2PRRbWYcdwZPWfdwaDT`                     | `76a9146e5bb7226a337fe8307b4192ae5c3fab9fa9edf588ac`             |
+| Ethereum       | 60        | `0x314159265dD8dbb310642f98f50C066173C1259b`             | `314159265dd8dbb310642f98f50c066173c1259b`                       |
+| Rootstock      | 137       | `0x5aaEB6053f3e94c9b9a09f33669435E7ef1bEAeD`             | `5aaeb6053f3e94c9b9a09f33669435e7ef1beaed`                       |
+| Ripple         | 144       | `rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn`                     | `004b4e9c06f24296074f7bc48f92a97916c6dc5ea9`                     |
+|                |           | `X7qvLs7gSnNoKvZzNWUT2e8st17QPY64PPe7zriLNuJszeg`        | `05444b4e9c06f24296074f7bc48f92a97916c6dc5ea9000000000000000000` |
+| Bitcoin Cash   | 145       | `1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu`                     | `76a91476a04053bda0a88bda5177b86a15c3b29f55987388ac`             |
+|                |           | `bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a` | `76a91476a04053bda0a88bda5177b86a15c3b29f55987388ac`             |
+|                |           | `3CWFddi6m4ndiGyKqzYvsFYagqDLPVMTzC`                     | `a91476a04053bda0a88bda5177b86a15c3b29f55987387`                 |
+|                |           | `bitcoincash:ppm2qsznhks23z7629mms6s4cwef74vcwvn0h829pq` | `a91476a04053bda0a88bda5177b86a15c3b29f55987387`                 |
+| Binance        | 714       | `bnb1grpf0955h0ykzq3ar5nmum7y6gdfl6lxfn46h2`             | `40c2979694bbc961023d1d27be6fc4d21a9febe6`                       |
 
 ### Copyright
 

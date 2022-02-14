@@ -1,6 +1,6 @@
 # ENS Enabling your DApp
 
-ENS integration in an application encompasses several critical features, each of which can be implemented independently. While comprehensive ENS integration is ideal, even basic support can be a huge benefit to users. Below, we outline three levels of ENS integration. Level 1 is easily achieved and provides high impact for users, while levels 2 and 3 provide more functionality to your users, improving your DApp's usability and your users' experience interacting with your DApp.
+ENS integration in an application encompasses several critical features, each of which can be implemented independently. While comprehensive ENS integration is ideal, even basic support can be a huge benefit to users. Below, we outline three levels of ENS integration. Level 1 is easily achieved and provides high impact for users, while levels 2 and 3 provide more functionality to your users, improving your dApp's usability and your users' experience interacting with your DApp.
 
 ## 1. Resolving ENS names
 
@@ -38,5 +38,4 @@ By providing users with an easy way to update a name they own to point at your a
 
 ## Tell Us About Your Integration
 
-If you've ENS Enabled your app, let us know by emailing [nick@ens.domains](mailto:nick@ens.domains); we'll add your app to [our homepage](https://ens.domains/). 
-
+If you've ENS Enabled your app, let us know by emailing [nick@ens.domains](mailto:nick@ens.domains); we'll add your app to [our homepage](https://ens.domains).

@@ -1,6 +1,6 @@
 # Resolving Names
 
-The ENS namespace includes both .eth names \(which are native to ENS\) and DNS names imported into ENS. Because the DNS suffix namespace expands over time, a hardcoded list of name suffixes for recognizing ENS names will regularly be out of date, leading to your application not recognizing all valid ENS names. To remain future-proof, **a correct integration of ENS treats any dot-separated name as a potential ENS name and will attempt a look-up**.
+The ENS namespace includes both .eth names (which are native to ENS) and DNS names imported into ENS. Because the DNS suffix namespace expands over time, a hardcoded list of name suffixes for recognizing ENS names will regularly be out of date, leading to your application not recognizing all valid ENS names. To remain future-proof, **a correct integration of ENS treats any dot-separated name as a potential ENS name and will attempt a look-up**.
 
 ## Looking up cryptocurrency addresses
 
@@ -56,7 +56,7 @@ address, err := ens.Resolve(client, "alice.eth")
 {% endtab %}
 
 {% tab title="web3.py" %}
-```text
+```
 address = ns.address('alice.eth')
 ```
 {% endtab %}
@@ -84,12 +84,12 @@ Resolution without a library is a three step process:
 **Resolution support for the addresses of other blockchains** is implemented with an additional overload on `addr()`. To resolve a non-Ethereum address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
 {% hint style="warning" %}
-If you are resolving addr\(\) records, you MUST treat a return value from the resolver of 0x00…00 as that record being unset. Failing to do so could result in users accidentally sending funds to the null address if they have configured a resolver in ENS, but not set the resolver record!
+If you are resolving addr() records, you MUST treat a return value from the resolver of 0x00…00 as that record being unset. Failing to do so could result in users accidentally sending funds to the null address if they have configured a resolver in ENS, but not set the resolver record!
 {% endhint %}
 
 ## Looking up other resources
 
-ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes \(hashes for IPFS, Skynet, and Swarm, and Tor .onion addresses\), contract interfaces \(ABIs\), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
+ENS supports many types of resources besides Ethereum addresses, including other cryptocurrency addresses, content hashes (hashes for IPFS, Skynet, and Swarm, and Tor .onion addresses), contract interfaces (ABIs), and text-based metadata. The process for looking these up varies from library to library; for specific details see your chosen library's documentation.
 
 Resolving these content types without a library follows the same 3-step process detailed above; simply call the relevant method on the resolver in step 3 instead of `addr()`.
 
@@ -162,7 +162,7 @@ resolver.Text(name)
 {% endtab %}
 
 {% tab title="web3.py" %}
-```text
+```
 Not supported.
 ```
 {% endtab %}
@@ -176,7 +176,7 @@ Not supported.
 
 ### Encoding and decoding contenthash
 
-`contenthash` is used to store IPFSand Swarm content hashes, which permit resolving ENS addresses to distributed content \(eg, websites\) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a convenient way to encode/decode these hashes.
+`contenthash` is used to store IPFSand Swarm content hashes, which permit resolving ENS addresses to distributed content (eg, websites) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a convenient way to encode/decode these hashes.
 
 ```javascript
  const contentHash = require('content-hash')
@@ -198,7 +198,7 @@ Note for ipns: For security reasons, the encoding of ipns is only allowed for `l
 
 ### Coin type and encoding/decoding
 
-While some libraries allow you to query cryptocurrency addresses via their symbol \(e.g.: `BTC`\), others do not have the built-in support, and you have to call via each coin id \(e.g.: `0` for `BTC`, `16` for \`ETH\). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert
+While some libraries allow you to query cryptocurrency addresses via their symbol (e.g.: `BTC`), others do not have the built-in support, and you have to call via each coin id (e.g.: `0` for `BTC`, `16` for \`ETH). For Javascript/Typescript, we have [@ensdomains/address-encoder](https://github.com/ensdomains/address-encoder) library that allows you to convert
 
 ```javascript
 import { formatsByName, formatsByCoinType } from '@ensdomains/address-encoder';
@@ -304,7 +304,7 @@ if(address != await ens.lookup(name)) {
 {% endtab %}
 
 {% tab title="ethers.js" %}
-```text
+```
 var address = '0x1234...';
 var name = await provider.lookupAddress(address);
 // ethers.js automatically checks that the forward resolution matches.
@@ -339,9 +339,9 @@ if(address != ens.resolve(name)) {
 {% endtab %}
 {% endtabs %}
 
-Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`\(where _1234..._ is the address you want to reverse-resolve\), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
+Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`(where _1234..._ is the address you want to reverse-resolve), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
-If you need to process many addresses \(eg: showing reverse record of transaction histories\), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smartcontract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
 
 ```javascript
 const namehash = require('eth-ens-namehash');
@@ -349,5 +349,4 @@ const allnames = await ReverseRecords.getNames(['0x123','0x124'])
 const validNames = allnames.filter((n) => namehash.normalize(n) === n )
 ```
 
-Make sure to compare that the returned names match with the normalised names to prevent from [homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack) as well as people simply using capital letters.
-
+Make sure to compare that the returned names match with the normalised names to prevent from [homograph attack](https://en.wikipedia.org/wiki/IDN\_homograph\_attack) as well as people simply using capital letters.

@@ -206,7 +206,7 @@ After the registration date has passed, this function can be called to finalize 
 
 `function transferRegistrars(bytes32 _hash) onlyOwner(_hash);`
 
-* Used during the upgrade process to a permanent registrar. If this registrar is no longer the owner of the its root node in the ENS, this function will transfers the deed to the current owner, which should be a new registrar. This function throws if this registrar still owns its root node.
+* Used during the upgrade process to a permanent registrar. If this registrar is no longer the owner of the root node in the ENS, this function will transfer the deed to the current owner, which should be a new registrar. This function throws if this registrar still owns its root node.
 
 ### Rationale
 

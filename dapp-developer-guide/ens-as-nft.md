@@ -1,6 +1,6 @@
 # ENS as NFT
 
-When ENS .eth registrar migrated in May 2019, the .eth registrar became an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant nonfungable token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
+When ENS .eth registrar migrated in May 2019, the .eth registrar became an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant non-fungible token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
 
 ## Deriving tokenId from ENS name
 
@@ -19,7 +19,7 @@ In the example above,[`792336638293796348375898654485693427847124828194845492895
 
 ## Deriving ENS name from tokenId
 
-Unlike deriving tokenId, deriving ENS name from tokenId is not as easy. This is because all ENS names are stored as fixed-length hash to allow registering infinite length of names. The downside of this architecture is that you cannot directly query ENS smart contracts to return ens name using tokenId.
+Unlike deriving tokenId, deriving ENS name from tokenId is not as easy. This is because all ENS names are stored as fixed-length hash to allow registering infinite length of names. The downside of this architecture is that you cannot directly query ENS smart contracts to return ENS name using tokenId.
 
 Our recommended way is to query via [https://thegraph.com](https://thegraph.com) ENS subgraph. The graph decodes the hash to name as it indexes. The example code to query is as follows.
 

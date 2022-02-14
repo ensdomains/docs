@@ -83,8 +83,8 @@ The following keys were specified in earlier versions of this ENSIP.
 Their use is not likely very wide, but applications attempting maximal compatibility may wish to query these keys as a fallback if the above replacement keys fail.
 
 * **vnd.github** - a GitHub username (renamed to `com.github`)
-* **vnd.peepeth** - a peepeth username (renamced to `com.peepeth`)
-* **vnd.twitter** - a twitter username (renamed to `com.twitter`)
+* **vnd.peepeth** - a peepeth username (renamed to `com.peepeth`)
+* **vnd.twitter** - a Twitter username (renamed to `com.twitter`)
 
 ### Rationale
 
