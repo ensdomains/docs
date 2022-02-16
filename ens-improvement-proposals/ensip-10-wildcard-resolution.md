@@ -57,7 +57,7 @@ ENSIP-10-compliant ENS clients MUST perform the following procedure when determi
 1. Set `currentname = name`
 2. Set `resolver = ens.resolver(namehash(currentname))`
 3. If `resolver` is not the zero address, halt and return `resolver`.
-4. If `name` is the empty name ('' or '.'), halt and return null.
+4. If `currentname` is the empty name ('' or '.'), halt and return null.
 5. Otherwise, set `currentname = parent(currentname)` and go to 2.
 
 If the procedure above returns null, name resolution MUST terminate unsuccessfully. Otherwise, ENSIP-10-compliant ENS clients MUST perform the following procedure when resolving a record:
