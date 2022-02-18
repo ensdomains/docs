@@ -65,7 +65,7 @@ If the procedure above returns null, name resolution MUST terminate unsuccessful
 1. Set `calldata` to the ABI-encoded call data for the resolution function required - for example, the ABI encoding of `addr(namehash(name))` when resolving the `addr` record.
 2. Set `supportsENSIP10 = resolver.supportsInterface('0x9061b923')`.
 3. If `supportsENSIP10` is true, set `result = resolver.resolve(dnsencode(name), calldata)`
-4. If `supportsENSIP10` is true and `name == currentname`, set `result` to the result of calling `resolver` with `calldata`.
+4. If `supportsENSIP10` is false and `name == currentname`, set `result` to the result of calling `resolver` with `calldata`.
 5. If neither 3 nor 4 are true, terminate unsuccessfully.
 6. Return `result` after decoding it using the return data ABI of the corresponding resolution function (eg, for `addr()`, ABI-decode the result of `resolver.resolve()` as an `address`).
 
