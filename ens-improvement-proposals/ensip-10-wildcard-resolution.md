@@ -48,7 +48,7 @@ interface ExtendedResolver {
 }
 ```
 
-If a resolver implements this function, it MUST return true when `supportsInterface()` is called on it with the interface's ID, 0xTBD.
+If a resolver implements this function, it MUST return true when `supportsInterface()` is called on it with the interface's ID, `0x9061b923`.
 
 ENS clients will call `resolve` with the DNS-encoded name to resolve and the encoded calldata for a resolver function (as specified in ENSIP-1 and elsewhere); the function MUST either return valid return data for that function, or revert if it is not supported.
 
@@ -63,12 +63,15 @@ ENSIP-10-compliant ENS clients MUST perform the following procedure when determi
 If the procedure above returns null, name resolution MUST terminate unsuccessfully. Otherwise, ENSIP-10-compliant ENS clients MUST perform the following procedure when resolving a record:
 
 1. Set `calldata` to the ABI-encoded call data for the resolution function required - for example, the ABI encoding of `addr(namehash(name))` when resolving the `addr` record.
-2. Set `supports2544 = resolver.supportsInterface(0xTBD)`.
-3. If `supports2544` is true, set `result = resolver.resolve(dnsencode(name), calldata)`
-4. Otherwise, set `result` to the result of calling `resolver` with `calldata`.
-5. Return `result` after decoding it using the return data ABI of the corresponding resolution function (eg, for `addr()`, ABI-decode the result of `resolver.resolve()` as an `address`).
+2. Set `supportsENSIP10 = resolver.supportsInterface('0x9061b923')`.
+3. If `supportsENSIP10` is true, set `result = resolver.resolve(dnsencode(name), calldata)`
+4. If `supportsENSIP10` is true and `name == currentname`, set `result` to the result of calling `resolver` with `calldata`.
+5. If neither 3 nor 4 are true, terminate unsuccessfully.
+6. Return `result` after decoding it using the return data ABI of the corresponding resolution function (eg, for `addr()`, ABI-decode the result of `resolver.resolve()` as an `address`).
 
 Note that in all cases the resolution function (`addr()` etc) and the `resolve` function are supplied the original `name`, _not_ the `currentname` found in the first stage of resolution.
+
+Also note that when wildcard resolution is in use (eg, `name != currentname`), clients MUST NOT call legacy methods such as `addr` to resolve the name. These methods may only be called on resolvers set on an exact match for `name`.
 
 #### Pseudocode
 
@@ -78,25 +81,26 @@ function getResolver(name) {
         const node = namehash(currentname);
         const resolver = ens.resolver(node);
         if(resolver != '0x0000000000000000000000000000000000000000') {
-            return resolver;
+            return [resolver, currentname];
         }
     }
-    return null;
+    return [null, ''];
 }
 
 function resolve(name, func, ...args) {
-    const resolver = getResolver(name);
+    const [resolver, resolverName] = getResolver(name);
     if(resolver === null) {
         return null;
     }
-    const supports2544 = resolver.supportsInterface('0xTBD');
-    let result;
-    if(supports2544) {
+    const supportsENSIP10 = resolver.supportsInterface('0x9061b923');
+    if(supportsENSIP10) {
         const calldata = resolver[func].encodeFunctionCall(namehash(name), ...args);
-        result = resolver.resolve(dnsencode(name), calldata);
+        const result = resolver.resolve(dnsencode(name), calldata);
         return resolver[func].decodeReturnData(result);
-    } else {
+    } else if(name == resolverName) {
         return resolver[func](...args);
+    } else {
+        return null;
     }
 }
 ```
@@ -107,13 +111,15 @@ The proposed implementation supports wildcard resolution in a manner that minimi
 
 It also recognizes an existing consensus concerning the desirability of wildcard resolution for ENS, enabling more widespread adoption of the original specification by solving for a key scalability obstacle.
 
-While introducing an optional `resolve` function for resolvers, taking the unhashed name and calldata for a resolution function increases implementation complexity, it provides a means for resolvers to obtain plaintext labels and act accordingly, which enables many wildcard-related use-cases that would otherwise not be possible - for example, a wildcard resolver could resolve `id.nifty.eth` to the owner of the NFT with id `id` in some collection. With only namehashes to work with, this is not possible. Resolvers with simpler requirements can continue to simply implement resolution functions directly and omit support for the `resolve` function entirely.
+While introducing an optional `resolve` function for resolvers, taking the unhashed name and calldata for a resolution function increases implementation complexity, it provides a means for resolvers to obtain plaintext labels and act accordingly, which enables many wildcard-related use-cases that would otherwise not be possible - for example, a wildcard resolver could resolve `id.nifty.eth` to the owner of the NFT with id `id` in some collection. With only namehashes to work with, this is not possible.
 
 The DNS wire format is used for encoding names as it permits quick and gas-efficient hashing of names, as well as other common operations such as fetching or removing individual labels; in contrast, dot-separated names require iterating over every character in the name to find the delimiter.
 
 ### Backwards Compatibility
 
 Existing ENS clients that are compliant with ENSIP-1 will fail to resolve wildcard records and refuse to interact with them, while those compliant with ENSIP-10 will continue to correctly resolve, or reject, existing ENS records. Resolvers wishing to implement the new `resolve` function for non-wildcard use-cases (eg, where the resolver is set directly on the name being resolved) should consider what to return to legacy clients that call the individual resolution functions for maximum compatibility.
+
+Requiring clients to avoid calling existing resolution functions (eg, `addr` etc) on wildcard resolvers prevents inadvertant backwards compatiability issues with resolvers that answer queries for all names.
 
 ### Security Considerations
 
