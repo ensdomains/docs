@@ -40,7 +40,7 @@ Once you get to this stage, you can complete the rest from ENS manager. Simply p
 
 ### Can I register any DNS domains through ENS app?
 
-Technically speaking, [over 90% of domains](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38) can be supported. Some TLDs (`ceo`, `.art`, `.club`, `.luxe` and `.kred`) are operated by each DNS registry.
+Technically speaking, [over 90% of domains](https://medium.com/the-ethereum-name-service/upcoming-changes-to-the-ens-root-a1b78fd52b38) can be supported. Some TLDs (`.ceo`, `.art`, `.club`, `.luxe` and `.kred`) are operated by each DNS registry.
 
 ### If I own `myname.xyz` DNS name, can I claim for `myname.eth` ?
 
