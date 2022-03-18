@@ -68,7 +68,7 @@ If a [data URL](https://datatracker.ietf.org/doc/html/rfc2397) is provided, it M
 
 **NFTs**
 
-A reference to an NFT may be used as an avatar URI, following the standards defined in [CAIP-22](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-22.md) and [CAIP-29](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/CAIP-29.md).
+A reference to an NFT may be used as an avatar URI, following the standards defined in [CAIP-22](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-22.md) and [CAIP-29](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-29.md).
 
 Clients MUST support at least ERC721 and ERC1155 type NFTs, and MAY support additional types of NFT.
 
