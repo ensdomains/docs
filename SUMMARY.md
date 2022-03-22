@@ -36,6 +36,7 @@
 
 ## Contract API Reference
 
+* [ENS Contracts Overview](contract-api-reference/ENS-Contracts-Overview.md)
 * [Name Processing](contract-api-reference/name-processing.md)
 * [Registry](contract-api-reference/ens.md)
 * [ReverseRegistrar](contract-api-reference/reverseregistrar.md)
