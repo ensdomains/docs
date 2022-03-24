@@ -24,7 +24,39 @@ If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 s
 
 ### ethersjs
 
-Currently EIP 3668 is implemented as npm module as [@chainlink/ethers-ccip-read-provider ](@chainlink/ethers-ccip-read-provider/)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)).
+5.6.1 supports both EIP3668 and ENSIP 10.
+
+No code change is required as long as your app is interacting with ENS through [etherjs ENS methods](https://docs.ethers.io/v5/api/providers/provider/#Provider--ens-methods).
+
+To try out these features, `offchainexample.eth` points to so-called "offchain resolver" that fetches data from JSON configuration file hosted on google app engine. It will reply data to any record for offchainexample.eth and its subdomain record such as `2.offchainexample.eth`. The example resolver is not using L2 data but the same mechanism works when the L2 resolver becomes ready.
+
+```js
+const { ethers } = require("ethers");
+const url = `https://mainnet.infura.io/v3/${process.env.API_KEY}`
+const provider = new ethers.providers.JsonRpcProvider(url);
+
+async function main(){
+  let resolver = await provider.getResolver('1.offchainexample.eth')
+  let address = await provider.resolveName('1.offchainexample.eth')
+  let email = await resolver.getText('email')
+  console.log({resolver:resolver.address, address, email})
+}
+main()
+```
+
+The expected output is as follows.
+
+```
+$node index.js
+{
+  resolver: '0xC1735677a60884ABbCF72295E88d47764BeDa282',
+  address: '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5',
+  email: 'nick@ens.domains'
+}
+```
+
+
+[@chainlink/ethers-ccip-read-provider](@chainlink/ethers-ccip-read-provider/)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)) also implements EIP 3668 as an independent npm module
 
 The basic usage example is as follows.
 
@@ -35,8 +67,6 @@ const IExtendedResolver = new ethers.utils.Interface(IExtendedResolver_abi);
 const baseProvider = ethers.getDefaultProvider(options.provider);
 const provider = new CCIPReadProvider(baseProvider);
 ```
-
-The wildcard is not supported yet.
 
 Please refer to [offchain resolver client example code](https://github.com/ensdomains/offchain-resolver/blob/main/packages/client/src/index.ts#L46) for more detail.
 
