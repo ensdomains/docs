@@ -66,7 +66,7 @@ In some cases, you may need to know the hash of the name stored in ENS. labelhas
 }
 ```
 
-NOTE: When getting the list of names from The subgraph, compare `id` and `namehash(id)` to make sure they match. This is because registering a name with a null byte suffix can lead to having the same name with different hash.
+NOTE: The subgraph does not normalise values in the `name` or `labelName` field; it relays exactly what the user provides. When using name or label data from the subgraph, compare `id` and `namehash(name)` to make sure they match. If they do not match, this should be treated the same as a domain for which the name is unknown.
 
 ## Handling of Ambiguous Names
 
