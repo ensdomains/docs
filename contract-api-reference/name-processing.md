@@ -66,6 +66,8 @@ In some cases, you may need to know the hash of the name stored in ENS. labelhas
 }
 ```
 
+NOTE: When getting the list of names from subgraph, do extra check comparing `id` and `namehash(id)` to make sure they match. This is because registering a name with a null byte suffix can lead to having the same name with different hash.
+
 ## Handling of Ambiguous Names
 
 Because of the large number of characters in unicode, and the wide variety of scripts represented, inevitably there are different Unicode characters that are similar or even identical when shown in common fonts. This can be abused to trick users into thinking they are visiting one site or resource, when in fact they are visiting another. This is known as a [homoglyph attack](https://en.wikipedia.org/wiki/Internationalized_domain_name#ASCII_spoofing_concerns).
