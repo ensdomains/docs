@@ -1,9 +1,5 @@
 # ENS Layer2 and offchain data support
 
-## IMPORTANT NOTE
-
-The development of ENS offchain data support is still in progress, and none of the solutions described below is to be used in the production environment yet. Therefore, this section is written mainly for information purposes so that dapps and wallets developers can prepare for the integration once it is fully supported.
-
 ## Summary
 
 With the proliferation of layer 2 solutions for Ethereum that are starting to reach maturity, it's important that ENS is able to provide resolution services across the entire ecosystem, as well as making it possible for ENS users to take advantage of the efficiencies made possible by Layer 2 solutions. Subsequent to a post by [Vitalik](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591) that suggested a possible means for this, the ENS team and the wider ENS and L2 community have been working on a general-purpose "Layer 2 bridge" that makes cross-platform interoperability possible for both ENS and other applications that need to be able to retrieve data from a variety of offchain sources (any data that resides outside of Ethereum Mainnet also known as layer 1/L1. This includes both propriety database and layer 2/L2 solutions such as Optimism, Arbitrum, Starkware, ZKSync, and so on) in a trustless fashion and came up with standards.
@@ -54,7 +50,6 @@ $node index.js
   email: 'nick@ens.domains'
 }
 ```
-
 
 [@chainlink/ethers-ccip-read-provider](@chainlink/ethers-ccip-read-provider/)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)) also implements EIP 3668 as an independent npm module
 
