@@ -46,7 +46,7 @@ The expected output is as follows.
 $node index.js
 {
   resolver: '0xC1735677a60884ABbCF72295E88d47764BeDa282',
-  address: '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5',
+  address: '0x41563129cDbbD0c5D3e1c86cf9563926b243834d',
   email: 'nick@ens.domains'
 }
 ```
