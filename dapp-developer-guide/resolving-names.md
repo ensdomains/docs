@@ -131,6 +131,7 @@ Not supported.
 
 {% tab title="ethers.js" %}
 ```javascript
+  const resolver = await provider.getResolver('abittooawesome.eth');
   const contentHash = await resolver.getContentHash();
   const btcAddress = await resolver.getAddress(0);
   const dogeAddress = await resolver.getAddress(3);
