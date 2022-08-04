@@ -2,7 +2,7 @@
 description: Using ENS Text Records to facilitate safer and more convenient signing operations.
 ---
 
-# ENSIP-13: Secondary Authentication For ENS (SAFE)
+# ENSIP-13: SAFE Authentication For ENS
 
 | **Author**    | Wilkins Chung (@wwhchung), Jalil Wahdatehagh (@jwahdatehagh), Cry (@crydoteth), Sillytuna (@sillytuna), Cyberpnk (@CyberpnkWin) |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
