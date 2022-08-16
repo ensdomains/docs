@@ -73,7 +73,7 @@ Currently, registration costs are set at the following prices:
 
 ### What happens if I forget to extend the registration of a name?
 
-After your name expires, there is a 90 day grace period in which the owner can't edit the records but can still re-register the name. After the grace period, the name is released for registration by anyone with a temporary premium which decreases over a 28 days period. The released name continues to resolve your ETH address until the new owner overwrites it.
+After your name expires, there is a 90 day grace period in which the owner can't edit the records but can still re-register the name. After the grace period, the name is released for registration by anyone with a temporary premium which decreases over a 21 days period. The released name continues to resolve your ETH address until the new owner overwrites it.
 
 ### What kinds of behaviours are likely to result in losing ownership of a name?
 
