@@ -177,7 +177,7 @@ Not supported.
 
 ### Encoding and decoding contenthash
 
-`contenthash` is used to store IPFSand Swarm content hashes, which permit resolving ENS addresses to distributed content (eg, websites) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a convenient way to encode/decode these hashes.
+`contenthash` is used to store IPFS and Swarm content hashes, which permit resolving ENS addresses to distributed content (eg, websites) hosted on these distributed networks. [content-hash](https://github.com/ensdomains/content-hash) javascript library provides a convenient way to encode/decode these hashes.
 
 ```javascript
  const contentHash = require('content-hash')
