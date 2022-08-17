@@ -117,7 +117,7 @@ err := resolver.SetAddress(opts, common.HexToAddress("0x1234..."))
 
 {% tab title="web3.js" %}
 ```javascript
-ens.setAddress('iam.alice.eth, '0x1234...', {from: ...});
+ens.setAddress('iam.alice.eth', '0x1234...', {from: ...});
 ```
 {% endtab %}
 
