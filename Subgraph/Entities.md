@@ -175,12 +175,12 @@ Description:
 Description:
 
 | Field      | Type                               | Description                                    |
-| ---------- | ---------------------------------- | ---------------------------------------------- | ------------------------------ |
+| ---------- | ---------------------------------- | ---------------------------------------------- | 
 | id         | ID!                                | Concatenation of resolver address and namehash |
 | domain     | Domain                             |                                                |
 | address    | Bytes!                             | Address of resolver contract                   |
 | addr       | Account                            | Current value of addr record (per events)      |
-| contenHash | Bytes                              |                                                | Content hash, in binary format |
+| contenHash | Bytes                              | Content hash, in binary format                 |                            
 | texts      | [String!]                          | Set of observed text record keys               |
 | cointTypes | [BigInt!]                          | Set of observed SLIP-44 coin types             |
 | events     | [`ResolverEvent!`](#resolverevent) |                                                |
