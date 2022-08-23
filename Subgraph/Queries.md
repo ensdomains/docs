@@ -27,8 +27,8 @@ query getDomainForAccount {
 ## Search for subdomain
 
 ```graphql
-query getSubDomains($Account: String = "datanexus.eth") {
-  domains(where: { name: "datanexus.eth" }) {
+query getSubDomains($Account: String = "vitalik.eth") {
+  domains(where: { name: "vitalik.eth" }) {
     name
     id
     subdomains(first: 10) {
