@@ -11,7 +11,7 @@ const ethers = require('ethers')
 const BigNumber = ethers.BigNumber
 const utils = ethers.utils
 const name = 'vitalik'
-const labelHash = utils.keccak256(utils.toUtf8Bytes('vitalik'))
+const labelHash = utils.keccak256(utils.toUtf8Bytes(name))
 const tokenId = BigNumber.from(labelHash).toString()
 ```
 
