@@ -43,7 +43,7 @@ query getSubDomains($Account: String = "datanexus.eth") {
 
 ```graphql
 {
- query getDomainExp($Account: String = "datanexus.eth") {
+ query getDomainExp($Account: String = "vitalik.eth") {
   registrations(
     where: {domain_: {name: $Account}}
     first: 1
