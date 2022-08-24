@@ -46,9 +46,9 @@
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 * [DNS Registrar](contract-api-reference/dns-registrar.md)
-* [Subgraph](contract-api-reference/subgraphdata.md)
-  * [Entities](contract-api-reference/entities.md)
-  * [Query Examples](contract-api-reference/queries.md)
+* [Subgraph](contract-api-reference/Subgraph)
+  * [Entities](contract-api-reference/Subgraph/Entities.md)
+  * [Query Examples](contract-api-reference/Subgraph/Queries.md)
   
 ## Contract Developer Guide
 
