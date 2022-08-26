@@ -21,7 +21,7 @@ The schema of GraphQL elements available is defined in [`/schema.graphql` ](http
 
 - [Explorer Page](https://thegraph.com/hosted-service/subgraph/ensdomains/ens)
 - Graphql Endpoint: https://gateway.thegraph.com/api/[api-key]/subgraphs/id/QmcqvocMfm9LDSEDYmeexzeGt1QTY7T7AVitX9mG2qkvjR
-- [Code Repo](https://github.com/ensdomains)
+- [Code Repo](https://github.com/ensdomains/ens-subgraph)
 
 ## Helpful Links
 
