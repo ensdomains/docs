@@ -5,7 +5,7 @@ title: Subgraph Data Introduction
 
 # ENS Subgraph Introduction
 
-ENS has a GraphQL API Endpoint hosted by [The Graph](https://thegraph.com/docs/about/introduction#what-the-graph-is) called a subgraph for indexing and organizing data from the Sablier smart contracts.
+ENS has a GraphQL API Endpoint hosted by [The Graph](https://thegraph.com/docs/about/introduction#what-the-graph-is) called a subgraph for indexing and organizing data from the ENS smart contracts.
 
 This subgraph can be used to query ENS data.
 
@@ -13,7 +13,7 @@ Subgraph information is serviced by a decentralized group of server operators ca
 
 ## GraphQL Schema
 
-The schema of GraphQL elements available is defined in [`/schema.graphql` ](https://github.com/PaulieB14/ens-subgraph/blob/master/schema.graphql)
+The schema of GraphQL elements available is defined in [`/schema.graphql` ](https://github.com/ensdomains/ens-subgraph/blob/master/schema.graphql)
 
 ## Ethereum Mainnet
 
