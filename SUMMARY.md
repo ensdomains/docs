@@ -46,7 +46,10 @@
   * [Registrar](contract-api-reference/.eth-permanent-registrar/registrar.md)
   * [Controller](contract-api-reference/.eth-permanent-registrar/controller.md)
 * [DNS Registrar](contract-api-reference/dns-registrar.md)
-
+* [Subgraph](contract-api-reference/Subgraph/SubgraphData.md)
+  * [Entities](contract-api-reference/Subgraph/Entities.md)
+  * [Query Examples](contract-api-reference/Subgraph/Queries.md)
+  
 ## Contract Developer Guide
 
 * [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
