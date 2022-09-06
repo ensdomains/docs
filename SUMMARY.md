@@ -56,7 +56,7 @@
 * [Writing a Resolver](contract-developer-guide/writing-a-resolver.md)
 * [Writing a Registrar](contract-developer-guide/writing-a-registrar.md)
 * [ENS Discussion Forum](https://discuss.ens.domains)
-* [ENS Support Chat](https://discord.gg/AskZbFx)
+* [ENS Support Chat](https://chat.ens.domains)
 
 ## ENS Migration (February 2020)
 
