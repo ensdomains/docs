@@ -31,9 +31,9 @@ interface OffChainResolver {
 
     isApprovedForAll(address account, address operator)
 
-    dataLocation(bytes32 node);
+    dataLocation(bytes32 node) returns (string);
 
-    allRecords(bytes32 node) returns Records;
+    allRecords(bytes32 node) returns (Records);
 
     recordKeys(bytes32 node) returns (RecordsKeys)
 
@@ -42,8 +42,6 @@ interface OffChainResolver {
 
 
 #### Example
-
-To compute the new coin type for EVM chains, call `convertEVMChainIdToCoinType(chainId)`
 
 ```javascript
 const node = namehash('ccipreadsub.example.eth')
@@ -55,6 +53,13 @@ const dataLocation = await.resolver.dataLocation(node)
 //   name: "Optimism",
 //   type: "Layer 2",
 //   chainId: 5   
+// }
+
+const recordKeys = await.resolver.recordKeys(node)
+// {
+//   addr: [60, 1]
+//   textRecords: ['url', 'avatar']
+//   contentHash: true
 // }
 
 ```
