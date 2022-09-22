@@ -64,9 +64,9 @@ If you use other libraries or custom integration, please raise the GitHub issue 
 
 - [Alpha Wallet](https://github.com/AlphaWallet)
 - [Argent](https://github.com/argentlabs)
+- [Coinbase Wallet](https://github.com/CoinbaseWallet)
 - [Trust Wallet](https://github.com/trustwallet)
 - [Umbra Wallet](https://github.com/ScopeLift/umbra-protocol)
-- [Coinbase Wallet](https://github.com/CoinbaseWallet)
 
 ## Steps required for Dapps and wallets to issue subdomains offchain
 
