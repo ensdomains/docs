@@ -21,19 +21,24 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 ### Specification
 
-```solidity
-contract OffChainResolver {
-    owner(bytes32 node){
-        //...
-    }
+Add metadata functions to the resolver. The first argument MUST have the node if it is specific to a node.
 
-    dataLocation(bytes32 node){
-        //...
-    }
+```solidity
+
+
+interface OffChainResolver {
+    owner(bytes32 node);
+
+    isApprovedForAll(address account, address operator)
+
+    dataLocation(bytes32 node);
+
+    allRecords(bytes32 node) returns Records;
+
+    recordKeys(bytes32 node) returns (RecordsKeys)
+
 }
 ```
-
-#### Implementation
 
 
 #### Example
@@ -46,7 +51,11 @@ const resolver = await ens.resolver(node)
 const owner = await resolver.owner(node) 
 // 0x123...
 const dataLocation = await.resolver.dataLocation(node)
-// "Coinbase"
+// {
+//   name: "Optimism",
+//   type: "Layer 2",
+//   chainId: 5   
+// }
 
 ```
 
