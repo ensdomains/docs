@@ -2,7 +2,7 @@
 description: Allows metadata to be queried on CCIP enabled names
 ---
 
-# ENSIP-14: CCIP metadata
+# ENSIP-14: CCIP-read metadata
 
 | **Author**    | Jeff Lau \<jeff@ens.domains> |
 | ------------- | ---------------------------- |
@@ -11,7 +11,7 @@ description: Allows metadata to be queried on CCIP enabled names
 
 ### Abstract
 
-This ENSIP allows metadata to be queried directly on the resolver for CCIP enabled names. CCIP-read will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or L2/offchain database the records are stored on.
+This ENSIP allows metadata to be queried directly on the resolver for CCIP-read enabled names. CCIP-read will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or L2/offchain database the records are stored on.
 
 ### Motivation
 
