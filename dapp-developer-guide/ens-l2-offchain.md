@@ -4,23 +4,23 @@
 
 With the proliferation of layer 2 solutions for Ethereum that are starting to reach maturity, it's important that ENS is able to provide resolution services across the entire ecosystem, as well as making it possible for ENS users to take advantage of the efficiencies made possible by Layer 2 solutions. Subsequent to a post by [Vitalik](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591) that suggested a possible means for this, the ENS team and the wider ENS and L2 community have been working on a general-purpose "Layer 2 bridge" that makes cross-platform interoperability possible for both ENS and other applications that need to be able to retrieve data from a variety of offchain sources (any data that resides outside of Ethereum Mainnet also known as layer 1/L1. This includes both propriety database and layer 2/L2 solutions such as Optimism, Arbitrum, Starkware, ZKSync, and so on) in a trustless fashion and came up with standards.
 
-* [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
-* [ENSIP 10: Wildcard Resolution](/ens-improvement-proposals/ensip-10-wildcard-resolution/)
+- [EIP-3668: CCIP Read: Secure offchain data retrieval](https://eips.ethereum.org/EIPS/eip-3668)
+- [EIP-5559: Cross Chain Write Deferral Protocol](https://eips.ethereum.org/EIPS/eip-5559)
+- [ENSIP 10: Wildcard Resolution](/ens-improvement-proposals/ensip-10-wildcard-resolution/)
 
-**EIP 3668** allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
+**EIP 3668** (Final) allows for offchain (including Layer 2/L2) lookups of data in a way that is transparent to clients and provides contract authors to implement whatever validation is necessary; in many cases, this can be provided without any additional trust assumptions over and above those required if data is stored onchain.
 
-**ENSIP 10** is a general way to resolve wildcard (eg: \*.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
+**EIP 5559** (Draft) provides a mechanism in which smart contracts can request various tasks to be resolved by an external handler. This provides a mechanism in which protocols can reduce the gas fees associated with storing data on mainnet by deferring the handling of it to another system/network. These external handlers act as an extension to the core L1 contract.
+
+**ENSIP 10** (Draft) is a general way to resolve wildcard (eg: \*.foo.eth) on L1. Issuing subdomains and moving the resolution of the parent name offchain allows dapps to create subdomains offchain yet make it accessible through L1.
 
 ## Steps required for Dapps and wallets to support offchain data lookup.
 
-If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in, so simply update the library when ready.
+If your dapps or wallets use one of those libraries, the EIP 3668 and ENSIP 10 support will be built in, so simply update the library when ready. EIP 5559 is still in its early stage of draft and the content will be evolving
 
-* [ethersjs](https://github.com/ethers-io/ethers.js)
-* [web3js](https://github.com/ethereum/web3.js)
+### [ethersjs](https://github.com/ethers-io/ethers.js)
 
-### ethersjs
-
-5.6.1 supports both EIP3668 and ENSIP 10.
+ethers.js 5.6.2 supports both EIP3668 and ENSIP 10.
 
 No code change is required as long as your app is interacting with ENS through [etherjs ENS methods](https://docs.ethers.io/v5/api/providers/provider/#Provider--ens-methods).
 
@@ -28,16 +28,16 @@ To try out these features, `offchainexample.eth` points to so-called "offchain r
 
 ```js
 const { ethers } = require("ethers");
-const url = `https://mainnet.infura.io/v3/${process.env.API_KEY}`
+const url = `https://mainnet.infura.io/v3/${process.env.API_KEY}`;
 const provider = new ethers.providers.JsonRpcProvider(url);
 
-async function main(){
-  let resolver = await provider.getResolver('1.offchainexample.eth')
-  let address = await provider.resolveName('1.offchainexample.eth')
-  let email = await resolver.getText('email')
-  console.log({resolver:resolver.address, address, email})
+async function main() {
+  let resolver = await provider.getResolver("1.offchainexample.eth");
+  let address = await provider.resolveName("1.offchainexample.eth");
+  let email = await resolver.getText("email");
+  console.log({ resolver: resolver.address, address, email });
 }
-main()
+main();
 ```
 
 The expected output is as follows.
@@ -51,31 +51,31 @@ $node index.js
 }
 ```
 
-[@chainlink/ethers-ccip-read-provider](@chainlink/ethers-ccip-read-provider/)([source](https://github.com/smartcontractkit/ccip-read/tree/rewrite/packages/ethers-ccip-read-provider)) also implements EIP 3668 as an independent npm module
-
-The basic usage example is as follows.
-
-```js
-import { CCIPReadProvider } from '@chainlink/ethers-ccip-read-provider';
-import { abi as IExtendedResolver_abi } from '@ensdomains/offchain-resolver-contracts/artifacts/contracts/IExtendedResolver.sol/IExtendedResolver.json';
-const IExtendedResolver = new ethers.utils.Interface(IExtendedResolver_abi);
-const baseProvider = ethers.getDefaultProvider(options.provider);
-const provider = new CCIPReadProvider(baseProvider);
-```
-
 Please refer to [offchain resolver client example code](https://github.com/ensdomains/offchain-resolver/blob/main/packages/client/src/index.ts#L46) for more detail.
 
-### web3js
+### Other supported libraries.
 
-Work in progress
-
-### Any other libraries
+- [web3.py](https://web3py.readthedocs.io/en/stable/) (Python)
+- [web3j](https://docs.web3j.io/) (Java)
 
 If you use other libraries or custom integration, please raise the GitHub issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
+
+### Wallets integrated
+
+- [Alpha Wallet](https://github.com/AlphaWallet)
+- [Argent](https://github.com/argentlabs)
+- [Coinbase Wallet](https://github.com/CoinbaseWallet)
+- [Trust Wallet](https://github.com/trustwallet)
+- [Umbra Wallet](https://github.com/ScopeLift/umbra-protocol)
 
 ## Steps required for Dapps and wallets to issue subdomains offchain
 
 If you wish to issue subdomains using offchain data storage, please follow [offchain resolver](https://github.com/ensdomains/offchain-resolver) as a reference point. The example uses a flat file as a data source but can easily be replaced with database calls.
+
+The following projects have integrated with the Offchain resolver for issuing their subdomains
+
+- [cb.id by Coinbase](https://help.coinbase.com/en/wallet/managing-account/coinbase-ens-support)
+- [optinames](https://optinames.eth.limo) = The code is closed sourced but you can read [the verified contract code](https://etherscan.io/address/0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41#code)
 
 L2 support is still a work in progress.
 
@@ -117,11 +117,11 @@ Unlike EOA (Externally Owned Account), contract based accounts such as multisig 
 
 ## References and previous discussions
 
-* [MVP of ENS on L2 with Optimism: Demo Video + How to Try It Yourself](https://medium.com/the-ethereum-name-service/mvp-of-ens-on-l2-with-optimism-demo-video-how-to-try-it-yourself-b44c390cbd67)
-* [A general-purpose bridge for Ethereum Layer 2s](https://medium.com/the-ethereum-name-service/a-general-purpose-bridge-for-ethereum-layer-2s-e28810ec1d88)
-* [A general-purpose L2-friendly ENS standard](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591)
-* [Video: ENS Workshop on 18th Oct 2021](https://www.youtube.com/watch?v=L9N7U\_bNmOU)
-* [Video: ENS Workshop on 6th April 2021](https://www.youtube.com/watch?v=9DdL7AQgXTM)
-* [Video: ENS on Layer 2 meeting #2 on 28th Oct 2020](https://www.youtube.com/watch?v=QwEiAedSNYI)
-* [Video: ENS on Layer 2 meeting on 13th Oct 2020](https://www.youtube.com/watch?v=vloI0VT8DXE)
-* [Video: ENS workshop on 29th Sep 2020](https://www.youtube.com/watch?v=65z\_j4n8mTk\&t=2s)
+- [MVP of ENS on L2 with Optimism: Demo Video + How to Try It Yourself](https://medium.com/the-ethereum-name-service/mvp-of-ens-on-l2-with-optimism-demo-video-how-to-try-it-yourself-b44c390cbd67)
+- [A general-purpose bridge for Ethereum Layer 2s](https://medium.com/the-ethereum-name-service/a-general-purpose-bridge-for-ethereum-layer-2s-e28810ec1d88)
+- [A general-purpose L2-friendly ENS standard](https://ethereum-magicians.org/t/a-general-purpose-l2-friendly-ens-standard/4591)
+- [Video: ENS Workshop on 18th Oct 2021](https://www.youtube.com/watch?v=L9N7U_bNmOU)
+- [Video: ENS Workshop on 6th April 2021](https://www.youtube.com/watch?v=9DdL7AQgXTM)
+- [Video: ENS on Layer 2 meeting #2 on 28th Oct 2020](https://www.youtube.com/watch?v=QwEiAedSNYI)
+- [Video: ENS on Layer 2 meeting on 13th Oct 2020](https://www.youtube.com/watch?v=vloI0VT8DXE)
+- [Video: ENS workshop on 29th Sep 2020](https://www.youtube.com/watch?v=65z_j4n8mTk&t=2s)
