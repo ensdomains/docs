@@ -95,7 +95,7 @@ event NewOwner(bytes32 indexed node, bytes32 indexed label, address owner);
 ### Set Record
 
 ```text
-function setRecord(bytes32 node, address owner, address resolver, uint64 ttl);
+function setRecord(bytes32 node, address owner, address resolver, uint64 ttl) external;
 ```
 
 Sets the owner, resolver, and TTL for an ENS record in a single operation. This function is offered for convenience, and is exactly equivalent to calling `setResolver`, `setTTL` and `setOwner` in that order.
@@ -103,7 +103,7 @@ Sets the owner, resolver, and TTL for an ENS record in a single operation. This 
 ### Set Subdomain Record
 
 ```text
-function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl);
+function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) external;
 ```
 
 Sets the owner, resolver and TTL for a subdomain, creating it if necessary. This function is offered for convenience, and permits setting all three fields without first transferring ownership of the subdomain to the caller.
@@ -111,7 +111,7 @@ Sets the owner, resolver and TTL for a subdomain, creating it if necessary. This
 ### Set Approval
 
 ```text
-function setApprovalForAll(address operator, bool approved);
+function setApprovalForAll(address operator, bool approved) external;
 ```
 
 Sets or clears an approval. Approved accounts can execute all ENS registry operations on behalf of the caller.
