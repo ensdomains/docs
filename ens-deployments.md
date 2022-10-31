@@ -2,7 +2,7 @@
 
 If you are working with an [ENS library](dapp-developer-guide/ens-libraries.md), your library will automatically find the ENS deployment you need. If for whatever reason, you need to interact with ENS directly, details for the currently supported deployments are detailed here.
 
-The ENS registry is deployed at 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e. This same address is used across Mainnet and Goerli.
+The ENS registry is deployed at 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e. This same address is used across Mainnet and [Goerli](https://www.alchemy.com/overviews/migrate-from-rinkeby-to-goerli).
 
 On mainnet, the following registrars are deployed:
 
