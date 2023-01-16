@@ -34,6 +34,7 @@
 * [ENS Front-End Design Guidelines](dapp-developer-guide/front-end-design-guidelines.md)
 * [ENS as NFT](dapp-developer-guide/ens-as-nft.md)
 * [ENS Layer2 and offchain data support](dapp-developer-guide/ens-l2-offchain.md)
+* [ENS Data guide](dapp-developer-guide/ens-data-guide.md)
 
 ## Contract API Reference
 
@@ -49,7 +50,7 @@
 * [Subgraph](contract-api-reference/subgraph/subgraphdata.md)
   * [Entities](contract-api-reference/subgraph/entities.md)
   * [Query Examples](contract-api-reference/subgraph/queries.md)
-  
+
 ## Contract Developer Guide
 
 * [Resolving Names On-chain](contract-developer-guide/resolving-names-on-chain.md)
