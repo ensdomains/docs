@@ -30,7 +30,7 @@ The final step for comprehensive ENS integration is to facilitate associating EN
 
 By obtaining an ENS name for your product and allowing users to easily register subdomains, you can provide users with an easy way to name resources created in your DApp. For example, if your DApp is a cryptocurrency wallet, you can make it easy for users to obtain an ENS domain of the form _theirname.yourwallet.eth_, allowing them to give their name out to others more easily.
 
-To learn how to do this, see Writing a Registrar in the Smart Contract Developer Guide.
+To learn how to do this, see [Writing a Registrar](../contract-developer-guide/writing-a-registrar.md) in the Contract Developer Guide.
 
 ### Name Updates
 
