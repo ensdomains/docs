@@ -9,7 +9,7 @@
 
 ### Abstract
 
-There are many reasons that we might want to be able to measure how and where users are registering names. One of them is simply by knowing our own ecosystem and which apps are more popular, but it’s also very important to be able to identify the creators who are helping the ecosystem. Retroactive funding via grants is often better than proactive funding because you can detect what has already worked, instead of stewards having to make bets on what they think would happen. Often in this community we are surprised by things becoming popular that we would never be able to predict. On the other hand, it’s important to make the process transparent, open source and privacy preserving. Havsource data would also facilitate attempts to create referral programs.
+There are many reasons that we might want to be able to measure how and where users are registering names. One of them is simply by knowing our own ecosystem and which apps are more popular, but it’s also very important to be able to identify the creators who are helping the ecosystem. Retroactive funding via grants is often better than proactive funding because you can detect what has already worked, instead of stewards having to make bets on what they think would happen. Often in this community we are surprised by things becoming popular that we would never be able to predict. On the other hand, it’s important to make the process transparent, open source and privacy preserving. Having source data would also facilitate attempts to create referral programs.
 
 ### Specification
 
@@ -23,7 +23,7 @@ This way the first 6 char of the secret would be the platform name and the next 
 
 > 0x **1b7f8b** **612c63** 3cbcc635528d3b7196bc89d13566c1be2068af0cad6fb3ecebf0
 
-With this we can attribute registrations using the first 12 chars of the secret. The loss of entropy of 48 bytes is not relevant, since the only goal of the secret is to obscure the details of the bid to avoid front-running during the short period (usually a few minutes but it could be as long as a week) before the reveal transaction is executed. The secret still retains 208 bytes which is highly secure, specially for a short time frame.
+With this we can attribute registrations using the first 12 chars of the secret. The loss of entropy of 48 bits is not relevant, since the only goal of the secret is to obscure the details of the bid to avoid front-running during the short period (usually a few minutes but it could be as long as a week) before the reveal transaction is executed. The secret still retains 208 bits which is highly secure, especially for a short time frame.
 
 The extra data could be used in this example:
 
