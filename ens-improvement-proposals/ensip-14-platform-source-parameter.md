@@ -21,7 +21,7 @@ The ETH Registrar Controller takes a random secret as part of its input. This se
 
 This proposal suggests a social convention that generates the secret from a combination of the first **4 bytes of the namehash**, plus another **4 bytes for user referrals**, combined with the appropriate number of random bytes.
 
-The first 16 chars of the secret would be the platform name and the next 14 would be used as an identifier of the user referral. For example, if the above was registered via ensfairy, the secret would be:
+In hex formatted string it means that the first 8 chars of the secret would be the platform name and the next 8 would be used as an identifier of the user referral. For example, if the above was registered via ensfairy, the secret would be:
 
 > 0x **1b7f8b3c** **612c63bc** c635528d3b7196bc89d13566c1be2068af0cad6fb3ecebf0
 > 
