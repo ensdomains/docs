@@ -13,7 +13,7 @@ You can build your own queries using a [GraphQL Explorer](https://graphiql-onlin
 
 ```graphql
 query getDomainForAccount {
-  account(id: "0xfee51ebbf276c1c3d91910a0b9a029e3ce731619") {
+  account(id: "0xa508c16666c5b8981fa46eb32784fccc01942a71") {
     registrations(first: 1, orderBy: expiryDate, orderDirection: desc) {
       domain {
         name
@@ -24,11 +24,30 @@ query getDomainForAccount {
 }
 ```
 
+### Returns
+
+```graphql
+{
+  "data": {
+    "account": {
+      "registrations": [
+        {
+          "domain": {
+            "name": "datanexus.eth"
+          }
+        }
+      ],
+      "id": "0xa508c16666c5b8981fa46eb32784fccc01942a71"
+    }
+  }
+}
+```
+
 ## Search for subdomain
 
 ```graphql
-query getSubDomains($Account: String = "vitalik.eth") {
-  domains(where: { name: "vitalik.eth" }) {
+query getSubDomains($Account: String = "messari.eth") {
+  domains(where: { name: "messari.eth" }) {
     name
     id
     subdomains(first: 10) {
@@ -39,18 +58,55 @@ query getSubDomains($Account: String = "vitalik.eth") {
 }
 ```
 
-## Get an expiration for an ENS domain
+### Returns
 
 ```graphql
 {
- query getDomainExp($Account: String = "vitalik.eth") {
+  "data": {
+    "domains": [
+      {
+        "name": "messari.eth",
+        "id": "0x498ada62251a1227664ace8d97b0de2dcc6652ddf61e6fb5d3150f43ccf599e6",
+        "subdomains": [
+          {
+            "name": "subgraphs.messari.eth"
+          },
+          {
+            "name": "bd.messari.eth"
+          }
+        ],
+        "subdomainCount": 2
+      }
+    ]
+  }
+}
+```
+
+## Get an expiration for an ENS domain
+
+```graphql
+query getDomainExp($Account: String = "paulieb.eth") {
   registrations(
-    where: {domain_: {name: $Account}}
+    where: { domain_: { name: $Account } }
     first: 1
     orderBy: expiryDate
     orderDirection: desc
   ) {
     expiryDate
+  }
+}
+```
+
+### Returns
+
+```graphql
+{
+  "data": {
+    "registrations": [
+      {
+        "expiryDate": "1714752524"
+      }
+    ]
   }
 }
 ```
