@@ -26,7 +26,7 @@ Add metadata functions to the resolver. The first argument MUST have the node if
 ```solidity
 
 
-interface OffChainResolver {
+interface OffchainResolver {
     owner(bytes32 node);
 
     isApprovedForAll(address account, address operator)
