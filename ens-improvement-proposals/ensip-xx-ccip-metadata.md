@@ -2,7 +2,7 @@
 description: Allows metadata to be queried on CCIP enabled names
 ---
 
-# ENSIP-14: CCIP-read metadata
+# ENSIP-XX: CCIP-read metadata
 
 | **Author**    | Jeff Lau \<jeff@ens.domains> |
 | ------------- | ---------------------------- |
@@ -11,7 +11,7 @@ description: Allows metadata to be queried on CCIP enabled names
 
 ### Abstract
 
-This ENSIP allows metadata to be queried directly on the resolver for CCIP-read enabled names. CCIP-read will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or L2/offchain database the records are stored on.
+This ENSIP allows metadata to be queried directly on the resolver for CCIP-read enabled names. CCIP-read will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
 
 ### Motivation
 
@@ -21,23 +21,23 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 ### Specification
 
-Add metadata functions to the resolver. The first argument MUST have the node if it is specific to a node.
+Add metadata functions to the resolver. The first argument MUST have the node if it is specifically related to a name (e.g. vitalik.eth). Most of these fields will be expected to be held off-chain via ccip-read.
 
 ```solidity
 
-
 interface OffChainResolver {
-    owner(bytes32 node);
+    owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
 
-    isApprovedForAll(address account, address operator)
+    isApprovedForAll(address account, address operator) returns (boolean);
 
-    dataLocation(bytes32 node) returns (string);
+    dataLocation(bytes32 node) returns (string); 
 
     allRecords(bytes32 node) returns (Records);
 
     recordKeys(bytes32 node) returns (RecordsKeys)
 
 }
+
 ```
 
 
