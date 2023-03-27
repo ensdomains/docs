@@ -57,9 +57,8 @@ const dataLocation = await.resolver.dataLocation(node)
 
 const recordKeys = await.resolver.recordKeys(node)
 // {
-//   addr: [60, 1]
-//   textRecords: ['url', 'avatar']
-//   contentHash: true
+//   coinTypes: [60, 1]
+//   texts: ['url', 'avatar']
 // }
 
 ```
