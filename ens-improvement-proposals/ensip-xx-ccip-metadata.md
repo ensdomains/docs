@@ -23,7 +23,7 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 The metadata should include 2 different types of info
 
-- Offchain data storage location related info: `graphalurl` includes the URL to fetch the metadata.
+- Offchain data storage location related info: `graphqlurl` includes the URL to fetch the metadata.
 
 - Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
 
