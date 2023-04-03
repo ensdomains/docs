@@ -50,10 +50,6 @@ const dataLocation = await.resolver.graphqlurl()
 
 ##### Ggraphql schema
 
-- id = Id of the Chain (either ChainID or SLIP44 if non evm chain)
-- name = Name of the Chain
-- isEVM = true/false
-
 ```graphql
 type Domain{
   id: ID!
@@ -67,15 +63,14 @@ type Domain{
 }
 
 type Offchain(owner:){
-  id: ID!,
-  chainId: Integer,
-  name: String,
-  isEVM: true/false
+  chainId: ID!        # Id of the Chain (either ChainID or SLIP44 if non evm chain)
+  name: String        # Name of the Chain
+  isEVM: true/false   # True/False
 }
 
 type OwnedResolver implements Resolver @entity {
-  ownedNode: String
-  owner: Account
+  ownedNode: String   # Hash of node and msg.sender
+  owner: Account      # msg.sender
 }
 
 ```
