@@ -23,7 +23,7 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 The metadata should include 2 different types of info
 
-- Offchain data storage location related info: `graphqlurl` includes the URL to fetch the metadata.
+- Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
 
 - Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
 
@@ -33,7 +33,7 @@ interface OffChainResolver {
     owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
 
     isApprovedForAll(address account, address operator) returns (boolean);
-    graphqlurl() returns (string);
+    graphqlUrl() returns (string);
 }
 ```
 
@@ -42,13 +42,13 @@ const node = namehash('ccipreadsub.example.eth')
 const resolver = await ens.resolver(node)
 const owner = await resolver.owner(node)
 // 0x123...
-const dataLocation = await.resolver.graphqlurl()
+const dataLocation = await.resolver.graphqlUrl()
 // {
 //   url: 'http://example.com/ens/graphql',
 // }
 ```
 
-##### Ggraphql schema
+##### GgraphQL schema
 
 ```graphql
 type Domain{
@@ -65,7 +65,7 @@ type Domain{
 type Offchain(owner:){
   chainId: ID!        # Id of the Chain (either ChainID or SLIP44 if non evm chain)
   name: String        # Name of the Chain
-  isEVM: true/false   # True/False
+  isEVM: Boolean      # True/False
 }
 
 type OwnedResolver implements Resolver @entity {
@@ -82,7 +82,7 @@ None
 ### Open Items
 
 - Should `owner` and `isApprovedForAll` be within graphql or shoud be own metadata function?
-- OwnedResolver is permissionless. Need some sort of regisry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
+- OwnedResolver is permissionless. Need some sort of registry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
 
 ### Copyright
 
