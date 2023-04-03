@@ -324,7 +324,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 
 ## Appendix: Validation Tests
 
-A list of [validation tests](https://github.com/adraffy/ens-normalize.js/tree/20230221-stable/validate/tests.json) are provided with the following interpretation:
+A list of [validation tests](../normalization-standard/tests.json) are provided with the following interpretation:
 
 * Already Normalized: `{name: "a"}` → `normalize("a")` is `"a"`
 * Need Normalization: `{name: "A", norm: "a"}` → `normalize("A")` is `"a"`
