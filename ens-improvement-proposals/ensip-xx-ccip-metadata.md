@@ -79,6 +79,11 @@ type OwnedResolver implements Resolver @entity {
 
 None
 
+### Open Items
+
+- Should `owner` and `isApprovedForAll` be within graphql or shoud be own metadata function?
+- OwnedResolver is permissionless. Need some sort of regisry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
+
 ### Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
