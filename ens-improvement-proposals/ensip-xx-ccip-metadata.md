@@ -21,7 +21,11 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 ### Specification
 
-Add metadata functions to the resolver. The first argument MUST have the node if it is specifically related to a name (e.g. vitalik.eth). Most of these fields will be expected to be held off-chain via ccip-read.
+The metadata should include 2 different types of info
+
+- Offchain data storage location related info: `graphalurl` includes the URL to fetch the metadata.
+
+- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
 
 ```solidity
 
@@ -29,37 +33,50 @@ interface OffChainResolver {
     owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
 
     isApprovedForAll(address account, address operator) returns (boolean);
-
-    dataLocation(bytes32 node) returns (string); 
-
-    allRecords(bytes32 node) returns (Records);
-
-    recordKeys(bytes32 node) returns (RecordsKeys)
-
+    graphqlurl() returns (string);
 }
-
 ```
-
-
-#### Example
 
 ```javascript
 const node = namehash('ccipreadsub.example.eth')
 const resolver = await ens.resolver(node)
-const owner = await resolver.owner(node) 
+const owner = await resolver.owner(node)
 // 0x123...
-const dataLocation = await.resolver.dataLocation(node)
+const dataLocation = await.resolver.graphqlurl()
 // {
-//   name: "Optimism",
-//   type: "Layer 2",
-//   chainId: 5   
+//   url: 'http://example.com/ens/graphql',
 // }
+```
 
-const recordKeys = await.resolver.recordKeys(node)
-// {
-//   coinTypes: [60, 1]
-//   texts: ['url', 'avatar']
-// }
+##### Ggraphql schema
+
+- id = Id of the Chain (either ChainID or SLIP44 if non evm chain)
+- name = Name of the Chain
+- isEVM = true/false
+
+```graphql
+type Domain{
+  id: ID!
+  name: String
+  labelName: String
+  labelhash: Bytes
+  parent: Domain
+  subdomains: [Domain]
+  offchain: Offchain
+  resolver: (Resolver | OwnedResolver)
+}
+
+type Offchain(owner:){
+  id: ID!,
+  chainId: Integer,
+  name: String,
+  isEVM: true/false
+}
+
+type OwnedResolver implements Resolver @entity {
+  ownedNode: String
+  owner: Account
+}
 
 ```
 
