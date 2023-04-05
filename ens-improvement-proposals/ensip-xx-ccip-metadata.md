@@ -21,68 +21,102 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 ### Specification
 
-The metadata should include 2 different types of info
-
-- Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
-
-- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
-
 ```solidity
 
 interface OffChainResolver {
-    owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
-
-    isApprovedForAll(address account, address operator) returns (boolean);
-    graphqlUrl() returns (string);
+  enum StorageType{ EVM, RESTAPI }
+  getMetadata(name: bytes) returns (graphqlUrl: string, l2resolverAddress:bytes, context:bytes)
+  dataLocation(name: bytes) returns (storageType: StorageType, location:string )
+  canUpdate(name: bytes, address:bytes) returns(bool)
 }
 ```
 
 ```javascript
-const node = namehash('ccipreadsub.example.eth')
-const resolver = await ens.resolver(node)
-const owner = await resolver.owner(node)
+const packet = require("dns-packet");
+function encodeName(name) {
+  return "0x" + packet.name.encode(name).toString("hex");
+}
+const encodedName = encodeName("ccipreadsub.example.eth");
+const resolver = await ens.resolver(node);
+const owner = await resolver.owner(node);
 // 0x123...
-const dataLocation = await.resolver.graphqlUrl()
-// {
-//   url: 'http://example.com/ens/graphql',
-// }
+foo.matoken.eth;
+jeff.matoken.eth;
+const metadata = await resolver.getMetadata(encodedName);
+// ['http://example.com/ens/graphql','0x1234', '0x1234']
+const dataLocation = await resolver.dataLocation(encodedName);
+// [0, 60] Ethereum
+// [1, 'https://example.com/api'] A REST API
+const canUpdate = await resolver.canUpdate(encodedName, "0x1234");
+// true
 ```
 
-##### GgraphQL schema
+##### getMetadata
+
+###### Request
+
+- name(bytes) = dns encoded name (eg: tokenId for Namewrapper)
+
+###### Response
+
+- url = url of graphql. can be hardcoded within L1 resolver
+- l2resolverAddress
+- context = a hex string which could be l2 resolver address. This context comes via CCIP gateway
+
+###### GgraphQL schema
 
 ```graphql
-type Domain{
-  id: ID!
-  name: String
-  labelName: String
-  labelhash: Bytes
-  parent: Domain
-  subdomains: [Domain]
-  offchain: Offchain
-  resolver: (Resolver | OwnedResolver)
+type L2ResolverEntry {
+  #
+  ## Identifiers
+  #
+  id: ID! # Concatenation of resolver address and text
+  address: Bytes! # l2 resolver address
+  context: Bytes!
+  #
+  ##  Equivalent to Resolver in L1 schema
+  #
+  contentHash: Bytes # Content hash, in binary format.
+  texts: [Text!]! # Set of observed text record keys
+  coin: [Coin!]! # Set of observed SLIP-44 coin types
+  #
+  ##  Equivalent to Domain in L1 schema
+  #
+  name: String # The human readable name, if known. Unknown
+  labelName: String # The human readable label name (imported from CSV), if known
+  labelhash: Bytes! # keccak256(labelName)
+  namehash: Bytes!
+  parent: Domain # The namehash (id) of the parent name
+  subdomains: [L2ResolverEntry!]! @derivedFrom(field: "parent") # Can count domains from length of array
+  createdAt: BigInt!
+  events: [L2ResolverEvent!]! @derivedFrom(field: "entry")
 }
-
-type Offchain(owner:){
-  chainId: ID!        # Id of the Chain (either ChainID or SLIP44 if non evm chain)
-  name: String        # Name of the Chain
-  isEVM: Boolean      # True/False
-}
-
-type OwnedResolver implements Resolver @entity {
-  ownedNode: String   # Hash of node and msg.sender
-  owner: Account      # msg.sender
-}
-
 ```
+
+##### dataLocation(name: bytes) returns (storageType: StorageType, location:string )
+
+###### Request
+
+- name(bytes) = dns encoded name (eg: tokenId for Namewrapper)
+
+###### Response
+
+- url = url of graphql. can be hardcoded within L1 resolver
+
+##### canUpdate(name: bytes, address:bytes) returns(bool)
+
+###### Request
+
+- name(bytes) = dns encoded name (eg: tokenId for Namewrapper)
+- address = The user address. This is required to work with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
+
+###### Response
+
+- Returns True if the user can update the record.
 
 #### Backwards Compatibility
 
 None
-
-### Open Items
-
-- Should `owner` and `isApprovedForAll` be within graphql or shoud be own metadata function?
-- OwnedResolver is permissionless. Need some sort of registry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
 
 ### Copyright
 
