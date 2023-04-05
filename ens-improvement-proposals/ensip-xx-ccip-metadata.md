@@ -21,7 +21,11 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 ### Specification
 
-Add metadata functions to the resolver. The first argument MUST have the node if it is specifically related to a name (e.g. vitalik.eth). Most of these fields will be expected to be held off-chain via ccip-read.
+The metadata should include 2 different types of info
+
+- Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
+
+- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
 
 ```solidity
 
@@ -29,43 +33,56 @@ interface OffChainResolver {
     owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
 
     isApprovedForAll(address account, address operator) returns (boolean);
-
-    dataLocation(bytes32 node) returns (string); 
-
-    allRecords(bytes32 node) returns (Records);
-
-    recordKeys(bytes32 node) returns (RecordsKeys)
-
+    graphqlUrl() returns (string);
 }
-
 ```
-
-
-#### Example
 
 ```javascript
 const node = namehash('ccipreadsub.example.eth')
 const resolver = await ens.resolver(node)
-const owner = await resolver.owner(node) 
+const owner = await resolver.owner(node)
 // 0x123...
-const dataLocation = await.resolver.dataLocation(node)
+const dataLocation = await.resolver.graphqlUrl()
 // {
-//   name: "Optimism",
-//   type: "Layer 2",
-//   chainId: 5   
+//   url: 'http://example.com/ens/graphql',
 // }
+```
 
-const recordKeys = await.resolver.recordKeys(node)
-// {
-//   coinTypes: [60, 1]
-//   texts: ['url', 'avatar']
-// }
+##### GgraphQL schema
+
+```graphql
+type Domain{
+  id: ID!
+  name: String
+  labelName: String
+  labelhash: Bytes
+  parent: Domain
+  subdomains: [Domain]
+  offchain: Offchain
+  resolver: (Resolver | OwnedResolver)
+}
+
+type Offchain(owner:){
+  chainId: ID!        # Id of the Chain (either ChainID or SLIP44 if non evm chain)
+  name: String        # Name of the Chain
+  isEVM: Boolean      # True/False
+}
+
+type OwnedResolver implements Resolver @entity {
+  ownedNode: String   # Hash of node and msg.sender
+  owner: Account      # msg.sender
+}
 
 ```
 
 #### Backwards Compatibility
 
 None
+
+### Open Items
+
+- Should `owner` and `isApprovedForAll` be within graphql or shoud be own metadata function?
+- OwnedResolver is permissionless. Need some sort of registry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
 
 ### Copyright
 
