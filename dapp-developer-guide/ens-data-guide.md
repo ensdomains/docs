@@ -25,7 +25,7 @@ The target audience of this article is developers and data analysts who are inte
 
 Just like many other Ethereum-based projects, ENS consists of a set of smart contracts. You can use tools of your choice to interact directly with ENS smart contracts (which we will explain in depth). If you want extra data about a single name, please refer to the ENS library section which explains how to interact with ENS via popular libraries such as ethers.js.
 
-Extracting multiple entities tends to be slow and time-consuming because you have to make a function call to extract each record. [Ens-js v3 has a batch](https://github.com/ensdomains/ensjs-v3) call function to save some call time. If you are interested in extracting more than dozens of name records or want to access event-related information. There are currently two popular services, [The Graph](https://thegraph.com), [Dune Analytics](https://dune.com) and [Google Big Query](https://cloud.google.com/bigquery).
+Extracting multiple entities tends to be slow and time-consuming because you have to make a function call to extract each record. [Ens-js v3 has a batch](https://github.com/ensdomains/ensjs-v3) call function to save some call time. If you are interested in extracting more than dozens of name records or want to access event-related information. There are currently three popular services: [The Graph](https://thegraph.com), [Dune Analytics](https://dune.com), and [Google Big Query](https://cloud.google.com/bigquery).
 
 ### The Graph
 
