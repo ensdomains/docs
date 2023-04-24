@@ -27,8 +27,8 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Versioning
 * Unicode version `15.0.0`
-* [spec.json](../normalization-standard/spec.json) contains all necessary data for normalization.
-* [nf.json](../normalization-standard/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+* [spec.json](./ensip-15/spec.json) contains all necessary data for normalization.
+* [nf.json](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Algorithm
 
@@ -138,7 +138,7 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 
 ## Description of `spec.json`
 
-* **Groups** (`"groups"`) — groups of characters that can constitute a label
+* [**Groups**](./ensip-15/groups.md) (`"groups"`) — groups of characters that can constitute a label
 	* `"name"` — ASCII name of the group (or abbreviation if **Restricted**)
 		* Example: *Latin*, *Japanese*, *Egyp*
 	* **Restricted** (`"restricted"`) — **`true`** if [Excluded](https://www.unicode.org/reports/tr31#Table_Candidate_Characters_for_Exclusion_from_Identifiers) or [Limited-Use](https://www.unicode.org/reports/tr31/#Table_Limited_Use_Scripts) script
@@ -162,12 +162,12 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* **Emoji** (`"emoji"`) — allowed emoji sequences
+* [**Emoji**](./ensip-15/emoji.md) (`"emoji"`) — allowed emoji sequences
 	* Example: `[1F468 200D 1F4BB] (👨‍💻) man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
-* **Should Escape** (`"escape"`) — characters that [shouldn't be printed](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/chars-escape.js)
+* **Should Escape** (`"escape"`) — characters that shouldn't be printed
 * **NFC Check** (`"nfc_check"`) — valid characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
 
 ## Derivation
@@ -208,7 +208,7 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 		* `3002 (。) IDEOGRAPHIC FULL STOP`
 		* `FF0E (．) FULLWIDTH FULL STOP`
 		* `FF61 (｡) HALFWIDTH IDEOGRAPHIC FULL STOP`
-* Many characters are **disallowed** for [various reasons](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/chars-disallow.js):
+* [Many characters](./ensip-15/disallowed.md) are **disallowed** for various reasons:
 	* Nearly all punctuation are **disallowed**.
 	* All parentheses and brackets are **disallowed**.
 	* Nearly all vocalization annotations are **disallowed**.
@@ -240,7 +240,7 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 	* `2E3A (⸺) TWO-EM DASH` → `"--"`
 	* `2E3B (⸻) THREE-EM DASH` → `"---"`
 * Characters are assigned to **Groups** according to [Unicode Script_Extensions](https://www.unicode.org/reports/tr24/#Script_Extensions_Def).
-* **Groups** may contain [multiple scripts](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/scripts.js):
+* **Groups** may contain [multiple scripts](./ensip-15/groups.md):
 	* Only *Latin*, *Greek*, *Cyrillic*, *Han*, *Japanese*, and *Korean* have access to *Common* characters.
 	* *Latin*, *Greek*, *Cyrillic*, *Han*, *Japanese*, *Korean*, and *Bopomofo* only permit specific **Combining Mark** sequences.
 	* *Han*, *Japanese*, and *Korean*  have access to `a-z`.
@@ -249,11 +249,11 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 * *Braille*, *Linear A*, *Linear B*, and *Signwriting* scripts are **disallowed**.
 * `27 (') APOSTROPHE` is **mapped** to `2019 (’) RIGHT SINGLE QUOTATION MARK` for convenience.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
-* Emoji sequences:
+* [Emoji sequences:](./ensip-15/emoji.md)
 	* All sequences are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
-	* Digits (`0-9`) are [not emoji](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L28).
-	* Emoji [mapped to non-emoji by IDNA](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L4) cannot be used as emoji.
-	* Emoji [disallowed by IDNA](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L46) and have default text-presentation are **disabled**:
+	* Digits (`0-9`) are not emoji.
+	* Emoji mapped to non-emoji by IDNA cannot be used as emoji.
+	* Emoji disallowed by IDNA and have default text-presentation are **disabled**:
 		* `203C (‼️) double exclamation mark`
 		* `2049 (⁉️) exclamation question mark `
 	* Remaining `Emoji` characters are marked as **disallowed** (for text processing).
@@ -265,10 +265,10 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 	* `Basic_Emoji` of the form `[X FE0F]` are **enabled**.
 	* `Emoji` with default emoji-presentation are **enabled** as `[X FE0F]`.
 	* Remaining single-character `Emoji` are **enabled** as `[X FE0F]` (explicit emoji-styling).
-	* All singular [Skin-color Modifiers](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L64) are **disabled**.
-	* All singular [Regional Indicators](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L74) are **disabled**.
-	* [Blacklisted emoji](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L110) are **disabled**.
-	* [Whitelisted emoji](https://github.com/adraffy/ens-normalize.js/blob/20230221-stable/derive/rules/emoji.js#L116) are **enabled**.
+	* All singular Skin-color Modifiers are **disabled**.
+	* All singular Regional Indicators are **disabled**.
+	* Blacklisted emoji are **disabled**.
+	* Whitelisted emoji are **enabled**.
 * Confusables:
 	* Emoji are not confusable.
 	* ASCII confusables are case-folded.
@@ -291,9 +291,6 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 	* Names may be composed of labels of different directions but normalized labels are never bidirectional.
 * Not all normalized names are visually unambiguous.
 * This ENSIP only addresses **single-character** [confusables](https://www.unicode.org/reports/tr39/).
-	* There exist confusable-yet-distinct **single-character** confusables:
-		* `62 (b) LATIN SMALL LETTER B` and `13F4 (Ᏼ) CHEROKEE LETTER YV`
-		* `DF (ß) LATIN SMALL LETTER SHARP S` and `3B2 (β) GREEK SMALL LETTER BETA`
 	* There exist confusable **multi-character** sequences:
 		* `"ஶ்ரீ" [BB6 BCD BB0 BC0]`
 		* `"ஸ்ரீ" [BB8 BCD BB0 BC0]`
@@ -322,9 +319,15 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 * [Unicode CLDR](https://github.com/unicode-org/cldr)
 * [WHATWG URL: IDNA](https://url.spec.whatwg.org/#idna)
 
+## Appendix: Additional Resources
+
+* [Supported Groups](./ensip-15/groups.md)
+* [List of Disallowed Characters](./ensip-15/disallowed.md)
+* [Emoji Considerations](./ensip-15/emoji.md)
+
 ## Appendix: Validation Tests
 
-A list of [validation tests](../normalization-standard/tests.json) are provided with the following interpretation:
+A list of [validation tests](./ensip-15/tests.json) are provided with the following interpretation:
 
 * Already Normalized: `{name: "a"}` → `normalize("a")` is `"a"`
 * Need Normalization: `{name: "A", norm: "a"}` → `normalize("A")` is `"a"`
