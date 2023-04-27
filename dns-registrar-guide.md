@@ -50,7 +50,7 @@ You may be confused with [short name reservation process](https://medium.com/the
 
 Unlike `.eth` permanent registrar, there is no notion of `registrant` which can transfer the ownership of the controller. If you want to transfer the ownership to any address other than the currently registered address, please update the corresponding DNS record from your DNS manager and click "Transfer" from our ENS manager.
 
-We currently haven't enabled the ability to delete the ownership. Having said that, you can achieve the same effect if you set the owner record to `a= 0x0000000000000000000000000000000000000000` then click "Transfer" from the ENS manager.
+We currently haven't enabled the ability to delete the ownership. Having said that, you can achieve the same effect if you set the owner record to `a=0x0000000000000000000000000000000000000000` then click "Transfer" from the ENS manager.
 
 ### Can I register my DNS subdomain?
 
