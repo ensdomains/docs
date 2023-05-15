@@ -25,9 +25,10 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ## Specification
 
-### Versioning
 * Unicode version `15.0.0`
 * [spec.json](./ensip-15/spec.json) contains all necessary data for normalization.
+	* [Description of `spec.json`](#description-of-specjson) describes the contents of this file.
+	* Terms in **Bold** throughout this document correspond with parts of this file.
 * [nf.json](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Algorithm
@@ -37,9 +38,9 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 * For user convenience, leading and trailing whitespace should be trimmed before normalization, as all whitespace codepoints are disallowed.  Inner characters should remain unmodified.
 * No string transformations (like case-folding) should be applied.
 
-1. Split the name into [labels](./ensip-1-ens#name-syntax).
+1. [Split](#split) the name into [labels](./ensip-1-ens#name-syntax).
 1. [Normalize](#normalize) each label.
-1. Join the labels together into a name again. 
+1. [Join](#join) the labels together into a name again. 
 1. The result is normalized and ready for [hashing](./ensip-1-ens#namehash-algorithm).
 
 ### Normalize
@@ -59,8 +60,16 @@ Given a string, convert to codepoints, and produce a list of **Text** and **Emoj
 
 1. Allocate an empty codepoint buffer.
 1. Find the longest emoji sequence that matches the remaining input.
+	* The longest sequence prevents matching on a shorter sequence that has the same initial codepoints.
+	* Example: `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB]`
+		* Match (1): `👨️ [1F468] man` 
+		* Match (2): `👨🏻 [1F468 1F3FB] man: light skin tone`
+		* Match (4): `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB] man technologist: light skin tone` — longest match
 	* `FE0F` is optional from the input during matching.
-	* Example: `Emoji[A FE0F B]` matches `[A FE0F B]` and `[A B]` but not `[A FE0F FE0F B]`
+	* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468`
+		* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
+		* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
+		* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
 1. If an emoji sequence is found:
 	* If the buffer is nonempty, emit a **Text** token, and clear the buffer.
 	* Emit an **Emoji** token with the fully-qualified matching sequence.
@@ -78,22 +87,25 @@ Given a string, convert to codepoints, and produce a list of **Text** and **Emoj
 
 ### Validate
 
-Given a list of **Emoji** and **Text** tokens, determine if the composition is valid and return the **Label Type**.
+Given a list of **Emoji** and **Text** tokens, determine if the composition is valid and return the **Label Type**.  If any assertion fails, the name cannot be normalized.
 
 1. If only **Emoji** tokens:
 	* Return `"Emoji"`
 1. If a single **Text** token and every characters is ASCII (`00..7F`):
 	* `5F (_) LOW LINE` can only occur at the start.
 		* Must match `/^_*[^_]*$/`
+		* Example: `"___"` and `"__abc"` are valid, `"abc__"` and `"_abc_"` are invalid.
 	* The 3rd and 4th characters must not both be `2D (-) HYPHEN-MINUS`.
 		* Must not match `/^..--/`
+		* Examples: `"ab-c"` and `"---a"`are valid, `"xn--"` and `----` are invalid.
 	* Return `"ASCII"`
 		* The label is free of **Fenced** and **Combining Mark** characters, and not confusable.
 1. Concatenate all the tokens together.
 	* `5F (_) LOW LINE` can only occur at the start.
-		* Must match `/^_*[^_]$/u`
 	* The first and last characters cannot be **Fenced**.
+		* Example: `"a’s"` and `"a・a"` are valid, `"’85"` and `"joneses’"` and `"・a・"` are invalid.
 	* **Fenced** characters cannot be contiguous.
+		* Example: `"a・a’s"` is valid, `"6’0’’"` and `"a・・a"` are invalid.
 1. The first character of every **Text** token must not be a **Combining Mark**.
 1. Concatenate the **Text** tokens together.
 1. Find the first **Group** that contain every text character:
@@ -102,7 +114,9 @@ Given a list of **Emoji** and **Text** tokens, determine if the composition is v
 	* Apply NFD to the concatenated text characters.
 	* For every contiguous sequence of **NSM** characters:
 		* Each character must be unique.
-		* Number of characters cannot exceed **Maximum NSM** (4).
+			* Example: `"x̀̀" [78 300 300]` has (2) grave accents.
+		* The number of **NSM** characters cannot exceed **Maximum NSM** (4).
+			* Example: ` "إؐؑؒؓؔ"‎ [625 610 611 612 613 614]` has (6) **NSM**.
 1. [Wholes](#wholes) — check if text characters form a confusable.
 1. The label is valid.
 	* Return the name of the group.
@@ -112,29 +126,57 @@ Given a list of **Emoji** and **Text** tokens, determine if the composition is v
 A label is whole-script confusable if a similarly-looking valid label can be constructed using one alternative character from a different group.
 
 1. Allocate an empty character buffer.
-1. Start with the set of all groups.
-1. For each unique character:
+1. Start with the set of **ALL** groups.
+1. For each unique character in the label:
 	* If the character is **Confused** (a member of a **Whole Confusable**):
 		* Retain groups with **Whole Confusable** characters excluding the **Confusable Extent** of the matching **Confused** character.
-			* The **Confusable Extent** is the fully-connected graph formed from different groups with the same confusable and different confusables of the same group.
-			* This mapping from **Confused** to **Confusable Extent** can be precomputed.
-			* Example: `"o"` **Whole Confusable** 
-				1. `6F (o) LATIN SMALL LETTER O` → *Latin*, *Han*, *Japanese*, and *Korean*
-				1. `3007 (〇) IDEOGRAPHIC NUMBER ZERO` → *Han*, *Japanese*, *Korean*, and *Bopomofo*
-				1. **Confusable Extent** is [`6F`, `3007`] ⊗ [*Latin*, *Han*, *Japanese*, *Korean*, *Bopomofo*]
 		* If no groups remain, the label is not confusable.
-		* Example: `"тӕ" [442 4D5]`
-			1. `"т"` → `442 (т) CYRILLIC SMALL LETTER TE` and `3C4 (τ) GREEK SMALL LETTER TAU`
-				* **ALL** ∩ [*Cyrillic*, *Greek*] → [*Cyrillic*, *Greek*]
-			1. `"ӕ"` → `E6 (æ) LATIN SMALL LETTER AE` and `4D5 (ӕ) CYRILLIC SMALL LIGATURE A IE`
-				* [*Cyrillic*, *Greek*] ∩ [*Latin*, *Cyrillic*] → [*Cyrillic*]
+		* The **Confusable Extent** is the fully-connected graph formed from different groups with the same confusable and different confusables of the same group.
+			* This mapping from **Confused** to **Confusable Extent** can be precomputed.
+		* Example: **Whole Confusable** for `"o"`
+			1. `6F (o) LATIN SMALL LETTER O` → *Latin*, *Han*, *Japanese*, and *Korean*
+			1. `3007 (〇) IDEOGRAPHIC NUMBER ZERO` → *Han*, *Japanese*, *Korean*, and *Bopomofo*
+			1. **Confusable Extent** is [`o`, `〇`] ⊗ [*Latin*, *Han*, *Japanese*, *Korean*, *Bopomofo*]
 	* If the character is **Unique**, the label is not confusable.
 		* This set can be precomputed from characters that appear in exactly one group and are not **Confused**.
 	* Otherwise:
 		* Append the character to the buffer.
 1. If any **Confused** characters were found:
-	* Assert none of the remaining groups contain any buffered characters.
+	* Assert none of the remaining groups contain any of the buffered characters.
+	* Example: `"0х" [30 445]`
+		1. `30 (0) DIGIT ZERO`
+			* Not **Confused** or **Unique**, add to buffer.
+		1. `445 (х) CYRILLIC SMALL LETTER HA`
+			* **Confusable Extent** is [`х`, `4B3 (ҳ) CYRILLIC SMALL LETTER HA WITH DESCENDER`] ⊗ [*Cyrillic*]
+			* **Whole Confusable** excluding the extent is [`78 (x) LATIN SMALL LETTER X`, ...] → [*Latin*, ...]
+			* Remaining groups: **ALL** ∩ [*Latin*, ...] → [*Latin*, ...]
+		1. There was (1) buffered character:
+			* *Latin* also contains `30` → `"0x" [30 78]`
+		1. The label is confusable.
 1. The label is not confusable.
+
+A label composed of confusable characters isn't necessarily confusable.
+
+* Example: `"тӕ" [442 4D5]`
+	1. `442 (т) CYRILLIC SMALL LETTER TE` 
+		* **Confusable Extent** is [`т`] ⊗ [*Cyrillic*]
+		* **Whole Confusable** excluding the extent is [`3C4 (τ) GREEK SMALL LETTER TAU`] → [*Greek*]
+		* Remaining groups: **ALL** ∩ [*Greek*] → [*Greek*]
+	1. `4D5 (ӕ) CYRILLIC SMALL LIGATURE A IE`
+		* **Confusable Extent** is [`ӕ`] ⊗ [*Greek*]
+		* **Whole Confusable** excluding the extent is [`E6 (æ) LATIN SMALL LETTER AE`] → [*Latin*]
+		* Remaining groups: [*Greek*] ∩ [*Latin*] → ∅
+	1. No groups remain so the label is not confusable.
+
+### Split
+
+* Partition a name into labels, separated by `2D (.) FULL STOP`, and return the resulting array.
+* Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
+
+### Join
+
+* Assemble an array of labels into a name, inserting `2D (.) FULL STOP` between each label, and return the resulting string.
+* Example: `["abc", "123", "eth"]` → `"abc.123.eth"`
 
 ## Description of `spec.json`
 
@@ -163,7 +205,7 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
 * [**Emoji**](./ensip-15/emoji.md) (`"emoji"`) — allowed emoji sequences
-	* Example: `[1F468 200D 1F4BB] (👨‍💻) man technologist`
+	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
@@ -200,25 +242,29 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 * [Punycode](https://datatracker.ietf.org/doc/html/rfc3492) is not decoded.
 * The following ASCII characters are **valid**:
 	* `24 ($) DOLLAR SIGN`
-	* `5F (_) LOW LINE`
+	* `5F (_) LOW LINE` with [restrictions](#validate)
 * Only label separator is `2E (.) FULL STOP`
 	* No character maps to this character.
-	* This simplifies unnormalized name detection in unstructured text.
+	* This simplifies name detection in unstructured text.
 	* The following alternatives are **disallowed**:
 		* `3002 (。) IDEOGRAPHIC FULL STOP`
 		* `FF0E (．) FULLWIDTH FULL STOP`
 		* `FF61 (｡) HALFWIDTH IDEOGRAPHIC FULL STOP`
 * [Many characters](./ensip-15/disallowed.md) are **disallowed** for various reasons:
 	* Nearly all punctuation are **disallowed**.
+		* Example: `589 (։) ARMENIAN FULL STOP`
 	* All parentheses and brackets are **disallowed**.
+		* Example: `2997 (⦗) LEFT BLACK TORTOISE SHELL BRACKET`
 	* Nearly all vocalization annotations are **disallowed**.
+		* Example: `294 (ʔ) LATIN LETTER GLOTTAL STOP`
 	* Obsolete, deprecated, and ancient characters are **disallowed**.
 		* Example: `463 (ѣ) CYRILLIC SMALL LETTER YAT`
 	* Combining, modifying, reversed, flipped, turned, and partial variations are **disallowed**.
 		* Example: `218A (↊) TURNED DIGIT TWO`
 	* When multiple weights of the same character exist, the variant closest to "heavy" is selected and the rest **disallowed**.
 		* Example: `🞡🞢🞣🞤✚🞥🞦🞧` → `271A (✚) HEAVY GREEK CROSS`
-		* This occasionally selects emoji.
+		* This occasionally selects an emoji.
+			* Example: ✔️ or `2714 (✔︎) HEAVY CHECK MARK` is selected instead of `2713 (✓) CHECK MARK`
 	* Many visually confusable characters are **disallowed**.
 		* Example: `131 (ı) LATIN SMALL LETTER DOTLESS I`
 	* Many ligatures, *n*-graphs, and *n*-grams are **disallowed.**
