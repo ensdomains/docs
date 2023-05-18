@@ -26,8 +26,8 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 ## Specification
 
 * Unicode version `15.0.0`
-* [spec.json](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
-* [nf.json](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+* [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
+* [`nf.json`](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Definitions
 
@@ -37,15 +37,14 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Algorithm
 
-* Normalization is the process of canonicalizing a name before for hashing.
+* Normalization is the process of canonicalizing a name before for [hashing](./ensip-1-ens.md#namehash-algorithm).
 * It is idempotent: applying normalization multiple times produces the same result.
 * For user convenience, leading and trailing whitespace should be trimmed before normalization, as all whitespace codepoints are disallowed.  Inner characters should remain unmodified.
 * No string transformations (like case-folding) should be applied.
 
-1. [Split](#split) the name into [labels](./ensip-1-ens#name-syntax).
+1. [Split](#split) the name into [labels](./ensip-1-ens.md#name-syntax).
 1. [Normalize](#normalize) each label.
-1. [Join](#join) the labels together into a name again. 
-1. The result is normalized and ready for [hashing](./ensip-1-ens#namehash-algorithm).
+1. [Join](#join) the labels together into a name again.
 
 ### Normalize
 
@@ -88,7 +87,7 @@ Given a string, convert it to codepoints, and produce a list of `Text` and `Emoj
 		* If **ignored**, do nothing.
 		* Otherwise, the label cannot be normalized.
 1. Repeat until all the input is consumed.
-1. If the buffer is nonempty, emit a final `Text` token.
+1. If the buffer is nonempty, emit a final `Text` token with its contents.
 
 Examples:
 
@@ -98,14 +97,14 @@ Examples:
 
 ### Validate
 
-Given a list of `Emoji` and `Text` tokens, determine if the composition is valid and return the **Label Type**.  If any assertion fails, the name cannot be normalized.
+Given a list of `Emoji` and `Text` tokens, determine if the label is valid and return the **Label Type**.  If any assertion fails, the name cannot be normalized.
 
 1. If only `Emoji` tokens:
 	* Return `"Emoji"`
 1. If a single `Text` token and every characters is ASCII (`00..7F`):
 	* `5F (_) LOW LINE` can only occur at the start.
 		* Must match `/^_*[^_]*$/`
-		* Example: `"___"` and `"__abc"` are valid, `"abc__"` and `"_abc_"` are invalid.
+		* Examples: `"___"` and `"__abc"` are valid, `"abc__"` and `"_abc_"` are invalid.
 	* The 3rd and 4th characters must not both be `2D (-) HYPHEN-MINUS`.
 		* Must not match `/^..--/`
 		* Examples: `"ab-c"` and `"---a"`are valid, `"xn--"` and `----` are invalid.
@@ -114,9 +113,9 @@ Given a list of `Emoji` and `Text` tokens, determine if the composition is valid
 1. Concatenate all the tokens together.
 	* `5F (_) LOW LINE` can only occur at the start.
 	* The first and last characters cannot be **Fenced**.
-		* Example: `"a’s"` and `"a・a"` are valid, `"’85"` and `"joneses’"` and `"・a・"` are invalid.
+		* Examples: `"a’s"` and `"a・a"` are valid, `"’85"` and `"joneses’"` and `"・a・"` are invalid.
 	* **Fenced** characters cannot be contiguous.
-		* Example: `"a・a’s"` is valid, `"6’0’’"` and `"a・・a"` are invalid.
+		* Examples: `"a・a’s"` is valid, `"6’0’’"` and `"a・・a"` are invalid.
 1. The first character of every `Text` token must not be a **Combining Mark**.
 1. Concatenate the `Text` tokens together.
 1. Find the first **Group** that contain every text character:
@@ -212,13 +211,13 @@ A label composed of confusable characters isn't necessarily confusable.
 
 ## Description of `spec.json`
 
-* [**Groups**](./ensip-15/groups) (`"groups"`) — groups of characters that can constitute a label
+* [**Groups**](./ensip-15/groups.md) (`"groups"`) — groups of characters that can constitute a label
 	* `"name"` — ASCII name of the group (or abbreviation if **Restricted**)
-		* Example: *Latin*, *Japanese*, *Egyp*
+		* Examples: *Latin*, *Japanese*, *Egyp*
 	* **Restricted** (`"restricted"`) — **`true`** if [Excluded](https://www.unicode.org/reports/tr31#Table_Candidate_Characters_for_Exclusion_from_Identifiers) or [Limited-Use](https://www.unicode.org/reports/tr31/#Table_Limited_Use_Scripts) script
-		* Example: *Latin* → **`false`**, *Egyp* → **`true`** 
+		* Examples: *Latin* → **`false`**, *Egyp* → **`true`** 
 	* `"primary"` — subset of characters that define the group
-		* Example: `"a"` → *Latin*, `"あ"` → *Japanese*, `"𓀀"` → *Egyp*
+		* Examples: `"a"` → *Latin*, `"あ"` → *Japanese*, `"𓀀"` → *Egyp*
 	* `"secondary"` — subset of characters included with the group
 		* Example: `"0"` → *Common* but mixable with *Latin*
 	* **CM Whitelist(ed)** (`"cm"`) — (optional) set of allowed compound sequences in NFC
@@ -329,7 +328,7 @@ A label composed of confusable characters isn't necessarily confusable.
 * Scripts *Braille*, *Linear A*, *Linear B*, and *Signwriting* are **disallowed**.
 * `27 (') APOSTROPHE` is **mapped** to `2019 (’) RIGHT SINGLE QUOTATION MARK` for convenience.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
-* [Emoji](./ensip-15/emoji)
+* Emoji:
 	* All sequences are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
 	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#demoted-unchanged).
 	* Emoji [mapped to non-emoji by IDNA](./ensip-15/emoji.md#demoted-mapped) cannot be used as emoji.
@@ -368,10 +367,12 @@ A label composed of confusable characters isn't necessarily confusable.
 	* Unsupported characters (`�`) may appear unremarkable.
 	* Unsupported emoji sequences with ZWJ may appear indistinguishable from those without ZWJ.
 		* `"💩💩" [1F4A9 1F4A9]`
-		* `"💩‍💩" [1F4A9 200D 1F4A9]`
-* Names composed of labels with varying bidi properties may appear differently depending on context.
+		* `"💩‍💩" [1F4A9 200D 1F4A9]` → *error: Disallowed character*
+* Names composed of labels with varying bidi properties [may appear differently](https://discuss.ens.domains/t/bidi-label-ordering-spoof/15824) depending on context.
 	* Normalization does not enforce single-directional names.
 	* Names may be composed of labels of different directions but normalized labels are never bidirectional.
+		* [LTR].[RTL] `bahrain.مصر`  
+		* [LTR+RTL] `bahrainمصر` → *error: Illegal mixture: Latin + Arabic*
 * Not all normalized names are visually unambiguous.
 * This ENSIP only addresses **single-character** [confusables](https://www.unicode.org/reports/tr39/).
 	* There exist confusable **multi-character** sequences:
