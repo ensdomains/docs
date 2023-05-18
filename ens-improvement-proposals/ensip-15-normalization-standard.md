@@ -26,10 +26,14 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 ## Specification
 
 * Unicode version `15.0.0`
-* [spec.json](./ensip-15/spec.json) contains all necessary data for normalization.
-	* [Description of `spec.json`](#description-of-specjson) describes the contents of this file.
-	* Terms in **Bold** throughout this document correspond with parts of this file.
+* [spec.json](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
 * [nf.json](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+
+### Definitions
+
+* Terms in **bold** throughout this document correspond with [elements of the spec](#description-of-specjson).
+* An "emoji sequence" is a single entity, an [extended grapheme cluster](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries), that is composed of one of more emoji characters and emoji components.
+
 
 ### Algorithm
 
@@ -45,10 +49,11 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Normalize
 
-1. [Tokenize](#tokenize) — transform the label into **Text** and **Emoji** tokens.
+1. [Tokenize](#tokenize) — transform the label into `Text` and `Emoji` tokens.
 	* If there are no tokens, the label cannot be normalized.
-1. Apply NFC to each **Text** token.
-1. Strip `FE0F` from each **Emoji** token.
+1. Apply NFC to each `Text` token.
+	* Example: `Text["à"]` → `61 300` → `E0` → `Text["à"]`
+1. Strip `FE0F` from each `Emoji` token.
 1. [Validate](#validate) — check if the tokens are valid and obtain the **Label Type**.
 	* The **Label Type** and **Restricted** state may be presented to user for additional security.
 1. Concatenate the tokens together.
@@ -56,23 +61,22 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Tokenize
 
-Given a string, convert to codepoints, and produce a list of **Text** and **Emoji** tokens, each with a payload of codepoints.
+Given a string, convert it to codepoints, and produce a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-specjson).  
 
 1. Allocate an empty codepoint buffer.
-1. Find the longest emoji sequence that matches the remaining input.
-	* The longest sequence prevents matching on a shorter sequence that has the same initial codepoints.
+1. Find the longest **Emoji Sequence** that matches the remaining input.
 	* Example: `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB]`
 		* Match (1): `👨️ [1F468] man` 
 		* Match (2): `👨🏻 [1F468 1F3FB] man: light skin tone`
 		* Match (4): `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB] man technologist: light skin tone` — longest match
 	* `FE0F` is optional from the input during matching.
-	* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468`
+	* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468]`
 		* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
 		* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
 		* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
-1. If an emoji sequence is found:
-	* If the buffer is nonempty, emit a **Text** token, and clear the buffer.
-	* Emit an **Emoji** token with the fully-qualified matching sequence.
+1. If an **Emoji sequence** is found:
+	* If the buffer is nonempty, emit a `Text` token, and clear the buffer.
+	* Emit an `Emoji` token with the fully-qualified matching sequence.
 	* Remove the matched sequence from the input.
 1. Otherwise:
 	1. Remove the leading codepoint from the input.
@@ -83,15 +87,21 @@ Given a string, convert to codepoints, and produce a list of **Text** and **Emoj
 		* If **ignored**, do nothing.
 		* Otherwise, the label cannot be normalized.
 1. Repeat until all the input is consumed.
-1. If the buffer is nonempty, emit a final **Text** token.
+1. If the buffer is nonempty, emit a final `Text` token.
+
+Examples:
+
+1. `"xyz👨🏻"` → `78 79 7A 1F468 1F3FB` → `Text["xyz"]` + `Emoji["👨🏻"]`
+1. `"A💩︎︎b"` → `41 FE0E 1F4A9 FE0E FE0E 62` → `Text["a"]` + `Emoji["💩️"]` + `Text["b"]`
+1. `"a™️"` → `61 2122 FE0F` → `Text["atm"]`
 
 ### Validate
 
-Given a list of **Emoji** and **Text** tokens, determine if the composition is valid and return the **Label Type**.  If any assertion fails, the name cannot be normalized.
+Given a list of `Emoji` and `Text` tokens, determine if the composition is valid and return the **Label Type**.  If any assertion fails, the name cannot be normalized.
 
-1. If only **Emoji** tokens:
+1. If only `Emoji` tokens:
 	* Return `"Emoji"`
-1. If a single **Text** token and every characters is ASCII (`00..7F`):
+1. If a single `Text` token and every characters is ASCII (`00..7F`):
 	* `5F (_) LOW LINE` can only occur at the start.
 		* Must match `/^_*[^_]*$/`
 		* Example: `"___"` and `"__abc"` are valid, `"abc__"` and `"_abc_"` are invalid.
@@ -106,8 +116,8 @@ Given a list of **Emoji** and **Text** tokens, determine if the composition is v
 		* Example: `"a’s"` and `"a・a"` are valid, `"’85"` and `"joneses’"` and `"・a・"` are invalid.
 	* **Fenced** characters cannot be contiguous.
 		* Example: `"a・a’s"` is valid, `"6’0’’"` and `"a・・a"` are invalid.
-1. The first character of every **Text** token must not be a **Combining Mark**.
-1. Concatenate the **Text** tokens together.
+1. The first character of every `Text` token must not be a **Combining Mark**.
+1. Concatenate the `Text` tokens together.
 1. Find the first **Group** that contain every text character:
 	* If no group is found, the label cannot be normalized.
 1. If the group is not **CM Whitelisted**:
@@ -119,11 +129,27 @@ Given a list of **Emoji** and **Text** tokens, determine if the composition is v
 			* Example: ` "إؐؑؒؓؔ"‎ [625 610 611 612 613 614]` has (6) **NSM**.
 1. [Wholes](#wholes) — check if text characters form a confusable.
 1. The label is valid.
-	* Return the name of the group.
+	* Return the name of the group as the **Label Type**.
+
+Examples:
+
+1. `Emoji["💩️"]` + `Emoji["💩️"]` → `"Emoji"`
+1. `Text["abc$123"]` → `"ASCII"`
+1. `Emoji["🚀️"]` + `Text["à"]` → `"Latin"`
 
 ### Wholes
 
-A label is whole-script confusable if a similarly-looking valid label can be constructed using one alternative character from a different group.
+A label is [whole-script confusable](https://unicode.org/reports/tr39/#def_whole_script_confusables) if a similarly-looking valid label can be constructed using one alternative character from a different group.  The complete list of **Whole Confusables** can be found in [`spec.json`](#description-of-specjson).  A **Whole Confusable** has a set of non-confusing characters (`"valid"`) and a set of confusing characters (`"confused"`) where each character may be the member of one or more groups.
+
+Example: **Whole Confusable** for `"g"`
+
+| Type | Code | Form | Character  | Latn | Hani | Japn | Kore | Armn | Cher | Lisu |
+| :-: | -: | :-: | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| `valid` | `67` | `g` | LATIN SMALL LETTER G | A | A | A | A |
+| `confused` | `581` | `ց` | ARMENIAN SMALL LETTER CO  | | | | | B | 
+| `confused` | `13C0` | `Ꮐ` | CHEROKEE LETTER NAH  | | | | | | C | 
+| `confused` | `13F3` | `Ᏻ` | CHEROKEE LETTER YU  |	| | | | | C |
+| `confused` |  `A4D6` | `ꓖ` | LISU LETTER GA | | | | | | | D |
 
 1. Allocate an empty character buffer.
 1. Start with the set of **ALL** groups.
@@ -132,11 +158,16 @@ A label is whole-script confusable if a similarly-looking valid label can be con
 		* Retain groups with **Whole Confusable** characters excluding the **Confusable Extent** of the matching **Confused** character.
 		* If no groups remain, the label is not confusable.
 		* The **Confusable Extent** is the fully-connected graph formed from different groups with the same confusable and different confusables of the same group.
-			* This mapping from **Confused** to **Confusable Extent** can be precomputed.
-		* Example: **Whole Confusable** for `"o"`
-			1. `6F (o) LATIN SMALL LETTER O` → *Latin*, *Han*, *Japanese*, and *Korean*
-			1. `3007 (〇) IDEOGRAPHIC NUMBER ZERO` → *Han*, *Japanese*, *Korean*, and *Bopomofo*
-			1. **Confusable Extent** is [`o`, `〇`] ⊗ [*Latin*, *Han*, *Japanese*, *Korean*, *Bopomofo*]
+			* The mapping from **Confused** to **Confusable Extent** can be precomputed.
+		* In the table above, **Whole Confusable** for `"g"`, the rectangle formed by each capital letter is a **Confusable Extent**:
+			* `A` is [`g`] ⊗ [*Latin*, *Han*, *Japanese*, *Korean*]
+			* `B` is [`ց`] ⊗ [*Armn*]
+			* `C` is [`Ꮐ`, `Ᏻ`] ⊗ [*Cher*]
+			* `D` is [`ꓖ`] ⊗ [*Lisu*]
+		* A **Confusable Extent** can span multiple characters and multiple groups.  Consider the (incomplete) **Whole Confusable** for `"o"`:
+			* `6F (o) LATIN SMALL LETTER O` → *Latin*, *Han*, *Japanese*, and *Korean*
+			* `3007 (〇) IDEOGRAPHIC NUMBER ZERO` → *Han*, *Japanese*, *Korean*, and *Bopomofo*
+			* **Confusable Extent** is [`o`, `〇`] ⊗ [*Latin*, *Han*, *Japanese*, *Korean*, *Bopomofo*]
 	* If the character is **Unique**, the label is not confusable.
 		* This set can be precomputed from characters that appear in exactly one group and are not **Confused**.
 	* Otherwise:
@@ -180,7 +211,7 @@ A label composed of confusable characters isn't necessarily confusable.
 
 ## Description of `spec.json`
 
-* [**Groups**](./ensip-15/groups.md) (`"groups"`) — groups of characters that can constitute a label
+* [**Groups**](./ensip-15/groups) (`"groups"`) — groups of characters that can constitute a label
 	* `"name"` — ASCII name of the group (or abbreviation if **Restricted**)
 		* Example: *Latin*, *Japanese*, *Egyp*
 	* **Restricted** (`"restricted"`) — **`true`** if [Excluded](https://www.unicode.org/reports/tr31#Table_Candidate_Characters_for_Exclusion_from_Identifiers) or [Limited-Use](https://www.unicode.org/reports/tr31/#Table_Limited_Use_Scripts) script
@@ -189,9 +220,11 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `"a"` → *Latin*, `"あ"` → *Japanese*, `"𓀀"` → *Egyp*
 	* `"secondary"` — subset of characters included with the group
 		* Example: `"0"` → *Common* but mixable with *Latin*
-	* **CM Whitelisted** (`"cm"`) — (optional) set of allowed compound sequences in NFC
-		* Example: `[[BaseCP, CM, ...], ...]`
-		* There are currently no compound sequences: **`true`** if `[]` otherwise **`false`**.
+	* **CM Whitelist(ed)** (`"cm"`) — (optional) set of allowed compound sequences in NFC
+		* Each compound sequence is a character followed by one or more **Combining Marks**.
+			* Example: `à̀̀` → `E0 300 300`
+		* Currently, every group that is **CM Whitelist** has zero compound sequences.
+		* **CM Whitelisted** is effectively **`true`** if `[]` otherwise **`false`**
 * **Ignored** (`"ignored"`) — characters that are ignored during normalization
 	* Example: `34F (�) COMBINING GRAPHEME JOINER`
 * **Mapped** (`"mapped"`) — characters that are mapped to a sequence of **valid** characters
@@ -204,7 +237,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* [**Emoji**](./ensip-15/emoji.md) (`"emoji"`) — allowed emoji sequences
+* [**Emoji Sequences**](./ensip-15/emoji.md) (`"emoji"`) — allowed emoji sequences
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
@@ -218,7 +251,7 @@ A label composed of confusable characters isn't necessarily confusable.
  	* `UseSTD3ASCIIRules` is **`true`**
 	* `VerifyDnsLength` is **`false`**
 	* `Transitional_Processing` is **`false`**
-	* The following deviations are **valid**:
+	* The following [deviations](https://unicode.org/reports/tr46/#Table_Deviation_Characters) are **valid**:
 		* `DF (ß) LATIN SMALL LETTER SHARP S`
 		* `3C2 (ς) GREEK SMALL LETTER FINAL SIGMA`
 	* `CheckHyphens` is **`false`** ([WhatWG URL Spec § 3.3](https://url.spec.whatwg.org/#idna))
@@ -291,18 +324,18 @@ A label composed of confusable characters isn't necessarily confusable.
 	* *Latin*, *Greek*, *Cyrillic*, *Han*, *Japanese*, *Korean*, and *Bopomofo* only permit specific **Combining Mark** sequences.
 	* *Han*, *Japanese*, and *Korean*  have access to `a-z`.
 	* **Restricted** groups are always single-script.
-* **Groups** with multiple scripts are inspired from [Unicode augmented script sets](https://www.unicode.org/reports/tr39/#Mixed_Script_Detection).
-* *Braille*, *Linear A*, *Linear B*, and *Signwriting* scripts are **disallowed**.
+	* [Unicode augmented script sets](https://www.unicode.org/reports/tr39/#Mixed_Script_Detection)
+* Scripts *Braille*, *Linear A*, *Linear B*, and *Signwriting* are **disallowed**.
 * `27 (') APOSTROPHE` is **mapped** to `2019 (’) RIGHT SINGLE QUOTATION MARK` for convenience.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
 * [Emoji sequences:](./ensip-15/emoji.md)
 	* All sequences are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
-	* Digits (`0-9`) are not emoji.
-	* Emoji mapped to non-emoji by IDNA cannot be used as emoji.
+	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#non-emoji-12).
+	* Emoji [mapped to non-emoji](./ensip-15/emoji.md#mapped-to-non-emoji-20) by IDNA cannot be used as emoji.
 	* Emoji disallowed by IDNA and have default text-presentation are **disabled**:
 		* `203C (‼️) double exclamation mark`
 		* `2049 (⁉️) exclamation question mark `
-	* Remaining `Emoji` characters are marked as **disallowed** (for text processing).
+	* Remaining emoji characters are marked as **disallowed** (for text processing).
 	* All `RGI_Emoji_ZWJ_Sequence` are **enabled**.
 	* All `Emoji_Keycap_Sequence` are **enabled**.
 	* All `RGI_Emoji_Tag_Sequence` are **enabled**.
@@ -310,7 +343,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* All `RGI_Emoji_Flag_Sequence` are **enabled**.
 	* `Basic_Emoji` of the form `[X FE0F]` are **enabled**.
 	* `Emoji` with default emoji-presentation are **enabled** as `[X FE0F]`.
-	* Remaining single-character `Emoji` are **enabled** as `[X FE0F]` (explicit emoji-styling).
+	* Remaining single-character emoji are **enabled** as `[X FE0F]` (explicit emoji-styling).
 	* All singular Skin-color Modifiers are **disabled**.
 	* All singular Regional Indicators are **disabled**.
 	* Blacklisted emoji are **disabled**.
@@ -323,8 +356,8 @@ A label composed of confusable characters isn't necessarily confusable.
 ## Backwards Compatibility
 
 * 99% of names are still valid.
-* Preserves as much IDNA and WhatWG URL compatibility as possible.
-* Only valid emoji sequences are allowed.
+* Preserves as much Unicode IDNA and WhatWG URL compatibility as possible.
+* Only [valid emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) are permitted.
 
 ## Security Considerations
 
@@ -332,6 +365,8 @@ A label composed of confusable characters isn't necessarily confusable.
 	* Unicode text is ultimately subject to font-styling and display context.
 	* Unsupported characters (`�`) may appear unremarkable.
 	* Unsupported emoji sequences with ZWJ may appear indistinguishable from those without ZWJ.
+		* `"💩💩" [1F4A9 1F4A9]`
+		* `"💩‍💩" [1F4A9 200D 1F4A9]`
 * Names composed of labels with varying bidi properties may appear differently depending on context.
 	* Normalization does not enforce single-directional names.
 	* Names may be composed of labels of different directions but normalized labels are never bidirectional.
@@ -340,7 +375,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* There exist confusable **multi-character** sequences:
 		* `"ஶ்ரீ" [BB6 BCD BB0 BC0]`
 		* `"ஸ்ரீ" [BB8 BCD BB0 BC0]`
-	* There exist confusable **emoji** sequences: 
+	* There exist confusable emoji sequences: 
 		* `🚴 [1F6B4]` and `🚴🏻 [1F6B4 1F3FB]`
 		* `🇺🇸 [1F1FA 1F1F8]` and `🇺🇲 [1F1FA 1F1F2]` 
 		* `♥ [2665] BLACK HEART SUIT` and `❤ [2764] HEAVY BLACK HEART`
@@ -355,6 +390,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 * [ENSIP-1: ENS](./ensip-1-ens)
 * [UAX-15: Normalization Forms](https://unicode.org/reports/tr15/)
 * [UAX-24: Script Property](https://www.unicode.org/reports/tr24/)
+* [UAX-29: Text Segmentation](https://unicode.org/reports/tr29/)
 * [UAX-31: Identifier and Pattern Syntax](https://www.unicode.org/reports/tr31/)
 * [UTS-39: Security Mechanisms](https://www.unicode.org/reports/tr39/)
 * [UTS-46: IDNA Compatibility Processing](https://unicode.org/reports/tr46/)
@@ -383,7 +419,7 @@ A list of [validation tests](./ensip-15/tests.json) are provided with the follow
 
 Follow [algorithm](#algorithm), except:
 
-* Do not strip `FE0F` from **Emoji** tokens.
+* Do not strip `FE0F` from `Emoji` tokens.
 * Replace `3BE (ξ) GREEK SMALL LETTER XI` with `39E (Ξ) GREEK CAPITAL LETTER XI` if the label isn't *Greek*.
 * Example: `normalize("‐Ξ1️⃣") [2010 39E 31 FE0F 20E3]` is `"-ξ1⃣" [2D 3BE 31 20E3]`
 * Example: `beautify("-ξ1⃣") [2D 3BE 31 20E3]"` is `"-Ξ1️⃣" [2D 39E 31 FE0F 20E3]`
