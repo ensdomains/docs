@@ -7,11 +7,11 @@
 
 ## Abstract
 
-This ENSIP standardizes Ethereum Name Service (ENS) name normalization process outlined in [ENSIP-1 § Name Syntax](./ensip-1-ens#name-syntax).
+This ENSIP standardizes Ethereum Name Service (ENS) name normalization process outlined in [ENSIP-1 § Name Syntax](./ensip-1-ens.md#name-syntax).
 
 ## Motivation
 
-* Since [ENSIP-1](./ensip-1-ens) (originally [EIP-137](https://eips.ethereum.org/EIPS/eip-137)) was finalized in 2016, Unicode has [evolved](https://unicode.org/history/publicationdates.html) from version 8.0.0 to 15.0.0 and incorporated many new characters, including complex emoji sequences. 
+* Since [ENSIP-1](./ensip-1-ens.md) (originally [EIP-137](https://eips.ethereum.org/EIPS/eip-137)) was finalized in 2016, Unicode has [evolved](https://unicode.org/history/publicationdates.html) from version 8.0.0 to 15.0.0 and incorporated many new characters, including complex emoji sequences. 
 * ENSIP-1 does not state the version of Unicode.
 * ENSIP-1 implies but does not state an explicit flavor of IDNA processing. 
 * [UTS-46](https://unicode.org/reports/tr46/) is insufficient to normalize emoji sequences. Correct emoji processing is only possible with [UTS-51](https://www.unicode.org/reports/tr51/).
@@ -31,8 +31,8 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Definitions
 
-* Terms in **bold** throughout this document correspond with [elements of the spec](#description-of-specjson).
-* An "emoji sequence" is a single entity, an [extended grapheme cluster](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries), that is composed of one of more emoji characters and emoji components.
+* Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-specjson).
+* An **Emoji Sequence** is a [single entity composed of one of more](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) emoji characters and emoji components.
 
 
 ### Algorithm
@@ -52,7 +52,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 1. [Tokenize](#tokenize) — transform the label into `Text` and `Emoji` tokens.
 	* If there are no tokens, the label cannot be normalized.
 1. Apply NFC to each `Text` token.
-	* Example: `Text["à"]` → `61 300` → `E0` → `Text["à"]`
+	* Example: `Text["à"]` → `[61 300] → [E0]` → `Text["à"]`
 1. Strip `FE0F` from each `Emoji` token.
 1. [Validate](#validate) — check if the tokens are valid and obtain the **Label Type**.
 	* The **Label Type** and **Restricted** state may be presented to user for additional security.
@@ -68,12 +68,13 @@ Given a string, convert it to codepoints, and produce a list of `Text` and `Emoj
 	* Example: `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB]`
 		* Match (1): `👨️ [1F468] man` 
 		* Match (2): `👨🏻 [1F468 1F3FB] man: light skin tone`
-		* Match (4): `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB] man technologist: light skin tone` — longest match
+		* Match (4): `👨🏻‍💻 [1F468 1F3FB 200D 1F4BB] man technologist: light skin tone` — longest match!
 	* `FE0F` is optional from the input during matching.
-	* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468]`
-		* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
-		* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
-		* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
+		* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468]`
+			* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
+			* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
+			* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
+	* This is equivalent to `/^(emoji1|emoji2|...)/` where `\uFE0F` is replaced with `\uFE0F?` and `*` is replaced with `\x2A`.
 1. If an **Emoji sequence** is found:
 	* If the buffer is nonempty, emit a `Text` token, and clear the buffer.
 	* Emit an `Emoji` token with the fully-qualified matching sequence.
@@ -91,9 +92,9 @@ Given a string, convert it to codepoints, and produce a list of `Text` and `Emoj
 
 Examples:
 
-1. `"xyz👨🏻"` → `78 79 7A 1F468 1F3FB` → `Text["xyz"]` + `Emoji["👨🏻"]`
-1. `"A💩︎︎b"` → `41 FE0E 1F4A9 FE0E FE0E 62` → `Text["a"]` + `Emoji["💩️"]` + `Text["b"]`
-1. `"a™️"` → `61 2122 FE0F` → `Text["atm"]`
+1. `"xyz👨🏻" [78 79 7A 1F468 1F3FB]` → `Text["xyz"]` + `Emoji["👨🏻"]`
+1. `"A💩︎︎b" [41 FE0E 1F4A9 FE0E FE0E 62]` → `Text["a"]` + `Emoji["💩️"]` + `Text["b"]`
+1. `"a™️" [61 2122 FE0F]` → `Text["atm"]`
 
 ### Validate
 
@@ -237,9 +238,9 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* [**Emoji Sequences**](./ensip-15/emoji.md) (`"emoji"`) — allowed emoji sequences
+* [**Emoji Sequences**](./ensip-15/emoji.md#valid-emoji-sequences) (`"emoji"`) — allowed emoji sequences
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
-* **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory)
+* **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory.txt)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
 * **Should Escape** (`"escape"`) — characters that shouldn't be printed
@@ -328,11 +329,11 @@ A label composed of confusable characters isn't necessarily confusable.
 * Scripts *Braille*, *Linear A*, *Linear B*, and *Signwriting* are **disallowed**.
 * `27 (') APOSTROPHE` is **mapped** to `2019 (’) RIGHT SINGLE QUOTATION MARK` for convenience.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
-* [Emoji sequences:](./ensip-15/emoji.md)
+* [Emoji](./ensip-15/emoji)
 	* All sequences are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
-	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#non-emoji-12).
-	* Emoji [mapped to non-emoji](./ensip-15/emoji.md#mapped-to-non-emoji-20) by IDNA cannot be used as emoji.
-	* Emoji disallowed by IDNA and have default text-presentation are **disabled**:
+	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#demoted-unchanged).
+	* Emoji [mapped to non-emoji by IDNA](./ensip-15/emoji.md#demoted-mapped) cannot be used as emoji.
+	* Emoji [disallowed by IDNA](./ensip-15/emoji.md#disabled-emoji-characters) with default text-presentation are **disabled**:
 		* `203C (‼️) double exclamation mark`
 		* `2049 (⁉️) exclamation question mark `
 	* Remaining emoji characters are marked as **disallowed** (for text processing).
@@ -342,13 +343,14 @@ A label composed of confusable characters isn't necessarily confusable.
 	* All `RGI_Emoji_Modifier_Sequence` are **enabled**.
 	* All `RGI_Emoji_Flag_Sequence` are **enabled**.
 	* `Basic_Emoji` of the form `[X FE0F]` are **enabled**.
-	* `Emoji` with default emoji-presentation are **enabled** as `[X FE0F]`.
+	* Emoji with default emoji-presentation are **enabled** as `[X FE0F]`.
 	* Remaining single-character emoji are **enabled** as `[X FE0F]` (explicit emoji-styling).
 	* All singular Skin-color Modifiers are **disabled**.
 	* All singular Regional Indicators are **disabled**.
 	* Blacklisted emoji are **disabled**.
 	* Whitelisted emoji are **enabled**.
 * Confusables:
+	* Nearly all [Unicode Confusables](https://www.unicode.org/Public/security/15.0.0/confusables.txt)
 	* Emoji are not confusable.
 	* ASCII confusables are case-folded.
 		* Example: `61 (a) LATIN SMALL LETTER A` confuses with `13AA (Ꭺ) CHEROKEE LETTER GO`
@@ -387,7 +389,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 ## Appendix: Reference Specifications
 
 * [EIP-137: Ethereum Domain Name Service](https://eips.ethereum.org/EIPS/eip-137)
-* [ENSIP-1: ENS](./ensip-1-ens)
+* [ENSIP-1: ENS](./ensip-1-ens.md)
 * [UAX-15: Normalization Forms](https://unicode.org/reports/tr15/)
 * [UAX-24: Script Property](https://www.unicode.org/reports/tr24/)
 * [UAX-29: Text Segmentation](https://unicode.org/reports/tr29/)
@@ -404,8 +406,8 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 ## Appendix: Additional Resources
 
 * [Supported Groups](./ensip-15/groups.md)
-* [List of Disallowed Characters](./ensip-15/disallowed.md)
-* [Emoji Considerations](./ensip-15/emoji.md)
+* [Disallowed Characters](./ensip-15/disallowed.md)
+* [Supported Emoji](./ensip-15/emoji.md)
 
 ## Appendix: Validation Tests
 

@@ -1,4 +1,4 @@
-# Emoji
+# Supported Emoji
 1. [Valid Emoji Sequences (3637)](#valid-emoji-sequences)
 1. [Disabled Emoji Characters (33)](#disabled-emoji-characters)
 1. [Demoted Emoji Characters (32)](#demoted-emoji-characters)
@@ -3681,7 +3681,7 @@
 | `🇾` | `1F1FE` | REGIONAL INDICATOR SYMBOL LETTER Y |
 | `🇿` | `1F1FF` | REGIONAL INDICATOR SYMBOL LETTER Z |
 ## <a id="demoted-emoji-characters">Demoted Emoji Characters (32)</a>
-### Mapped to Non-Emoji (20)
+### <a id="demoted-mapped">Mapped to Non-Emoji (20)</a>
 | Codepoint | Form | Name | Mapped | Characters |
 | -: | :-: | :- | :-: | :- |
 | `2122` | `™` | trade mark | `tm` | `74 (t) LATIN SMALL LETTER T`<br>`6D (m) LATIN SMALL LETTER M` |
@@ -3704,7 +3704,7 @@
 | `1F23A` | `🈺` | Japanese “open for business” button | `営` | `55B6 (営) CJK Ideograph-55B6` |
 | `1F250` | `🉐` | Japanese “bargain” button | `得` | `5F97 (得) CJK Ideograph-5F97` |
 | `1F251` | `🉑` | Japanese “acceptable” button | `可` | `53EF (可) CJK Ideograph-53EF` |
-### Non-Emoji (12)
+### <a id="demoted-unchanged">Non-Emoji (12)</a>
 | Form | Codepoint | Name | Valid |
 | -: | :-: | :- | :-: |
 | `30` | `0` | DIGIT ZERO | ✅️ |
