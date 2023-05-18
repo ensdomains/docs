@@ -139,7 +139,7 @@ Examples:
 
 ### Wholes
 
-A label is [whole-script confusable](https://unicode.org/reports/tr39/#def_whole_script_confusables) if a similarly-looking valid label can be constructed using one alternative character from a different group.  The complete list of **Whole Confusables** can be found in [`spec.json`](#description-of-specjson).  A **Whole Confusable** has a set of non-confusing characters (`"valid"`) and a set of confusing characters (`"confused"`) where each character may be the member of one or more groups.
+A label is [whole-script confusable](https://unicode.org/reports/tr39/#def_whole_script_confusables) if a similarly-looking valid label can be constructed using one alternative character from a different group.  The complete list of **Whole Confusables** can be found in [`spec.json`](#description-of-specjson).  Each **Whole Confusable** has a set of non-confusing characters (`"valid"`) and a set of confusing characters (`"confused"`) where each character may be the member of one or more groups.
 
 Example: **Whole Confusable** for `"g"`
 
@@ -211,7 +211,7 @@ A label composed of confusable characters isn't necessarily confusable.
 
 ## Description of `spec.json`
 
-* [**Groups**](./ensip-15/groups.md) (`"groups"`) — groups of characters that can constitute a label
+* **Groups** (`"groups"`) — [groups](./ensip-15/groups.md) of characters that can constitute a label
 	* `"name"` — ASCII name of the group (or abbreviation if **Restricted**)
 		* Examples: *Latin*, *Japanese*, *Egyp*
 	* **Restricted** (`"restricted"`) — **`true`** if [Excluded](https://www.unicode.org/reports/tr31#Table_Candidate_Characters_for_Exclusion_from_Identifiers) or [Limited-Use](https://www.unicode.org/reports/tr31/#Table_Limited_Use_Scripts) script
@@ -237,7 +237,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* [**Emoji Sequences**](./ensip-15/emoji.md#valid-emoji-sequences) (`"emoji"`) — allowed emoji sequences
+* **Emoji Sequences** (`"emoji"`) — [allowed](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory.txt)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
