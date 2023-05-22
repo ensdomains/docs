@@ -103,15 +103,15 @@ type Resolver @entity {
 ##### L2
 
 ```graphql
-type Domain{
-  id: ID!   # concatination of context and namehash delimited by `-`
+type Domain {
+  id: ID! # concatination of context and namehash delimited by `-`
   name: String
   labelName: String
   labelhash: Bytes
   parent: Domain # how do I find out the resolver?
   subdomains: [Domain]
   resolver: Resolver!
-  expiryDate
+  expiryDate: BigInt
 }
 ```
 
