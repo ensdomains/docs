@@ -30,10 +30,35 @@ The metadata should include 2 different types of info
 ```solidity
 
 interface OffChainResolver {
-    owner(bytes32 node) returns (bytes32); // first 20 bytes are assumed to be the address if it's an evm chain, but gives space for longer address on non-evm chains.
+    /** @dev Returns the owner of the resolver on L2
+     * @param node
+     * @return owner gives space for longer address on non-evm chains.
+     */
+    owner(bytes32 node) returns (bytes32 owner);
 
     isApprovedForAll(address account, address operator) returns (boolean);
-    graphqlUrl() returns (string);
+    /** @dev Returns the owner of the resolver on L2
+     * @return name can be l2 chain name or url if offchain
+     * @return coinType according to https://github.com/ensdomains/address-encoder
+     * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
+     * @return storageType 0 = EVM, 1 = Non blockchain, 2 = Starknet
+     * @return context can be l2 resolver contract address for evm chain but can be any l2 storage identifier for non evm chain
+     */
+    function metadata()
+        external
+        view
+        returns (string memory, uint256, string memory, uint8, bytes memory)
+    {
+        return (name, coinType, graphqlUrl, storageType, context);
+    }
+    // Optional. If context is dynamic, the event won't be emitted.
+    event MetadataChanged(
+        string name,
+        uint256 coinType,
+        string graphqlUrl,
+        uint8 storageType,
+        bytes context
+    );
 }
 ```
 
@@ -50,29 +75,44 @@ const dataLocation = await.resolver.graphqlUrl()
 
 ##### GgraphQL schema
 
+##### L1
+
+```graphql
+type Offchain @entity {
+  "l1 resolver address"
+  id: ID!
+  "Name of the Chain"
+  name: String
+  "coin type"
+  coinType: BigInt
+  "url of the graphql endpoint"
+  graphqlUrl: String
+  "0 for evm, 1 for non blockchain, 2 for starknet"
+  storageType: Int
+  "context, resolver address if evm Chain"
+  context: Bytes
+  "optional field if the name has expirty date offchain"
+  expiryDate: BigInt
+}
+
+type Resolver @entity {
+  offchain: Offchain
+}
+```
+
+##### L2
+
 ```graphql
 type Domain{
-  id: ID!
+  id: ID!   # concatination of context and namehash delimited by `-`
   name: String
   labelName: String
   labelhash: Bytes
-  parent: Domain
+  parent: Domain # how do I find out the resolver?
   subdomains: [Domain]
-  offchain: Offchain
-  resolver: (Resolver | OwnedResolver)
+  resolver: Resolver!
+  expiryDate
 }
-
-type Offchain(owner:){
-  chainId: ID!        # Id of the Chain (either ChainID or SLIP44 if non evm chain)
-  name: String        # Name of the Chain
-  isEVM: Boolean      # True/False
-}
-
-type OwnedResolver implements Resolver @entity {
-  ownedNode: String   # Hash of node and msg.sender
-  owner: Account      # msg.sender
-}
-
 ```
 
 #### Backwards Compatibility
