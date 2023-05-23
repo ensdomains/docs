@@ -32,7 +32,7 @@ The metadata should include 2 different types of info
 interface OffChainResolver {
     /** @dev Returns the owner of the resolver on L2
      * @param node
-     * @return owner gives space for longer address on non-evm chains.
+     * @return owner in bytes32 instead of address to cater for non EVM based owner information
      */
     owner(bytes32 node) returns (bytes32 owner);
 
@@ -104,11 +104,11 @@ type Resolver @entity {
 
 ```graphql
 type Domain {
-  id: ID! # concatination of context and namehash delimited by `-`
+  id: ID! # concatenation of context and namehash delimited by `-`
   name: String
   labelName: String
   labelhash: Bytes
-  parent: Domain # how do I find out the resolver?
+  parent: Domain
   subdomains: [Domain]
   resolver: Resolver!
   expiryDate: BigInt
