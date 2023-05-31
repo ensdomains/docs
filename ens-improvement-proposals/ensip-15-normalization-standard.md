@@ -32,8 +32,8 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 ### Definitions
 
 * Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-specjson).
+* A string is a sequence of Unicode codepoints.
 * An **Emoji Sequence** is a [single entity composed of one of more](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) emoji characters and emoji components.
-
 
 ### Algorithm
 
@@ -60,7 +60,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ### Tokenize
 
-Given a string, convert it to codepoints, and produce a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-specjson).  
+Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-specjson).  
 
 1. Allocate an empty codepoint buffer.
 1. Find the longest **Emoji Sequence** that matches the remaining input.
