@@ -33,8 +33,28 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 * Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-specjson).
 * A string is a sequence of Unicode codepoints.
-* An **Emoji Sequence** is a [single entity composed of one of more](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) emoji characters and emoji components.
-
+	* Example: `"abc"` ↔ `[61 62 63]`
+* An [Unicode emoji](https://www.unicode.org/reports/tr51/) is a [single entity](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) composed of one or more codepoints:
+	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenizes](#tokenize) as an `Emoji` token.
+		* Example: `"💩︎︎" [1F4A9]` → `Emoji[1F4A9 FE0F]`
+			* `1F4A9 FE0F` is an **Emoji Sequence**
+	* [`spec.json`](#description-of-specjson) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequence**.		
+		* [Derivation](#derivation) defines which emoji are normalizable.
+		* Not all Unicode emoji are valid.
+	* An **Emoji Sequence** may contain characters that are disallowed:
+		* `👩‍❤️‍👨 [1F469 200D 2764 FE0F 200D 1F468] couple with heart: woman, man` — contains `200D` 
+		* `#️⃣ [23 FE0F 20E3] keycap: #` — contains `23 (#)`
+		* `🏴󠁧󠁢󠁥󠁮󠁧󠁿 [1F3F4 E0067 E0062 E0065 E006E E0067 E007F]` — contains `E00XX`
+	* An **Emoji Sequence** may contain other emoji:
+		* Example: `❤️ [2764 FE0F] red heart` is a substring of `❤️‍🔥 [2764 FE0F 200D 1F525] heart on fire` 
+	* Single-codepoint emoji may have various [presentation styles](https://www.unicode.org/reports/tr51/#Presentation_Style) on input:
+		* Unstyled: `❤ [2764]`
+		* Text-styled: `❤︎ [2764 FE0E]`
+		* Emoji-styled: `❤️ [2764 FE0F]`
+	* However, these all [tokenize](#tokenize) to the same **Emoji Sequence**.
+	* Since [ENSIP-1](./ensip-1-ens.md) did not process emoji separately from text and presentation characters (`FE0F` and `FE0E`) are **Ignored** and registration stores names on-chain, the convention of removing presentation cannot be changed.
+		* [Beautification](#annex-beautification) can be used to restore emoji-presentation in normalized names.
+	
 ### Algorithm
 
 * Normalization is the process of canonicalizing a name before for [hashing](./ensip-1-ens.md#namehash-algorithm).
@@ -74,17 +94,17 @@ Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of
 			* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
 			* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
 	* This is equivalent to `/^(emoji1|emoji2|...)/` where `\uFE0F` is replaced with `\uFE0F?` and `*` is replaced with `\x2A`.
-1. If an **Emoji sequence** is found:
+1. If an **Emoji Sequence** is found:
 	* If the buffer is nonempty, emit a `Text` token, and clear the buffer.
 	* Emit an `Emoji` token with the fully-qualified matching sequence.
 	* Remove the matched sequence from the input.
 1. Otherwise:
 	1. Remove the leading codepoint from the input.
-	1. Determine the codepoint type:
-		* If **valid**, append the codepoint to the buffer.
+	1. Determine the character type:
+		* If **Valid**, append the codepoint to the buffer.
 			* This set can be precomputed from the union of characters in all groups and their NFD decompositions.
-		* If **mapped**, append the corresponding mapped codepoint(s) to the buffer.
-		* If **ignored**, do nothing.
+		* If **Mapped**, append the corresponding mapped codepoint(s) to the buffer.
+		* If **Ignored**, do nothing.
 		* Otherwise, the label cannot be normalized.
 1. Repeat until all the input is consumed.
 1. If the buffer is nonempty, emit a final `Text` token with its contents.
@@ -145,11 +165,11 @@ Example: **Whole Confusable** for `"g"`
 
 | Type | Code | Form | Character  | Latn | Hani | Japn | Kore | Armn | Cher | Lisu |
 | :-: | -: | :-: | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| `valid` | `67` | `g` | LATIN SMALL LETTER G | A | A | A | A |
-| `confused` | `581` | `ց` | ARMENIAN SMALL LETTER CO  | | | | | B | 
-| `confused` | `13C0` | `Ꮐ` | CHEROKEE LETTER NAH  | | | | | | C | 
-| `confused` | `13F3` | `Ᏻ` | CHEROKEE LETTER YU  |	| | | | | C |
-| `confused` |  `A4D6` | `ꓖ` | LISU LETTER GA | | | | | | | D |
+| valid | `67` | `g` | LATIN SMALL LETTER G | A | A | A | A |
+| confused | `581` | `ց` | ARMENIAN SMALL LETTER CO  | | | | | B | 
+| confused | `13C0` | `Ꮐ` | CHEROKEE LETTER NAH  | | | | | | C | 
+| confused | `13F3` | `Ᏻ` | CHEROKEE LETTER YU  |	| | | | | C |
+| confused |  `A4D6` | `ꓖ` | LISU LETTER GA | | | | | | | D |
 
 1. Allocate an empty character buffer.
 1. Start with the set of **ALL** groups.
@@ -237,7 +257,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* **Emoji Sequences** (`"emoji"`) — [allowed](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
+* **Emoji Sequences** (`"emoji"`) — [valid](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory.txt)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
@@ -254,7 +274,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* The following [deviations](https://unicode.org/reports/tr46/#Table_Deviation_Characters) are **valid**:
 		* `DF (ß) LATIN SMALL LETTER SHARP S`
 		* `3C2 (ς) GREEK SMALL LETTER FINAL SIGMA`
-	* `CheckHyphens` is **`false`** ([WhatWG URL Spec § 3.3](https://url.spec.whatwg.org/#idna))
+	* `CheckHyphens` is **`false`** ([WHATWG URL Spec § 3.3](https://url.spec.whatwg.org/#idna))
 	* `CheckBidi` is **`false`**
 	* [ContextJ](https://datatracker.ietf.org/doc/html/rfc5892#appendix-A.1):
 		* `200C (�) ZERO WIDTH NON-JOINER` (ZWNJ) is **disallowed everywhere**.
@@ -329,7 +349,7 @@ A label composed of confusable characters isn't necessarily confusable.
 * `27 (') APOSTROPHE` is **mapped** to `2019 (’) RIGHT SINGLE QUOTATION MARK` for convenience.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
 * Emoji:
-	* All sequences are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
+	* All emoji are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
 	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#demoted-unchanged).
 	* Emoji [mapped to non-emoji by IDNA](./ensip-15/emoji.md#demoted-mapped) cannot be used as emoji.
 	* Emoji [disallowed by IDNA](./ensip-15/emoji.md#disabled-emoji-characters) with default text-presentation are **disabled**:
@@ -343,7 +363,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* All `RGI_Emoji_Flag_Sequence` are **enabled**.
 	* `Basic_Emoji` of the form `[X FE0F]` are **enabled**.
 	* Emoji with default emoji-presentation are **enabled** as `[X FE0F]`.
-	* Remaining single-character emoji are **enabled** as `[X FE0F]` (explicit emoji-styling).
+	* Remaining single-character emoji are **enabled** as `[X FE0F]` (explicit emoji-presentation).
 	* All singular Skin-color Modifiers are **disabled**.
 	* All singular Regional Indicators are **disabled**.
 	* Blacklisted emoji are **disabled**.
@@ -357,14 +377,18 @@ A label composed of confusable characters isn't necessarily confusable.
 ## Backwards Compatibility
 
 * 99% of names are still valid.
-* Preserves as much Unicode IDNA and WhatWG URL compatibility as possible.
+* Preserves as much [Unicode IDNA](https://unicode.org/reports/tr46/) and [WHATWG URL](https://url.spec.whatwg.org/#idna) compatibility as possible.
 * Only [valid emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) are permitted.
 
 ## Security Considerations
 
 * Unicode presentation may vary between applications and devices.
-	* Unicode text is ultimately subject to font-styling and display context.
+	* Unicode text is ultimately subject to font-styling and display context.		
 	* Unsupported characters (`�`) may appear unremarkable.
+	* Normalized single-character emoji sequences do not retain their explicit emoji-presentation and may display with [text or emoji](https://www.unicode.org/reports/tr51/#Presentation_Style) presentation styling.
+		* `❤︎` — text-presentation and default coloring
+		* <span style="color: #0c0">`❤︎`</span> — text-presentation and <span style="color: #0c0">green</span> coloring
+		* <span style="color: #0c0">`❤️`</span> — emoji-presentation and <span style="color: #0c0">green</span> coloring
 	* Unsupported emoji sequences with ZWJ may appear indistinguishable from those without ZWJ.
 		* `"💩💩" [1F4A9 1F4A9]`
 		* `"💩‍💩" [1F4A9 200D 1F4A9]` → *error: Disallowed character*
