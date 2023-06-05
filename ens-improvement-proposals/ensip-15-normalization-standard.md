@@ -122,6 +122,7 @@ Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of
 		* Otherwise, the label cannot be normalized.
 1. Repeat until all the input is consumed.
 1. If the buffer is nonempty, emit a final `Text` token with its contents.
+	* Return the list of emitted tokens.
 
 Examples:
 
