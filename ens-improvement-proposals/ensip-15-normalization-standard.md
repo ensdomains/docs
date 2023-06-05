@@ -34,7 +34,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 * Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-specjson).
 * A string is a sequence of Unicode codepoints.
-	* Example: `"abc"` ↔ `[61 62 63]`
+	* Example: `"abc"` is `61 62 63`
 * An [Unicode emoji](https://www.unicode.org/reports/tr51/) is a [single entity](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) composed of one or more codepoints:
 	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenizes](#tokenize) as an `Emoji` token.
 		* Example: `💩︎︎ [1F4A9]` → `Emoji[1F4A9 FE0F]`
