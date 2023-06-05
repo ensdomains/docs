@@ -26,6 +26,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 ## Specification
 
 * Unicode version `15.0.0`
+	* Normalization is a living specification and should use the latest stable version of Unicode.
 * [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
 * [`nf.json`](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
@@ -36,23 +37,26 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 	* Example: `"abc"` ↔ `[61 62 63]`
 * An [Unicode emoji](https://www.unicode.org/reports/tr51/) is a [single entity](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) composed of one or more codepoints:
 	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenizes](#tokenize) as an `Emoji` token.
-		* Example: `"💩︎︎" [1F4A9]` → `Emoji[1F4A9 FE0F]`
-			* `1F4A9 FE0F` is an **Emoji Sequence**
-	* [`spec.json`](#description-of-specjson) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequence**.		
+		* Example: `💩︎︎ [1F4A9]` → `Emoji[1F4A9 FE0F]`
+			* `1F4A9 FE0F` is an **Emoji Sequence**.
+	* [`spec.json`](#description-of-specjson) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequences**.		
 		* [Derivation](#derivation) defines which emoji are normalizable.
 		* Not all Unicode emoji are valid.
+			* Example: `‼ [203C] double exclamation mark` → *error: Disallowed character*
+			* Example: `🈁 [1F201] Japanese “here” button` → `Text["ココ"]`
 	* An **Emoji Sequence** may contain characters that are disallowed:
-		* `👩‍❤️‍👨 [1F469 200D 2764 FE0F 200D 1F468] couple with heart: woman, man` — contains `200D` 
+		* `👩‍❤️‍👨 [1F469 200D 2764 FE0F 200D 1F468] couple with heart: woman, man` — contains ZWJ
 		* `#️⃣ [23 FE0F 20E3] keycap: #` — contains `23 (#)`
 		* `🏴󠁧󠁢󠁥󠁮󠁧󠁿 [1F3F4 E0067 E0062 E0065 E006E E0067 E007F]` — contains `E00XX`
 	* An **Emoji Sequence** may contain other emoji:
 		* Example: `❤️ [2764 FE0F] red heart` is a substring of `❤️‍🔥 [2764 FE0F 200D 1F525] heart on fire` 
 	* Single-codepoint emoji may have various [presentation styles](https://www.unicode.org/reports/tr51/#Presentation_Style) on input:
-		* Unstyled: `❤ [2764]`
-		* Text-styled: `❤︎ [2764 FE0E]`
-		* Emoji-styled: `❤️ [2764 FE0F]`
+		* Default: `❤ [2764]`
+		* Text: `❤︎ [2764 FE0E]`
+		* Emoji: `❤️ [2764 FE0F]`
 	* However, these all [tokenize](#tokenize) to the same **Emoji Sequence**.
-	* Since [ENSIP-1](./ensip-1-ens.md) did not process emoji separately from text and presentation characters (`FE0F` and `FE0E`) are **Ignored** and registration stores names on-chain, the convention of removing presentation cannot be changed.
+	* All **Emoji Sequence** have explicit emoji-presentation.
+	* Since [ENSIP-1](./ensip-1-ens.md) did not treat emoji differently from text and presentation characters (`FE0F` and `FE0E`) are **Ignored** by normalization and registration stores names on-chain, the convention of removing presentation cannot be changed.
 		* [Beautification](#annex-beautification) can be used to restore emoji-presentation in normalized names.
 	
 ### Algorithm
@@ -77,6 +81,13 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 	* The **Label Type** and **Restricted** state may be presented to user for additional security.
 1. Concatenate the tokens together.
 	* Return the normalized label.
+
+Examples:
+
+1. `"_$A" [5F 24 41]` → `"_$a" [5F 24 61]` — *ASCII*
+1. `"E︎̃" [45 FE0E 303]` → `"ẽ" [1EBD]` — *Latin*
+1. `"𓆏🐸" [1318F 1F438]` → `"𓆏🐸" [1318F 1F438]` — *Restricted: Egyp*
+1. `"nı̇ck" [6E 131 307 63 6B]` → *error: Disallowed character*
 
 ### Tokenize
 
@@ -257,7 +268,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
 * **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* **Emoji Sequences** (`"emoji"`) — [valid](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
+* **Emoji Sequence(s)** (`"emoji"`) — [valid](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
 * **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory.txt)
 * **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
@@ -386,12 +397,12 @@ A label composed of confusable characters isn't necessarily confusable.
 	* Unicode text is ultimately subject to font-styling and display context.		
 	* Unsupported characters (`�`) may appear unremarkable.
 	* Normalized single-character emoji sequences do not retain their explicit emoji-presentation and may display with [text or emoji](https://www.unicode.org/reports/tr51/#Presentation_Style) presentation styling.
-		* `❤︎` — text-presentation and default coloring
-		* <span style="color: #0c0">`❤︎`</span> — text-presentation and <span style="color: #0c0">green</span> coloring
-		* <span style="color: #0c0">`❤️`</span> — emoji-presentation and <span style="color: #0c0">green</span> coloring
+		* `❤︎` — text-presentation and default-color
+		* <span style="color: #0c0">`❤︎`</span> — text-presentation and <span style="color: #0c0">green</span>-color
+		* <span style="color: #0c0">`❤️`</span> — emoji-presentation and <span style="color: #0c0">green</span>-color
 	* Unsupported emoji sequences with ZWJ may appear indistinguishable from those without ZWJ.
-		* `"💩💩" [1F4A9 1F4A9]`
-		* `"💩‍💩" [1F4A9 200D 1F4A9]` → *error: Disallowed character*
+		* `💩💩 [1F4A9 1F4A9]`
+		* `💩‍💩 [1F4A9 200D 1F4A9]` → *error: Disallowed character*
 * Names composed of labels with varying bidi properties [may appear differently](https://discuss.ens.domains/t/bidi-label-ordering-spoof/15824) depending on context.
 	* Normalization does not enforce single-directional names.
 	* Names may be composed of labels of different directions but normalized labels are never bidirectional.
