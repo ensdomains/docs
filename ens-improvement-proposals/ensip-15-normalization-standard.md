@@ -36,14 +36,14 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 * A string is a sequence of Unicode codepoints.
 	* Example: `"abc"` is `61 62 63`
 * An [Unicode emoji](https://www.unicode.org/reports/tr51/) is a [single entity](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) composed of one or more codepoints:
-	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenizes](#tokenize) as an `Emoji` token.
+	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenized](#tokenize) into an `Emoji` token.
 		* Example: `💩︎︎ [1F4A9]` → `Emoji[1F4A9 FE0F]`
-			* `1F4A9 FE0F` is an **Emoji Sequence**.
+			* `1F4A9 FE0F` is the **Emoji Sequence**.
 	* [`spec.json`](#description-of-specjson) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequences**.		
 		* [Derivation](#derivation) defines which emoji are normalizable.
 		* Not all Unicode emoji are valid.
-			* Example: `‼ [203C] double exclamation mark` → *error: Disallowed character*
-			* Example: `🈁 [1F201] Japanese “here” button` → `Text["ココ"]`
+			* `‼ [203C] double exclamation mark` → *error: Disallowed character*
+			* `🈁 [1F201] Japanese “here” button` → `Text["ココ"]`
 	* An **Emoji Sequence** may contain characters that are disallowed:
 		* `👩‍❤️‍👨 [1F469 200D 2764 FE0F 200D 1F468] couple with heart: woman, man` — contains ZWJ
 		* `#️⃣ [23 FE0F 20E3] keycap: #` — contains `23 (#)`
@@ -56,8 +56,11 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 		* Emoji: `❤️ [2764 FE0F]`
 	* However, these all [tokenize](#tokenize) to the same **Emoji Sequence**.
 	* All **Emoji Sequence** have explicit emoji-presentation.
-	* Since [ENSIP-1](./ensip-1-ens.md) did not treat emoji differently from text and presentation characters (`FE0F` and `FE0E`) are **Ignored** by normalization and registration stores names on-chain, the convention of removing presentation cannot be changed.
-		* [Beautification](#annex-beautification) can be used to restore emoji-presentation in normalized names.
+	* The convention of ignoring presentation is difficult to change because:
+		* Presentation characters (`FE0F` and `FE0E`) are **Ignored**
+	 	* [ENSIP-1](./ensip-1-ens.md) did not treat emoji differently from text
+		* Registration hashes are immutable
+	* [Beautification](#annex-beautification) can be used to restore emoji-presentation in normalized names.
 	
 ### Algorithm
 
