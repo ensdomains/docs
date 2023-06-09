@@ -27,19 +27,19 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 * Unicode version `15.0.0`
 	* Normalization is a living specification and should use the latest stable version of Unicode.
-* [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
+* [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-spec.json) for normalization.
 * [`nf.json`](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Definitions
 
-* Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-specjson).
+* Terms in **bold** throughout this document correspond with [components of `spec.json`](#description-of-spec.json).
 * A string is a sequence of Unicode codepoints.
 	* Example: `"abc"` is `61 62 63`
 * An [Unicode emoji](https://www.unicode.org/reports/tr51/) is a [single entity](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) composed of one or more codepoints:
 	* An **Emoji Sequence** is the preferred form of an emoji, resulting from input that [tokenized](#tokenize) into an `Emoji` token.
 		* Example: `💩︎︎ [1F4A9]` → `Emoji[1F4A9 FE0F]`
 			* `1F4A9 FE0F` is the **Emoji Sequence**.
-	* [`spec.json`](#description-of-specjson) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequences**.		
+	* [`spec.json`](#description-of-spec.json) contains the complete [list of valid](./ensip-15/emoji.md) **Emoji Sequences**.		
 		* [Derivation](#derivation) defines which emoji are normalizable.
 		* Not all Unicode emoji are valid.
 			* `‼ [203C] double exclamation mark` → *error: Disallowed character*
@@ -94,7 +94,7 @@ Examples:
 
 ### Tokenize
 
-Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-specjson).  
+Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-spec.json).  
 
 1. Allocate an empty codepoint buffer.
 1. Find the longest **Emoji Sequence** that matches the remaining input.
@@ -174,7 +174,7 @@ Examples:
 
 ### Wholes
 
-A label is [whole-script confusable](https://unicode.org/reports/tr39/#def_whole_script_confusables) if a similarly-looking valid label can be constructed using one alternative character from a different group.  The complete list of **Whole Confusables** can be found in [`spec.json`](#description-of-specjson).  Each **Whole Confusable** has a set of non-confusing characters (`"valid"`) and a set of confusing characters (`"confused"`) where each character may be the member of one or more groups.
+A label is [whole-script confusable](https://unicode.org/reports/tr39/#def_whole_script_confusables) if a similarly-looking valid label can be constructed using one alternative character from a different group.  The complete list of **Whole Confusables** can be found in [`spec.json`](#description-of-spec.json).  Each **Whole Confusable** has a set of non-confusing characters (`"valid"`) and a set of confusing characters (`"confused"`) where each character may be the member of one or more groups.
 
 Example: **Whole Confusable** for `"g"`
 
