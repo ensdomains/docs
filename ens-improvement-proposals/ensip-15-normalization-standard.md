@@ -28,7 +28,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 * Unicode version `15.0.0`
 	* Normalization is a living specification and should use the latest stable version of Unicode.
 * [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
-* [`nf.json`](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+* [`nf.json`](./ensip-15/nf.json) contains all [necessary data](#description-of-nfjson) for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Definitions
 
@@ -77,7 +77,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 1. [Tokenize](#tokenize) — transform the label into `Text` and `Emoji` tokens.
 	* If there are no tokens, the label cannot be normalized.
-1. Apply NFC to each `Text` token.
+1. Apply [NFC](https://unicode.org/reports/tr15/#Norm_Forms) to each `Text` token.
 	* Example: `Text["à"]` → `[61 300] → [E0]` → `Text["à"]`
 1. Strip `FE0F` from each `Emoji` token.
 1. [Validate](#validate) — check if the tokens are valid and obtain the **Label Type**.
@@ -208,7 +208,8 @@ Example: **Whole Confusable** for `"g"`
 	* Otherwise:
 		* Append the character to the buffer.
 1. If any **Confused** characters were found:
-	* Assert none of the remaining groups contain any of the buffered characters.
+	* If there are no buffered characters, the label is confusable.
+	* If any of the remaining groups contain all of the buffered characters, the label is confusable.
 	* Example: `"0х" [30 445]`
 		1. `30 (0) DIGIT ZERO`
 			* Not **Confused** or **Unique**, add to buffer.
@@ -279,6 +280,19 @@ A label composed of confusable characters isn't necessarily confusable.
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
 * **Should Escape** (`"escape"`) — characters that shouldn't be printed
 * **NFC Check** (`"nfc_check"`) — valid characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
+
+## Description of `nf.json`
+
+* `"decomp"` — [mapping](https://www.unicode.org/reports/tr44/tr44-30.html#Character_Decomposition_Mappings) from a composed character to a sequence of (partially)-decomposed characters
+	* [`UnicodeData.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#UnicodeData.txt) where `Decomposition_Mapping` exists and does not have a [formatting tag](https://www.unicode.org/reports/tr44/tr44-30.html#Formatting_Tags_Table)
+* `"exclusions"` — set of characters for which the `"decomp"` mapping is not applied when forming a composition
+	* [`CompositionExclusions.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#CompositionExclusions.txt)
+* `"ranks"` — sets of characters with increasing [`Canonical_Combining_Class`](https://www.unicode.org/reports/tr44/tr44-30.html#Canonical_Combining_Class_Values)
+	* [`UnicodeData.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#UnicodeData.txt) grouped by `Canonical_Combining_Class`
+	* Class `0` is not included.
+* `"qc"` — set of characters with property [NFC_QC](https://www.unicode.org/reports/tr44/tr44-30.html#Decompositions_and_Normalization) of value `N` or `M`
+	* [`DerivedNormalizationProps.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#DerivedNormalizationProps.txt)
+	* **NFC Check** (from [`spec.json`](#description-of-specjson)) is a subset of this set
 
 ## Derivation
 
@@ -435,6 +449,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 * [UAX-29: Text Segmentation](https://unicode.org/reports/tr29/)
 * [UAX-31: Identifier and Pattern Syntax](https://www.unicode.org/reports/tr31/)
 * [UTS-39: Security Mechanisms](https://www.unicode.org/reports/tr39/)
+* [UAX-44: Character Database](https://www.unicode.org/reports/tr44/)
 * [UTS-46: IDNA Compatibility Processing](https://unicode.org/reports/tr46/)
 * [UTS-51: Emoji](https://www.unicode.org/reports/tr51)
 * [RFC-3492: Punycode](https://datatracker.ietf.org/doc/html/rfc3492)

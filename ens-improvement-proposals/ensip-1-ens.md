@@ -79,12 +79,12 @@ ENS names must conform to the following syntax:
 
 ```
 <domain> ::= <label> | <domain> "." <label>
-<label> ::= any valid string label per [UTS46](https://unicode.org/reports/tr46/)
+<label> ::= any valid string label per [ENSIP-15](./ensip-15-normalization-standard.md#normalize)
 ```
 
-In short, names consist of a series of dot-separated labels. Each label must be a valid normalised label as described in [UTS46](https://unicode.org/reports/tr46/) with the options `transitional=false` and `useSTD3AsciiRules=true`. For Javascript implementations, a [library](https://www.npmjs.com/package/idna-uts46) is available that normalises and checks names.
+In short, names consist of a series of dot-separated labels. Each label must be a valid normalised label as described in [ENSIP-15](./ensip-15-normalization-standard.md). For Javascript implementations, a [library](https://github.com/ensdomains/eth-ens-namehash) is available that normalises and checks names.
 
-Note that while upper and lower case letters are allowed in names, the UTS46 normalisation process case-folds labels before hashing them, so two names with different case but identical spelling will produce the same namehash.
+Note that while upper and lower case letters are allowed in names, the normalisation process case-folds labels before hashing them, so two names with different case but identical spelling will produce the same namehash.
 
 Labels and domains may be of any length, but for compatibility with legacy DNS, it is recommended that labels be restricted to no more than 64 characters each, and complete ENS names to no more than 255 characters. For the same reason, it is recommended that labels do not start or end with hyphens, or start with digits.
 
