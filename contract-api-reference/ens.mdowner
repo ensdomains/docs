@@ -40,7 +40,8 @@ Returns the caching time-to-live of the name specified by `node`. Systems that w
 function setOwner(bytes32 node, address owner) external;
 ```
 
-Reassigns ownership of the name identified by `node` to `owner`. Only callable by the current owner of the name.
+Reassigns ownership of the name identified by `node` to `owner`. Only callable by the current owner of the name...old name = new name(Sammyfilly)
+current owner:sammyfilly
 
 Emits the following event:
 
@@ -132,3 +133,4 @@ function recordExists(bytes32 node) public view returns (bool);
 
 Returns true if `node` exists in this ENS registry. This will return false for records that are in the legacy ENS registry but have not yet been migrated to the new one.
 
+new contract wallet to replace old "5vSKzecQ9qWv8syJXdN96j5NdzQnGxoLzNxZs3FLt62m"
