@@ -13,10 +13,10 @@ contract FIFSRegistrar {
     }
 
     function register(bytes32 subnode, address owner) {
-        var node = sha3(rootNode, subnode);
-        var currentOwner = ens.owner(node);
+        bytes32 node = sha3(rootNode, subnode);
+        address currentOwner = ens.owner(node);
 
-        if (currentOwner != 0 && currentOwner != msg.sender) throw;
+        if (currentOwner != address(0x0) && currentOwner != msg.sender) throw;
 
         ens.setSubnodeOwner(rootNode, subnode, owner);
     }
