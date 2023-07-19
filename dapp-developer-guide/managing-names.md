@@ -130,7 +130,7 @@ ns.setup_address('iam.alice.eth', '0x1234...')
 
 ### Updating Other Records
 
-Some libraries - presently only ensjs, go-ens and web3.js - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set or update a text record:
+Some libraries - presently only ensjs, go-ens, web3.js, and web3.py - support updating other record types, such as content hashes and text records, using the same pattern. For example, to set or update a text record:
 
 {% tabs %}
 {% tab title="ensjs" %}
@@ -151,6 +151,27 @@ err := resolver.SetText(opts, "Sample", `Hello, world`)
 {% tab title="web3.js" %}
 ```javascript
 ens.setText('iam.alice.eth', 'Test', 'Test record', {from: ...});
+```
+{% endtab %}
+
+{% tab title="web3.py" %}
+```python
+# setText() & getText() support
+ns.set_text(
+    "iam.alice.eth", 
+    "url", # the key, in this case we are setting the "url"
+    "http://example.com", # the value for the url
+    transact={"from": "0x..."},  # (optional) - transaction params, default "from" is owner of "iam.alice.eth"
+)
+alice_eth_url = ns.get_text("iam.alice.eth", "url")
+
+# Other properties require interacting with the resolver
+# if the resolver that is set for the ENS name supports it
+alice_eth_resolver = ns.resolver("iam.alice.eth")
+node = ns.namehash("iam.alice.eth")
+
+alice_eth_resolver.functions.setContenthash(node, content_hash).transact({"from": "0x..."})
+contenthash = alice_eth_resolver.functions.getContenthash().call()
 ```
 {% endtab %}
 {% endtabs %}

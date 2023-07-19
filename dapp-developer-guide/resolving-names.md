@@ -163,8 +163,32 @@ resolver.Text(name)
 {% endtab %}
 
 {% tab title="web3.py" %}
-```
-Not supported.
+```python
+# multicoin supported via ``setup_address()`` (set) & ``address()`` (get) 
+# methods on the ``ENS`` class
+ns.setup_address(
+    "iam.alice.eth", 
+    address="0x...",  # (optional) - defaults to owner of "iam.alice.eth"
+    coin_type=0,  # (optional) - default sets up the ETH address
+    transact={"from": "0x..."},  # (optional) - transaction params, default "from" is owner of "iam.alice.eth"
+)
+btc_address = ns.address("iam.alice.eth", coin_type=0)
+
+# setText() & getText() support
+ns.set_text(
+    "iam.alice.eth", 
+    "email",  # the key, in this case we are setting the "email"
+    "ipromisei@malice.com",  # the value for the email
+    transact={"from": "0x..."},  # (optional) - transaction params, default "from" is owner of "iam.alice.eth"
+)
+email = ns.get_text("iam.alice.eth", "email")
+
+# set / get contenthash and others via resolver
+alice_eth_resolver = ns.resolver("iam.alice.eth")
+node = ns.namehash("iam.alice.eth")
+
+alice_eth_resolver.functions.setContenthash(node, content_hash).transact({"from": "0x..."})
+contenthash = alice_eth_resolver.functions.getContenthash().call()
 ```
 {% endtab %}
 
@@ -321,10 +345,8 @@ name, err := ens.ReverseResolve(client, common.HexToAddress("0x1234...")
 {% tab title="web3.py" %}
 ```python
 address = '0x1234...'
-name = ns.reverse(address)
-# Check to be sure the reverse record is correct.
-if address != ns.address(name):
-  name = None
+name = ns.name(address)
+# web3.py >= 6.0.0 automatically checks that the forward resolution matches
 ```
 {% endtab %}
 
