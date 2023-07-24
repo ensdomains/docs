@@ -238,13 +238,13 @@ A label composed of confusable characters isn't necessarily confusable.
 ### Split
 
 * Partition a name into labels, separated by `2D (.) FULL STOP`, and return the resulting array.
+	* Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
 * The empty string is 0-labels: `""` → `[]`
-* Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
 
 ### Join
 
 * Assemble an array of labels into a name, inserting `2D (.) FULL STOP` between each label, and return the resulting string.
-* Example: `["abc", "123", "eth"]` → `"abc.123.eth"`
+	* Example: `["abc", "123", "eth"]` → `"abc.123.eth"`
 
 ## Description of `spec.json`
 
