@@ -11,8 +11,17 @@
 	},
 	{
 		"name": "",
+		"comment": "Empty"
+	},
+	{
+		"name": " ",
 		"error": true,
-		"comment": "Null"
+		"comment": "Empty: Whitespace"
+	},
+	{
+		"name": "\uFE0F",
+		"error": true,
+		"comment": "Empty: Ignorable"
 	},
 	{
 		"name": ".",
@@ -323,12 +332,12 @@
 	},
 	{
 		"name": "🇦",
-		"error": "true",
+		"error": true,
 		"comment": "Single regional indicator"
 	},
 	{
 		"name": "🇦🇦",
-		"error": "true",
+		"error": true,
 		"comment": "Double regional indicator: invalid flag sequence"
 	},
 	{
@@ -412,6 +421,11 @@
 		"name": "🏴󠁷󠁴󠁦󠁿",
 		"error": true,
 		"comment": "Invalid Emoji Tag Sequence"
+	},
+	{
+		"name": "0x✌️🏼",
+		"error": true,
+		"comment": "Malicious FE0F"
 	},
 	{
 		"name": "۰۱۲۳۸۹",
@@ -67979,10 +67993,6 @@
 		"norm": "۵۵٢٧"
 	},
 	{
-		"name": "0x✌️🏼",
-		"norm": "0x✌🏼"
-	},
-	{
 		"name": "۹۱۵",
 		"norm": "٩١۵"
 	},
@@ -94338,11 +94348,6 @@
 		"name": "⛹🏽‍➡️",
 		"error": true,
 		"comment": "disallowed character: {200D}"
-	},
-	{
-		"name": "",
-		"error": true,
-		"comment": "empty label"
 	},
 	{
 		"name": "‍7777",

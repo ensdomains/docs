@@ -238,6 +238,7 @@ A label composed of confusable characters isn't necessarily confusable.
 ### Split
 
 * Partition a name into labels, separated by `2D (.) FULL STOP`, and return the resulting array.
+* The empty string is 0-labels: `""` → `[]`
 * Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
 
 ### Join
@@ -289,7 +290,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* [`CompositionExclusions.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#CompositionExclusions.txt)
 * `"ranks"` — sets of characters with increasing [`Canonical_Combining_Class`](https://www.unicode.org/reports/tr44/tr44-30.html#Canonical_Combining_Class_Values)
 	* [`UnicodeData.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#UnicodeData.txt) grouped by `Canonical_Combining_Class`
-	* Class `0` is not included.
+	* Class `0` is not included
 * `"qc"` — set of characters with property [`NFC_QC`](https://www.unicode.org/reports/tr44/tr44-30.html#Decompositions_and_Normalization) of value `N` or `M`
 	* [`DerivedNormalizationProps.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#DerivedNormalizationProps.txt)
 	* **NFC Check** (from [`spec.json`](#description-of-specjson)) is a subset of this set
