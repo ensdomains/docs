@@ -106,6 +106,7 @@ Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of
 		* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468]`
 			* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
 			* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
+			* No match: `1F468 FE0F 200D 2764 FE0F 200D 1F468` — extra `FE0F`
 			* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
 	* This is equivalent to `/^(emoji1|emoji2|...)/` where `\uFE0F` is replaced with `\uFE0F?` and `*` is replaced with `\x2A`.
 1. If an **Emoji Sequence** is found:
