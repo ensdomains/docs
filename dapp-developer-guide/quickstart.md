@@ -30,6 +30,10 @@ npm install wagmi viem @rainbow-me/rainbowkit
 {% endtab %}
 {% endtabs %}
 
+{% hint style="info" %}
+This would be a good place to also include Thorin, the ENS component library, but it is not required for this guide.
+{% endhint %}
+
 To configure wagmi, create a file called `providers.ts`:
 
 ```tsx
