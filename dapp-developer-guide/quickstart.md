@@ -1,10 +1,10 @@
-# Quickstart Guide
+# Quickstart Guide for Frontend Developers
 
-At a high level, the goal of ENS is to replace long Ethereum addresses with human-readable names. This makes it easier for users to interact with your application, and easier for you to build applications that are easy to use.
+At a high level, the goal of ENS is to replace long Ethereum addresses with human-readable names in frontend applications. This makes it more enjoyable for users to interact with your application, and easier for you to build applications that are easy to use.
 
-ENS names can also store other information besides addresses, such as metadata about a user in [text records](/ens-improvement-proposals/ensip-5-text-records). Think about it like a portable web3 profile.
+ENS names can also store other information besides addresses, such as metadata about a user in [text records](../ens-improvement-proposals/ensip-5-text-records). Think about it like a portable web3 profile.
 
-The purpose of this guide is to assist you in learning the necessary skills to build an ENS-enabled application for a hackathon project. For the sake of simplicity in this guide, we will assume that you are building a web application with React.
+The purpose of this guide is to get you up and running with an ENS-enabled application in just a few minutes, perfect for hackathon-like scenarios. For the sake of simplicity, we will assume that you are building a web application with React.
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains} modalSize="compact">
+      <RainbowKitProvider chains={chains}>
         {isMounted && <Component {...pageProps} />}
       </RainbowKitProvider>
     </WagmiConfig>
@@ -84,9 +84,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
 Now we have an app that is ready to interact with ENS and Ethereum.
 
-## Resolution
+## Name/address resolution
 
-Resolution works in two directions: forward resolution, which is the process of converting a name to an address, and reverse resolution, which is the process of converting an address to a name.
+Resolution works in two directions: forward resolution, which is the process of fetching an address from a name, and reverse resolution, which is the process of fetching a name from an address.
 
 ### Forward resolution
 
@@ -107,7 +107,7 @@ function App() {
 
 ### Reverse resolution
 
-Reverse resolution must be set by the user. [Learn more here](/contract-api-reference/reverseregistrar).
+Reverse resolution must be set by the user. [Learn more here](../contract-api-reference/reverseregistrar).
 
 To reverse resolve a name and avatar from an address, we can use the `useEnsName` and `useEnsAvatar` hooks. You might use this to display a user's profile next to some action they've taken in your app, for example.
 
@@ -148,5 +148,5 @@ function App() {
 ENS is more complex than people often realize at first glance, and there are a few things to keep in mind when building an ENS-enabled application.
 
 - ENS is more than .eth names (namely DNS TLDs). Instead of hardcoding `.eth` into your application, assume any input with a `.` can be an ENS name.
-- Not all ENS names exist on a blockchain (see [ENS Layer2 and offchain data support](ens-l2-offchain)). This logic is abstracted from you in libraries like wagmi, but it's important to keep in mind when thinking about indexing and searching for names.
+- Not all ENS names exist on a blockchain (see [ENS Layer2 and offchain data support](./ens-l2-offchain)). This logic is abstracted from you in libraries like wagmi, but it's important to keep in mind when thinking about indexing and searching for names.
 - The source of truth for ENS names is the ENS registry contract on mainnet Ethereum. This means that even if a user is connected to a different chain, you should always resolve names on mainnet. This is why we pass `chainId: 1` to the hooks above.
