@@ -1,6 +1,6 @@
 # Quickstart Guide for Frontend Developers
 
-At a high level, the goal of ENS is to replace long Ethereum addresses with human-readable names in frontend applications. This makes it more enjoyable for users to interact with your application, and easier for you to build applications that are easy to use.
+At a high level, the goal of ENS is to abstract away long Ethereum addresses with human-readable names. This makes it more enjoyable for users to interact with your application, and easier for you to build applications that are easy to use.
 
 ENS names can also store other information besides addresses, such as metadata about a user in [text records](../ens-improvement-proposals/ensip-5-text-records). Think about it like a portable web3 profile.
 
