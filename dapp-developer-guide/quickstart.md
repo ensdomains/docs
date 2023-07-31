@@ -107,7 +107,9 @@ function App() {
 
 ### Reverse resolution
 
-Reverse resolution must be set by the user. [Learn more here](../contract-api-reference/reverseregistrar).
+{% hint style="info" %}
+Reverse resolution must be set by the user. [Learn more here](../contract-api-reference/reverseregistrar)
+{% endhint %}
 
 To reverse resolve a name and avatar from an address, we can use the `useEnsName` and `useEnsAvatar` hooks. You might use this to display a user's profile next to some action they've taken in your app, for example.
 
@@ -142,6 +144,8 @@ function App() {
   )
 }
 ```
+
+If you want to fetch additional text records, [see this `useEnsText` hook](https://gist.github.com/gskril/b144d3edaab82e5f31c78b94ba61f872) while we wait for our PR to be merged into wagmi.
 
 ## Things to keep in mind
 
