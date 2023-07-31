@@ -100,7 +100,7 @@ To resolve an address from a nanme, we can use the `useEnsAddress` hook. You mig
 import { useEnsAddress } from 'wagmi'
 
 function App() {
-  const name = 'matoken.eth'
+  const name = 'nick.eth'
   const ensName = useEnsAddress({ name, chainId: 1 })
 
   if (ensName.isLoading) return <div>Fetching address…</div>
@@ -121,7 +121,7 @@ To reverse resolve a name and avatar from an address, we can use the `useEnsName
 import { useEnsAvatar, useEnsName } from 'wagmi'
 
 function App() {
-  const address = '0x5A384227B65FA093DEC03Ec34e111Db80A040615'
+  const address = '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
   const ensName = useEnsName({ address, chainId: 1 })
   const ensAvatar = useEnsAvatar({ name: ensName.data, chainId: 1 })
 
