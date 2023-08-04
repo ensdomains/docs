@@ -10,6 +10,10 @@ The purpose of this guide is to get you up and running with an ENS-enabled appli
 
 We will be using [wagmi](https://wagmi.sh/) and [Rainbowkit](https://www.rainbowkit.com/) in Next.js to interact with ENS and Ethereum.
 
+{% hint style="info" %}
+If you prefer to clone an already functioning example project, take a look at our [Next.js template](https://github.com/ensdomains/frontend-template).
+{% endhint %}
+
 Install the following dependencies:
 
 {% tabs %}
