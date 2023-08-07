@@ -4,7 +4,7 @@ description: The ENS registry.
 
 # Registry
 
-[Source](https://github.com/ensdomains/ens/blob/master/contracts/ENS.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/registry/ENS.sol)
 
 The ENS registry is the core contract that lies at the heart of ENS resolution. All ENS lookups start by querying the registry. The registry maintains a list of domains, recording the owner, resolver, and TTL for each, and allows the owner of a domain to make changes to that data.
 

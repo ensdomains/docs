@@ -6,7 +6,7 @@ description: >-
 
 # ReverseRegistrar
 
-[Source](https://github.com/ensdomains/ens/blob/master/contracts/ReverseRegistrar.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/reverseRegistrar/ReverseRegistrar.sol)
 
 Reverse resolution in ENS - the process of mapping from an Ethereum address \(eg, 0x1234...\) to an ENS name - is handled using a special namespace, _.addr.reverse_. A special-purpose registrar controls this namespace and allocates subdomains to any caller based on their address.
 

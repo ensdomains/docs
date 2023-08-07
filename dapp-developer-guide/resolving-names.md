@@ -101,7 +101,7 @@ Resolution without a library is a three step process:
 
 1. Normalise and hash the name - see [name processing](../contract-api-reference/name-processing.md) for details.
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
-3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
+3. Using the [resolver interface](https://github.com/ensdomains/ens-contracts/blob/master/contracts/resolvers/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
 
 **Resolution support for the addresses of other blockchains** is implemented with an additional overload on `addr()`. To resolve a non-Ethereum address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
@@ -380,6 +380,10 @@ if(address != ens.resolve(name)) {
 Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`(where _1234..._ is the address you want to reverse-resolve), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
 If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+
+{% hint style="warning" %}
+`ReverseRecords` does not support [ENSIP-10](../ens-improvement-proposals/ensip-10-wildcard-resolution.md), so we recommend you use a library like [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs) instead which has batch functions using the [`UniversalResolver`](https://github.com/ensdomains/ens-contracts/blob/master/contracts/utils/UniversalResolver.sol).
+{% endhint %}
 
 ```javascript
 const namehash = require('eth-ens-namehash');

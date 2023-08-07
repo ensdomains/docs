@@ -72,7 +72,7 @@ EnsResolver ens = new EnsResolver(web3j, 300 /* sync threshold, seconds */);
 
 Some web3 libraries - e.g., ethers.js, viem, web3j, and web3.py - have integrated support for name resolution. In these libraries, you can pass in an ENS name anywhere you can supply an address, meaning you do not need to interact directly with their ENS APIs unless you want to manually resolve names or do other ENS operations.
 
-If no library is available for your platform, you can instantiate the ENS registry contract directly using the interface definition [here](https://github.com/ensdomains/ens/blob/master/contracts/ENS.sol). Addresses for the ENS registry on each supported network are available in the [ENS Deployments](../ens-deployments.md) page.
+If no library is available for your platform, you can instantiate the ENS registry contract directly using the interface definition [here](https://github.com/ensdomains/ens-contracts/blob/master/contracts/registry/ENS.sol). Addresses for the ENS registry on each supported network are available in the [ENS Deployments](../ens-deployments.md) page.
 
 ## React hooks for ENS
 

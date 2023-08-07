@@ -1,6 +1,6 @@
 # ENS Libraries
 
-ENS support is available in many popular languages. If you know of a library that is not listed here, please [send us a PR](https://github.com/ensdomains/ens/compare).
+ENS support is available in many popular languages. If you know of a library that is not listed here, please [send us a PR](https://github.com/ensdomains/docs/pulls).
 
 ### Javascript
 
