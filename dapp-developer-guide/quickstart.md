@@ -35,7 +35,7 @@ npm install wagmi viem @rainbow-me/rainbowkit
 {% endtabs %}
 
 {% hint style="info" %}
-This would be a good place to also include Thorin, the ENS component library, but it is not required for this guide.
+This would be a good time to install a component library like [Thorin](https://thorin.ens.domains/), the ENS design system, but it is not required for this guide.
 {% endhint %}
 
 To configure wagmi, create a file called `providers.ts`:
@@ -98,7 +98,7 @@ Resolution works in two directions: forward resolution, which is the process of 
 
 ### Forward resolution
 
-To resolve an address from a nanme, we can use the `useEnsAddress` hook. You might use this to accept names as input from users in a recipient field, for example.
+To resolve an address from a name, we can use the `useEnsAddress` hook. You can use this to accept names as input from users in a recipient field, for example.
 
 ```tsx
 import { useEnsAddress } from 'wagmi'
@@ -119,7 +119,7 @@ function App() {
 Reverse resolution must be set by the user. [Learn more here](../contract-api-reference/reverseregistrar)
 {% endhint %}
 
-To reverse resolve a name and avatar from an address, we can use the `useEnsName` and `useEnsAvatar` hooks. You might use this to display a user's profile next to some action they've taken in your app, for example.
+To reverse resolve a name and avatar from an address, we can use the `useEnsName` and `useEnsAvatar` hooks. You can use this to display a user's profile next to some action they've taken in your app, for example.
 
 ```tsx
 import { useEnsAvatar, useEnsName } from 'wagmi'
@@ -159,6 +159,6 @@ If you want to fetch additional text records, [see this `useEnsText` hook](https
 
 ENS is more complex than people often realize at first glance, and there are a few things to keep in mind when building an ENS-enabled application.
 
-- ENS is more than .eth names (namely DNS TLDs). Instead of hardcoding `.eth` into your application, assume any input with a `.` can be an ENS name.
+- ENS is more than .eth names (namely DNS TLDs). Instead of hardcoding `.eth` into your application, assume any input with a "`.`" can be an ENS name.
 - Not all ENS names exist on a blockchain (see [ENS Layer2 and offchain data support](./ens-l2-offchain)). This logic is abstracted from you in libraries like wagmi, but it's important to keep in mind when thinking about indexing and searching for names.
-- The source of truth for ENS names is the ENS registry contract on mainnet Ethereum. This means that even if a user is connected to a different chain, you should always resolve names on mainnet. This is why we pass `chainId: 1` to the hooks above.
+- The source of truth for ENS names is the [ENS registry contract](../contract-api-reference/ens) on mainnet Ethereum. This means that even if a user is connected to a different chain, you should always resolve names on mainnet. This is why we pass `chainId: 1` to the hooks above.
