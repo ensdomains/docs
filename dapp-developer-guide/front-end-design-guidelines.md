@@ -114,6 +114,4 @@ Other guidelines previously mentioned also apply for simple Ethereum addresses:
 
 ## Front-End tools
 
-* **Aragon-UI** - [Address Badge component](https://github.com/aragon/design/issues/3) \([Design Files](https://github.com/aragon/design) / [code](https://github.com/aragon/aragon-ui/tree/master/src/components/Badge)\)
-* **Decentraland-UI** - [address Tooltip](https://ui.decentraland.org/?selectedKind=Address&selectedStory=Tooltip&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Fstories%2Fstories-panel) \(not ENS specific\)
-
+* **Thorin** - [React component library for the ENS design system](https://thorin.ens.domains/)
