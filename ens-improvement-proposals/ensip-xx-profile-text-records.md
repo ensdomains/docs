@@ -127,6 +127,16 @@ Colours can be full or half length hex codes (e.g. `FFFFFF`, or `FFF`). A colour
 
 **Design Considerations:** None.
 
+### `primary-contact`
+
+**Description:** The record key for a primary contact
+
+**Format:** `email`, or any existing profile service key
+
+**Example:** `com.github`
+
+**Design Considerations:** When resolving `primary-contact` for a profile, the value should resolve to the service (which could be logo or name) and the corresponding value. Direct links to the service should be supported on a best-effort basis (e.g. `com.github` => `https://github.com/`)
+
 #### Global Keys
 
 Profile Keys are a subset of Global Keys, therefore these global keys extend the existing global keys defined in ENSIP-5.
@@ -136,6 +146,7 @@ Profile Keys are a subset of Global Keys, therefore these global keys extend the
 - `header`
 - `timezone`
 - `language`
+- `primary-contact`
 
 #### Profile Service Keys
 
