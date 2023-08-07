@@ -4,7 +4,7 @@ If you are working with an [ENS library](dapp-developer-guide/ens-libraries.md),
 
 ### Mainnet
 
-These are also subdomains under [ens.eth](https://app.ens.domains/ens.eth?tab=subnames) for convenience
+These are also subdomains under [ens.eth](https://app.ens.domains/ens.eth?tab=subnames) for convenience.
 
 | Name                     | Contract Address                           |
 | ------------------------ | ------------------------------------------ |
@@ -39,4 +39,4 @@ These are also subdomains under [ens.eth](https://app.ens.domains/ens.eth?tab=su
 | Registry                 | 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e |
 | Reverse Registrar        | 0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6 |
 
-To find out the contract address of each TLD, check the "manager" address (eg: [https://app.ens.domains/tld/xyz](https://app.ens.domains/tld/xyz) for `.xyz`)
+To find out the contract address of each TLD, check the "manager" address (eg: [https://app.ens.domains/tld/xyz](https://app.ens.domains/tld/xyz) for `.xyz`).
