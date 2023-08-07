@@ -1,6 +1,6 @@
 # TestRegistrar
 
-[Source](https://github.com/ensdomains/ens/blob/master/contracts/TestRegistrar.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/registry/TestRegistrar.sol)
 
 The Test registrar facilitates easy testing of ENS on the Ethereum test networks. Typically deployed on the .test TLD, it provides functionality to instantly claim a domain for test purposes, which expires 28 days after it was claimed.
 
