@@ -58,8 +58,6 @@ Please refer to [offchain resolver client example code](https://github.com/ensdo
 * [web3.py](https://web3py.readthedocs.io/en/stable/) (Python)
 * [web3j](https://docs.web3j.io/) (Java)
 
-If you use other libraries or custom integration, please raise the GitHub issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
-
 ### Wallets integrated
 
 * [Alpha Wallet](https://github.com/AlphaWallet)
