@@ -40,8 +40,8 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 ## Further considerations
 
 * ENS has not been explicit about how to use the mainnet `addr()` record and it is often used as a backup to a user not having an address record set. This practice should not be recommended in the future for a couple reasons. Firstly users may not have control of that address on the other network. Secondly it should not be used as it creates confusion in regard to which address record was matched via forward resolution to ensure a successful reverse resolution.
-* Possibiity for resolver that allows gateway choices for the record level to allow a user to split their records between different chains. This would allow them to have arbitrum address records on arbitrum, optimism on optimism and so on.
-
+* Possibility for a resolver that allows gateway choices for the record level to allow a user to split their records between different chains. This would allow them to have arbitrum address records on arbitrum, optimism on optimism and so on.
+* Would require subnames and resolvers setup under [evmChainCoinType].reverse that would need to be governed by the DAO. Each new chain would likely need to be approved by the DAO or could be delegated to a multi-sig at first as things are rolled out and then moved to DAO ownership
 
 ### Copyright
 
