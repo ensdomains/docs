@@ -25,6 +25,7 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 ### Overview
 
 * Reverse registrars will be setup on each L2, with a corresponding registry
+* Reverse registrar will only allow setting the name, without resolver customisability. This is to allow a consistent storage slot that can be checked on L1.
 * User can now claim their reverse on this L2 and set it to their ENS name
 * Their ENS name will need to setup their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ens-improvement-proposals/ensip-9-multichain-address-resolution)
 * A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[evmChainCointype].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
