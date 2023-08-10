@@ -2,6 +2,8 @@
 
 If you are working with an [ENS library](dapp-developer-guide/ens-libraries.md), your library will automatically find the ENS deployment you need. If for whatever reason, you need to interact with ENS directly, details for the currently supported deployments are detailed here.
 
+To use ENS on a test network, connect a wallet to [https://app.ens.domains](https://app.ens.domains) and switch networks. The app will automatically detect the connected network.
+
 ### Mainnet
 
 These are also subdomains under [ens.eth](https://app.ens.domains/ens.eth?tab=subnames) for convenience.
