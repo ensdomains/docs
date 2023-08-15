@@ -4,7 +4,7 @@ description: Using the reveal secret as a way to have on chain information about
 
 # ENSIP-14: On Chain Source Parameter
 
-| **Author**    | Alex Slobo (@slobo.eth) and Alex Van de Sande (Avsa.eth)
+| **Author**    | Alex Slobodnik (@slobo.eth) and Alex Van de Sande (Avsa.eth)
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | **Status**    | Draft                                                                                                                           |
 | **Submitted** | 2023-02-07                                                                                                                      |
