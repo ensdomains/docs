@@ -42,21 +42,24 @@ interface OffChainResolver {
      * @return coinType according to https://github.com/ensdomains/address-encoder
      * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
      * @return storageType 0 = EVM, 1 = Non blockchain, 2 = Starknet
-     * @return context can be l2 resolver contract address for evm chain but can be any l2 storage identifier for non evm chain
+     * @storageLocation = l2 contract address
+     * @return context = an arbitrary bytes string to define the namespace to which a record belongs such as the name owner.
      */
-    function metadata()
+    function metadata(bytes calldata name)
         external
         view
-        returns (string memory, uint256, string memory, uint8, bytes memory)
+        returns (string memory, uint256, string memory, uint8, bytes memory, bytes memory)
     {
-        return (name, coinType, graphqlUrl, storageType, context);
+        return (name, coinType, graphqlUrl, storageType, storageLocation, context);
     }
+
     // Optional. If context is dynamic, the event won't be emitted.
     event MetadataChanged(
         string name,
         uint256 coinType,
         string graphqlUrl,
         uint8 storageType,
+        bytes storageLocation,
         bytes context
     );
 }
@@ -114,6 +117,11 @@ type Domain {
   expiryDate: BigInt
 }
 ```
+
+### Dynamic Metadata
+
+Metadata serves a crucial role in providing valuable insights about a node owner and their specific resolver. In certain scenarios, resolvers may choose to adopt diverse approaches to resolve data based on the node. An example of this would be handling subdomains of a particular node differently. For instance, we could resolve "optimism.foo.eth" using a contract on optimism and "gnosis.foo.eth" using a contract on gnosis.
+By passing the name through metadata, we empower the resolution process, enabling CcipResolve flows to become remarkably flexible and scalable. This level of adaptability ensures that our system can accommodate a wide array of use cases, making it more user-friendly and accommodating for a diverse range of scenarios.
 
 #### Backwards Compatibility
 
