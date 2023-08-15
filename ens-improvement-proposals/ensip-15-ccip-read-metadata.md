@@ -47,19 +47,11 @@ interface OffChainResolver {
     function metadata(bytes calldata name)
         external
         view
-        returns (string memory, uint256, string memory, uint8, bytes memory)
+        returns (string memory, uint256, string memory, uint8, bytes memory, bytes memory)
     {
-        return (name, coinType, graphqlUrl, storageType, context);
+        return (name, coinType, graphqlUrl, storageType, storageLocation, context);
     }
-    // Optional. If context is dynamic, the event won't be emitted.
-    event MetadataChanged(
-        bytes32 node,
-        string name,
-        uint256 coinType,
-        string graphqlUrl,
-        uint8 storageType,
-        bytes context
-    );
+
 }
 ```
 
