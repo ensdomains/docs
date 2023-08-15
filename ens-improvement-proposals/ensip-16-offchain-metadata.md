@@ -113,7 +113,7 @@ type Metadata @entity {
   storageType: Int
   "l2 contract address"
   storageLocation: Bytes
-  "context, resolver address if evm Chain"
+  "optional field to store an arbitrary bytes string to define the namespace to which a record belongs"
   context: Bytes
   "optional field if the name has expirty date offchain"
   expiryDate: BigInt
