@@ -25,7 +25,7 @@ The metadata should include 2 different types of info
 
 - Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
 
-- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. The specification also must comply with [OwnedNode](https://github.com/corpus-io/Optimism-Resolver/blob/main/contracts/l2/L2PublicResolver.sol) that consists of the hash of the node and `msg.sender`. The OwnedNode is used when the resolver does not depend on the canonical registry nor a bridge to verify the ownership of the name on L1.
+- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. 
 
 #### Context
 
@@ -161,7 +161,6 @@ None
 ### Open Items
 
 - Should `owner` and `isApprovedForAll` be within graphql or shoud be own metadata function?
-- OwnedResolver is permissionless. Need some sort of registry (requires `setResolver` equivalent) to collect these resolver names so that indexers will know which contracts to index (unless hardcode default owned resolver addresses).
 
 ### Copyright
 
