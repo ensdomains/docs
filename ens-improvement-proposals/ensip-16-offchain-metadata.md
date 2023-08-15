@@ -1,8 +1,8 @@
 ---
-description: Allows metadata to be queried on CCIP enabled names
+description: Allows metadata to be queried on ERC-3668 enabled names
 ---
 
-# ENSIP-XX: CCIP-read metadata
+# ENSIP-16: Offchain metadata
 
 | **Author**    | Jeff Lau \<jeff@ens.domains> |
 | ------------- | ---------------------------- |
@@ -11,11 +11,11 @@ description: Allows metadata to be queried on CCIP enabled names
 
 ### Abstract
 
-This ENSIP allows metadata to be queried directly on the resolver for CCIP-read enabled names. CCIP-read will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
+This ENSIP allows metadata to be queried directly on the resolver for ERC-3668(CCIP Read: Secure offchain data retrieval) enabled names. ERC-3668 will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
 
 ### Motivation
 
-With CCIP-read subdomains already starting to get used by larger partners in the ENS ecosystem, it is important that there is a way of frontend interfaces to get important metadata to allow a smooth user interface. For instance the owner of a CCIP enabled name would need to be known, for a UI to show whether or not the currently connected account has the rights to edit the records. If the owner was not known, the only way to know would be to make the edit and wait for failure.
+With ERC-3668 subdomains already starting to get used by larger partners in the ENS ecosystem, it is important that there is a way of frontend interfaces to get important metadata to allow a smooth user interface. For instance the owner of a ERC-3668 enabled name would need to be known, for a UI to show whether or not the currently connected account has the rights to edit the records. If the owner was not known, the only way to know would be to make the edit and wait for failure.
 
 This ENSIP addresses this by adding a way of important metadata to be gathered on the offchain resolver, which would likely revert and be also resolved offchain, however there is an option for it to be also left onchain if there value was static and wouldn't need to be changed often.
 
@@ -127,7 +127,7 @@ type Resolver @entity {
 ##### L2
 
 ```graphql
-type Domain @entity {
+type Domain {
   id: ID! # concatenation of context and namehash delimited by `-`
   context: Bytes
   name: String
@@ -136,8 +136,8 @@ type Domain @entity {
   labelhash: Bytes
   resolvedAddress: Bytes
   parent: Domain
-  subdomains: [Domain!]! @derivedFrom(field: "parent") # Can count domains from length of array
-  resolver: Resolver
+  subdomains: [Domain]
+  resolver: Resolver!
   expiryDate: BigInt
 }
 
