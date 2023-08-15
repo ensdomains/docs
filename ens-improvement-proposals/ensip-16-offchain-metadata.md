@@ -81,7 +81,13 @@ const dataLocation = await.resolver.graphqlUrl()
 ##### L1
 
 ```graphql
-type Offchain @entity {
+
+type Domain @entity{
+  id
+  offchain: Offchain
+}
+
+type Metadata @entity {
   "l1 resolver address"
   id: ID!
   "Name of the Chain"
@@ -92,6 +98,8 @@ type Offchain @entity {
   graphqlUrl: String
   "0 for evm, 1 for non blockchain, 2 for starknet"
   storageType: Int
+  "l2 contract address"
+  storageLocation: Bytes
   "context, resolver address if evm Chain"
   context: Bytes
   "optional field if the name has expirty date offchain"
@@ -106,15 +114,30 @@ type Resolver @entity {
 ##### L2
 
 ```graphql
-type Domain {
+type Domain @entity {
   id: ID! # concatenation of context and namehash delimited by `-`
+  context: Bytes
   name: String
+  namehash: Bytes
   labelName: String
   labelhash: Bytes
+  resolvedAddress: Bytes
   parent: Domain
-  subdomains: [Domain]
-  resolver: Resolver!
+  subdomains: [Domain!]! @derivedFrom(field: "parent") # Can count domains from length of array
+  resolver: Resolver
   expiryDate: BigInt
+}
+
+type Resolver @entity {
+  id: ID! # concatenation of node, context and resolver address delimited by `-`
+  node: Bytes
+  context: Bytes
+  address: Bytes
+  domain: Domain
+  addr: Bytes
+  contentHash: Bytes
+  texts: [String!]
+  coinTypes: [BigInt!]
 }
 ```
 
