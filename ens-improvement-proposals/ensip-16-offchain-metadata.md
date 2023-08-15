@@ -84,7 +84,7 @@ const dataLocation = await.resolver.graphqlUrl()
 
 type Domain @entity{
   id
-  offchain: Offchain
+  metadata: Metadata
 }
 
 type Metadata @entity {
@@ -129,7 +129,7 @@ type Domain @entity {
 }
 
 type Resolver @entity {
-  id: ID! # concatenation of node, context and resolver address delimited by `-`
+  id: ID! # concatenation of node, resolver address and context delimited by `-`
   node: Bytes
   context: Bytes
   address: Bytes
