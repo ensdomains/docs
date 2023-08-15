@@ -17,14 +17,16 @@ The schema of GraphQL elements available is defined in [`/schema.graphql` ](http
 
 ## Ethereum Mainnet
 
-[Creating an API Key Video Tutorial](https://www.youtube.com/watch?v=UrfIpm-Vlgs)
-
 - [Explorer Page](https://thegraph.com/hosted-service/subgraph/ensdomains/ens)
 - Graphql Endpoint: https://gateway.thegraph.com/api/[api-key]/subgraphs/id/QmcqvocMfm9LDSEDYmeexzeGt1QTY7T7AVitX9mG2qkvjR
 - [Code Repo](https://github.com/ensdomains/ens-subgraph)
 
-## Helpful Links
+## Helpful Resources
 
-[Querying from an Application](https://thegraph.com/docs/en/developer/querying-from-your-app/)
+- [Video Tutorial on creating an API Key](https://www.youtube.com/watch?v=UrfIpm-Vlgs)
+- [Managing your API Key & setting your indexer preferences](https://thegraph.com/docs/en/studio/managing-api-keys/)
+- [Querying from an application](https://thegraph.com/docs/en/developer/querying-from-your-app/)
+- [How to use the explorer and playground to query on-chain data](https://medium.com/@chidubem_/how-to-query-on-chain-data-with-the-graph-f8507488215)
+- [Deploy your own subgraph](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
+- [New to GraphQL? - Read Here](https://graphql.org/learn/)
 
-[Managing your API Key & Setting your indexer preferences](https://thegraph.com/docs/en/studio/managing-api-keys/)
