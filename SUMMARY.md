@@ -27,6 +27,7 @@
 
 ## Dapp Developer Guide
 
+* [Quickstart](dapp-developer-guide/quickstart.md)
 * [ENS Enabling your DApp](dapp-developer-guide/ens-enabling-your-dapp.md)
 * [ENS Libraries](dapp-developer-guide/ens-libraries.md)
 * [Working with ENS](dapp-developer-guide/working-with-ens.md)
