@@ -89,7 +89,7 @@ const dataLocation = await.resolver.graphqlUrl()
 // }
 ```
 
-##### GgraphQL schema
+##### GraphQL schema
 
 ##### L1
 
@@ -137,6 +137,7 @@ type Domain {
   resolvedAddress: Bytes
   parent: Domain
   subdomains: [Domain]
+  subdomainCount: Int!
   resolver: Resolver!
   expiryDate: BigInt
 }
