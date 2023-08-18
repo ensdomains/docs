@@ -37,6 +37,21 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 * If the chainId is not 1, it SHOULD then construct the ENS name [address].[evmChainCoinType].reverse to obtain the primary ENS name of the user. If none is found, it SHOULD assume that the user has no primary ENS name set
 * If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id that the user
 
+### Resolving an avatar by a dapp on L2
+
+ENSIP-12 was concieved before the ENS L2 reverse resolution specification and therefore should be updated to reflect the current state of ENS primary name resolution. This means that all avatar records are able to be updated on a per-chain basis by updating the avatar record on their reverse node.
+
+#### Example for an EVM Address
+
+To determine the avatar URI for a specific EVM chain address, the client MUST reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<evmChainId>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash('<address>.<evmChainId>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
+
+If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.<evmChainId>.reverse'))`. If this method returns a valid ENS name, the client MUST:
+
+1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original <chaiId> address.
+2. Perform the process described under 'ENS Name' to look for a valid avatar URI on the name.
+
+A failure at any step of this process MUST be treated by the client identically as a failure to find a valid avatar URI.
+
 ## Further considerations
 
 * ENS has not been explicit about how to use the mainnet `addr()` record and it is often used as a backup to a user not having an address record set. This practice should not be recommended in the future for a couple reasons. Firstly users may not have control of that address on the other network. Secondly it should not be used as it creates confusion in regard to which address record was matched via forward resolution to ensure a successful reverse resolution.
