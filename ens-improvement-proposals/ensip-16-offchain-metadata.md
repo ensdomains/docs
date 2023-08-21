@@ -4,10 +4,10 @@ description: Allows metadata to be queried on ERC-3668 enabled names
 
 # ENSIP-16: Offchain metadata
 
-| **Author**    | Jeff Lau \<jeff@ens.domains> |
-| ------------- | ---------------------------- |
-| **Status**    | Draft                        |
-| **Submitted** | 2022-09-22                   |
+| **Author**    | Jeff Lau \<jeff@ens.domains>, Makoto Inoue \<makoto@ens.domains> |
+| ------------- | ---------------------------------------------------------------- |
+| **Status**    | Draft                                                            |
+| **Submitted** | 2022-09-22                                                       |
 
 ### Abstract
 
@@ -25,7 +25,7 @@ The metadata should include 2 different types of info
 
 - Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
 
-- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record. 
+- Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record.
 
 #### Context
 
@@ -42,7 +42,9 @@ By passing the name through metadata, we empower the resolution process, enablin
 
 ```solidity
 
-interface OffChainResolver {
+// To be included in
+// https://github.com/ensdomains/ens-contracts/blob/staging/contracts/resolvers/Resolver.sol
+interface IOffChainResolver {
     /** @dev Returns the owner of the resolver on L2
      * @param node
      * @return owner in bytes32 instead of address to cater for non EVM based owner information
@@ -91,7 +93,11 @@ const dataLocation = await.resolver.graphqlUrl()
 
 ##### GraphQL schema
 
+[GraphQL](https://graphql.org) is a query language for APIs and a runtime for fulfilling those queries with onchain event data. You can use the hosted/decentralised indexing service such as [The Graph](https://thegraph.com), [GodSky](https://docs.goldsky.com/indexing), [QuickNode](https://marketplace.quicknode.com/add-on/subgraph-hosting) or host your own using The Graph, or [ponder](https://ponder.sh)
+
 ##### L1
+
+`Metada` is an optional schema that indexes `MetadataChanged` event.
 
 ```graphql
 
@@ -119,12 +125,12 @@ type Metadata @entity {
   expiryDate: BigInt
 }
 
-type Resolver @entity {
-  offchain: Offchain
-}
 ```
 
 ##### L2
+
+L2 graphql URL is discoverable via `metadata` function `graphqlUrl` field.
+Because the canonical ownership of the name exists on L1, some L2/offchain storage may choose to allow multiple entities to update the same node namespaced by `context`. When quering the domain data, the query should be filtered by `context` that is returned by `metadata`function `context` field
 
 ```graphql
 type Domain {
