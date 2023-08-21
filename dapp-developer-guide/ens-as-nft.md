@@ -1,12 +1,12 @@
 # ENS as NFT
 
-Since the .eth registrar migration in 2019, second level .eth names (eg: `alice` in `alice.eth`) are ERC721 (unwrapped) or ERC1155 (wrapped) NFTs, meaning that they can be transferred in the same fashion as other NFTs. To learn more about wrapped names, see [GitHub](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper).
+Since the .eth registrar migration in 2019, second level .eth names (eg: `alice` in `alice.eth`) are ERC721 (unwrapped) or ERC1155 (wrapped) NFTs, meaning that they can be transferred in the same fashion as other NFTs. Wrapped subdomains are also ERC1155 NFTs. To learn more about wrapped names, see [GitHub](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper).
 
 ## Deriving tokenId from ENS name
 
 Depending on the contract you're working with, the process for deriving it's tokenId may be different.
 
-To derive the ERC721 tokenId of a second level .eth name in the [base registrar](https://etherscan.io/address/0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85), use the uint256 representation of the hash of the label (`nick` for `nick.eth`).
+To derive the ERC721 tokenId of a second level .eth name in the [base registrar](https://etherscan.io/address/0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85), use the uint256 representation of the hash of the label (eg: `nick` for `nick.eth`).
 
 ```javascript
 const ethers = require('ethers') // v5
@@ -19,17 +19,19 @@ const tokenId = BigNumber.from(labelHash).toString()
 In the example above,[`42219085255511335250589442208301538195142221433306354426240614732612795430543`](https://opensea.io/assets/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/42219085255511335250589442208301538195142221433306354426240614732612795430543) is the tokenId of `nick.eth`
 
 {% hint style="info" %}
-All second level .eth names will be in the base registrar, including wrapped names, but their owner may be the NameWrapper contract. In that case, you can use the NameWrapper contract to get the owner of the name.
+All second level .eth names will be in the base registrar, including wrapped names, but their owner may be the NameWrapper contract. In that case, you can use the NameWrapper contract to get info about a name.
 {% endhint %}
 
-To derive the ERC1155 tokenId of any wrapped ENS name in the [Name Wrapper](https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401), use the uint256 representation of the hash of the entire name (`vitalik.eth`). This distinction is important because non-.eth names can also be wrapped.
+To derive the ERC1155 tokenId of any wrapped ENS name in the [Name Wrapper](https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401), use the uint256 representation of the hash of the entire name (eg: `firstwrappedname.eth`). This distinction is important because subdomains and non-.eth names can also be wrapped.
 
 ```javascript
 const ethers = require('ethers') // v5
 const { BigNumber, utils } = ethers
 const name = 'firstwrappedname.eth'
 const nameHash = utils.namehash(name)
+// 0xc44eec7fb870ae46d4ef4392d33fbbbdc164e7817a86289a1fe30e5f4d98ae85
 const tokenId = BigNumber.from(nameHash).toString()
+// 88792764648847811246521601599422014651201701211481889599094841418054356217477
 ```
 
 ## Deriving ENS name from tokenId
