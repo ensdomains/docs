@@ -55,6 +55,7 @@ interface IOffChainResolver {
 
     // optional.
     // this returns data via l2 with EIP-3668 so that non EVM chains can also return information of which address can update the record
+    // The same function name exists on L2 where delegate returns address instead of bytes
     function isApprovedFor(bytes context, bytes32 node, bytes delegate) returns (bool);
 
     /** @dev Returns the owner of the resolver on L2
