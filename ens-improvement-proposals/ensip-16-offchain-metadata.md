@@ -11,11 +11,11 @@ description: Allows metadata to be queried on ERC-3668 enabled names
 
 ### Abstract
 
-This ENSIP allows metadata to be queried directly on the resolver for ERC-3668(CCIP Read: Secure offchain data retrieval) enabled names. ERC-3668 will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
+This ENSIP specifies APIs for querying metadata directly on the resolver for EIP-3668 (CCIP Read: Secure offchain data retrieval) enabled names. EIP-3668 will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
 
 ### Motivation
 
-With ERC-3668 subdomains already starting to get used by larger partners in the ENS ecosystem, it is important that there is a way of frontend interfaces to get important metadata to allow a smooth user interface. For instance the owner of a ERC-3668 enabled name would need to be known, for a UI to show whether or not the currently connected account has the rights to edit the records. If the owner was not known, the only way to know would be to make the edit and wait for failure.
+With ERC-3668 subdomains already starting to see wide adoption, it is important that there is a way for frontend interfaces to get important metadata to allow a smooth user experience. For instance a UI needs to be able to check if the currently connected user has the right to update an EIP-3668 name.
 
 This ENSIP addresses this by adding a way of important metadata to be gathered on the offchain resolver, which would likely revert and be also resolved offchain, however there is an option for it to be also left onchain if there value was static and wouldn't need to be changed often.
 
