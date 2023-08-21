@@ -1,5 +1,5 @@
 ---
-description: Allows metadata to be queried on ERC-3668 enabled names
+description: Allows metadata to be queried on EIP-3668 enabled names
 ---
 
 # ENSIP-16: Offchain metadata
@@ -15,7 +15,7 @@ This ENSIP specifies APIs for querying metadata directly on the resolver for EIP
 
 ### Motivation
 
-With ERC-3668 subdomains already starting to see wide adoption, it is important that there is a way for frontend interfaces to get important metadata to allow a smooth user experience. For instance a UI needs to be able to check if the currently connected user has the right to update an EIP-3668 name.
+With EIP-3668 subdomains already starting to see wide adoption, it is important that there is a way for frontend interfaces to get important metadata to allow a smooth user experience. For instance a UI needs to be able to check if the currently connected user has the right to update an EIP-3668 name.
 
 This ENSIP addresses this by adding a way of important metadata to be gathered on the offchain resolver, which would likely revert and be also resolved offchain, however there is an option for it to be also left onchain if there value was static and wouldn't need to be changed often.
 
@@ -40,6 +40,8 @@ By passing the name through metadata, we empower the resolution process, enablin
 
 ### Implementation
 
+#### L1
+
 ```solidity
 
 // To be included in
@@ -49,9 +51,12 @@ interface IOffChainResolver {
      * @param node
      * @return owner in bytes32 instead of address to cater for non EVM based owner information
      */
-    owner(bytes32 node) returns (bytes32 owner);
+    owner(bytes32 node) returns (bytes owner);
 
-    isApprovedForAll(address account, address operator) returns (boolean);
+    // optional.
+    // this returns data via l2 with EIP-3668 so that non EVM chains can also return information of which address can update the record
+    function isApprovedFor(bytes context, bytes32 node, bytes delegate) returns (bool);
+
     /** @dev Returns the owner of the resolver on L2
      * @return name can be l2 chain name or url if offchain
      * @return coinType according to https://github.com/ensdomains/address-encoder
@@ -76,6 +81,29 @@ interface IOffChainResolver {
         uint8 storageType,
         bytes storageLocation,
         bytes context
+    );
+}
+```
+
+#### L2 (EVM compatible chain only)
+
+```solidity
+// To be included in the contract returned by `metadata` function `storageLocation`
+interface IL2Resolver {
+    /**
+     * @dev Check to see if the delegate has been approved by the context for the node.
+     *
+     * @param context = an arbitrary bytes string to define the namespace to which a record belongs such as the name owner.
+     * @param node
+     * @param delegate = an address that is allowed to update record under context
+     */
+    function isApprovedFor(bytes context,bytes32 node,address delegate) returns (bool);
+
+    event Approved(
+        bytes context,
+        bytes32 indexed node,
+        address indexed delegate,
+        bool indexed approved
     );
 }
 ```
