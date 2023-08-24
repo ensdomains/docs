@@ -24,6 +24,7 @@
   * [ENSIP-13: SAFE Authentication for ENS](ens-improvement-proposals/ensip-13-secondary-authentication-for-ens.md)
   * [ENSIP-14: On-chain Source Parameter](ens-improvement-proposals/ensip-14-platform-source-parameter.md)
   * [ENSIP-15: Normalization Standard](ens-improvement-proposals/ensip-15-normalization-standard.md)
+  * [ENSIP-16: Offchain Standard](ens-improvement-proposals/ensip-16-offchain-metadata.md)
 
 ## Dapp Developer Guide
 
