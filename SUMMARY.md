@@ -23,9 +23,11 @@
   * [ENSIP-12: Avatar Text Records](ens-improvement-proposals/ensip-12-avatar-text-records.md)
   * [ENSIP-13: SAFE Authentication for ENS](ens-improvement-proposals/ensip-13-secondary-authentication-for-ens.md)
   * [ENSIP-14: On-chain Source Parameter](ens-improvement-proposals/ensip-14-platform-source-parameter.md)
+  * [ENSIP-15: Normalization Standard](ens-improvement-proposals/ensip-15-normalization-standard.md)
 
 ## Dapp Developer Guide
 
+* [Quickstart](dapp-developer-guide/quickstart.md)
 * [ENS Enabling your DApp](dapp-developer-guide/ens-enabling-your-dapp.md)
 * [ENS Libraries](dapp-developer-guide/ens-libraries.md)
 * [Working with ENS](dapp-developer-guide/working-with-ens.md)

@@ -8,15 +8,15 @@ Even though adding basic functionalities such as a single name lookup is just ad
 * Some of the contracts can be extensible by end users leading to inconsistent interface
 * Some names (.eth, wrapped names) expire without emitting events
 * Smart contract structures have changed over time
-* Some names are not available on the chain (eg: CCIP-read integrated names such as[ cb.id](http://cb.id))\
+* Some names are not available on the chain (eg: CCIP-read integrated names such as[ cb.id](http://cb.id))
 
 
-In this section, I will go through the overall structure of ENS contracts and events to help you guide through the ENS data space.\
+In this section, I will go through the overall structure of ENS contracts and events to help you guide through the ENS data space.
 
 
 ## Target audience
 
-The target audience of this article is developers and data analysts who are interested in labelling ENS names into the Ethereum transaction data such as NFT owners, Defi users, and ENS name trading history. It assumes that you have a basic understanding of how Ethereum smart contracts work (such as function calls and events). Some tools also require query language knowledge such as GraphQL and SQL.\
+The target audience of this article is developers and data analysts who are interested in labelling ENS names into the Ethereum transaction data such as NFT owners, Defi users, and ENS name trading history. It assumes that you have a basic understanding of how Ethereum smart contracts work (such as function calls and events). Some tools also require query language knowledge such as GraphQL and SQL.
 
 
 ## How to access ENS data
@@ -25,7 +25,7 @@ The target audience of this article is developers and data analysts who are inte
 
 Just like many other Ethereum-based projects, ENS consists of a set of smart contracts. You can use tools of your choice to interact directly with ENS smart contracts (which we will explain in depth). If you want extra data about a single name, please refer to the ENS library section which explains how to interact with ENS via popular libraries such as ethers.js.
 
-Extracting multiple entities tends to be slow and time-consuming because you have to make a function call to extract each record. [Ens-js v3 has a batch](https://github.com/ensdomains/ensjs-v3) call function to save some call time. If you are interested in extracting more than dozens of name records or want to access event-related information. There are currently two popular services, [The Graph](https://thegraph.com), [Dune Analytics](https://dune.com) and [Google Big Query](https://cloud.google.com/bigquery).
+Extracting multiple entities tends to be slow and time-consuming because you have to make a function call to extract each record. [Ens-js v3 has a batch](https://github.com/ensdomains/ensjs-v3) call function to save some call time. If you are interested in extracting more than dozens of name records or want to access event-related information. There are currently three popular services: [The Graph](https://thegraph.com), [Dune Analytics](https://dune.com), and [Google Big Query](https://cloud.google.com/bigquery).
 
 ### The Graph
 
@@ -33,7 +33,7 @@ Extracting multiple entities tends to be slow and time-consuming because you hav
 * [Goerli](https://thegraph.com/hosted-service/subgraph/ensdomains/ensgoerli)&#x20;
 * [RInkeby](https://thegraph.com/hosted-service/subgraph/ensdomains/ensrinkeby)&#x20;
 
-The Graph is a decentralized indexing service that allows developers to turn smart contract events (and function calls) into GraphQL schema called subgraph. The ENS team maintains the subgraph that encapsulates multiple events data into a single entity such as Domain, Account, Registration and Resolver. \
+The Graph is a decentralized indexing service that allows developers to turn smart contract events (and function calls) into GraphQL schema called subgraph. The ENS team maintains the subgraph that encapsulates multiple events data into a single entity such as Domain, Account, Registration and Resolver.
 
 
 The following sample query lists all names
@@ -48,7 +48,7 @@ account{
 }
 ```
 
-It is suitable to extract information such as the list of subdomains a name created, a list of names the address registered, and text keys (eg: Twitter, email, avatar). You can also use it to extract analytics information such as registered names though you need to traverse the data multiple times. \
+It is suitable to extract information such as the list of subdomains a name created, a list of names the address registered, and text keys (eg: Twitter, email, avatar). You can also use it to extract analytics information such as registered names though you need to traverse the data multiple times.
 
 
 You can see [the list of subgraphs used in the app.ens.domains ](https://github.com/ensdomains/ens-app/blob/dev/src/graphql/queries.js)(all query names ending with \_SUBGRAPH)
@@ -61,7 +61,6 @@ Dune is a popular social network to analyse and share blockchain data. Users (ca
 
 Dune currently has v1 running on PostgreSQL and v2 running on Databrick which is a column-oriented database. Though v2 often runs faster, it lacks user-defined functions such as `namehash` functions.
 
-\
 The following example counts monthly .eth name registrations.
 
 ```sql

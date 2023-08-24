@@ -2,42 +2,45 @@
 
 Before you can begin interacting with ENS, you will need to obtain a reference to the ENS registry. How you do this depends on the library you are using.
 
-Example code for the Javascript-based APIs \(ensjs, web3.js, ethjs-ens, and ethers.js\) here expect that they are being run inside a DApp browser, such as Chrome with [metamask installed](https://metamask.github.io/metamask-docs/Main_Concepts/Getting_Started), which exposes the `ethereum` object.
+The Javascript libraries \(ethers.js, viem, wagmi, ensjs, and web3.js\) can be used in any environment. If you're building a React app, we recommend [wagmi](#React-hooks-for-ENS).
 
 {% tabs %}
+{% tab title="ethers.js" %}
+```javascript
+import { providers } from 'ethers'
+
+const provider = new providers.JsonRpcProvider('RPC_URL_HERE');
+// ENS functionality is provided directly on the core provider object.
+```
+{% endtab %}
+
+{% tab title="viem" %}
+```javascript
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() });
+// ENS functionality is provided directly on the core client
+```
+{% endtab %}
+
 {% tab title="ensjs" %}
 ```javascript
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+import { ENS } from '@ensdomains/ensjs'
+import { providers } from 'ethers'
 
-const ens = new ENS({ provider, ensAddress: getEnsAddress('1') })
+const ens = new ENS();
+const provider = new providers.JsonRpcProvider('RPC_URL_HERE');
+await ens.setProvider(provider);
 ```
 {% endtab %}
 
 {% tab title="web3.js" %}
 ```javascript
-var Web3 = require("web3")
+import { Web3 } from 'web3'
 
-var accounts = ethereum.enable();
-var web3 = new Web3(ethereum);
-var ens = web3.eth.ens;
-```
-{% endtab %}
-
-{% tab title="ethjs-ens" %}
-```javascript
-const ENS = require('ethjs-ens');
-// Currently requires both provider and
-// either a network or registryAddress param
-var accounts = ethereum.enable();
-const ens = new ENS({ ethereum, network: '1' });
-```
-{% endtab %}
-
-{% tab title="ethers.js" %}
-```javascript
-var ethers = require('ethers');
-var provider = new ethers.providers.Web3Provider(ethereum);
-// ENS functionality is provided directly on the core provider object.
+const web3 = new Web3('RPC_URL_HERE');
+const ens = web3.eth.ens;
 ```
 {% endtab %}
 
@@ -67,7 +70,33 @@ EnsResolver ens = new EnsResolver(web3j, 300 /* sync threshold, seconds */);
 {% endtab %}
 {% endtabs %}
 
-Some web3 libraries - e.g., ethers.js, web3j, and web3.py - have integrated support for name resolution. In these libraries, you can pass in an ENS name anywhere you can supply an address, meaning you do not need to interact directly with their ENS APIs unless you want to manually resolve names or do other ENS operations.
+Some web3 libraries - e.g., ethers.js, viem, web3j, and web3.py - have integrated support for name resolution. In these libraries, you can pass in an ENS name anywhere you can supply an address, meaning you do not need to interact directly with their ENS APIs unless you want to manually resolve names or do other ENS operations.
 
 If no library is available for your platform, you can instantiate the ENS registry contract directly using the interface definition [here](https://github.com/ensdomains/ens/blob/master/contracts/ENS.sol). Addresses for the ENS registry on each supported network are available in the [ENS Deployments](../ens-deployments.md) page.
 
+## React hooks for ENS
+
+[wagmi](https://wagmi.sh/) is a collection of React Hooks containing everything you need to start working with Ethereum, including ENS.
+
+To get access to wagmi's ENS hooks, wrap your project in a `WagmiConfig` provider:
+
+```jsx
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
+import { goerli, mainnet } from 'wagmi/chains'
+import { publicProvider } from 'wagmi/providers/public'
+
+const chains = [mainnet, goerli]
+const { publicClient } = configureChains(chains, [publicProvider()])
+
+const wagmiConfig = createConfig({
+  publicClient,
+})
+
+export default function App() {
+  return (
+    <WagmiConfig config={wagmiConfig}>
+      {/* Your app here */}
+    </WagmiConfig>
+  )
+}
+```
