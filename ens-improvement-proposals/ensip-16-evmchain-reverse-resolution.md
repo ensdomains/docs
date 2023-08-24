@@ -35,7 +35,8 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 
 * If a dapp has a connected user it SHOULD first check the chainId of the user
 * If the chainId is not 1, it SHOULD then construct the ENS name [address].[evmChainCoinType].reverse to obtain the primary ENS name of the user. If none is found, it SHOULD assume that the user has no primary ENS name set
-* If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id that the user
+* If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id that the user.
+* The dapp MUST NOT use mainnet even if the Primary ENS name has not been set on that chain, and must instead show the address.
 
 ### Resolving an avatar by a dapp on L2
 
@@ -52,9 +53,20 @@ If a resolver is returned for the reverse record, but calling `text` causes a re
 
 A failure at any step of this process MUST be treated by the client identically as a failure to find a valid avatar URI.
 
+### Deprecating use of mainnet primary ENS name on other chains
+
+ENS has not been explicit about how to use the mainnet `addr()` record and it is often used as a backup to a user not having an address record set. The mainnet reverse record has also historically been used on other EVM chains due to no alternative on that specific chain. There are a few reasons why it would undesirable to encourage use of mainnet primary name and/or `addr(node, 60)` record as a backup for it not being set on another EVM chain.
+
+An example of why this could be confusing:
+
+Dapp is on Arbitrum and uses mainnet primary ENS name. It resolves the ENS name's mainnet address and uses that to verify the reverse record is correct. It also uses the mainnet address to allow in-app transfers.
+
+Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user in unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
+
+If we mandated that the address cannot use `addr(node, 60)`, but only the address of the chain in question, it would be possible to use mainnet as a backup. However the fact remains that you would still need to claim and set your Primary ENS name on mainnet, and the possibility for confusion seem to outweigh the benefits of using mainnet (high gas) as a catch-all back up for other L2 EVM chains (low gas). Additionally this would only be useful for EVM-compatible chains and would not benefit non-EVM L2s that have a different address format. 
+
 ## Further considerations
 
-* ENS has not been explicit about how to use the mainnet `addr()` record and it is often used as a backup to a user not having an address record set. This practice should not be recommended in the future for a couple reasons. Firstly users may not have control of that address on the other network. Secondly it should not be used as it creates confusion in regard to which address record was matched via forward resolution to ensure a successful reverse resolution.
 * Possibility for a resolver that allows gateway choices for the record level to allow a user to split their records between different chains. This would allow them to have arbitrum address records on arbitrum, optimism on optimism and so on.
 * Would require subnames and resolvers setup under [evmChainCoinType].reverse that would need to be governed by the DAO. Each new chain would likely need to be approved by the DAO or could be delegated to a multi-sig at first as things are rolled out and then moved to DAO ownership
 
