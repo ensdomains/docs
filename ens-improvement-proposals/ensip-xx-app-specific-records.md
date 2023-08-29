@@ -1,8 +1,8 @@
 ---
-description: App specific address resolution
+description: App-specific records
 ---
 
-# ENSIP-XX: App specific address resolution
+# ENSIP-XX: App-specific records
 
 | **Author**    | Jeff Lau \<jeff@ens.domains> |
 | ------------- | ---------------------------------- |
@@ -11,7 +11,9 @@ description: App specific address resolution
 
 ### Abstract
 
-This ENSIP extends [ENSIP 9 (multichain address resolution)](ensip-9-multichain-address-resolution.md) and [ENSIP 11 (multichain address resolution)](ensip-11-multichain-address-resolution.md) to include a way to arbitrarily encode an app-specific key to allow app-specific address records. This allows a separation of concerns between a user's main Ethereum/EVM-chain account and a signing key specific to an application allowing easy rotation of those keys.
+This ENSIP extends [ENSIP 9 (multichain address resolution)](ensip-9-multichain-address-resolution.md) and [ENSIP 11 (multichain address resolution)](ensip-11-multichain-address-resolution.md) and [ENSIP 5 (Text Records)](ensip-5-text-records.md) to include a way to app specific addresses and public keys.
+
+This allows a separation of concerns between a user's main Ethereum/EVM-chain account and a signing key specific to an application allowing easy rotation of those keys. 
 
 ### Motivation
 
@@ -25,11 +27,25 @@ With current state of L1, this kind of flexibility would be a rather large overh
 
 ### Specification
 
-Key can be generated using a string and hashing the string using keccak256 and then converting it to `uint256` to conform to the `addr()` keys specific
+Applications can decide whether or not to include a SECP256k1 public key, Ethereum address or even a separate public/private key scheme entirely. The public key could be exposed for secure messaging, or if the application only cares about authentication, then an address should be sufficient. 
 
 ```
-addr(node, uint256(keccak256('farcaster')))
-setAddr(node, uint256(keccak256('farcaster')), address)
+resolver.binaryRecord(node, 'xyz.farcaster')
+resolver.setBinaryRecord(node, 'xyz.farcaster', '0x123...')
+```
+
+#### Resolver Profile
+
+A new resolver interface is defined, consisting of the following method:
+
+```solidity
+interface IBinaryResolver {
+  /// @notice Returns the binary data associated with a key for an ENS name
+  /// @param node A nodehash for an ENS name
+  /// @param key A key to lookup text data for
+  /// @return The binary data
+  function binaryRecord(bytes32 node, string key) view returns (bytes data);
+}
 ```
 
 ### Example use case
@@ -50,6 +66,8 @@ setAddr(node, uint256(keccak256('farcaster')), address)
 Should the spec also deal with chains? E.g.
 
 ```
+    resolver.binaryRecord(node, 'farcaster')
+    resolver.setBinaryRecord(node, 'xyz.farcaster[420]', '0x123...')
     addr(node, uint256(keccak256("farcaster['optimism']")))
     addr(node, uint256(keccak256("farcaster[420]")))
 ```
