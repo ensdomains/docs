@@ -3,7 +3,8 @@
 | **Author**  | Andrew Raffensperger \<raffy@me.com> |
 | ----------- | ------------------------------------ |
 | **Status**  | Draft                                |
-| **Created** | 2023-04-03                           |
+| **Created** | 2023-04-03 (Unicode 15.0.0)          |
+| **Updated** | 2023-09-18 (Unicode 15.1.0)          |
 
 ## Abstract
 
@@ -25,7 +26,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ## Specification
 
-* Unicode version `15.0.0`
+* Unicode version `15.1.0`
 	* Normalization is a living specification and should use the latest stable version of Unicode.
 * [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
 * [`nf.json`](./ensip-15/nf.json) contains all [necessary data](#description-of-nfjson) for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
@@ -298,7 +299,7 @@ A label composed of confusable characters isn't necessarily confusable.
 
 ## Derivation
 
-* [IDNA 2003](https://unicode.org/Public/idna/15.0.0/IdnaMappingTable.txt)
+* [IDNA 2003](https://unicode.org/Public/idna/15.1.0/IdnaMappingTable.txt)
  	* `UseSTD3ASCIIRules` is **`true`**
 	* `VerifyDnsLength` is **`false`**
 	* `Transitional_Processing` is **`false`**
@@ -400,7 +401,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* Blacklisted emoji are **disabled**.
 	* Whitelisted emoji are **enabled**.
 * Confusables:
-	* Nearly all [Unicode Confusables](https://www.unicode.org/Public/security/15.0.0/confusables.txt)
+	* Nearly all [Unicode Confusables](https://www.unicode.org/Public/security/15.1.0/confusables.txt)
 	* Emoji are not confusable.
 	* ASCII confusables are case-folded.
 		* Example: `61 (a) LATIN SMALL LETTER A` confuses with `13AA (Ꭺ) CHEROKEE LETTER GO`
