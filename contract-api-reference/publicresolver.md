@@ -4,7 +4,7 @@ description: The default public resolver.
 
 # PublicResolver
 
-[Source](https://github.com/ensdomains/resolvers/blob/master/contracts/PublicResolver.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/resolvers/PublicResolver.sol)
 
 PublicResolver implements a general-purpose ENS resolver that is suitable for most standard ENS use-cases. The public resolver permits updates to ENS records by the owner of the corresponding name.
 

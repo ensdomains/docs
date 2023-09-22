@@ -93,7 +93,7 @@ If your dApp needs to display many Ethereum Addresses or ENS Names in the UI, yo
 Your **optimistic UI** can safely display the names from cache **in all non-risky situations**, in which your user for example is simply browsing, but doesn't need to act or make decisions, especially risky ones, based on the information displayed.  
 However, **in all** _**risky**_ **situations** \(eg transferring ETH, tokens or other value\), or when the user is interacting with another ENS Name / Ethereum Address, you should **perform a direct live resolution** and get the most up to date information from the ENS Registry.
 
-Also consider that users can change their information in the ENS registry at any time so you should **periodically validate the information you cached**. For this you can also subscribe to certain **Events** made available by the contracts \(especially [AddrChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-ethereum-address), and [NameChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-canonical-name)\).
+Also consider that users can change their information at any time which may not be tracked in the onchain registry, so you should **periodically validate the information you cached**. [Learn more about offchain ENS names](./ens-l2-offchain.md).
 
 \*\*\*\*
 

@@ -1,6 +1,6 @@
 # DNS Registrar
 
-At ENS, we have two smart contracts, [DNSSECOracle](https://github.com/ensdomains/dnssec-oracle) and [DNSRegistrar](https://github.com/ensdomains/dnsregistrar).
+At ENS, we have two smart contracts, [DNSSECOracle](https://github.com/ensdomains/ens-contracts/tree/master/contracts/dnssec-oracle) and [DNSRegistrar](https://github.com/ensdomains/ens-contracts/tree/master/contracts/dnsregistrar).
 
 DNSSEC (The Domain Name System Security Extensions) establishes a chain of trust from the root key which is signed by ICANN (.) and down through each key. We start off knowing the hash of the root key of DNS (this is hard coded in the smart contract oracle). Given the hashes of that key, we can pass in the actual key, we can verify that it matches the hash and we can add it to the set of the trusted records.
 

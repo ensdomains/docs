@@ -1,6 +1,6 @@
 # Registrar
 
-[Source](https://github.com/ensdomains/ethregistrar/blob/master/contracts/BaseRegistrarImplementation.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/BaseRegistrarImplementation.sol)
 
 This contract implements the core functionality of the permanent registrar, with the following features:
 
@@ -90,7 +90,7 @@ function ownerOf(uint256 label) external view returns(address);
 
 `ownerOf` returns the address that owns the registration identified by the label hash, or reverts if the registration does not exist. Registrations that have not yet been migrated from the legacy registrar are treated the same as registrations that do not exist.
 
-This function is part of [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id7).
+This function is part of ERC721.
 
 ## Write Operations
 
@@ -104,7 +104,7 @@ function safeTransferFrom(address from, address to, uint256 tokenId, bytes memor
 
 These functions transfer the registration.
 
-They behave as specified in [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id9).
+They behave as specified in ERC721.
 
 Emits the following event on a successful transfer:
 
@@ -119,7 +119,7 @@ function approve(address to, uint256 tokenId) public;
 function setApprovalForAll(address operator, bool _approved) public;
 ```
 
-These functions manage approvals as documented in [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id11).
+These functions manage approvals as documented in ERC721.
 
 ### Reclaim ENS Record
 

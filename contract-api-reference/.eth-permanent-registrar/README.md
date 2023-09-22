@@ -4,7 +4,7 @@ The Permanent Registrar is the code that will govern allocation and renewal of n
 
 ## System architecture
 
-Code for the permanent registrar can be found in the [ethregistrar](https://github.com/ensdomains/ethregistrar) repository.
+Code for the permanent registrar can be found in the [ens-contracts](https://github.com/ensdomains/ens-contracts/tree/master/contracts/ethregistrar) repository.
 
 The registrar itself is called [BaseRegistrar](registrar.md). This contract implements several key functions:
 
@@ -14,7 +14,7 @@ The registrar itself is called [BaseRegistrar](registrar.md). This contract impl
 * Name owners may reclaim ownership in the ENS registry if they have lost it.
 * Owners of names in the legacy registrar may transfer them to the new registrar, during the 1 year transition period. When they do so, their deposit is returned to them in its entirety.
 
-In addition, the registrar is an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant nonfungable token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
+In addition, the registrar is an ERC721 compliant non-fungible token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
 
 Users will interact directly with this contract when transferring ownership of names, or recovering ownership in the ENS registry of a name \(for example, one whose ownership was previously transferred to a contract\). Users can also query names to see their registration status and expiry date. For initial registration and for renewals, users will need to interact with a controller contract.
 
@@ -31,7 +31,7 @@ By allowing anyone to renew a domain, users concerned with the longevity of a na
 
 By allowing renewal for arbitrarily long periods of time, users can 'lock in' a desirable registration fee. Names can be made effectively 'immortal' by renewing for a long period, ensuring that stability of the name can be guaranteed by smart contract.
 
-Initially, a single pricing oracle was deployed, the [StablePriceOracle](https://github.com/ensdomains/ethregistrar/blob/master/contracts/StablePriceOracle.sol). This contract permits its owner to set prices in USD for each permitted name length, and uses a USD:ETH price oracle to convert those prices into Ether at the current rate. Users will not have to interact with this oracle directly, as the controller provides functionality to determine pricing for a candidate name registration or renewal.
+Initially, a single pricing oracle was deployed, the [StablePriceOracle](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/StablePriceOracle.sol). This contract permits its owner to set prices in USD for each permitted name length, and uses a USD:ETH price oracle to convert those prices into Ether at the current rate. Users will not have to interact with this oracle directly, as the controller provides functionality to determine pricing for a candidate name registration or renewal.
 
 ## Discovery
 

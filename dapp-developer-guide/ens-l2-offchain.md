@@ -58,8 +58,6 @@ Please refer to [offchain resolver client example code](https://github.com/ensdo
 * [web3.py](https://web3py.readthedocs.io/en/stable/) (Python)
 * [web3j](https://docs.web3j.io/) (Java)
 
-If you use other libraries or custom integration, please raise the GitHub issue to the project repo or at [ENS project management repo](https://github.com/ensdomains/pm/issues) if the equivalent repo does not exist so that ENS team can keep track of the progress.
-
 ### Wallets integrated
 
 * [Alpha Wallet](https://github.com/AlphaWallet)
@@ -90,12 +88,12 @@ ENS integration utilizes this mechanism in the gateway. The gateway retrieves th
 To assess whether a L2 rollup system can integrate with ENS, please see the following steps.
 
 1. Does your chain use [same address format as the ones used in Ethereum](https://info.etherscan.com/what-is-an-ethereum-address/)? = Some ZKRollup chains use different address format. If that's the case, you need to add your wallet address format into ENS multicoin type. Please refer to [Starknet support PR as a reference](https://github.com/ensdomains/address-encoder/pull/365).
-2. Does RPC of the chain return [`eth_getProof`](https://docs.alchemy.com/reference/eth-getproof) ? If not, it requies a way to retrieve a storage proof to verify on Ethereum L1
+2. Does RPC of the chain return [`eth_getProof`](https://docs.alchemy.com/reference/eth-getproof)? If not, it requies a way to retrieve a storage proof to verify on Ethereum L1
 3. Does the rollup contract have a function to return information of the latest L2 block committed to Ethereum L1? For Optimistic Rollup, it needs both the committed and finalised (after challenge period) block information. The `blockhash` is required to call `eth_getProof` equivalent function on L2
 4. Is there a way to verify on L1 contract that the state root returned from L2 is valid?
 5. Is there a way to verify that the `storageProof` is included in the state root? For Optimistic rollups, we can use [`Lib_SecureMerkleTrie`](https://github.com/ethereum-optimism/optimism/blob/develop/packages/contracts/contracts/libraries/trie/Lib\_SecureMerkleTrie.sol) library developed by the optimism team. If the chain doesn't support Patricia Merkle Trie, it needs own library
 
-For more details, please refer to the prototype implementations of [Optimism](http://github.com/ensdomains/op-resolver) and [Arbitrum](https://github.com/ensdomains/arb-resolver). Starknet currently has[ a community proposal ](https://discuss.ens.domains/t/ccip-implementation-for-ens-on-starknet/15691)to add a support.
+For more details, please refer to the prototype implementations of an [OP Stack resolver](https://github.com/corpus-io/ENS-Bedrock-Resolver). Starknet has [a community proposal](https://discuss.ens.domains/t/ccip-implementation-for-ens-on-starknet/15691) to add a support.
 
 ## FAQ
 

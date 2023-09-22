@@ -50,9 +50,6 @@ account{
 
 It is suitable to extract information such as the list of subdomains a name created, a list of names the address registered, and text keys (eg: Twitter, email, avatar). You can also use it to extract analytics information such as registered names though you need to traverse the data multiple times.
 
-
-You can see [the list of subgraphs used in the app.ens.domains ](https://github.com/ensdomains/ens-app/blob/dev/src/graphql/queries.js)(all query names ending with \_SUBGRAPH)
-
 ### Dune Analytics
 
 * [ENS Dashboard ](https://dune.com/makoto/ens)
@@ -166,7 +163,7 @@ The `EthRegistrarController` contract contains the actual registration logic. Th
 
 ### Listing all primary names
 
-* SmartContract = [reverse-records](https://github.com/ensdomains/reverse-records) smart contract allows you to resolve primary names for multiple addresses.&#x20;
+* SmartContract = [reverse-records](https://github.com/ensdomains/reverse-records) smart contract allows you to resolve primary names for multiple addresses (does not support [ENSIP-10](../ens-improvement-proposals/ensip-10-wildcard-resolution.md)).&#x20;
 * TheGraph = subgraph currently does not index primary name info ([github issue](https://github.com/ensdomains/ens-subgraph/issues/25)).&#x20;
 * Dune = If you simply want to count the number, you can count the number of names registered under `addr.reverse` node ([example query](https://dune.com/queries/5341/10526)). To query all names, use “[ens.node\_names](https://github.com/duneanalytics/spellbook/blob/main/models/ens/ens\_node\_names.sql)” abstraction.
 

@@ -38,4 +38,4 @@ By providing users with an easy way to update a name they own to point at your a
 
 ## Tell Us About Your Integration
 
-If you've ENS Enabled your app, let us know by emailing [nick@ens.domains](mailto:nick@ens.domains); we'll add your app to [our homepage](https://ens.domains).
+If you've ENS Enabled your app and would like to be added to [our homepage](https://ens.domains/), let us know by [opening a pull request](https://github.com/ensdomains/ensdomains-v2).
