@@ -3,7 +3,8 @@
 | **Author**  | Andrew Raffensperger \<raffy@me.com> |
 | ----------- | ------------------------------------ |
 | **Status**  | Draft                                |
-| **Created** | 2023-04-03                           |
+| **Created** | 2023-04-03 (Unicode 15.0.0)          |
+| **Updated** | 2023-09-18 (Unicode 15.1.0)          |
 
 ## Abstract
 
@@ -25,10 +26,10 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ## Specification
 
-* Unicode version `15.0.0`
+* Unicode version `15.1.0`
 	* Normalization is a living specification and should use the latest stable version of Unicode.
 * [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
-* [`nf.json`](./ensip-15/nf.json) contains all necessary data for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+* [`nf.json`](./ensip-15/nf.json) contains all [necessary data](#description-of-nfjson) for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Definitions
 
@@ -77,7 +78,7 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 1. [Tokenize](#tokenize) — transform the label into `Text` and `Emoji` tokens.
 	* If there are no tokens, the label cannot be normalized.
-1. Apply NFC to each `Text` token.
+1. Apply [NFC](https://unicode.org/reports/tr15/#Norm_Forms) to each `Text` token.
 	* Example: `Text["à"]` → `[61 300] → [E0]` → `Text["à"]`
 1. Strip `FE0F` from each `Emoji` token.
 1. [Validate](#validate) — check if the tokens are valid and obtain the **Label Type**.
@@ -106,6 +107,7 @@ Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of
 		* Example: `👨‍❤️‍👨 [1F468 200D 2764 FE0F 200D 1F468]`
 			* Match: `1F468 200D 2764 FE0F 200D 1F468` — fully-qualified
 			* Match: `1F468 200D 2764 200D 1F468` — missing `FE0F`
+			* No match: `1F468 FE0F 200D 2764 FE0F 200D 1F468` — extra `FE0F`
 			* No match: `1F468 200D 2764 FE0F FE0F 200D 1F468` — has (2) `FE0F`
 	* This is equivalent to `/^(emoji1|emoji2|...)/` where `\uFE0F` is replaced with `\uFE0F?` and `*` is replaced with `\x2A`.
 1. If an **Emoji Sequence** is found:
@@ -208,7 +210,8 @@ Example: **Whole Confusable** for `"g"`
 	* Otherwise:
 		* Append the character to the buffer.
 1. If any **Confused** characters were found:
-	* Assert none of the remaining groups contain any of the buffered characters.
+	* If there are no buffered characters, the label is confusable.
+	* If any of the remaining groups contain all of the buffered characters, the label is confusable.
 	* Example: `"0х" [30 445]`
 		1. `30 (0) DIGIT ZERO`
 			* Not **Confused** or **Unique**, add to buffer.
@@ -237,12 +240,13 @@ A label composed of confusable characters isn't necessarily confusable.
 ### Split
 
 * Partition a name into labels, separated by `2D (.) FULL STOP`, and return the resulting array.
-* Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
+	* Example: `"abc.123.eth"` → `["abc", "123", "eth"]`
+* The empty string is 0-labels: `""` → `[]`
 
 ### Join
 
 * Assemble an array of labels into a name, inserting `2D (.) FULL STOP` between each label, and return the resulting string.
-* Example: `["abc", "123", "eth"]` → `"abc.123.eth"`
+	* Example: `["abc", "123", "eth"]` → `"abc.123.eth"`
 
 ## Description of `spec.json`
 
@@ -260,7 +264,7 @@ A label composed of confusable characters isn't necessarily confusable.
 			* Example: `à̀̀` → `E0 300 300`
 		* Currently, every group that is **CM Whitelist** has zero compound sequences.
 		* **CM Whitelisted** is effectively **`true`** if `[]` otherwise **`false`**
-* **Ignored** (`"ignored"`) — characters that are ignored during normalization
+* **Ignored** (`"ignored"`) — [characters](./ensip-15/ignored.csv) that are ignored during normalization
 	* Example: `34F (�) COMBINING GRAPHEME JOINER`
 * **Mapped** (`"mapped"`) — characters that are mapped to a sequence of **valid** characters
 	* Example: `41 (A) LATIN CAPITAL LETTER A` → `[61 (a) LATIN SMALL LETTER A]`
@@ -270,19 +274,32 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `34 (4) DIGIT FOUR`
 	* **Confused** (`"confused"`) — subset of confusable characters that confuse
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
-* **Fenced** (`"fenced"`) — set of characters that cannot be first, last, or contiguous
+* **Fenced** (`"fenced"`) — [characters](./ensip-15/fenced.csv) that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* **Emoji Sequence(s)** (`"emoji"`) — [valid](./ensip-15/emoji.md#valid-emoji-sequences) emoji sequences
+* **Emoji Sequence(s)** (`"emoji"`) — valid [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences)
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
-* **Combining Marks / CM** (`"cm"`) — characters that are [Combining Marks](https://www.unicode.org/Public/15.0.0/ucd/extracted/DerivedGeneralCategory.txt)
-* **Non-spacing Marks / NSM** (`"nsm"`) — valid subset of **CM** with general category (`"Mn"` or `"Me"`)
+* **Combining Marks / CM** (`"cm"`) — [characters](./ensip-15/cm.csv) that are [Combining Marks](https://unicode.org/faq/char_combmark.html)
+* **Non-spacing Marks / NSM** (`"nsm"`) — valid [subset](./ensip-15/nsm.csv) of **CM** with general category (`"Mn"` or `"Me"`)
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
-* **Should Escape** (`"escape"`) — characters that shouldn't be printed
-* **NFC Check** (`"nfc_check"`) — valid characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
+* **Should Escape** (`"escape"`) — [characters](./ensip-15/escape.csv) that shouldn't be printed
+* **NFC Check** (`"nfc_check"`) — valid [subset](./ensip-15/nfc_check.csv) of characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
+
+## Description of `nf.json`
+
+* `"decomp"` — [mapping](https://www.unicode.org/reports/tr44/tr44-30.html#Character_Decomposition_Mappings) from a composed character to a sequence of (partially)-decomposed characters
+	* [`UnicodeData.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#UnicodeData.txt) where `Decomposition_Mapping` exists and does not have a [formatting tag](https://www.unicode.org/reports/tr44/tr44-30.html#Formatting_Tags_Table)
+* `"exclusions"` — set of characters for which the `"decomp"` mapping is not applied when forming a composition
+	* [`CompositionExclusions.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#CompositionExclusions.txt)
+* `"ranks"` — sets of characters with increasing [`Canonical_Combining_Class`](https://www.unicode.org/reports/tr44/tr44-30.html#Canonical_Combining_Class_Values)
+	* [`UnicodeData.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#UnicodeData.txt) grouped by `Canonical_Combining_Class`
+	* Class `0` is not included
+* `"qc"` — set of characters with property [`NFC_QC`](https://www.unicode.org/reports/tr44/tr44-30.html#Decompositions_and_Normalization) of value `N` or `M`
+	* [`DerivedNormalizationProps.txt`](https://www.unicode.org/reports/tr44/tr44-30.html#DerivedNormalizationProps.txt)
+	* **NFC Check** (from [`spec.json`](#description-of-specjson)) is a subset of this set
 
 ## Derivation
 
-* [IDNA 2003](https://unicode.org/Public/idna/15.0.0/IdnaMappingTable.txt)
+* [IDNA 2003](https://unicode.org/Public/idna/15.1.0/IdnaMappingTable.txt)
  	* `UseSTD3ASCIIRules` is **`true`**
 	* `VerifyDnsLength` is **`false`**
 	* `Transitional_Processing` is **`false`**
@@ -318,7 +335,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* `3002 (。) IDEOGRAPHIC FULL STOP`
 		* `FF0E (．) FULLWIDTH FULL STOP`
 		* `FF61 (｡) HALFWIDTH IDEOGRAPHIC FULL STOP`
-* [Many characters](./ensip-15/disallowed.md) are **disallowed** for various reasons:
+* [Many characters](./ensip-15/disallowed.csv) are **disallowed** for various reasons:
 	* Nearly all punctuation are **disallowed**.
 		* Example: `589 (։) ARMENIAN FULL STOP`
 	* All parentheses and brackets are **disallowed**.
@@ -384,7 +401,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* Blacklisted emoji are **disabled**.
 	* Whitelisted emoji are **enabled**.
 * Confusables:
-	* Nearly all [Unicode Confusables](https://www.unicode.org/Public/security/15.0.0/confusables.txt)
+	* Nearly all [Unicode Confusables](https://www.unicode.org/Public/security/15.1.0/confusables.txt)
 	* Emoji are not confusable.
 	* ASCII confusables are case-folded.
 		* Example: `61 (a) LATIN SMALL LETTER A` confuses with `13AA (Ꭺ) CHEROKEE LETTER GO`
@@ -435,6 +452,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 * [UAX-29: Text Segmentation](https://unicode.org/reports/tr29/)
 * [UAX-31: Identifier and Pattern Syntax](https://www.unicode.org/reports/tr31/)
 * [UTS-39: Security Mechanisms](https://www.unicode.org/reports/tr39/)
+* [UAX-44: Character Database](https://www.unicode.org/reports/tr44/)
 * [UTS-46: IDNA Compatibility Processing](https://unicode.org/reports/tr46/)
 * [UTS-51: Emoji](https://www.unicode.org/reports/tr51)
 * [RFC-3492: Punycode](https://datatracker.ietf.org/doc/html/rfc3492)
@@ -446,8 +464,10 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 ## Appendix: Additional Resources
 
 * [Supported Groups](./ensip-15/groups.md)
-* [Disallowed Characters](./ensip-15/disallowed.md)
 * [Supported Emoji](./ensip-15/emoji.md)
+* [Additional Disallowed Characters](./ensip-15/disallowed.csv)
+* [**Ignored** Characters](./ensip-15/ignored.csv)
+* [**Should Escape** Characters ](./ensip-15/ignored.csv)
 
 ## Appendix: Validation Tests
 

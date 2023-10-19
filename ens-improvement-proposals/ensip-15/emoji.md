@@ -1,10 +1,10 @@
 # Supported Emoji
-1. [Valid Emoji Sequences (3637)](#valid-emoji-sequences)
+1. [Valid Emoji Sequences (3755)](#valid-emoji-sequences)
 1. [Disabled Emoji Characters (33)](#disabled-emoji-characters)
 1. [Demoted Emoji Characters (32)](#demoted-emoji-characters)
 1. [Emoji Sequence Whitelist (0)](#emoji-sequence-whitelist)
 1. [Emoji Sequence Blacklist (0)](#emoji-sequence-blacklist)
-## <a id="valid-emoji-sequences">Valid Emoji Sequences (3637)</a>
+## <a id="valid-emoji-sequences">Valid Emoji Sequences (3755)</a>
 | Codepoints | Form | Name |
 | -: | :-: | :- |
 | `A9 FE0F` | `©️` |  copyright |
@@ -448,7 +448,7 @@
 | `1F1F9 1F1F2` | `🇹🇲` |  flag: Turkmenistan |
 | `1F1F9 1F1F3` | `🇹🇳` |  flag: Tunisia |
 | `1F1F9 1F1F4` | `🇹🇴` |  flag: Tonga |
-| `1F1F9 1F1F7` | `🇹🇷` |  flag: Turkey |
+| `1F1F9 1F1F7` | `🇹🇷` |  flag: Türkiye |
 | `1F1F9 1F1F9` | `🇹🇹` |  flag: Trinidad & Tobago |
 | `1F1F9 1F1FB` | `🇹🇻` |  flag: Tuvalu |
 | `1F1F9 1F1FC` | `🇹🇼` |  flag: Taiwan |
@@ -2291,9 +2291,12 @@
 | `37 FE0F 20E3` | `7️⃣` |  keycap: 7 |
 | `38 FE0F 20E3` | `8️⃣` |  keycap: 8 |
 | `39 FE0F 20E3` | `9️⃣` |  keycap: 9 |
+| `1F344 200D 1F7EB` | `🍄‍🟫` |  brown mushroom |
+| `1F34B 200D 1F7E9` | `🍋‍🟩` |  lime |
 | `1F408 200D 2B1B` | `🐈‍⬛` |  black cat |
 | `1F415 200D 1F9BA` | `🐕‍🦺` |  service dog |
 | `1F426 200D 2B1B` | `🐦‍⬛` |  black bird |
+| `1F426 200D 1F525` | `🐦‍🔥` |  phoenix |
 | `1F468 200D 1F33E` | `👨‍🌾` |  man farmer |
 | `1F468 200D 1F373` | `👨‍🍳` |  man cook |
 | `1F468 200D 1F37C` | `👨‍🍼` |  man feeding baby |
@@ -2364,10 +2367,13 @@
 | `1F9D1 200D 1F9B3` | `🧑‍🦳` |  person: white hair |
 | `1F9D1 200D 1F9BC` | `🧑‍🦼` |  person in motorized wheelchair |
 | `1F9D1 200D 1F9BD` | `🧑‍🦽` |  person in manual wheelchair |
+| `1F9D1 200D 1F9D2` | `🧑‍🧒` |  family: adult, child |
+| `26D3 FE0F 200D 1F4A5` | `⛓️‍💥` |  broken chain |
 | `2764 FE0F 200D 1F525` | `❤️‍🔥` |  heart on fire |
 | `2764 FE0F 200D 1FA79` | `❤️‍🩹` |  mending heart |
 | `1F3C3 200D 2640 FE0F` | `🏃‍♀️` |  woman running |
 | `1F3C3 200D 2642 FE0F` | `🏃‍♂️` |  man running |
+| `1F3C3 200D 27A1 FE0F` | `🏃‍➡️` |  person running facing right |
 | `1F3C4 200D 2640 FE0F` | `🏄‍♀️` |  woman surfing |
 | `1F3C4 200D 2642 FE0F` | `🏄‍♂️` |  man surfing |
 | `1F3CA 200D 2640 FE0F` | `🏊‍♀️` |  woman swimming |
@@ -2612,6 +2618,8 @@
 | `1F487 200D 2640 FE0F` | `💇‍♀️` |  woman getting haircut |
 | `1F487 200D 2642 FE0F` | `💇‍♂️` |  man getting haircut |
 | `1F636 200D 1F32B FE0F` | `😶‍🌫️` |  face in clouds |
+| `1F642 200D 2194 FE0F` | `🙂‍↔️` |  head shaking horizontally |
+| `1F642 200D 2195 FE0F` | `🙂‍↕️` |  head shaking vertically |
 | `1F645 200D 2640 FE0F` | `🙅‍♀️` |  woman gesturing NO |
 | `1F645 200D 2642 FE0F` | `🙅‍♂️` |  man gesturing NO |
 | `1F646 200D 2640 FE0F` | `🙆‍♀️` |  woman gesturing OK |
@@ -2632,6 +2640,7 @@
 | `1F6B5 200D 2642 FE0F` | `🚵‍♂️` |  man mountain biking |
 | `1F6B6 200D 2640 FE0F` | `🚶‍♀️` |  woman walking |
 | `1F6B6 200D 2642 FE0F` | `🚶‍♂️` |  man walking |
+| `1F6B6 200D 27A1 FE0F` | `🚶‍➡️` |  person walking facing right |
 | `1F926 200D 2640 FE0F` | `🤦‍♀️` |  woman facepalming |
 | `1F926 200D 2642 FE0F` | `🤦‍♂️` |  man facepalming |
 | `1F935 200D 2640 FE0F` | `🤵‍♀️` |  woman in tuxedo |
@@ -2656,6 +2665,7 @@
 | `1F9CD 200D 2642 FE0F` | `🧍‍♂️` |  man standing |
 | `1F9CE 200D 2640 FE0F` | `🧎‍♀️` |  woman kneeling |
 | `1F9CE 200D 2642 FE0F` | `🧎‍♂️` |  man kneeling |
+| `1F9CE 200D 27A1 FE0F` | `🧎‍➡️` |  person kneeling facing right |
 | `1F9CF 200D 2640 FE0F` | `🧏‍♀️` |  deaf woman |
 | `1F9CF 200D 2642 FE0F` | `🧏‍♂️` |  deaf man |
 | `1F9D1 200D 2695 FE0F` | `🧑‍⚕️` |  health worker |
@@ -2807,14 +2817,19 @@
 | `26F9 1F3FF 200D 2642 FE0F` | `⛹🏿‍♂️` |  man bouncing ball: dark skin tone |
 | `1F3C3 1F3FB 200D 2640 FE0F` | `🏃🏻‍♀️` |  woman running: light skin tone |
 | `1F3C3 1F3FB 200D 2642 FE0F` | `🏃🏻‍♂️` |  man running: light skin tone |
+| `1F3C3 1F3FB 200D 27A1 FE0F` | `🏃🏻‍➡️` |  person running facing right: light skin tone |
 | `1F3C3 1F3FC 200D 2640 FE0F` | `🏃🏼‍♀️` |  woman running: medium-light skin tone |
 | `1F3C3 1F3FC 200D 2642 FE0F` | `🏃🏼‍♂️` |  man running: medium-light skin tone |
+| `1F3C3 1F3FC 200D 27A1 FE0F` | `🏃🏼‍➡️` |  person running facing right: medium-light skin tone |
 | `1F3C3 1F3FD 200D 2640 FE0F` | `🏃🏽‍♀️` |  woman running: medium skin tone |
 | `1F3C3 1F3FD 200D 2642 FE0F` | `🏃🏽‍♂️` |  man running: medium skin tone |
+| `1F3C3 1F3FD 200D 27A1 FE0F` | `🏃🏽‍➡️` |  person running facing right: medium skin tone |
 | `1F3C3 1F3FE 200D 2640 FE0F` | `🏃🏾‍♀️` |  woman running: medium-dark skin tone |
 | `1F3C3 1F3FE 200D 2642 FE0F` | `🏃🏾‍♂️` |  man running: medium-dark skin tone |
+| `1F3C3 1F3FE 200D 27A1 FE0F` | `🏃🏾‍➡️` |  person running facing right: medium-dark skin tone |
 | `1F3C3 1F3FF 200D 2640 FE0F` | `🏃🏿‍♀️` |  woman running: dark skin tone |
 | `1F3C3 1F3FF 200D 2642 FE0F` | `🏃🏿‍♂️` |  man running: dark skin tone |
+| `1F3C3 1F3FF 200D 27A1 FE0F` | `🏃🏿‍➡️` |  person running facing right: dark skin tone |
 | `1F3C4 1F3FB 200D 2640 FE0F` | `🏄🏻‍♀️` |  woman surfing: light skin tone |
 | `1F3C4 1F3FB 200D 2642 FE0F` | `🏄🏻‍♂️` |  man surfing: light skin tone |
 | `1F3C4 1F3FC 200D 2640 FE0F` | `🏄🏼‍♀️` |  woman surfing: medium-light skin tone |
@@ -3097,14 +3112,19 @@
 | `1F6B5 1F3FF 200D 2642 FE0F` | `🚵🏿‍♂️` |  man mountain biking: dark skin tone |
 | `1F6B6 1F3FB 200D 2640 FE0F` | `🚶🏻‍♀️` |  woman walking: light skin tone |
 | `1F6B6 1F3FB 200D 2642 FE0F` | `🚶🏻‍♂️` |  man walking: light skin tone |
+| `1F6B6 1F3FB 200D 27A1 FE0F` | `🚶🏻‍➡️` |  person walking facing right: light skin tone |
 | `1F6B6 1F3FC 200D 2640 FE0F` | `🚶🏼‍♀️` |  woman walking: medium-light skin tone |
 | `1F6B6 1F3FC 200D 2642 FE0F` | `🚶🏼‍♂️` |  man walking: medium-light skin tone |
+| `1F6B6 1F3FC 200D 27A1 FE0F` | `🚶🏼‍➡️` |  person walking facing right: medium-light skin tone |
 | `1F6B6 1F3FD 200D 2640 FE0F` | `🚶🏽‍♀️` |  woman walking: medium skin tone |
 | `1F6B6 1F3FD 200D 2642 FE0F` | `🚶🏽‍♂️` |  man walking: medium skin tone |
+| `1F6B6 1F3FD 200D 27A1 FE0F` | `🚶🏽‍➡️` |  person walking facing right: medium skin tone |
 | `1F6B6 1F3FE 200D 2640 FE0F` | `🚶🏾‍♀️` |  woman walking: medium-dark skin tone |
 | `1F6B6 1F3FE 200D 2642 FE0F` | `🚶🏾‍♂️` |  man walking: medium-dark skin tone |
+| `1F6B6 1F3FE 200D 27A1 FE0F` | `🚶🏾‍➡️` |  person walking facing right: medium-dark skin tone |
 | `1F6B6 1F3FF 200D 2640 FE0F` | `🚶🏿‍♀️` |  woman walking: dark skin tone |
 | `1F6B6 1F3FF 200D 2642 FE0F` | `🚶🏿‍♂️` |  man walking: dark skin tone |
+| `1F6B6 1F3FF 200D 27A1 FE0F` | `🚶🏿‍➡️` |  person walking facing right: dark skin tone |
 | `1F926 1F3FB 200D 2640 FE0F` | `🤦🏻‍♀️` |  woman facepalming: light skin tone |
 | `1F926 1F3FB 200D 2642 FE0F` | `🤦🏻‍♂️` |  man facepalming: light skin tone |
 | `1F926 1F3FC 200D 2640 FE0F` | `🤦🏼‍♀️` |  woman facepalming: medium-light skin tone |
@@ -3207,14 +3227,19 @@
 | `1F9CD 1F3FF 200D 2642 FE0F` | `🧍🏿‍♂️` |  man standing: dark skin tone |
 | `1F9CE 1F3FB 200D 2640 FE0F` | `🧎🏻‍♀️` |  woman kneeling: light skin tone |
 | `1F9CE 1F3FB 200D 2642 FE0F` | `🧎🏻‍♂️` |  man kneeling: light skin tone |
+| `1F9CE 1F3FB 200D 27A1 FE0F` | `🧎🏻‍➡️` |  person kneeling facing right: light skin tone |
 | `1F9CE 1F3FC 200D 2640 FE0F` | `🧎🏼‍♀️` |  woman kneeling: medium-light skin tone |
 | `1F9CE 1F3FC 200D 2642 FE0F` | `🧎🏼‍♂️` |  man kneeling: medium-light skin tone |
+| `1F9CE 1F3FC 200D 27A1 FE0F` | `🧎🏼‍➡️` |  person kneeling facing right: medium-light skin tone |
 | `1F9CE 1F3FD 200D 2640 FE0F` | `🧎🏽‍♀️` |  woman kneeling: medium skin tone |
 | `1F9CE 1F3FD 200D 2642 FE0F` | `🧎🏽‍♂️` |  man kneeling: medium skin tone |
+| `1F9CE 1F3FD 200D 27A1 FE0F` | `🧎🏽‍➡️` |  person kneeling facing right: medium skin tone |
 | `1F9CE 1F3FE 200D 2640 FE0F` | `🧎🏾‍♀️` |  woman kneeling: medium-dark skin tone |
 | `1F9CE 1F3FE 200D 2642 FE0F` | `🧎🏾‍♂️` |  man kneeling: medium-dark skin tone |
+| `1F9CE 1F3FE 200D 27A1 FE0F` | `🧎🏾‍➡️` |  person kneeling facing right: medium-dark skin tone |
 | `1F9CE 1F3FF 200D 2640 FE0F` | `🧎🏿‍♀️` |  woman kneeling: dark skin tone |
 | `1F9CE 1F3FF 200D 2642 FE0F` | `🧎🏿‍♂️` |  man kneeling: dark skin tone |
+| `1F9CE 1F3FF 200D 27A1 FE0F` | `🧎🏿‍➡️` |  person kneeling facing right: dark skin tone |
 | `1F9CF 1F3FB 200D 2640 FE0F` | `🧏🏻‍♀️` |  deaf woman: light skin tone |
 | `1F9CF 1F3FB 200D 2642 FE0F` | `🧏🏻‍♂️` |  deaf man: light skin tone |
 | `1F9CF 1F3FC 200D 2640 FE0F` | `🧏🏼‍♀️` |  deaf woman: medium-light skin tone |
@@ -3226,6 +3251,8 @@
 | `1F9CF 1F3FF 200D 2640 FE0F` | `🧏🏿‍♀️` |  deaf woman: dark skin tone |
 | `1F9CF 1F3FF 200D 2642 FE0F` | `🧏🏿‍♂️` |  deaf man: dark skin tone |
 | `1F9D1 200D 1F91D 200D 1F9D1` | `🧑‍🤝‍🧑` |  people holding hands |
+| `1F9D1 200D 1F9D1 200D 1F9D2` | `🧑‍🧑‍🧒` |  family: adult, adult, child |
+| `1F9D1 200D 1F9D2 200D 1F9D2` | `🧑‍🧒‍🧒` |  family: adult, child, child |
 | `1F9D1 1F3FB 200D 2695 FE0F` | `🧑🏻‍⚕️` |  health worker: light skin tone |
 | `1F9D1 1F3FB 200D 2696 FE0F` | `🧑🏻‍⚖️` |  judge: light skin tone |
 | `1F9D1 1F3FB 200D 2708 FE0F` | `🧑🏻‍✈️` |  pilot: light skin tone |
@@ -3352,8 +3379,19 @@
 | `1FAF1 1F3FF 200D 1FAF2 1F3FD` | `🫱🏿‍🫲🏽` |  handshake: dark skin tone, medium skin tone |
 | `1FAF1 1F3FF 200D 1FAF2 1F3FE` | `🫱🏿‍🫲🏾` |  handshake: dark skin tone, medium-dark skin tone |
 | `1F468 200D 2764 FE0F 200D 1F468` | `👨‍❤️‍👨` |  couple with heart: man, man |
+| `1F468 200D 1F9AF 200D 27A1 FE0F` | `👨‍🦯‍➡️` |  man with white cane facing right |
+| `1F468 200D 1F9BC 200D 27A1 FE0F` | `👨‍🦼‍➡️` |  man in motorized wheelchair facing right |
+| `1F468 200D 1F9BD 200D 27A1 FE0F` | `👨‍🦽‍➡️` |  man in manual wheelchair facing right |
 | `1F469 200D 2764 FE0F 200D 1F468` | `👩‍❤️‍👨` |  couple with heart: woman, man |
 | `1F469 200D 2764 FE0F 200D 1F469` | `👩‍❤️‍👩` |  couple with heart: woman, woman |
+| `1F469 200D 1F9AF 200D 27A1 FE0F` | `👩‍🦯‍➡️` |  woman with white cane facing right |
+| `1F469 200D 1F9BC 200D 27A1 FE0F` | `👩‍🦼‍➡️` |  woman in motorized wheelchair facing right |
+| `1F469 200D 1F9BD 200D 27A1 FE0F` | `👩‍🦽‍➡️` |  woman in manual wheelchair facing right |
+| `1F9D1 200D 1F9AF 200D 27A1 FE0F` | `🧑‍🦯‍➡️` |  person with white cane facing right |
+| `1F9D1 200D 1F9BC 200D 27A1 FE0F` | `🧑‍🦼‍➡️` |  person in motorized wheelchair facing right |
+| `1F9D1 200D 1F9BD 200D 27A1 FE0F` | `🧑‍🦽‍➡️` |  person in manual wheelchair facing right |
+| `1F3C3 200D 2640 FE0F 200D 27A1 FE0F` | `🏃‍♀️‍➡️` |  woman running facing right |
+| `1F3C3 200D 2642 FE0F 200D 27A1 FE0F` | `🏃‍♂️‍➡️` |  man running facing right |
 | `1F3F4 E0067 E0062 E0065 E006E E0067 E007F` | `🏴󠁧󠁢󠁥󠁮󠁧󠁿` |  flag: England |
 | `1F3F4 E0067 E0062 E0073 E0063 E0074 E007F` | `🏴󠁧󠁢󠁳󠁣󠁴󠁿` |  flag: Scotland |
 | `1F3F4 E0067 E0062 E0077 E006C E0073 E007F` | `🏴󠁧󠁢󠁷󠁬󠁳󠁿` |  flag: Wales |
@@ -3367,22 +3405,37 @@
 | `1F468 1F3FB 200D 1F91D 200D 1F468 1F3FD` | `👨🏻‍🤝‍👨🏽` |  men holding hands: light skin tone, medium skin tone |
 | `1F468 1F3FB 200D 1F91D 200D 1F468 1F3FE` | `👨🏻‍🤝‍👨🏾` |  men holding hands: light skin tone, medium-dark skin tone |
 | `1F468 1F3FB 200D 1F91D 200D 1F468 1F3FF` | `👨🏻‍🤝‍👨🏿` |  men holding hands: light skin tone, dark skin tone |
+| `1F468 1F3FB 200D 1F9AF 200D 27A1 FE0F` | `👨🏻‍🦯‍➡️` |  man with white cane facing right: light skin tone |
+| `1F468 1F3FB 200D 1F9BC 200D 27A1 FE0F` | `👨🏻‍🦼‍➡️` |  man in motorized wheelchair facing right: light skin tone |
+| `1F468 1F3FB 200D 1F9BD 200D 27A1 FE0F` | `👨🏻‍🦽‍➡️` |  man in manual wheelchair facing right: light skin tone |
 | `1F468 1F3FC 200D 1F91D 200D 1F468 1F3FB` | `👨🏼‍🤝‍👨🏻` |  men holding hands: medium-light skin tone, light skin tone |
 | `1F468 1F3FC 200D 1F91D 200D 1F468 1F3FD` | `👨🏼‍🤝‍👨🏽` |  men holding hands: medium-light skin tone, medium skin tone |
 | `1F468 1F3FC 200D 1F91D 200D 1F468 1F3FE` | `👨🏼‍🤝‍👨🏾` |  men holding hands: medium-light skin tone, medium-dark skin tone |
 | `1F468 1F3FC 200D 1F91D 200D 1F468 1F3FF` | `👨🏼‍🤝‍👨🏿` |  men holding hands: medium-light skin tone, dark skin tone |
+| `1F468 1F3FC 200D 1F9AF 200D 27A1 FE0F` | `👨🏼‍🦯‍➡️` |  man with white cane facing right: medium-light skin tone |
+| `1F468 1F3FC 200D 1F9BC 200D 27A1 FE0F` | `👨🏼‍🦼‍➡️` |  man in motorized wheelchair facing right: medium-light skin tone |
+| `1F468 1F3FC 200D 1F9BD 200D 27A1 FE0F` | `👨🏼‍🦽‍➡️` |  man in manual wheelchair facing right: medium-light skin tone |
 | `1F468 1F3FD 200D 1F91D 200D 1F468 1F3FB` | `👨🏽‍🤝‍👨🏻` |  men holding hands: medium skin tone, light skin tone |
 | `1F468 1F3FD 200D 1F91D 200D 1F468 1F3FC` | `👨🏽‍🤝‍👨🏼` |  men holding hands: medium skin tone, medium-light skin tone |
 | `1F468 1F3FD 200D 1F91D 200D 1F468 1F3FE` | `👨🏽‍🤝‍👨🏾` |  men holding hands: medium skin tone, medium-dark skin tone |
 | `1F468 1F3FD 200D 1F91D 200D 1F468 1F3FF` | `👨🏽‍🤝‍👨🏿` |  men holding hands: medium skin tone, dark skin tone |
+| `1F468 1F3FD 200D 1F9AF 200D 27A1 FE0F` | `👨🏽‍🦯‍➡️` |  man with white cane facing right: medium skin tone |
+| `1F468 1F3FD 200D 1F9BC 200D 27A1 FE0F` | `👨🏽‍🦼‍➡️` |  man in motorized wheelchair facing right: medium skin tone |
+| `1F468 1F3FD 200D 1F9BD 200D 27A1 FE0F` | `👨🏽‍🦽‍➡️` |  man in manual wheelchair facing right: medium skin tone |
 | `1F468 1F3FE 200D 1F91D 200D 1F468 1F3FB` | `👨🏾‍🤝‍👨🏻` |  men holding hands: medium-dark skin tone, light skin tone |
 | `1F468 1F3FE 200D 1F91D 200D 1F468 1F3FC` | `👨🏾‍🤝‍👨🏼` |  men holding hands: medium-dark skin tone, medium-light skin tone |
 | `1F468 1F3FE 200D 1F91D 200D 1F468 1F3FD` | `👨🏾‍🤝‍👨🏽` |  men holding hands: medium-dark skin tone, medium skin tone |
 | `1F468 1F3FE 200D 1F91D 200D 1F468 1F3FF` | `👨🏾‍🤝‍👨🏿` |  men holding hands: medium-dark skin tone, dark skin tone |
+| `1F468 1F3FE 200D 1F9AF 200D 27A1 FE0F` | `👨🏾‍🦯‍➡️` |  man with white cane facing right: medium-dark skin tone |
+| `1F468 1F3FE 200D 1F9BC 200D 27A1 FE0F` | `👨🏾‍🦼‍➡️` |  man in motorized wheelchair facing right: medium-dark skin tone |
+| `1F468 1F3FE 200D 1F9BD 200D 27A1 FE0F` | `👨🏾‍🦽‍➡️` |  man in manual wheelchair facing right: medium-dark skin tone |
 | `1F468 1F3FF 200D 1F91D 200D 1F468 1F3FB` | `👨🏿‍🤝‍👨🏻` |  men holding hands: dark skin tone, light skin tone |
 | `1F468 1F3FF 200D 1F91D 200D 1F468 1F3FC` | `👨🏿‍🤝‍👨🏼` |  men holding hands: dark skin tone, medium-light skin tone |
 | `1F468 1F3FF 200D 1F91D 200D 1F468 1F3FD` | `👨🏿‍🤝‍👨🏽` |  men holding hands: dark skin tone, medium skin tone |
 | `1F468 1F3FF 200D 1F91D 200D 1F468 1F3FE` | `👨🏿‍🤝‍👨🏾` |  men holding hands: dark skin tone, medium-dark skin tone |
+| `1F468 1F3FF 200D 1F9AF 200D 27A1 FE0F` | `👨🏿‍🦯‍➡️` |  man with white cane facing right: dark skin tone |
+| `1F468 1F3FF 200D 1F9BC 200D 27A1 FE0F` | `👨🏿‍🦼‍➡️` |  man in motorized wheelchair facing right: dark skin tone |
+| `1F468 1F3FF 200D 1F9BD 200D 27A1 FE0F` | `👨🏿‍🦽‍➡️` |  man in manual wheelchair facing right: dark skin tone |
 | `1F469 200D 1F469 200D 1F466 200D 1F466` | `👩‍👩‍👦‍👦` |  family: woman, woman, boy, boy |
 | `1F469 200D 1F469 200D 1F467 200D 1F466` | `👩‍👩‍👧‍👦` |  family: woman, woman, girl, boy |
 | `1F469 200D 1F469 200D 1F467 200D 1F467` | `👩‍👩‍👧‍👧` |  family: woman, woman, girl, girl |
@@ -3394,6 +3447,9 @@
 | `1F469 1F3FB 200D 1F91D 200D 1F469 1F3FD` | `👩🏻‍🤝‍👩🏽` |  women holding hands: light skin tone, medium skin tone |
 | `1F469 1F3FB 200D 1F91D 200D 1F469 1F3FE` | `👩🏻‍🤝‍👩🏾` |  women holding hands: light skin tone, medium-dark skin tone |
 | `1F469 1F3FB 200D 1F91D 200D 1F469 1F3FF` | `👩🏻‍🤝‍👩🏿` |  women holding hands: light skin tone, dark skin tone |
+| `1F469 1F3FB 200D 1F9AF 200D 27A1 FE0F` | `👩🏻‍🦯‍➡️` |  woman with white cane facing right: light skin tone |
+| `1F469 1F3FB 200D 1F9BC 200D 27A1 FE0F` | `👩🏻‍🦼‍➡️` |  woman in motorized wheelchair facing right: light skin tone |
+| `1F469 1F3FB 200D 1F9BD 200D 27A1 FE0F` | `👩🏻‍🦽‍➡️` |  woman in manual wheelchair facing right: light skin tone |
 | `1F469 1F3FC 200D 1F91D 200D 1F468 1F3FB` | `👩🏼‍🤝‍👨🏻` |  woman and man holding hands: medium-light skin tone, light skin tone |
 | `1F469 1F3FC 200D 1F91D 200D 1F468 1F3FD` | `👩🏼‍🤝‍👨🏽` |  woman and man holding hands: medium-light skin tone, medium skin tone |
 | `1F469 1F3FC 200D 1F91D 200D 1F468 1F3FE` | `👩🏼‍🤝‍👨🏾` |  woman and man holding hands: medium-light skin tone, medium-dark skin tone |
@@ -3402,6 +3458,9 @@
 | `1F469 1F3FC 200D 1F91D 200D 1F469 1F3FD` | `👩🏼‍🤝‍👩🏽` |  women holding hands: medium-light skin tone, medium skin tone |
 | `1F469 1F3FC 200D 1F91D 200D 1F469 1F3FE` | `👩🏼‍🤝‍👩🏾` |  women holding hands: medium-light skin tone, medium-dark skin tone |
 | `1F469 1F3FC 200D 1F91D 200D 1F469 1F3FF` | `👩🏼‍🤝‍👩🏿` |  women holding hands: medium-light skin tone, dark skin tone |
+| `1F469 1F3FC 200D 1F9AF 200D 27A1 FE0F` | `👩🏼‍🦯‍➡️` |  woman with white cane facing right: medium-light skin tone |
+| `1F469 1F3FC 200D 1F9BC 200D 27A1 FE0F` | `👩🏼‍🦼‍➡️` |  woman in motorized wheelchair facing right: medium-light skin tone |
+| `1F469 1F3FC 200D 1F9BD 200D 27A1 FE0F` | `👩🏼‍🦽‍➡️` |  woman in manual wheelchair facing right: medium-light skin tone |
 | `1F469 1F3FD 200D 1F91D 200D 1F468 1F3FB` | `👩🏽‍🤝‍👨🏻` |  woman and man holding hands: medium skin tone, light skin tone |
 | `1F469 1F3FD 200D 1F91D 200D 1F468 1F3FC` | `👩🏽‍🤝‍👨🏼` |  woman and man holding hands: medium skin tone, medium-light skin tone |
 | `1F469 1F3FD 200D 1F91D 200D 1F468 1F3FE` | `👩🏽‍🤝‍👨🏾` |  woman and man holding hands: medium skin tone, medium-dark skin tone |
@@ -3410,6 +3469,9 @@
 | `1F469 1F3FD 200D 1F91D 200D 1F469 1F3FC` | `👩🏽‍🤝‍👩🏼` |  women holding hands: medium skin tone, medium-light skin tone |
 | `1F469 1F3FD 200D 1F91D 200D 1F469 1F3FE` | `👩🏽‍🤝‍👩🏾` |  women holding hands: medium skin tone, medium-dark skin tone |
 | `1F469 1F3FD 200D 1F91D 200D 1F469 1F3FF` | `👩🏽‍🤝‍👩🏿` |  women holding hands: medium skin tone, dark skin tone |
+| `1F469 1F3FD 200D 1F9AF 200D 27A1 FE0F` | `👩🏽‍🦯‍➡️` |  woman with white cane facing right: medium skin tone |
+| `1F469 1F3FD 200D 1F9BC 200D 27A1 FE0F` | `👩🏽‍🦼‍➡️` |  woman in motorized wheelchair facing right: medium skin tone |
+| `1F469 1F3FD 200D 1F9BD 200D 27A1 FE0F` | `👩🏽‍🦽‍➡️` |  woman in manual wheelchair facing right: medium skin tone |
 | `1F469 1F3FE 200D 1F91D 200D 1F468 1F3FB` | `👩🏾‍🤝‍👨🏻` |  woman and man holding hands: medium-dark skin tone, light skin tone |
 | `1F469 1F3FE 200D 1F91D 200D 1F468 1F3FC` | `👩🏾‍🤝‍👨🏼` |  woman and man holding hands: medium-dark skin tone, medium-light skin tone |
 | `1F469 1F3FE 200D 1F91D 200D 1F468 1F3FD` | `👩🏾‍🤝‍👨🏽` |  woman and man holding hands: medium-dark skin tone, medium skin tone |
@@ -3418,6 +3480,9 @@
 | `1F469 1F3FE 200D 1F91D 200D 1F469 1F3FC` | `👩🏾‍🤝‍👩🏼` |  women holding hands: medium-dark skin tone, medium-light skin tone |
 | `1F469 1F3FE 200D 1F91D 200D 1F469 1F3FD` | `👩🏾‍🤝‍👩🏽` |  women holding hands: medium-dark skin tone, medium skin tone |
 | `1F469 1F3FE 200D 1F91D 200D 1F469 1F3FF` | `👩🏾‍🤝‍👩🏿` |  women holding hands: medium-dark skin tone, dark skin tone |
+| `1F469 1F3FE 200D 1F9AF 200D 27A1 FE0F` | `👩🏾‍🦯‍➡️` |  woman with white cane facing right: medium-dark skin tone |
+| `1F469 1F3FE 200D 1F9BC 200D 27A1 FE0F` | `👩🏾‍🦼‍➡️` |  woman in motorized wheelchair facing right: medium-dark skin tone |
+| `1F469 1F3FE 200D 1F9BD 200D 27A1 FE0F` | `👩🏾‍🦽‍➡️` |  woman in manual wheelchair facing right: medium-dark skin tone |
 | `1F469 1F3FF 200D 1F91D 200D 1F468 1F3FB` | `👩🏿‍🤝‍👨🏻` |  woman and man holding hands: dark skin tone, light skin tone |
 | `1F469 1F3FF 200D 1F91D 200D 1F468 1F3FC` | `👩🏿‍🤝‍👨🏼` |  woman and man holding hands: dark skin tone, medium-light skin tone |
 | `1F469 1F3FF 200D 1F91D 200D 1F468 1F3FD` | `👩🏿‍🤝‍👨🏽` |  woman and man holding hands: dark skin tone, medium skin tone |
@@ -3426,31 +3491,64 @@
 | `1F469 1F3FF 200D 1F91D 200D 1F469 1F3FC` | `👩🏿‍🤝‍👩🏼` |  women holding hands: dark skin tone, medium-light skin tone |
 | `1F469 1F3FF 200D 1F91D 200D 1F469 1F3FD` | `👩🏿‍🤝‍👩🏽` |  women holding hands: dark skin tone, medium skin tone |
 | `1F469 1F3FF 200D 1F91D 200D 1F469 1F3FE` | `👩🏿‍🤝‍👩🏾` |  women holding hands: dark skin tone, medium-dark skin tone |
+| `1F469 1F3FF 200D 1F9AF 200D 27A1 FE0F` | `👩🏿‍🦯‍➡️` |  woman with white cane facing right: dark skin tone |
+| `1F469 1F3FF 200D 1F9BC 200D 27A1 FE0F` | `👩🏿‍🦼‍➡️` |  woman in motorized wheelchair facing right: dark skin tone |
+| `1F469 1F3FF 200D 1F9BD 200D 27A1 FE0F` | `👩🏿‍🦽‍➡️` |  woman in manual wheelchair facing right: dark skin tone |
+| `1F6B6 200D 2640 FE0F 200D 27A1 FE0F` | `🚶‍♀️‍➡️` |  woman walking facing right |
+| `1F6B6 200D 2642 FE0F 200D 27A1 FE0F` | `🚶‍♂️‍➡️` |  man walking facing right |
+| `1F9CE 200D 2640 FE0F 200D 27A1 FE0F` | `🧎‍♀️‍➡️` |  woman kneeling facing right |
+| `1F9CE 200D 2642 FE0F 200D 27A1 FE0F` | `🧎‍♂️‍➡️` |  man kneeling facing right |
+| `1F9D1 200D 1F9D1 200D 1F9D2 200D 1F9D2` | `🧑‍🧑‍🧒‍🧒` |  family: adult, adult, child, child |
 | `1F9D1 1F3FB 200D 1F91D 200D 1F9D1 1F3FB` | `🧑🏻‍🤝‍🧑🏻` |  people holding hands: light skin tone |
 | `1F9D1 1F3FB 200D 1F91D 200D 1F9D1 1F3FC` | `🧑🏻‍🤝‍🧑🏼` |  people holding hands: light skin tone, medium-light skin tone |
 | `1F9D1 1F3FB 200D 1F91D 200D 1F9D1 1F3FD` | `🧑🏻‍🤝‍🧑🏽` |  people holding hands: light skin tone, medium skin tone |
 | `1F9D1 1F3FB 200D 1F91D 200D 1F9D1 1F3FE` | `🧑🏻‍🤝‍🧑🏾` |  people holding hands: light skin tone, medium-dark skin tone |
 | `1F9D1 1F3FB 200D 1F91D 200D 1F9D1 1F3FF` | `🧑🏻‍🤝‍🧑🏿` |  people holding hands: light skin tone, dark skin tone |
+| `1F9D1 1F3FB 200D 1F9AF 200D 27A1 FE0F` | `🧑🏻‍🦯‍➡️` |  person with white cane facing right: light skin tone |
+| `1F9D1 1F3FB 200D 1F9BC 200D 27A1 FE0F` | `🧑🏻‍🦼‍➡️` |  person in motorized wheelchair facing right: light skin tone |
+| `1F9D1 1F3FB 200D 1F9BD 200D 27A1 FE0F` | `🧑🏻‍🦽‍➡️` |  person in manual wheelchair facing right: light skin tone |
 | `1F9D1 1F3FC 200D 1F91D 200D 1F9D1 1F3FB` | `🧑🏼‍🤝‍🧑🏻` |  people holding hands: medium-light skin tone, light skin tone |
 | `1F9D1 1F3FC 200D 1F91D 200D 1F9D1 1F3FC` | `🧑🏼‍🤝‍🧑🏼` |  people holding hands: medium-light skin tone |
 | `1F9D1 1F3FC 200D 1F91D 200D 1F9D1 1F3FD` | `🧑🏼‍🤝‍🧑🏽` |  people holding hands: medium-light skin tone, medium skin tone |
 | `1F9D1 1F3FC 200D 1F91D 200D 1F9D1 1F3FE` | `🧑🏼‍🤝‍🧑🏾` |  people holding hands: medium-light skin tone, medium-dark skin tone |
 | `1F9D1 1F3FC 200D 1F91D 200D 1F9D1 1F3FF` | `🧑🏼‍🤝‍🧑🏿` |  people holding hands: medium-light skin tone, dark skin tone |
+| `1F9D1 1F3FC 200D 1F9AF 200D 27A1 FE0F` | `🧑🏼‍🦯‍➡️` |  person with white cane facing right: medium-light skin tone |
+| `1F9D1 1F3FC 200D 1F9BC 200D 27A1 FE0F` | `🧑🏼‍🦼‍➡️` |  person in motorized wheelchair facing right: medium-light skin tone |
+| `1F9D1 1F3FC 200D 1F9BD 200D 27A1 FE0F` | `🧑🏼‍🦽‍➡️` |  person in manual wheelchair facing right: medium-light skin tone |
 | `1F9D1 1F3FD 200D 1F91D 200D 1F9D1 1F3FB` | `🧑🏽‍🤝‍🧑🏻` |  people holding hands: medium skin tone, light skin tone |
 | `1F9D1 1F3FD 200D 1F91D 200D 1F9D1 1F3FC` | `🧑🏽‍🤝‍🧑🏼` |  people holding hands: medium skin tone, medium-light skin tone |
 | `1F9D1 1F3FD 200D 1F91D 200D 1F9D1 1F3FD` | `🧑🏽‍🤝‍🧑🏽` |  people holding hands: medium skin tone |
 | `1F9D1 1F3FD 200D 1F91D 200D 1F9D1 1F3FE` | `🧑🏽‍🤝‍🧑🏾` |  people holding hands: medium skin tone, medium-dark skin tone |
 | `1F9D1 1F3FD 200D 1F91D 200D 1F9D1 1F3FF` | `🧑🏽‍🤝‍🧑🏿` |  people holding hands: medium skin tone, dark skin tone |
+| `1F9D1 1F3FD 200D 1F9AF 200D 27A1 FE0F` | `🧑🏽‍🦯‍➡️` |  person with white cane facing right: medium skin tone |
+| `1F9D1 1F3FD 200D 1F9BC 200D 27A1 FE0F` | `🧑🏽‍🦼‍➡️` |  person in motorized wheelchair facing right: medium skin tone |
+| `1F9D1 1F3FD 200D 1F9BD 200D 27A1 FE0F` | `🧑🏽‍🦽‍➡️` |  person in manual wheelchair facing right: medium skin tone |
 | `1F9D1 1F3FE 200D 1F91D 200D 1F9D1 1F3FB` | `🧑🏾‍🤝‍🧑🏻` |  people holding hands: medium-dark skin tone, light skin tone |
 | `1F9D1 1F3FE 200D 1F91D 200D 1F9D1 1F3FC` | `🧑🏾‍🤝‍🧑🏼` |  people holding hands: medium-dark skin tone, medium-light skin tone |
 | `1F9D1 1F3FE 200D 1F91D 200D 1F9D1 1F3FD` | `🧑🏾‍🤝‍🧑🏽` |  people holding hands: medium-dark skin tone, medium skin tone |
 | `1F9D1 1F3FE 200D 1F91D 200D 1F9D1 1F3FE` | `🧑🏾‍🤝‍🧑🏾` |  people holding hands: medium-dark skin tone |
 | `1F9D1 1F3FE 200D 1F91D 200D 1F9D1 1F3FF` | `🧑🏾‍🤝‍🧑🏿` |  people holding hands: medium-dark skin tone, dark skin tone |
+| `1F9D1 1F3FE 200D 1F9AF 200D 27A1 FE0F` | `🧑🏾‍🦯‍➡️` |  person with white cane facing right: medium-dark skin tone |
+| `1F9D1 1F3FE 200D 1F9BC 200D 27A1 FE0F` | `🧑🏾‍🦼‍➡️` |  person in motorized wheelchair facing right: medium-dark skin tone |
+| `1F9D1 1F3FE 200D 1F9BD 200D 27A1 FE0F` | `🧑🏾‍🦽‍➡️` |  person in manual wheelchair facing right: medium-dark skin tone |
 | `1F9D1 1F3FF 200D 1F91D 200D 1F9D1 1F3FB` | `🧑🏿‍🤝‍🧑🏻` |  people holding hands: dark skin tone, light skin tone |
 | `1F9D1 1F3FF 200D 1F91D 200D 1F9D1 1F3FC` | `🧑🏿‍🤝‍🧑🏼` |  people holding hands: dark skin tone, medium-light skin tone |
 | `1F9D1 1F3FF 200D 1F91D 200D 1F9D1 1F3FD` | `🧑🏿‍🤝‍🧑🏽` |  people holding hands: dark skin tone, medium skin tone |
 | `1F9D1 1F3FF 200D 1F91D 200D 1F9D1 1F3FE` | `🧑🏿‍🤝‍🧑🏾` |  people holding hands: dark skin tone, medium-dark skin tone |
 | `1F9D1 1F3FF 200D 1F91D 200D 1F9D1 1F3FF` | `🧑🏿‍🤝‍🧑🏿` |  people holding hands: dark skin tone |
+| `1F9D1 1F3FF 200D 1F9AF 200D 27A1 FE0F` | `🧑🏿‍🦯‍➡️` |  person with white cane facing right: dark skin tone |
+| `1F9D1 1F3FF 200D 1F9BC 200D 27A1 FE0F` | `🧑🏿‍🦼‍➡️` |  person in motorized wheelchair facing right: dark skin tone |
+| `1F9D1 1F3FF 200D 1F9BD 200D 27A1 FE0F` | `🧑🏿‍🦽‍➡️` |  person in manual wheelchair facing right: dark skin tone |
+| `1F3C3 1F3FB 200D 2640 FE0F 200D 27A1 FE0F` | `🏃🏻‍♀️‍➡️` |  woman running facing right: light skin tone |
+| `1F3C3 1F3FB 200D 2642 FE0F 200D 27A1 FE0F` | `🏃🏻‍♂️‍➡️` |  man running facing right: light skin tone |
+| `1F3C3 1F3FC 200D 2640 FE0F 200D 27A1 FE0F` | `🏃🏼‍♀️‍➡️` |  woman running facing right: medium-light skin tone |
+| `1F3C3 1F3FC 200D 2642 FE0F 200D 27A1 FE0F` | `🏃🏼‍♂️‍➡️` |  man running facing right: medium-light skin tone |
+| `1F3C3 1F3FD 200D 2640 FE0F 200D 27A1 FE0F` | `🏃🏽‍♀️‍➡️` |  woman running facing right: medium skin tone |
+| `1F3C3 1F3FD 200D 2642 FE0F 200D 27A1 FE0F` | `🏃🏽‍♂️‍➡️` |  man running facing right: medium skin tone |
+| `1F3C3 1F3FE 200D 2640 FE0F 200D 27A1 FE0F` | `🏃🏾‍♀️‍➡️` |  woman running facing right: medium-dark skin tone |
+| `1F3C3 1F3FE 200D 2642 FE0F 200D 27A1 FE0F` | `🏃🏾‍♂️‍➡️` |  man running facing right: medium-dark skin tone |
+| `1F3C3 1F3FF 200D 2640 FE0F 200D 27A1 FE0F` | `🏃🏿‍♀️‍➡️` |  woman running facing right: dark skin tone |
+| `1F3C3 1F3FF 200D 2642 FE0F 200D 27A1 FE0F` | `🏃🏿‍♂️‍➡️` |  man running facing right: dark skin tone |
 | `1F468 200D 2764 FE0F 200D 1F48B 200D 1F468` | `👨‍❤️‍💋‍👨` |  kiss: man, man |
 | `1F468 1F3FB 200D 2764 FE0F 200D 1F468 1F3FB` | `👨🏻‍❤️‍👨🏻` |  couple with heart: man, man, light skin tone |
 | `1F468 1F3FB 200D 2764 FE0F 200D 1F468 1F3FC` | `👨🏻‍❤️‍👨🏼` |  couple with heart: man, man, light skin tone, medium-light skin tone |
@@ -3529,6 +3627,26 @@
 | `1F469 1F3FF 200D 2764 FE0F 200D 1F469 1F3FD` | `👩🏿‍❤️‍👩🏽` |  couple with heart: woman, woman, dark skin tone, medium skin tone |
 | `1F469 1F3FF 200D 2764 FE0F 200D 1F469 1F3FE` | `👩🏿‍❤️‍👩🏾` |  couple with heart: woman, woman, dark skin tone, medium-dark skin tone |
 | `1F469 1F3FF 200D 2764 FE0F 200D 1F469 1F3FF` | `👩🏿‍❤️‍👩🏿` |  couple with heart: woman, woman, dark skin tone |
+| `1F6B6 1F3FB 200D 2640 FE0F 200D 27A1 FE0F` | `🚶🏻‍♀️‍➡️` |  woman walking facing right: light skin tone |
+| `1F6B6 1F3FB 200D 2642 FE0F 200D 27A1 FE0F` | `🚶🏻‍♂️‍➡️` |  man walking facing right: light skin tone |
+| `1F6B6 1F3FC 200D 2640 FE0F 200D 27A1 FE0F` | `🚶🏼‍♀️‍➡️` |  woman walking facing right: medium-light skin tone |
+| `1F6B6 1F3FC 200D 2642 FE0F 200D 27A1 FE0F` | `🚶🏼‍♂️‍➡️` |  man walking facing right: medium-light skin tone |
+| `1F6B6 1F3FD 200D 2640 FE0F 200D 27A1 FE0F` | `🚶🏽‍♀️‍➡️` |  woman walking facing right: medium skin tone |
+| `1F6B6 1F3FD 200D 2642 FE0F 200D 27A1 FE0F` | `🚶🏽‍♂️‍➡️` |  man walking facing right: medium skin tone |
+| `1F6B6 1F3FE 200D 2640 FE0F 200D 27A1 FE0F` | `🚶🏾‍♀️‍➡️` |  woman walking facing right: medium-dark skin tone |
+| `1F6B6 1F3FE 200D 2642 FE0F 200D 27A1 FE0F` | `🚶🏾‍♂️‍➡️` |  man walking facing right: medium-dark skin tone |
+| `1F6B6 1F3FF 200D 2640 FE0F 200D 27A1 FE0F` | `🚶🏿‍♀️‍➡️` |  woman walking facing right: dark skin tone |
+| `1F6B6 1F3FF 200D 2642 FE0F 200D 27A1 FE0F` | `🚶🏿‍♂️‍➡️` |  man walking facing right: dark skin tone |
+| `1F9CE 1F3FB 200D 2640 FE0F 200D 27A1 FE0F` | `🧎🏻‍♀️‍➡️` |  woman kneeling facing right: light skin tone |
+| `1F9CE 1F3FB 200D 2642 FE0F 200D 27A1 FE0F` | `🧎🏻‍♂️‍➡️` |  man kneeling facing right: light skin tone |
+| `1F9CE 1F3FC 200D 2640 FE0F 200D 27A1 FE0F` | `🧎🏼‍♀️‍➡️` |  woman kneeling facing right: medium-light skin tone |
+| `1F9CE 1F3FC 200D 2642 FE0F 200D 27A1 FE0F` | `🧎🏼‍♂️‍➡️` |  man kneeling facing right: medium-light skin tone |
+| `1F9CE 1F3FD 200D 2640 FE0F 200D 27A1 FE0F` | `🧎🏽‍♀️‍➡️` |  woman kneeling facing right: medium skin tone |
+| `1F9CE 1F3FD 200D 2642 FE0F 200D 27A1 FE0F` | `🧎🏽‍♂️‍➡️` |  man kneeling facing right: medium skin tone |
+| `1F9CE 1F3FE 200D 2640 FE0F 200D 27A1 FE0F` | `🧎🏾‍♀️‍➡️` |  woman kneeling facing right: medium-dark skin tone |
+| `1F9CE 1F3FE 200D 2642 FE0F 200D 27A1 FE0F` | `🧎🏾‍♂️‍➡️` |  man kneeling facing right: medium-dark skin tone |
+| `1F9CE 1F3FF 200D 2640 FE0F 200D 27A1 FE0F` | `🧎🏿‍♀️‍➡️` |  woman kneeling facing right: dark skin tone |
+| `1F9CE 1F3FF 200D 2642 FE0F 200D 27A1 FE0F` | `🧎🏿‍♂️‍➡️` |  man kneeling facing right: dark skin tone |
 | `1F9D1 1F3FB 200D 2764 FE0F 200D 1F9D1 1F3FC` | `🧑🏻‍❤️‍🧑🏼` |  couple with heart: person, person, light skin tone, medium-light skin tone |
 | `1F9D1 1F3FB 200D 2764 FE0F 200D 1F9D1 1F3FD` | `🧑🏻‍❤️‍🧑🏽` |  couple with heart: person, person, light skin tone, medium skin tone |
 | `1F9D1 1F3FB 200D 2764 FE0F 200D 1F9D1 1F3FE` | `🧑🏻‍❤️‍🧑🏾` |  couple with heart: person, person, light skin tone, medium-dark skin tone |
@@ -3649,11 +3767,6 @@
 | -: | :-: | :- |
 | `‼` | `203C` | double exclamation mark |
 | `⁉` | `2049` | exclamation question mark |
-| `🏻` | `1F3FB` | light skin tone |
-| `🏼` | `1F3FC` | medium-light skin tone |
-| `🏽` | `1F3FD` | medium skin tone |
-| `🏾` | `1F3FE` | medium-dark skin tone |
-| `🏿` | `1F3FF` | dark skin tone |
 | `🇦` | `1F1E6` | REGIONAL INDICATOR SYMBOL LETTER A |
 | `🇧` | `1F1E7` | REGIONAL INDICATOR SYMBOL LETTER B |
 | `🇨` | `1F1E8` | REGIONAL INDICATOR SYMBOL LETTER C |
@@ -3680,6 +3793,11 @@
 | `🇽` | `1F1FD` | REGIONAL INDICATOR SYMBOL LETTER X |
 | `🇾` | `1F1FE` | REGIONAL INDICATOR SYMBOL LETTER Y |
 | `🇿` | `1F1FF` | REGIONAL INDICATOR SYMBOL LETTER Z |
+| `🏻` | `1F3FB` | light skin tone |
+| `🏼` | `1F3FC` | medium-light skin tone |
+| `🏽` | `1F3FD` | medium skin tone |
+| `🏾` | `1F3FE` | medium-dark skin tone |
+| `🏿` | `1F3FF` | dark skin tone |
 ## <a id="demoted-emoji-characters">Demoted Emoji Characters (32)</a>
 ### <a id="demoted-mapped">Mapped to Non-Emoji (20)</a>
 | Codepoint | Form | Name | Mapped | Characters |
@@ -3707,6 +3825,8 @@
 ### <a id="demoted-unchanged">Non-Emoji (12)</a>
 | Form | Codepoint | Name | Valid |
 | -: | :-: | :- | :-: |
+| `23` | `#` | hash sign | ❌️ |
+| `2A` | `*` | asterisk | ❌️ |
 | `30` | `0` | DIGIT ZERO | ✅️ |
 | `31` | `1` | DIGIT ONE | ✅️ |
 | `32` | `2` | DIGIT TWO | ✅️ |
@@ -3717,8 +3837,6 @@
 | `37` | `7` | DIGIT SEVEN | ✅️ |
 | `38` | `8` | DIGIT EIGHT | ✅️ |
 | `39` | `9` | DIGIT NINE | ✅️ |
-| `23` | `#` | hash sign | ❌️ |
-| `2A` | `*` | asterisk | ❌️ |
 ## <a id="emoji-sequence-whitelist">Emoji Sequence Whitelist (0)</a>
 * *None*
 ## <a id="emoji-sequence-blacklist">Emoji Sequence Blacklist (0)</a>
