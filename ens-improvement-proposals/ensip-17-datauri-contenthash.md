@@ -1,6 +1,6 @@
-**DESCRIPTION:** DataURI (RFC-2397) Format in Contenthash
+# ENSIP-17: DataURI Format in Contenthash
 
-# ENSIP-XX: DataURI Format in Contenthash
+### RFC-2397 Compliant DataURI Format in Contenthash
 
 | &nbsp; | &nbsp; |
 | ------ | ------ |
@@ -14,11 +14,11 @@ This ENSIP introduces DataURI format in Contenthash field (ENSIP-07) for compati
 
 ## Motivation
 
-ENS `contenthash` (ENSIP-07) currently enables linking to static content which is strictly off-chain. The off-chain content is entirely dependent on off-chain providers, and updating this content for ENS-based decentralised websites typically requires updating the on-chain `contenthash` explicitly (except for IPNS). ENS domains' `avatar` text records and their ERC-721/-1155 interfaces already support generated DataURI bytes (`data:uri`) to resolve JSON and image metadata. This specification enables a similar `data:uri` format in ENS `contenthash` field, allowing ENS Resolvers to fetch and serve on-chain and/or off-chain data. The off-chain resources for the DataURI content may use CCIP-Read and an appropriate `utf-8` decoder to render the encoded bytes.
+ENS `contenthash` (ENSIP-07) currently enables linking to static content which is strictly off-chain. The off-chain content is entirely dependent on off-chain providers, and updating this content for ENS-based decentralised websites typically requires updating the on-chain `contenthash` explicitly (except for IPNS). ENS domains' `avatar` text records and their ERC-721/-1155 interfaces already support generated DataURI bytes (`data:uri`) to resolve JSON and image metadata. This specification enables a similar `data:uri` format in ENS `contenthash` field, allowing ENS Resolvers to fetch and serve on-chain and/or off-chain data. The off-chain resources for the DataURI content may use CCIP-Read and an appropriate `utf-8` decoder to render the encoded bytes. This specification allows complete support for dynamic data in ENS Contenthash using CCIP-Read ([EIP-3886](https://eips.ethereum.org/EIPS/eip-3668)) and Wildcard Resolution ([ENSIP-10](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution)).
 
 ## Specification
 
-This specification is an extension of [ENSIP-07](https://docs.ens.domains/ens-improvement-proposals/ensip-7-contenthash-field) to support in-line bytes of data conforming to the `data:uri` scheme (RFC-2397) as ENS Contenthash. There are no changes to be made in the current ENS Resolvers since `contenthash` bytes are parsed as `utf-8` characters by default. Only a standardisation needs to be enacted for web3 providers to begin resolving ENS Contenthash in `data:uri` scheme. Simple details of the proposed standardisation are as follows:
+This specification is an extension of [ENSIP-07](https://docs.ens.domains/ens-improvement-proposals/ensip-7-contenthash-field) to support in-line bytes of data conforming to the `data:uri` scheme ([RFC-2397](https://datatracker.ietf.org/doc/html/rfc2397)) as ENS Contenthash. There are no changes to be made in the current ENS Resolvers since `contenthash` bytes are parsed as `utf-8` characters by default. Only a standardisation needs to be enacted for web3 providers to begin resolving ENS Contenthash in `data:uri` scheme. Simple details of the proposed standardisation are as follows:
 
 ### Decoded String
 
@@ -51,8 +51,18 @@ With this simple standardisation, web3 providers may now serve `data:uri` conten
 
 ### Implementation
 
-**GitHub** : https://github.com/namesys-eth/datauri-eth-resolver (`Work-In-Progress`)
+**GitHub** : [`namesys-eth/datauri-eth-resolver`](https://github.com/namesys-eth/datauri-eth-resolver) (`Work-In-Progress`)
+
+### References
+
+[1] `ENSIP-07`: [Contenthash Field](https://docs.ens.domains/ens-improvement-proposals/ensip-7-contenthash-field)
+
+[2] `ENSIP-10`: [Wildcard Resolution](https://docs.ens.domains/ens-improvement-proposals/ensip-10-wildcard-resolution)
+
+[3] `EIP-3668`: [CCIP Read: Secure Off-Chain Data Retrieval](https://eips.ethereum.org/EIPS/eip-3668)
+
+[4] `RFC-2397`: [The "data" URL Scheme](https://datatracker.ietf.org/doc/html/rfc2397)
 
 ### Copyright
 
-Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+Copyright and related rights waived via [`CC0`](https://creativecommons.org/publicdomain/zero/1.0/).
