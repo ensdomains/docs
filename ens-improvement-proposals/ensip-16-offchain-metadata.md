@@ -59,7 +59,6 @@ interface IOffChainResolver {
     function isApprovedFor(bytes context, bytes32 node, bytes delegate) returns (bool);
 
     /** @dev Returns the owner of the resolver on L2
-     * @return name can be l2 chain name or url if offchain
      * @return coinType according to https://github.com/ensdomains/address-encoder
      * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
      * @return storageType 0 = EVM, 1 = Non blockchain, 2 = Starknet
@@ -69,14 +68,13 @@ interface IOffChainResolver {
     function metadata(bytes calldata name)
         external
         view
-        returns (string memory, uint256, string memory, uint8, bytes memory, bytes memory)
+        returns (uint256, string memory, uint8, bytes memory, bytes memory)
     {
-        return (name, coinType, graphqlUrl, storageType, storageLocation, context);
+        return (coinType, graphqlUrl, storageType, storageLocation, context);
     }
-
     // Optional. If context is dynamic, the event won't be emitted.
     event MetadataChanged(
-        string name,
+        bytes name,
         uint256 coinType,
         string graphqlUrl,
         uint8 storageType,
