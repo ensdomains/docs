@@ -23,15 +23,15 @@ This specification extends the existing set of global keys, as well as creating 
 
 The Profile Keys are a subset of Global Keys, the newly defined global keys are specified in the "Global Keys" section.
 
-#### `name`
+#### `alias`
 
-**Description:** A display name
+**Description:** A display alias
 
 **Format:** Any text
 
 **Example:** `ENS`
 
-**Design Considerations:** This should be displayed near the ENS name, but should not be displayed as a replacement for it and should be below it in the visual hierarchy. You can also choose not to show the display name at all.
+**Design Considerations:** This should be displayed near the ENS name, but should not be displayed as a replacement for it and should be below it in the visual hierarchy. You can also choose not to show the alias at all.
 
 #### `theme`
 
@@ -141,7 +141,7 @@ Colours can be full or half length hex codes (e.g. `FFFFFF`, or `FFF`). A colour
 
 Profile Keys are a subset of Global Keys, therefore these global keys extend the existing global keys defined in ENSIP-5.
 
-- `name`
+- `alias`
 - `theme`
 - `header`
 - `timezone`
@@ -156,7 +156,7 @@ When creating a profile service key record, the value should be **void of all se
 
 ### Backwards Compatibility
 
-Not applicable
+The `alias` key replaces the pre-existing `name` key. When displaying an alias, you should consider also resolving the `name` key and displaying it, if `alias` is not available.
 
 ### Security Considerations
 
