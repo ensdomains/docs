@@ -152,7 +152,9 @@ Profile Keys are a subset of Global Keys, therefore these global keys extend the
 
 A profile service key is a service key at the base of the namespace's hierarchy.
 
-When creating a profile service key record, the value should be **void of all service-specific formatting** such as prefixes like `/u/` or `@`.
+When creating a profile service key record, the value should be **void of optional service-specific formatting** such as prefixes like `/u/` or `@`.
+
+In the case that the value is always displayed in a certain format, the formatting may be kept. However, any parsing or processing done on said value should attempt to be compatible with values that do not have the formatting applied.
 
 ### Backwards Compatibility
 
