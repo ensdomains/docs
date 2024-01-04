@@ -95,7 +95,7 @@ Colours can be full or half length hex codes (e.g. `FFFFFF`, or `FFF`). A colour
 
 **Example:** `Melbourne, Australia`
 
-**Design Considerations:** This shouldn't be resolved to real coordinates, as it can be a non-existent location.
+**Design Considerations:** This value should not be assumed to be real coordinates or properly formatted place, as it may be a non-existent location
 
 #### `url`
 
