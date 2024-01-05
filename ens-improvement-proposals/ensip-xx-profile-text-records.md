@@ -156,6 +156,12 @@ When creating a profile service key record, the value should be **void of option
 
 In the case that the value is always displayed in a certain format, the formatting may be kept. However, any parsing or processing done on said value should attempt to be compatible with values that do not have the formatting applied.
 
+#### Image files
+
+When **setting** an image for an avatar or header, it is **strongly recommended** to limit the file size to an absolute maximum of 10MB. The image being set should be validated against this limit, whether it is a URL, or an NFT. Ideally, if creating an image to be set on behalf of the user, the file size should be limited to 2MB. Additionally, maintainers of image endpoints should support dimensions of images to be limited via query string `?width={width}&height={height}` wherever possible.
+
+When **retrieving** an image for an avatar or header, images should attempt to be loaded if 10MB or less in file size. Loading images above 10MB is not required, but ideally loading should still be attempted. If retrieving an image via URL, a query string can be optionally appended to the URL to limit the dimensions via `?width={width}&height={height}`. However, the query string may have no effect.
+
 ### Backwards Compatibility
 
 The `alias` key replaces the pre-existing `name` key. When displaying an alias, you should consider also resolving the `name` key and displaying it, if `alias` is not available.
