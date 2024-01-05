@@ -150,11 +150,18 @@ Profile Keys are a subset of Global Keys, therefore these global keys extend the
 
 #### Profile Service Keys
 
-A profile service key is a service key at the base of the namespace's hierarchy.
+A profile service key is a profile key derived from the root of the service's domain. E.g. `com.github`, `org.telegram`, etc.
 
 When creating a profile service key record, the value should be **void of optional service-specific formatting** such as prefixes like `/u/` or `@`.
 
 In the case that the value is always displayed in a certain format, the formatting may be kept. However, any parsing or processing done on said value should attempt to be compatible with values that do not have the formatting applied.
+
+In addition to profile service keys based on domains, there are exemptions that may be applicable to any service that does not have a specific associated domain (i.e. a decentralised service). For an exemption to apply, it must be explicitly listed here, or added retroactively by a future ENSIP.
+
+Initial exempted profile service keys are as follows:
+
+- `farcaster`
+- `lens`
 
 #### Image files
 
