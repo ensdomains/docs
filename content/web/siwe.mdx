@@ -1,0 +1,85 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '✍️',
+    contributors: [
+        'lucemans'
+    ]
+};
+
+# Sign In With Ethereum (SIWE)
+
+Authentication is difficult. SIWE makes life easy.
+
+<div className="card1 px-8 py-4 flex justify-center gap-2">
+    <span>0x225...c3B5</span>
+    <span>➡️</span>
+    <span>luc.eth</span>
+</div>
+
+## Specification ([see spec](todo-link)) {{ id: "spec", title: "Specification" }}
+
+The SIWE Specification is rather simple. It describes a message format that a user ought to sign using their keys to be able to sign-in.
+The message MUST include [a subject](todo-link), [nonce](todo-link), and a [timestamp](todo-link). These parameters prevent replay-attacks, cross-site usage, and more, all while maintaining a very human readable form.
+
+An example payload looks like the following:
+
+```
+localhost wants you to sign in with your Ethereum account:
+0x225f137127d9067788314bc7fcc1f36746a3c3B5
+
+This is a test statement.
+
+URI: https://localhost/login
+Version: 1
+Chain ID: 1
+Nonce: abcdef1234567890
+Issued At: 2023-01-30T00:00:00.000Z
+```
+
+## Demo
+
+Feel free to give it a try, the button below is a [live interactive demo](todo-link). With source code available [on github](todo-link).
+
+<LiveDemo id="siwe" />
+
+## Implementations
+
+The team at [SpruceID](https://login.xyz) has done a phenomenal job writing plug-and-play utilities that let you easily integrate ethereum-based authentication into your project.
+Whether you are using [Next.js](todo-link), [React](todo-link), or [OpenID Connect](todo-link).
+
+In addition to the above SIWE has been integrated into [connectkit](todo-link) & more.
+
+### Next.js {{ id: "next" }}
+
+<CodeGroup title="SIWE in Next.js">
+
+```tsx {{ title: 'Wagmi (React)', language: 'tsx' }}
+TODO: Code Snippet for next.js
+```
+
+</CodeGroup>
+
+### React {{ id: "react" }}
+
+<CodeGroup title="SIWE in React">
+
+```tsx {{ title: 'Wagmi (React)', language: 'tsx' }}
+TODO: Code Snippet for the React
+```
+
+</CodeGroup>
+
+### ConnectKit {{ id: "connectkit" }}
+
+<CodeGroup title="SIWE Using ConnectKit">
+
+```tsx {{ title: 'Wagmi (React)', language: 'tsx' }}
+TODO: Code Snippet for the ConnectKit
+```
+
+</CodeGroup>
+
+## What about smart contracts {{ id: "contracts", title: "Smart Contracts" }}
+
+More research required.

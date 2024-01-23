@@ -1,0 +1,45 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal transfers ownership of the ENS root key to the ENS DAO, aiming to further decentralize governance and enhance community trust and power in managing the ENS Protocol.',
+    emoji: '📖',
+    contributors: [
+        // estmcmxci.eth
+    ],
+    proposal: {
+        discourse: '18338',
+        snapshot: '0x8e3c8812bd52d1760eb2bbf8dc603d68860741f80d489dc051017e863151a242',
+        type: 'social'
+    }
+};
+
+# [EP4.10] [Social] Transfer ENS Root Key Ownership to the ENS DAO
+
+## Abstract
+
+The ENS DAO has established itself as the key governance entity for the Ethereum Name Service (ENS) and has demonstrated capability and responsibility in ownership of several aspects of the protocol. We now propose the further decentralization of the ENS governance structure by transferring ownership of the ENS root key from the current multisig system (multisig.ens.eth) to the ENS DAO (wallet.ensdao.eth).
+
+## Background
+
+### ENS Root Key
+
+The ENS root node is currently owned by a multisig contract. The root key can control the allocation and replacement of all TLDs except for .eth. Keyholders are well-respected individuals in the Ethereum community and, with the exception of Nick Johnson, founder of ENS, are unaffiliated with ENS. While the .eth registrar contract control has been locked and cannot be affected by the root keyholders, they still hold significant powers over the structure and functioning of the ENS Protocol.
+
+### ENS DAO Current Powers
+
+The ENS DAO holds ownership of the .eth registrar and has control over functionalities like the NameWrapper. The DAO does not have control over the core ENS root name, which retains the capability to create new TLDs, adjust controls for existing ones, and upgrade the contracts responsible for reverse resolution.
+
+## Proposal
+
+1. **Transfer of Root Key Ownership**: We propose the transfer of ownership of the ENS root key from the current multisig holders to the ENS DAO. This will consolidate governance powers and further the vision of decentralized control over the ENS Protocol.
+2. **TLD Management**: While .eth is permanently set and unchangeable, the DAO will inherit the power to create and manage other top-level domains (TLD). The DAO will also have the ability to lock any TLD permanently if deemed necessary.
+3. **Reverse Resolutions and L2s**: The DAO will have the capacity to update reverse resolutions. Additionally, with the Labs team's support, the DAO will explore and potentially implement primary domain names on Layer 2 solutions (L2s).
+
+## Specification
+
+1. Current ENS root keyholders are requested to execute a transaction transferring root key ownership to the ENS DAO's designated contract.
+2. The ENS DAO commits to managing the new powers and funds in line with the [ENS DAO Constitution](/dao/constitution), ensuring transparent governance and decision-making.
+3. The DAO will develop policies to govern TLD management, (oracle) pricing updates, and other key decisions.
+
+## Coda (Conclusion)
+
+With this proposal, we aim to further decentralize the control and governance of the ENS Protocol, placing more trust and power in the hands of the ENS community via the DAO. Community discussion will ensue on the [Governance Forum](https://discuss.ens.domains). The ballot will begin on [Snapshot](https://snapshot.org/#/ens.eth) and, should it be passed, the current ENS root keyholders will initiate a transfer of the ENS root key to the ENS DAO where it will be managed according to the precepts outlined herein.

@@ -1,0 +1,72 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: "This proposal executes funding for Working Groups for Q1/Q2 2023.",
+    emoji: '📖',
+    contributors: [
+        // Slobo.eth
+        'aslobodnik',
+        // Katherine Wu
+        'katherineykwu',
+        // Coltron.eth
+        'coltron-code'
+    ],
+    proposal: {
+        discourse: '16123',
+        tally: '105292919185331921858643224173178583901390266903267892669205105842869373522526',
+        type: 'executable'
+    }
+};
+
+# [EP3.2] [Executable] Q1/Q2 2023 Working Group Funding
+
+## Abstract
+
+This proposal executes all three Working Group funding requests for Q1/Q2 2023 as passed in EP 3.1.1, EP 3.1.2, and EP 3.1.3. For more detail, view the [ENS Governance docs](https://docs.ens.domains/v/governance/governance-proposals/term-3) or view the links below.
+
+## Motivation
+
+[**EP 3.1.1 — ENS Ecosystem Working Group**](https://docs.ens.domains/v/governance/governance-proposals/term-3/ep3.1.1-social-q1-q2-2023-funding-request-ens-ecosystem-working-group)
+
+The ENS Ecosystem Working Group requests funding of 935,000 USDC and 254 ETH from the ENS DAO for Q1/Q2 2023.
+
+The ENS Ecosystem Working Group is responsible for growing and improving the ENS Ecosystem by funding people and projects that are ENS-specific or ENS-centric. In line with Article III of the ENS DAO Constitution, the requested funds will be used to support projects and builders contributing to the development and improvement of the ENS protocol and the ENS ecosystem.
+
+[**EP 3.1.2 — MetaGovernance Working Group**](https://docs.ens.domains/v/governance/governance-proposals/term-3/ep3.1.2-social-q1-q2-2023-funding-request-meta-governance-working-group)
+
+The Meta-Governance Working Group requests funding of 364,000 USDC, 125 ETH, and 3,500 $ENS from the ENS DAO for Q1/Q2 2023.
+
+This MetaGovernance Working Group will use this funding to support the governance processes of the ENS DAO as well as manage and build infrastructure to support the ENS DAO and Working Groups.
+
+[**EP 3.1.3 — Public Goods Working Group**](https://docs.ens.domains/v/governance/governance-proposals/term-3/ep3.1.3-social-q1-q2-2023-funding-request-public-goods-working-group)
+
+The Public Goods Working Group requests funding of 250,000 USDC and 50 ETH from the ENS DAO for Q1/Q2 2023.
+
+The Public Goods Working Group will be use this funding to support projects and builders as provisioned by Article III of the ENS DAO Constitution, which provides for the funding of public goods in web3.
+
+## Specification
+
+1. Transfer 935,000 USDC and 254 ETH to ens-ecosystem.pod.xyz
+2. Transfer 364,000 USDC, 125 ETH, and 3,500 $ENS to ens-metagov.pod.xyz
+3. Transfer 250,000 USDC and 50 ETH to ens-publicgoods.pod.xyz
+
+**Addresses:**
+
+* 0x2686A8919Df194aA7673244549E68D42C1685d03 - ens-ecosystem.pod.xyz
+* 0x91c32893216dE3eA0a55ABb9851f581d4503d39b - ens-metagov.pod.xyz
+* 0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d - ens-publicgoods.pod.xyz
+
+## Transactions
+
+| Address                                    | Value   | Function | Argument | Value                   |
+| ------------------------------------------ | ------- | -------- | -------- | ----------------------- |
+| ens-ecosystem.pod.xyz                      | 254 ETH |          |          |                         |
+| ens-metagov.pod.xyz                        | 125 ETH |          |          |                         |
+| ens-publicgoods.pod.xyz                    | 50 ETH  |          |          |                         |
+| 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 |         | transfer | to       | ens-ecosystem.pod.xyz   |
+|                                            |         |          | value    | 935000000000            |
+| 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 |         | transfer | to       | ens-metagov.pod.xyz     |
+|                                            |         |          | value    | 364000000000            |
+| 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 |         | transfer | to       | ens-publicgoods.pod.xyz |
+|                                            |         |          | value    | 250000000000            |
+| 0xc18360217d8f7ab5e7c516566761ea12ce7f9d72 |         | transfer | to       | ens-metagov.pod.xyz     |
+|                                            |         |          | value    | 3500000000000000000000  |
