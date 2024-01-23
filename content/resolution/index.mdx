@@ -1,0 +1,76 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '👋',
+    contributors: []
+};
+
+# Resolution
+
+The process by which we load information about a name is called resolution. It's a simple process, but it's important to understand.
+Here is a diagram of some of the contracts involved when resolving a name.
+
+<div className="card1">
+    <img src="/content/resolution/flow1.png" alt="" />
+</div>
+
+The resolution process involves multiple parts. Most notably the [Registry](/registry/ens), multiple Registrars ([ETH Registrar](/registry/eth), [DNS Registrar](/registry/dns), [Reverse Registrar](/registry/reverse), etc)
+and the concept of a [Resolver](/resolvers/quickstart).
+
+## How to resolve
+
+Here is a little peak at what happens under the hood of your favourite library when you do a name lookup.
+
+### 1. Find the Resolver
+
+Every name has a "resolver". A resolver is simply a contract that implements the [resolver specification](#todo) and can be queried for information about a name.
+To get the resolver responsible for a name you can query [The Registry](/registry/ens) for the `resolver` of a name.
+
+<CodeGroup title="Get the resolver">
+
+```tsx {{ variant: 'solidity' }}
+ENS.resolver(bytes32 node) view returns (address)
+```
+
+```tsx {{ meta: 'focus=4:9', variant: 'wagmi', link: 'https://wagmi.sh/react/api/hooks/useEnsResolver#data', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-resolver' }}
+import { useEnsResolver } from "wagmi";
+import { normalize } from 'viem/ens';
+
+export const MyResolver = () => {
+    const { data: myResolver } = useEnsResolver({
+        name: normalize("luc.eth"), // The name to lookup
+    });
+
+    return <div>{myResolver}</div>;
+};
+```
+
+```ts {{ variant: 'ethers-v5' }}
+const resolver = await provider.getResolver("luc.eth");
+```
+
+```ts {{ variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsResolver.html' }}
+import { normalize } from "viem/ens";
+import { publicClient } from "./client";
+
+const ensResolver = await publicClient.getEnsResolver({
+    name: normalize("luc.eth"),
+});
+```
+
+</CodeGroup>
+
+To verify which specifications are implemented by a resolver you can call the `supportsInterface(bytes4 interfaceID)` on the resolver with the interfaceID you would like to test for.
+
+### 2. Query the Resolver
+
+Now you have found the resolver responsible for the name in question, you can query it for the information you are interested in.
+There are many ways you can query the resolver, `addr()` `text()` `contenthash()` `abi()` etc.
+
+If the resolver supports text records you can call `text()` to get that text record for the name.
+More about loading information from a resolver can be found [here](/resolvers/interacting).
+
+#### Wildcard Resolution
+
+In addition, all of the above functions can be sent to the `resolve()` function, specified in [ENSIP-10](/ensip/10).
+This allows for not only multicall functionality, but also easier implementation of EIP-3668, and more.

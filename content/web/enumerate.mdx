@@ -1,0 +1,103 @@
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+  description: 'List all names a user has, owns, or might have access to.',
+  contributors: [
+    'lucemans'
+  ]
+};
+
+# Listing a Users Names
+
+In some cases you might want to show off all names that a user has. Due to the nature of how the ENS Protocol works under the hood this might be a slightly more difficult task.
+Luckily tooling has been written to accommodate for this and to make it easier.
+
+<div className="card1 px-8 py-4 flex justify-center gap-2">
+    <span>0x225...c3B5</span>
+    <span>➡️</span>
+    <div className="block border-l-2 pl-2">
+        <div>luc.eth</div>
+        <div>lucemans.eth</div>
+        <div>keukenrol.eth</div>
+    </div>
+</div>
+
+## Why not all names? {{ title: "Enumeration", id: "enumeration" }}
+
+ENS Resolution ([read more here](/resolution)) relies on smart-contracts & external logic to resolve from name to address.
+This means that ahead of time we don't know what names a user has.
+Notable exceptions include [first-layer](/terminology#first-layer) [.eth names](/registry/eth), and [wrapped names](/subnames/wrapper),
+these are on-chain, and indexable through scanning events on the appropriate contracts.
+
+## Guidelines
+
+When using one of the methods described below It is important to keep in mind that you should always allow for a user to manually enter a name, as not all names are indexable.
+It is generally recommended to allow users to input a name using an [input box](todo-link) and to verify it resolves to the correct address upon user-completion.
+
+<div className="border border-ens-light-border dark:border-ens-dark-border rounded-md not-prose grid grid-cols-2">
+  <div className="flex flex-col">
+    <div className="grow p-2 flex items-center justify-center">
+      <span>Hello</span>
+    </div>
+    <div className="bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary px-4 py-2 space-x-1">
+      <span className="text-ens-light-green-primary dark:text-ens-dark-green-primary">Do</span><span>- Fallback to raw name entry</span>
+    </div>
+  </div>
+  <div className="flex flex-col border-l border-ens-light-border dark:border-ens-dark-border">
+    <div className="grow p-2 flex items-center justify-center">
+
+    </div>
+    <div className="bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary px-4 py-2 space-x-1">
+      <span className="text-ens-light-red-bright dark:text-ens-dark-red-bright">Don't</span><span>- Assume all names are owned</span>
+    </div>
+
+  </div>
+</div>
+
+## Alchemy {{ title: "Alchemy" }}
+
+The Alchemy platform has provided several endpoints for interacting with ENS names as well as to query a list of names a user has.
+
+```ts {{ title: 'Alchemy', variant: 'alchemy-sdk', link: "https://docs.alchemy.com/docs/how-to-resolve-ens-domains-given-a-wallet-address" }}
+// Setup: npm install alchemy-sdk
+import { Alchemy, Network } from "alchemy-sdk";
+
+const config = {
+    apiKey: "<-- ALCHEMY APP API KEY -->",
+    network: Network.ETH_MAINNET,
+};
+const alchemy = new Alchemy(config);
+
+const walletAddress = "0x458d1E307CcA61C0Bea82f7663F66831175EcDe8"; // replace with wallet address
+const ensContractAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+const nfts = await alchemy.nft.getNftsForOwner(walletAddress, {
+    contractAddresses: [ensContractAddress],
+});
+
+console.log(nfts);
+```
+
+## The Graph {{ title: "The Graph" }}
+
+The ENS Team has worked together closely with the graph to provide the [ENS Subgraph](/web/subgraph) ([The Graph](https://thegraph.com/hosted-service/subgraph/ensdomains/ens)). This subgraph indexes ENS name registrations & wrapping of names that are part of the [ETH Registrar](/registry/eth).
+
+<CodeGroup title="ENS Subgraph">
+
+```tsx {{ title: 'Wagmi (React)', language: 'tsx', variant: 'wagmi', link: "https://thegraph.com/hosted-service/subgraph/ensdomains/ens" }}
+// TODO: Write React Example
+```
+
+```graphql {{ title: 'GraphQL', language: 'gql', variant: 'gql', link: "https://thegraph.com/hosted-service/subgraph/ensdomains/ens" }}
+{
+  domains(where: {owner: "0x225f137127d9067788314bc7fcc1f36746a3c3b5"}) {
+    name
+  }
+}
+```
+
+</CodeGroup>
+
+## Basement {{ title: "Basement" }}
+
+```tsx {{ title: 'Wagmi (React)', language: 'tsx' }}
+TODO: Code Snippet for Basement
+```

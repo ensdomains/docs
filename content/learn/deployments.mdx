@@ -1,0 +1,173 @@
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+description: '',
+emoji: '📰',
+contributors: [
+'lucemans'
+]
+};
+
+# Deployments
+
+<Note>
+    This page contains information that is only relevant to developers who would
+    like to interact with the contract manually. Most libraries will handle this
+    for you.
+</Note>
+
+Though ENS is a platform-agnostic (read more [here](/learn/multichain)), the ENS Protocol smart-contracts are deployed on Ethereum mainnet, as well as the most popular test-networks, such as goerli, ropsten, rinkeby, and kovan.
+Listed below you will find a list of latest deployments of registries, resolvers, and more.
+If you are looking for our legacy contracts please refer to the [changelog section](/changelog).
+
+## Active Deployments
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+<ChainDeployments
+    chain="mainnet"
+    deployments={[
+        {
+            name: "Registry",
+            path: "ENSRegistry",
+        },
+        {
+            name: "Base Registrar",
+            path: "BaseRegistrarImplementation",
+        },
+        {
+            name: "ETH Registrar Controller",
+            path: "ETHRegistrarController",
+        },
+        {
+            name: "DNS Registrar",
+            path: "DNSRegistrar",
+        },
+        {
+            name: "Reverse Registrar",
+            path: "ReverseRegistrar",
+        },
+        {
+            name: "Name Wrapper",
+            path: "NameWrapper",
+        },
+        {
+            name: "Public Resolver",
+            path: "PublicResolver",
+        },
+    ]}
+/>
+
+<ChainDeployments
+    chain="goerli"
+    deployments={[
+        {
+            name: "Registry",
+            path: "ENSRegistry",
+        },
+        {
+            name: "Base Registrar",
+            path: "BaseRegistrarImplementation",
+        },
+        {
+            name: "ETH Registrar Controller",
+            path: "ETHRegistrarController",
+        },
+        {
+            name: "DNS Registrar",
+            path: "DNSRegistrar",
+        },
+        {
+            name: "Reverse Registrar",
+            path: "ReverseRegistrar",
+        },
+        {
+            name: "Name Wrapper",
+            path: "NameWrapper",
+        },
+        {
+            name: "Public Resolver",
+            path: "PublicResolver",
+        },
+    ]}
+/>
+
+<ChainDeployments
+    chain="sepolia"
+    deployments={[
+        {
+            name: "Registry",
+            path: "ENSRegistry",
+        },
+        {
+            name: "Base Registrar",
+            path: "BaseRegistrarImplementation",
+        },
+        {
+            name: "ETH Registrar Controller",
+            path: "ETHRegistrarController",
+        },
+//        {
+//            name: "DNS Registrar",
+//            path: "DNSRegistrar",
+//        },
+        {
+            name: "Reverse Registrar",
+            path: "ReverseRegistrar",
+        },
+        {
+            name: "Name Wrapper",
+            path: "NameWrapper",
+        },
+        {
+            name: "Public Resolver",
+            path: "PublicResolver",
+        },
+    ]}
+/>
+
+{/* <ChainDeployments
+    chain="holesky"
+    deployments={[
+        {
+            name: "Base Registrar",
+            path: "BaseRegistrarImplementation",
+        },
+        {
+            name: "ETH Registrar Controller",
+            path: "ETHRegistrarController",
+        },
+//        {
+//            name: "DNS Registrar",
+//            path: "DNSRegistrar",
+//        },
+        {
+            name: "Name Wrapper",
+            path: "NameWrapper",
+        },
+        {
+            name: "Public Resolver",
+            path: "PublicResolver",
+        },
+        {
+            name: "Registry",
+            path: "ENSRegistry",
+        },
+        {
+            name: "Reverse Registrar",
+            path: "ReverseRegistrar",
+        },
+    ]}
+/> */}
+
+</div>
+
+## But what about multichain? {{ tag: "Multichain", title: "Multichain", id: "multichain" }}
+
+The ENS Protocol can be used on/for any chain! If you are building a dApp and want to use ENS you might have to add a [Mainnet RPC to your Wagmi config](/web/libraries).
+This allows tools like wagmi to access mainnet, and load ENS information!
+
+<EmbedLink
+    title="Layer 2 & Offchain"
+    description="Learn more about ENS on Layer 2 and Offchain solutions"
+    href="/learn/ccip"
+/>

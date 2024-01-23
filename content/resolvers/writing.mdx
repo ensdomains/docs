@@ -1,0 +1,52 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '✍️',
+    contributors: []
+};
+
+# Writing a Resolver
+
+Every ENS name has a resolver, which is responsible for resolving information about a name.
+By writing your own resolver contract you can extend the functionality of your name, subnames, and more.
+
+resolvers are a core part of the ENS protocol
+
+they give the power to a name "node" to control the resolution process from itself onwards (its subdomains etc)
+
+resolvers were originally standardized in EIP 137, but have since received a few updates such as [EIP 181](https://eips.ethereum.org/EIPS/eip-181), [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-10](/ensip/10).
+
+## Resolver Interface
+
+the idea of a resolver is pretty straight forward. "any contract that implements the resolver interface". There have been a few extensions to the original interface, however a summarized interface is defined as follows:
+
+```solidity
+contract MyResolver {
+    fn addr(bytes32 node) public view returns (address);
+}
+```
+
+## Wildcard Resolution
+
+In [ENSIP-10](/ensip/10) a new method was added to the resolver interface, the `resolve()` method.
+This method allows for fetching 
+
+```solidity
+interface ExtendedResolver {
+    function resolve(bytes calldata name, bytes calldata data) external view returns(bytes);
+}
+```
+
+<Note>
+Don't forget to add `0x9061b923` to your [EIP-165](https://eips.ethereum.org/) `supportsInterface()` implementation.
+</Note>
+
+## Offchain Resolution
+
+When you write your own resolver you are able to leverage the power of CCIP Read. More about writing a ccip-enabled resolver [here](/resolvers/ccip)
+
+## Test your Resolver
+
+<LiveDemo id="resolver_test" />
