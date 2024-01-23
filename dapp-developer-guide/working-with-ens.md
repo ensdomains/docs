@@ -68,6 +68,13 @@ from ens.auto import ns
 EnsResolver ens = new EnsResolver(web3j, 300 /* sync threshold, seconds */);
 ```
 {% endtab %}
+
+{% tab title="nethereum" %}
+```.net
+var ensService = new Nethereum.ENS.ENSService(web3);
+```
+{% endtab %}
+
 {% endtabs %}
 
 Some web3 libraries - e.g., ethers.js, viem, web3j, and web3.py - have integrated support for name resolution. In these libraries, you can pass in an ENS name anywhere you can supply an address, meaning you do not need to interact directly with their ENS APIs unless you want to manually resolve names or do other ENS operations.
