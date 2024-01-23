@@ -11,10 +11,10 @@ const processSlugs = (slug: string) => {
 
 const getGitLastUpdatedTimeStamp = async (slug: string) => {
     const git = simpleGit({
-        baseDir: process.cwd().replace(/\/docs$/, ''),
+        baseDir: process.cwd().replace(/\/app$/, ''),
     });
     const lastUpdatedTimeStamp = await git.log({
-        file: process.cwd().replace(/\/docs$/, '') + `/content/${slug}`,
+        file: process.cwd().replace(/\/app$/, '') + `/docs/${slug}`,
     });
 
     return new Date(lastUpdatedTimeStamp.latest.date);
@@ -22,7 +22,7 @@ const getGitLastUpdatedTimeStamp = async (slug: string) => {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const files = await glob('**/*.mdx', {
-        cwd: join(process.cwd(), '../content'),
+        cwd: join(process.cwd(), '../docs'),
     });
 
     const routes = await Promise.all(

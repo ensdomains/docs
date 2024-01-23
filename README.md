@@ -10,7 +10,7 @@ The ENS documentation is available at [docs.ens.domains](https://docs.ens.domain
 
 ## 📖 Contributing
 
-We welcome contributions to the ENS documentation. If you would like to contribute, please read the [contributing guidelines](./CONTRIBUTING.md). All content is written in mdx, and [markdown files can be found here](./docs/pages).
+We welcome contributions to the ENS documentation. If you would like to contribute, please read the [contributing guidelines](./CONTRIBUTING.md). All content is written in mdx, and [markdown files can be found here](./app/pages).
 
 ## 📄 License
 

@@ -19,7 +19,7 @@ export const createSectionStore = (sections) => {
             offsetRem: number;
         }[];
         visibleSections: string[];
-        setVisibleSections: (visibleSections: string[]) => void;
+        setVisibleSections: (_visibleSections: string[]) => void;
         registerHeading: ({
             id,
             ref,
