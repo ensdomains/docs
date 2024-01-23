@@ -67,6 +67,10 @@ import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 
 * [delphereum](https://github.com/svanas/delphereum)
 
+### .Net
+
+* [Nethereum](https://github.com/nethereum/nethereum)
+
 ## Next Steps
 
 Once you've chosen a library, read [Working with ENS](working-with-ens.md) to learn how to use your chosen ENS library in your application.
