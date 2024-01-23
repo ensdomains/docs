@@ -1,6 +1,7 @@
 import { getPageBySlug } from 'data/get_page';
 import { getAllPageSlugs } from 'data/get_pages';
-import { ImageResponse, NextRequest } from 'next/server';
+import { ImageResponse } from 'next/og';
+import { NextRequest } from 'next/server';
 import { readFile } from 'node:fs/promises';
 
 // Route segment config

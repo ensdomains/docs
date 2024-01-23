@@ -2,7 +2,7 @@ import { glob } from 'glob';
 import { join } from 'node:path';
 import { cache } from 'react';
 
-const contentDirectory = join(process.cwd(), '../content');
+const contentDirectory = join(process.cwd(), '../docs');
 
 const _getAllPageSlugs = async () => {
     console.log('GLOBBING DA FILES 🧹');

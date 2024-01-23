@@ -51,7 +51,7 @@ export const generateMetadata = async (
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export async function generateStaticParams() {
-    if (process.env.NODE_ENV !== 'production') return [];
+    // if (process.env.NODE_ENV !== 'production') return [];
 
     const pages = await getAllPageSlugs();
 

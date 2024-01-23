@@ -9,7 +9,7 @@ import {
     mdxPagePropsSchema as mdxPagePropertiesSchema,
 } from '../src/lib/mdxPageProps';
 
-const contentDirectory = join(process.cwd(), '../content');
+const contentDirectory = join(process.cwd(), '../docs');
 
 const _getPageBySlug = async (
     // ex 'index' or 'web' or 'web/quickstart'
@@ -38,7 +38,7 @@ const _getPageBySlug = async (
         return notFound();
     }
 
-    const file = await import('../../content/' + foundPath + '.mdx');
+    const file = await import('../../docs/' + foundPath + '.mdx');
 
     const { default: Page, ...rawPageProperties } =
         file as MdxPageProperties & {

@@ -2,7 +2,7 @@ import { mdxAnnotations } from 'mdx-annotations';
 // import recmaNextjsStaticProps from 'recma-nextjs-static-props';
 import { simpleGit } from 'simple-git';
 
-const cwd = process.cwd().replace(/\/docs$/, '');
+const cwd = process.cwd().replace(/\/app$/, '');
 
 /**
  * @type {import('unified').Plugin<[], import('estree').Program>}
