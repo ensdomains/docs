@@ -14,7 +14,7 @@ The registrar itself is called [BaseRegistrar](registrar.md). This contract impl
 * Name owners may reclaim ownership in the ENS registry if they have lost it.
 * Owners of names in the legacy registrar may transfer them to the new registrar, during the 1 year transition period. When they do so, their deposit is returned to them in its entirety.
 
-In addition, the registrar is an ERC721 compliant non-fungible token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
+In addition, the registrar is an [ERC721](https://github.com/ensdomains/ens/blob/master/docs/ethregistrar.rst#id3) compliant non-fungible token contract, meaning that .eth registrations can be transferred in the same fashion as other NFTs.
 
 Users will interact directly with this contract when transferring ownership of names, or recovering ownership in the ENS registry of a name \(for example, one whose ownership was previously transferred to a contract\). Users can also query names to see their registration status and expiry date. For initial registration and for renewals, users will need to interact with a controller contract.
 
