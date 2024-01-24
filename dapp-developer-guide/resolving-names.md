@@ -379,7 +379,7 @@ if(address != ens.resolve(name)) {
 
 Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`(where _1234..._ is the address you want to reverse-resolve), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
-If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a separate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
 
 {% hint style="warning" %}
 `ReverseRecords` does not support [ENSIP-10](../ens-improvement-proposals/ensip-10-wildcard-resolution.md), so we recommend you use a library like [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs) instead which has batch functions using the [`UniversalResolver`](https://github.com/ensdomains/ens-contracts/blob/master/contracts/utils/UniversalResolver.sol).
