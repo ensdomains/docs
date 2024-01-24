@@ -34,7 +34,7 @@ This is how you include abi into your frontend code.
 import {
   ENS,
   PublicResolver
-} from '@ensdomains/ens-contracts'`
+} from '@ensdomains/ens-contracts'
 ```
 
 This is how you import our smartcontract within Solidity.
