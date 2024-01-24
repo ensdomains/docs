@@ -1,22 +1,24 @@
 # ENS Libraries
 
-ENS support is available in many popular languages. If you know of a library that is not listed here, please [send us a PR](https://github.com/ensdomains/ens/compare).
+ENS support is available in many popular languages. If you know of a library that is not listed here, please [send us a PR](https://github.com/ensdomains/docs/pulls).
 
 ### Javascript
 
 * [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs), maintained by the ENS developers
-* [ethereum-ens](https://www.npmjs.com/package/ethereum-ens) \(deprecated\)
-* [react-ens-address](https://github.com/ensdomains/react-ens-address)
+* [wagmi](https://www.npmjs.com/package/wagmi), React Hooks for Ethereum with native ENS support
+* [viem](https://www.npmjs.com/package/viem)
 * [ethers.js](https://github.com/ethers-io/ethers.js)
 * [web3.js](https://web3js.readthedocs.io/en/1.0/web3-eth-ens.html)
 * [embark.io](https://framework.embarklabs.io/docs/naming_configuration.html)
 * [waffle.io](https://ethereum-waffle.readthedocs.io/en/latest/ens.html)
 
+We also have a component library for React called [Thorin](https://thorin.ens.domains/) if you're looking for a design system to build your dapp with.
+
 #### Which Javascript library should I use?
 
 If you are already using web3.js or ethers.js, and do not require functionality such as creating subdomains, transferring ownership, or updating resolvers, use built in ENS features of these libraries.
 
-If you are using React and only need to do forward and reverse resolution of ENS names with built in UI, use react-ens-address.
+If you are using React and only need to do forward and reverse resolution of ENS names, use wagmi.
 
 If you want to have ENS instance deployed into your dev environment, you may want to use embark.io or waffle.io which allows you to configure/deploy ENS registry in your Ethereum test instance.
 
@@ -32,7 +34,7 @@ This is how you include abi into your frontend code.
 import {
   ENS,
   PublicResolver
-} from '@ensdomains/ens-contracts'`
+} from '@ensdomains/ens-contracts'
 ```
 
 This is how you import our smartcontract within Solidity.
@@ -64,6 +66,10 @@ import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 ### Delphi
 
 * [delphereum](https://github.com/svanas/delphereum)
+
+### .Net
+
+* [Nethereum](https://github.com/nethereum/nethereum)
 
 ## Next Steps
 

@@ -9,24 +9,6 @@ Names can have many types of data associated with them; the most common is crypt
 **Resolving a name to an Ethereum address** using a library is simple:
 
 {% tabs %}
-{% tab title="ensjs" %}
-```javascript
-var address = await ens.name('resolver.eth').getAddress();
-```
-{% endtab %}
-
-{% tab title="web3.js" %}
-```javascript
-var address = ens.getAddress('alice.eth');
-```
-{% endtab %}
-
-{% tab title="ethjs-ens" %}
-```javascript
-var address = await ens.lookup('alice.eth');
-```
-{% endtab %}
-
 {% tab title="ethers.js" %}
 ```javascript
 var address = await provider.resolveName('alice.eth');
@@ -46,6 +28,46 @@ const abi = [
   "function setValue(string value)"
 ];
 const contract = new ethers.Contract('contract.alice.eth', abi, provider);
+```
+{% endtab %}
+
+{% tab title="viem" %}
+```javascript
+var address = await client.getEnsAddress({name: 'nick.eth'});
+```
+{% endtab %}
+
+{% tab title="wagmi" %}
+```tsx
+import { useEnsAddress } from 'wagmi'
+
+function App() {
+  const { data, isError, isLoading } = useEnsAddress({
+    name: 'nick.eth',
+  })
+
+  if (isLoading) return <div>Fetching address…</div>
+  if (isError) return <div>Error fetching address</div>
+  return <div>Address: {data}</div>
+}
+```
+{% endtab %}
+
+{% tab title="ensjs" %}
+```javascript
+var address = await ens.getAddress('nick.eth');
+```
+{% endtab %}
+
+{% tab title="web3.js" %}
+```javascript
+var address = ens.getAddress('alice.eth');
+```
+{% endtab %}
+
+{% tab title="ethjs-ens" %}
+```javascript
+var address = await ens.lookup('alice.eth');
 ```
 {% endtab %}
 
@@ -79,7 +101,7 @@ Resolution without a library is a three step process:
 
 1. Normalise and hash the name - see [name processing](../contract-api-reference/name-processing.md) for details.
 2. Call `resolver()` on the ENS registry, passing in the output of step 1. This returns the address of the resolver responsible for the name.
-3. Using the [resolver interface](https://github.com/ensdomains/resolvers/blob/master/contracts/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
+3. Using the [resolver interface](https://github.com/ensdomains/ens-contracts/blob/master/contracts/resolvers/Resolver.sol), call `addr()` on the resolver address returned in step 2, passing in the hashed name calculated in step 1.
 
 **Resolution support for the addresses of other blockchains** is implemented with an additional overload on `addr()`. To resolve a non-Ethereum address, supply both the namehash and the [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) chain ID of the cryptocurrency whose address you want to resolve. For example, to resolve a Bitcoin address, you would call `addr(hash, 0)`. Note that the returned address will be in binary representation, and so will need decoding to a text-format address; for details, see [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304).
 
@@ -94,21 +116,46 @@ ENS supports many types of resources besides Ethereum addresses, including other
 Resolving these content types without a library follows the same 3-step process detailed above; simply call the relevant method on the resolver in step 3 instead of `addr()`.
 
 {% tabs %}
+{% tab title="ethers.js" %}
+```javascript
+  const resolver = await provider.getResolver('abittooawesome.eth');
+  const contentHash = await resolver.getContentHash();
+  const btcAddress = await resolver.getAddress(0);
+  const dogeAddress = await resolver.getAddress(3);
+  const email = await resolver.getText("email");
+```
+{% endtab %}
+
+{% tab title="viem" %}
+```javascript
+const client = createPublicClient({ chain: mainnet, transport: http() })
+const resolver = await client.getEnsResolver({ name: 'nick.eth' })
+const github = await client.getEnsText({ name: 'nick.eth', key: 'com.github' })
+```
+{% endtab %}
+
+{% tab title="wagmi" %}
+```tsx
+import { useEnsAvatar } from 'wagmi'
+
+function App() {
+  const { data, isError, isLoading } = useEnsAvatar({
+    name: 'nick.eth',
+  })
+
+  if (isLoading) return <div>Fetching avatar…</div>
+  if (isError) return <div>Error fetching avatar</div>
+  return <div>Avatar: {data}</div>
+}
+```
+{% endtab %}
+
 {% tab title="ensjs" %}
 ```javascript
-// Getting contenthash
-await ens.name('abittooawesome.eth').getContent()
-// Setting contenthash
-await ens.name('abittooawesome.eth').setContenthash(contentHash)
-
-// Getting other coins
-await ens.name('brantly.eth').getAddress('BTC')
-// Setting other coins
-await ens.name('superawesome.eth').setAddress('ETC', '0x0000000000000000000000000000000000012345')
-// Getting text
-await ens.name('resolver.eth').getText('url')
-// Setting text
-await ens.name('superawesome.eth').setText('url', 'http://google.com')
+const resolver = await ens.getResolver('nick.eth')
+const contentHash = await ens.getContentHash('nick.eth')
+const github = await ens.getText('nick.eth', 'com.github')
+const bitcoinAddr = await ens.getAddr('alisha.eth', 'BTC')
 ```
 {% endtab %}
 
@@ -126,16 +173,6 @@ web3.eth.ens.setContenthash('ethereum.eth', hash);
 {% tab title="ethjs-ens" %}
 ```javascript
 Not supported.
-```
-{% endtab %}
-
-{% tab title="ethers.js" %}
-```javascript
-  const resolver = await provider.getResolver('abittooawesome.eth');
-  const contentHash = await resolver.getContentHash();
-  const btcAddress = await resolver.getAddress(0);
-  const dogeAddress = await resolver.getAddress(3);
-  const email = await resolver.getText("email");
 ```
 {% endtab %}
 
@@ -342,7 +379,11 @@ if(address != ens.resolve(name)) {
 
 Reverse resolution without a library follows the same pattern as forward resolution: Get the resolver for `1234....addr.reverse`(where _1234..._ is the address you want to reverse-resolve), and call the `name()` function on that resolver. Then, perform a forward resolution to verify the record is accurate.
 
-If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a seperate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+If you need to process many addresses (eg: showing reverse record of transaction histories), resolving both reverse and forward resolution for each item may not be practical. We have a separate smart contract called [`ReverseRecords`](https://github.com/ensdomains/reverse-records) which allows you to lookup multiple names in one function call.
+
+{% hint style="warning" %}
+`ReverseRecords` does not support [ENSIP-10](../ens-improvement-proposals/ensip-10-wildcard-resolution.md), so we recommend you use a library like [ensjs](https://www.npmjs.com/package/@ensdomains/ensjs) instead which has batch functions using the [`UniversalResolver`](https://github.com/ensdomains/ens-contracts/blob/master/contracts/utils/UniversalResolver.sol).
+{% endhint %}
 
 ```javascript
 const namehash = require('eth-ens-namehash');

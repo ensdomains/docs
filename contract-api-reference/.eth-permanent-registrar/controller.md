@@ -1,8 +1,8 @@
 # Controller
 
-[Source](https://github.com/ensdomains/ethregistrar/blob/master/contracts/ETHRegistrarController.sol)
+[Source](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/ETHRegistrarController.sol)
 
-This section documents the parts of the [ETHRegistrarController](https://github.com/ensdomains/ethregistrar/blob/master/contracts/ETHRegistrarController.sol) relevant to implementers of tools that interact with it. Functionality exclusive to the registrar owner is omitted for brevity.
+This section documents the parts of the [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/ETHRegistrarController.sol) relevant to implementers of tools that interact with it. Functionality exclusive to the registrar owner is omitted for brevity.
 
 The controller works exclusively with plaintext labels \(eg, 'alice' for 'alice.eth'\).
 
@@ -113,7 +113,7 @@ function valid(string name) public view returns(bool);
 function available(string name) public view returns(bool);
 ```
 
-`available` returns true iff the name is both valid and available for registration by this controller. [Under the hood](https://github.com/ensdomains/ethregistrar/blob/master/contracts/ETHRegistrarController.sol#L55-L58), this call uses the `valid` function \(above\) and the `available` function on the [registrar](registrar.md#check-name-availability) contract, which checks for availability in both the legacy ENS registrar and current ENS registrar.
+`available` returns true if the name is both valid and available for registration by this controller. [Under the hood](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/ETHRegistrarController.sol#L103-L105), this call uses the `valid` function \(above\) and the `available` function on the [registrar](registrar.md#check-name-availability) contract, which checks for availability in both the legacy ENS registrar and current ENS registrar.
 
 Callers **should** use this function to check if a name is available for registration, rather than the `available` function on the registrar contract, which does not check name length.
 

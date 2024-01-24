@@ -40,7 +40,6 @@ In addition to Severity, other variables are also considered when the ENS team d
 The following smart contracts are covered by the bounty:
 
 * All non-test contracts in [ensdomains/ens-contracts](https://github.com/ensdomains/ens-contracts).
-* [ensdomains/name-wrapper](https://github.com/ensdomains/name-wrapper).
 
 ## Important Legal Information
 

@@ -93,7 +93,7 @@ If your dApp needs to display many Ethereum Addresses or ENS Names in the UI, yo
 Your **optimistic UI** can safely display the names from cache **in all non-risky situations**, in which your user for example is simply browsing, but doesn't need to act or make decisions, especially risky ones, based on the information displayed.  
 However, **in all** _**risky**_ **situations** \(eg transferring ETH, tokens or other value\), or when the user is interacting with another ENS Name / Ethereum Address, you should **perform a direct live resolution** and get the most up to date information from the ENS Registry.
 
-Also consider that users can change their information in the ENS registry at any time so you should **periodically validate the information you cached**. For this you can also subscribe to certain **Events** made available by the contracts \(especially [AddrChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-ethereum-address), and [NameChanged](https://docs.ens.domains/contract-api-reference/publicresolver#set-canonical-name)\).
+Also consider that users can change their information at any time which may not be tracked in the onchain registry, so you should **periodically validate the information you cached**. [Learn more about offchain ENS names](./ens-l2-offchain.md).
 
 \*\*\*\*
 
@@ -114,6 +114,4 @@ Other guidelines previously mentioned also apply for simple Ethereum addresses:
 
 ## Front-End tools
 
-* **Aragon-UI** - [Address Badge component](https://github.com/aragon/design/issues/3) \([Design Files](https://github.com/aragon/design) / [code](https://github.com/aragon/aragon-ui/tree/master/src/components/Badge)\)
-* **Decentraland-UI** - [address Tooltip](https://ui.decentraland.org/?selectedKind=Address&selectedStory=Tooltip&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Fstories%2Fstories-panel) \(not ENS specific\)
-
+* **Thorin** - [React component library for the ENS design system](https://thorin.ens.domains/)
