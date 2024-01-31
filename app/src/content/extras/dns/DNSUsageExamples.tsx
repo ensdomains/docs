@@ -1,5 +1,7 @@
 import { FiChevronRight } from 'react-icons/fi';
 
+import { LinkCard } from '../linkcard/LinkCard';
+
 export const DNSUsageExamples = () => {
     return (
         <div
@@ -39,42 +41,16 @@ export const DNSUsageExamples = () => {
                     [title, description, domain, link, logo, bgColor, fgColor],
                     index
                 ) => (
-                    <a
-                        href={link}
+                    <LinkCard
                         key={index}
-                        className="card !m-0 flex w-full flex-col p-2 px-4 pb-4 hover:outline focus:outline focus:outline-4"
-                        style={{
-                            borderColor: bgColor,
-                            outlineColor: fgColor,
-                            background: `${bgColor}`,
-                            color: fgColor,
-                        }}
-                        target="_blank"
-                        rel="nofollow"
-                    >
-                        <div className="mb-2 flex justify-between">
-                            <div className="flex aspect-square w-8 items-center">
-                                <img
-                                    src={logo}
-                                    alt={title}
-                                    className="w-full"
-                                />
-                            </div>
-                            <div
-                                className="my-auto h-fit w-fit px-2 text-xs"
-                                style={{ background: fgColor, color: bgColor }}
-                            >
-                                {domain}
-                            </div>
-                        </div>
-                        <div className="font-bold">{title}</div>
-                        <div className="leading-5">{description}</div>
-                        <div className="flex grow items-end justify-end text-right">
-                            <div className="flex items-center">
-                                read more <FiChevronRight />
-                            </div>
-                        </div>
-                    </a>
+                        title={title}
+                        description={description}
+                        domain={domain}
+                        link={link}
+                        logo={logo}
+                        bgColor={bgColor}
+                        fgColor={fgColor}
+                    />
                 )
             )}
             <div className="flex h-auto w-full grow flex-col rounded-md border p-4 text-inherit">

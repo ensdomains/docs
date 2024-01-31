@@ -53,7 +53,6 @@ export const navigation: SectionData[] = [
                     {
                         title: 'Terminology',
                         href: '/terminology',
-                        wip: 10,
                         icon: '📓',
                     },
                     {
@@ -61,12 +60,12 @@ export const navigation: SectionData[] = [
                         href: '/bugs',
                         icon: '🪲',
                     },
-                    {
-                        title: 'Changelog',
-                        href: '/changelog',
-                        wip: 5,
-                        icon: '📝',
-                    },
+                    // {
+                    //     title: 'Changelog',
+                    //     href: '/changelog',
+                    //     wip: 5,
+                    //     icon: '📝',
+                    // },
                 ],
             },
         ],
@@ -304,18 +303,37 @@ export const navigation: SectionData[] = [
             },
             {
                 title: 'Namewrapper',
-                icon: '📰',
+                icon: '🎁',
                 links: [
                     {
-                        title: 'Quickstart',
-                        href: '/wrapper/quickstart',
-                        wip: true,
-                        icon: '⚡',
+                        title: 'Overview',
+                        href: '/wrapper/overview',
+                        icon: '📰',
                     },
                     {
-                        title: 'Namewrapper',
-                        href: '/wrapper/wrapper',
-                        icon: '🎁',
+                        title: 'Wrapped States',
+                        href: '/wrapper/states',
+                        icon: '🗒️',
+                    },
+                    {
+                        title: 'Fuses',
+                        href: '/wrapper/fuses',
+                        icon: '🧨',
+                    },
+                    {
+                        title: 'Expiry',
+                        href: '/wrapper/expiry',
+                        icon: '🕰️',
+                    },
+                    {
+                        title: 'Contract Details',
+                        href: '/wrapper/contracts',
+                        icon: '🔍',
+                    },
+                    {
+                        title: 'Use-Cases',
+                        href: '/wrapper/usecases',
+                        icon: '✨',
                     },
                 ],
             },
