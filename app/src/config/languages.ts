@@ -103,6 +103,12 @@ export const LanguagePresets = configureLanguages({
         language: 'solidity',
         fallback: [],
     },
+    nethereum: {
+        icon: '/icons/libraries/nethereum.svg',
+        name: 'Nethereum',
+        language: 'csharp',
+        fallback: [],
+    },
 });
 
 export type languages = keyof typeof LanguagePresets;

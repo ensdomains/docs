@@ -126,6 +126,11 @@ const records = client.getRecords({
 address = ns.address('alice.eth')
 ```
 
+```csharp {{ variant: "nethereum" }}
+var ensService = new Nethereum.ENS.ENSService(web3);
+var address = await ensService.ResolveAddressAsync("alice.eth");
+```
+
 </CodeGroup>
 
 To learn what happens under the hood when you do a forward lookup, read the [resolution](/resolution) section.

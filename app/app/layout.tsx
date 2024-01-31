@@ -13,6 +13,9 @@ export default function RootLayout(properties) {
 
     return (
         <html lang="en" suppressHydrationWarning>
+            <head>
+                <link rel="icon" href="/favicon.ico" sizes="any" />
+            </head>
             <body className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary text-ens-light-text-primary dark:text-ens-dark-text-primary">
                 <Theme>{children}</Theme>
                 <script
