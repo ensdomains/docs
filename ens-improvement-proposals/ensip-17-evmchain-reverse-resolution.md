@@ -75,7 +75,7 @@ To make things explicit we will allow the signing of a message to confirm that t
 1) Sign a message to set a default record
 2) call `setName()` on the default registrar on L1
 
-Possibility: Allowing L1 Primary ENS names to also use `default.addr`. This could be incorporated into the public resolver's `name()` function.
+Possibility: Allowing L1 Primary ENS names to also use `default.reverse`. This could be incorporated into the public resolver's `name()` function.
 
 ## Further considerations
 
