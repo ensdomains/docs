@@ -47,18 +47,12 @@ By passing the name through metadata, we empower the resolution process, enablin
 // To be included in
 // https://github.com/ensdomains/ens-contracts/blob/staging/contracts/resolvers/Resolver.sol
 interface IOffChainResolver {
-    /** @dev Returns the owner of the resolver on L2
-     * @param node
-     * @return owner in bytes32 instead of address to cater for non EVM based owner information
-     */
-    owner(bytes32 node) returns (bytes owner);
-
     // optional.
     // this returns data via l2 with EIP-3668 so that non EVM chains can also return information of which address can update the record
     // The same function name exists on L2 where delegate returns address instead of bytes
     function isApprovedFor(bytes context, bytes32 node, bytes delegate) returns (bool);
 
-    /** @dev Returns the owner of the resolver on L2
+    /** @dev Returns the metadata about the node
      * @return name can be l2 chain name or url if offchain
      * @return coinType according to https://github.com/ensdomains/address-encoder
      * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
