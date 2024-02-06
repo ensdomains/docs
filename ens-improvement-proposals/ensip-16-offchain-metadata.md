@@ -23,7 +23,7 @@ This ENSIP addresses this by adding a way of important metadata to be gathered o
 
 The metadata should include 2 different types of info
 
-- Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
+- Offchain data storage location related info: `graphqlUrl` includes the URL to fetch the metadata.
 
 - Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record.
 
@@ -63,7 +63,7 @@ interface IOffChainResolver {
      * @return coinType according to https://github.com/ensdomains/address-encoder
      * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
      * @return storageType 0 = EVM, 1 = Non blockchain, 2 = Starknet
-     * @storageLocation = l2 contract address
+     * @storageLocation = When storageType is 0, l2 contract address. When storageType is 1, url endpoint in bytes format
      * @return context = an arbitrary bytes string to define the namespace to which a record belongs such as the name owner.
      */
     function metadata(bytes calldata name)
@@ -189,6 +189,46 @@ type Resolver @entity {
   coinTypes: [BigInt!]
 }
 ```
+
+### Offchain storage service
+
+[EIP-5559](https://eips.ethereum.org/EIPS/eip-5559#data-stored-in-an-off-chain-database) has already been proposed to handle both L2 and off chain storage by utilizing the similar method to [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668).
+While this is technically feasible, it adds extra function calls simply to discover how to update the data. The simpler alternative for ENS related storage update is to query storage service endpoint from `storageLocation` in bytes format when `storateType` is set to `1`. The client then make a HTTP POST request to the storage location with signature information.
+
+The body attached to the request is a JSON object that includes sender, data, inception date and a signed copy of the abi encoded data, sender, and inception date.
+
+Example HTTP POST request body including requestParams and signature:
+
+```
+  const name = 'vitalik.eth'
+  const node = ethers.utils.namehash(name)
+  const iface = new ethers.utils.Interface(['function setAddr(bytes,address)'])
+  const signer = signers[0]
+  const signerAddress = signer.address
+  const data = iface.encodeFunctionData('setAddr',[node, signerAddress])
+  const block = await ethers.provider.getBlock('latest')
+  inceptionDate = block.timestamp
+  signature = await signers[0].signMessage(
+    ethers.utils.arrayify(
+      keccak256(
+        ['bytes', 'address', 'uint256'],
+        [
+          data,
+          signer,
+          inceptionDate
+        ],
+      ),
+    ),
+  )
+  const request = {
+    data:,
+    sender:signer,
+    inceptionDate,
+    signature
+  }
+```
+
+Once the storage service receives the request, it decodes the sender information from the signed signature and perform the data update if the `sender` matches the name onwer defined by the optional `context` field.
 
 ### Backwards Compatibility
 
