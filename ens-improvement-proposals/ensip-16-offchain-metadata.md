@@ -205,10 +205,9 @@ Example HTTP POST request body including requestParams and signature:
   signature = await signers[0].signMessage(
     ethers.utils.arrayify(
       keccak256(
-        ['bytes', 'address', 'uint256'],
+        ['bytes', 'uint256'],
         [
           data,
-          signer,
           inceptionDate
         ],
       ),
