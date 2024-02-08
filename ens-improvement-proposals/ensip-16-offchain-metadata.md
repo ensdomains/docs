@@ -187,11 +187,11 @@ type Resolver @entity {
 ### Offchain storage service
 
 [EIP-5559](https://eips.ethereum.org/EIPS/eip-5559#data-stored-in-an-off-chain-database) has already been proposed to handle both L2 and off chain storage by utilizing the similar method to [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668).
-While this is technically feasible, it adds extra function calls simply to discover how to update the data. The simpler alternative for ENS related storage update is to query storage service endpoint from `storageLocation` in bytes format when `storateType` is set to `1`. The client then make a JSON RPC call to the storage location with signature information.
+While this is technically feasible, it adds extra function calls simply to discover how to update the data. The simpler alternative for ENS related storage update is to query storage service endpoint from `storageLocation` in bytes format when `storateType` is set to `1`. The client then make a HTTP POST call to the storage location with signature information.
 
 The body attached to the request is a JSON object that includes sender, data, inception date and a signed copy of the abi encoded data, sender, and inception date.
 
-Example JSON RPC request including requestParams and signature:
+Example HTTP POST request including requestParams and signature:
 
 ```
   const keccak256 = ethers.utils.solidityKeccak256
@@ -200,16 +200,17 @@ Example JSON RPC request including requestParams and signature:
   const iface = new ethers.utils.Interface(['function setAddr(bytes,address)'])
   const signer = signers[0]
   const signerAddress = signer.address
-  const hasheddata = keccak256(['bytes', 'address'], [node, address])
+  const data = iface.encodeFunctionData('setAddr',[node, signerAddress])
+  const hasheddata = keccak256(['bytes'], [data])
   const block = await ethers.provider.getBlock('latest')
-  inceptionDate = block.timestamp
+  inception = block.timestamp
   signature = await signers[0].signMessage(
     ethers.utils.arrayify(
       keccak256(
         ['bytes', 'uint256'],
         [
           hasheddata,
-          inceptionDate
+          inception
         ],
       ),
     ),
@@ -218,14 +219,9 @@ Example JSON RPC request including requestParams and signature:
 
 ```
   const request = {
-    "jsonrpc":"2.0",
-    "method":"ccipWrite",
-    params:{
-      "data":data,
-      "sender":signer,
-      "inceptionDate":inceptionDate,
-      "signature":signature
-    }
+    data:,
+    inception,
+    signature
   }
 ```
 
