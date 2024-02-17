@@ -32,7 +32,7 @@ Expect your `TXT` record to look something like this:
 TXT @ _ens a=&lt;eth-address&gt;
 ```
 
-You can learn more about [how to import a DNS name](/learn/dns#importing-a-dns-name) in the DNS section, or see how to [programatically complete these steps](#programming-dnssec-proofs).
+You can learn more about [how to import a DNS name](/learn/dns#importing-a-dns-name) in the DNS section, or see how to [programmatically complete these steps](#programming-dnssec-proofs).
 
 There is no ENS protocol fee to import a DNS name, but it requires a large amount of gas (up to a few million) to submit the proof onchain. Continue reading to learn how this has been mitigated.
 
@@ -42,6 +42,8 @@ There is no ENS protocol fee to import a DNS name, but it requires a large amoun
 EP5.1 introduced a new DNSSECOracle and DNSRegistrar which makes it possible to perform DNSSEC verification at query time, enabling truly free usage of DNS names in ENS. We call this "gasless DNSSEC".
 
 It works by enabling [wildcard resolution](/ensip/10) at the DNS TLD level. During the [name resolution process](/resolution), if a name doesn't already exist onchain but has been configured for usage in ENS, the DNSSEC proof will be fetched offchain via [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668) and then verified onchain with the same DNSSECOracle mentioned above.
+
+### Import a DNS name gaslessly {{ id: 'gasless-import' }}
 
 To configure a DNS name for usage in ENS, simply add a `TXT` record with the following format:
 

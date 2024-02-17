@@ -15,7 +15,7 @@ By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), the Cross Cha
 Within the context of ENS, this enables us, to read names, addresses, records, and more from other chains, or even off-chain.
 
 <div className="card1 p-4 flex justify-center items-center gap-4">
-    <Usertag name="lucemans.cb.id" image="https://metadata.ens.domains/mainnet/avatar/luc.eth" />
+    <Usertag name="lucemans.cb.id" image="https://enstate.rs/i/luc.eth" />
     <div>➡️</div>
     <div className="text-center leading-4">
         <div className="font-bold">Resolver</div>
@@ -60,7 +60,9 @@ The [gateway url](https://ens-gateway.gregskril.workers.dev/lookup/{sender}/{dat
 The EVMGateway is a gateway that allows you to load data from specific Layer 2's whose proofs are verifyable on L1.
 This means if you are looking to load data from Optimism or Arbitrum, the EVMGateway allows you to trustlessly do so.
 
-<Repository src="ensdomains/evmgateway" />
+<div>
+    <Repository src="ensdomains/evmgateway" />
+</div>
 
 ## CCIP Read Flow
 
@@ -81,10 +83,12 @@ The URL for this gateway is determined by the `OffchainLookup` error, and is pas
 
 ### Template Repositories
 
-<Repository src="ensdomains/offchain-resolver" description="CCIP Offchain ENS Resolver with Cloudflare Workers"/>
-<Repository src="ensdomains/offchain-gateway-rs" description="Offchain CCIP Gateway Resolver implementation in Rust (& postgres)"/>
-<Repository src="ensdomains/offchain-resolver-example" />
-<Repository src="gskril/ens-offchain-resolver-read-from-api" />
+<div>
+    <Repository src="ensdomains/offchain-resolver" description="CCIP Offchain ENS Resolver with Cloudflare Workers"/>
+    <Repository src="ensdomains/offchain-gateway-rs" description="Offchain CCIP Gateway Resolver implementation in Rust (& postgres)"/>
+    <Repository src="ensdomains/offchain-resolver-example" />
+    <Repository src="gskril/ens-offchain-resolver-read-from-api" />
+</div>
 
 ### Implement Gateway Endpoint {{ navtitle: 'Implement Gateway', id: 'endpoint' }}
 

@@ -124,7 +124,7 @@ module.exports = {
                             dim: '#158463',
                             primary: '#199C75',
                             bright: '#1EB789',
-                            green: '#CBE7DC',
+                            light: '#CBE7DC',
                             surface: '#E7F4EF',
                         },
                         grey: {
@@ -211,7 +211,7 @@ module.exports = {
                             dim: '#CBE7DC',
                             primary: '#199C75',
                             bright: '#158463',
-                            green: '#104A38',
+                            light: '#104A38',
                             surface: '#153C31',
                         },
                         grey: {

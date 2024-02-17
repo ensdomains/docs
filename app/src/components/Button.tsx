@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { FC, PropsWithChildren } from 'react';
 
-import { cx, cxWithTheme } from '@/lib/cx';
+import { cx } from '@/lib/cx';
 
 const ArrowIcon: FC = (properties) => {
     return (
@@ -21,11 +21,7 @@ const ArrowIcon: FC = (properties) => {
 const variantStyles = {
     primary: 'btn-blue-primary',
     disabled: 'btn-disabled',
-    red: cxWithTheme(
-        'rounded-lg py-1 px-3',
-        'bg-ens-light-blue-red-400/10 text-ens-light-blue-red-400 ring-1 ring-inset ring-ens-red-400/20 hover:bg-ens-light-blue-red-400/10 hover:text-ens-light-blue-red-300 hover:ring-ens-red-300',
-        'bg-ens-light-blue-red-400/10 text-ens-light-blue-red-400 ring-1 ring-inset ring-ens-red-400/20 hover:bg-ens-light-blue-red-400/10 hover:text-ens-light-blue-red-300 hover:ring-ens-red-300'
-    ),
+    red: 'btn-red-primary',
     secondary: 'btn-blue-surface',
     green: 'rounded-lg py-1 px-3 bg-green-400/10 text-green-600 ring-1 ring-inset ring-green-400/20 hover:bg-green-400/10 hover:text-green-300 hover:ring-green-300',
     filled: 'rounded-lg bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 dark:bg-ens-light-blue-500 dark:text-white dark:hover:bg-ens-light-blue-400',
@@ -49,6 +45,7 @@ export const Button: FC<
         className?: string;
         arrow?: 'left' | 'right';
         disabled?: boolean;
+        width?: 'full' | string;
     } & (HrefProperties | ButtonProperties) &
         PropsWithChildren
 > = ({
@@ -78,17 +75,45 @@ export const Button: FC<
     );
 
     return (
-        <Component
+        // @ts-ignore
+        <thorin-button
             href={properties['href']}
-            target={properties['target']}
             onClick={properties['onClick']}
-            className={className}
-            disabled={disabled}
-            {...properties}
+            target={properties['target']}
+            width={properties['width']}
+            variant={newVariant}
         >
             {arrow === 'left' && arrowIcon}
             {children}
             {arrow === 'right' && arrowIcon}
-        </Component>
+            {/* @ts-ignore */}
+        </thorin-button>
     );
+
+    // const arrowIcon = (
+    //     <ArrowIcon
+    //         // @ts-ignore
+    //         className={cx(
+    //             'mt-0.5 h-5 w-5',
+    //             variant === 'text' && 'relative top-px',
+    //             arrow === 'left' && '-ml-1 rotate-180',
+    //             arrow === 'right' && '-mr-1'
+    //         )}
+    //     />
+    // );
+
+    // return (
+    //     <Component
+    //         href={properties['href']}
+    //         target={properties['target']}
+    //         onClick={properties['onClick']}
+    //         className={className}
+    //         disabled={disabled}
+    //         {...properties}
+    //     >
+    //         {arrow === 'left' && arrowIcon}
+    //         {children}
+    //         {arrow === 'right' && arrowIcon}
+    //     </Component>
+    // );
 };

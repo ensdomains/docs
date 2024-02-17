@@ -3,7 +3,7 @@ import { WIP } from '@/components/wip/WIP';
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
     description: 'The Ethereum Name Service Smart Contracts Overview',
-    emoji: '🗒️',
+ emoji: '🗒️',
     contributors: []
 };
 
@@ -40,26 +40,30 @@ There are various resolvers to choose from, such as the [Public Resolver](/resol
 
 The smart contracts can be found on github at [ensdomains/ens-contracts]().
 
-<div className="grid grid-cols-3 gap-4">
-    {
-        [
-            ['The Registry', '/registry/ens'],
-            ['ETH Registrar', '/registry/eth'],
-            ['DNS Registrar', '/registry/dns'],
-            ['Reverse Registrar', '/registry/reverse']
-        ].map((list, i) => (
-            <EmbedLink
-                title={list[0]}
-                description="The resolution process"
-                href={list[1]}
-                key={i}
-            />
-        ))
-    }
+<div>
+    <div className="grid grid-cols-3 gap-4 not-prose">
+        {
+            [
+                ['The Registry', '/registry/ens'],
+                ['ETH Registrar', '/registry/eth'],
+                ['DNS Registrar', '/registry/dns'],
+                ['Reverse Registrar', '/registry/reverse']
+            ].map((list, i) => (
+                <EmbedLink
+                    title={list[0]}
+                    description="The resolution process"
+                    href={list[1]}
+                    key={i}
+                />
+            ))
+        }
+    </div>
 </div>
 
 ## Source Code
 
 The code for the ENS Smart Contracts as well as information around the latest deploys, tests, and more can be found on github.
 
-<Repository src="ensdomains/ens-contracts" description="Ethereum Name Service Contracts"/>
+<div>
+    <Repository src="ensdomains/ens-contracts" description="Ethereum Name Service Contracts"/>
+</div>

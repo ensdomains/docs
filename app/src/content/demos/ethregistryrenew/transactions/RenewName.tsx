@@ -10,6 +10,7 @@ import {
 
 import { Button } from '@/components/Button';
 
+import { EthCall } from '../../call/EthCall';
 import { ETHRegistrarABI } from '../../ethregistry/ETHRegistryABI';
 
 export const RenewName: FC<{
@@ -21,7 +22,7 @@ export const RenewName: FC<{
 
     const { address } = useAccount();
 
-    const { writeContract, isError: isUserDecline } = useWriteContract();
+    const { writeContract, isError: _isUserDecline } = useWriteContract();
 
     const config = {
         abi: ETHRegistrarABI,
@@ -42,27 +43,27 @@ export const RenewName: FC<{
 
     return (
         <div>
-            <div className="border-ens-light-border dark:border-ens-dark-border space-y-2 rounded-lg border p-4">
-                <div className="space-x-2">
-                    <div className="tag tag-yellow">Transaction</div>
-                    <div className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary inline">
-                        Renew the name.
+            <EthCall
+                type="transaction"
+                gas={gas?.toString()}
+                description="Renew the name."
+                call={
+                    <div>
+                        <span className="text-ens-light-blue-primary">
+                            ETHRegistrarController
+                        </span>
+                        .renew(
+                        <span className="text-ens-light-pink-primary">
+                            "{name}"
+                        </span>
+                        ,{' '}
+                        <span className="text-ens-light-orange-primary">
+                            {duration}
+                        </span>
+                        )
                     </div>
-                </div>
-                <div className="border-ens-light-border dark:border-ens-dark-border break-all rounded-lg border p-2">
-                    <span className="text-ens-light-blue-primary">
-                        ETHRegistrarController
-                    </span>
-                    .renew(
-                    <span className="text-ens-light-pink-primary">
-                        "{name}"
-                    </span>
-                    ,
-                    <span className="text-ens-light-orange-primary">
-                        {duration}
-                    </span>
-                    )
-                </div>
+                }
+            >
                 <div className="flex w-full items-center justify-end gap-4">
                     <div>{gas?.toString()} gas</div>
                     <div>{rentPriceFormatted} eth</div>
@@ -87,7 +88,7 @@ export const RenewName: FC<{
                         Problem
                     </div>
                 )}
-            </div>
+            </EthCall>
         </div>
     );
 };

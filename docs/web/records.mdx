@@ -12,30 +12,32 @@ export const meta = {
 With every name come a set of records. These records are key value pairs that can be used to store information about the profile.
 Think of this as a user's **digital backpack**. Utalized for storage of preferences, public details, and more.
 
-<div className="card1 px-8 py-4 flex justify-center gap-2 not-prose">
-    <span>nick.eth</span>
-    <span>➡️</span>
-    <div className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary border border-ens-light-border dark:border-ens-dark-border p-3 gap-3 rounded-lg flex">
-        <div className="w-24 h-24 rounded-xl overflow-hidden aspect-square bg-slate-50 mx-auto">
-            <img
-                src="https://enstate.rs/i/nick.eth"
-                className="w-full h-full object-cover aspect-square"
-            />
-        </div>
-        <div className="flex flex-col text-xs gap-0.5">
-            {
-                [
-                    ["display", "Nick.eth"],
-                    ["description", "Lead developer of ENS"],
-                    ["avatar", "ipfs://Qm..."],
-                    ["com.twitter", "nicksdjohnson"],
-                ].map(([key, value]) => (
-                    <div className="flex gap-2 items-center border border-ens-light-border dark:border-ens-dark-border rounded-lg w-fit px-2">
-                        <span className="text-gray-400">{key}</span>
-                        <span className="text-gray-600">{value}</span>
-                    </div>
-                ))
-            }
+<div>
+    <div className="card1 px-8 py-4 flex justify-center gap-2 not-prose">
+        <span>nick.eth</span>
+        <span>➡️</span>
+        <div className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary border border-ens-light-border dark:border-ens-dark-border p-3 gap-3 rounded-lg flex">
+            <div className="w-24 h-24 rounded-xl overflow-hidden aspect-square bg-slate-50 mx-auto">
+                <img
+                    src="https://enstate.rs/i/nick.eth"
+                    className="w-full h-full object-cover aspect-square"
+                />
+            </div>
+            <div className="flex flex-col text-xs gap-0.5">
+                {
+                    [
+                        ["display", "Nick.eth"],
+                        ["description", "Lead developer of ENS"],
+                        ["avatar", "ipfs://Qm..."],
+                        ["com.twitter", "nicksdjohnson"],
+                    ].map(([key, value]) => (
+                        <div className="flex gap-2 items-center border border-ens-light-border dark:border-ens-dark-border rounded-lg w-fit px-2">
+                            <span className="text-gray-400">{key}</span>
+                            <span className="text-gray-600">{value}</span>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -174,8 +176,8 @@ We generally recommend to stick to a pattern, or prefix things with your app or 
 An example of a "yet to be standardised" record is the "header" record. From initial community usage this header record, similar to the avatar record, accepts any IPFS, Arweave, EIP155, or regular URL to an image resource.
 The image is then displayed as a banner on the profile page and tends to be in a 1:3 aspect ratio.
 
-<div className="not-prose">
-    <div className="flex gap-4">
+<div className="">
+    <div className="flex gap-4 not-prose">
         {
             ["luc.eth", "pedrouid.eth", "notben.eth"].map(async (name) => {
                 const request = await fetch("https://worker.enstate.rs/n/" + name);

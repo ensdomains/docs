@@ -5,7 +5,7 @@ import { LinkCard } from '../linkcard/LinkCard';
 export const DNSUsageExamples = () => {
     return (
         <div
-            className="not-prose grid w-full grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4"
+            className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4"
             style={{ gridAutoRows: '1fr' }}
         >
             {[

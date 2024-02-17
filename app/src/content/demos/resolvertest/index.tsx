@@ -109,10 +109,10 @@ export const ResolverTestDemo = () => {
     return (
         <ClientOnly
             child={() => (
-                <>
+                <div className="px-3">
                     {/* <Demo /> */}
                     This demo is in under construction
-                </>
+                </div>
             )}
         />
     );

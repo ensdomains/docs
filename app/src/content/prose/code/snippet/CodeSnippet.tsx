@@ -93,13 +93,13 @@ export const CodePanel: FC<PropsWithChildren<CodePanelProperties>> = ({
 
     return (
         <div
-            className="hidable-code group"
+            className="hidable-code not-prose group"
             data-code-variant={variant ?? title ?? language}
             data-code-group={identifier}
         >
             <div
                 className={clsx(
-                    'border-ens-light-border dark:border-ens-dark-border overflow-hidden border',
+                    'overflow-hidden border border-ens-light-border dark:border-ens-dark-border',
                     isStandaloneCodeSnippet ? 'rounded-xl' : 'rounded-b-xl'
                 )}
             >
@@ -131,7 +131,7 @@ export const CodePanel: FC<PropsWithChildren<CodePanelProperties>> = ({
                             <Link
                                 href={link}
                                 target="_blank"
-                                className="text-ens-light-blue-primary dark:text-ens-dark-blue-primary flex items-center gap-1 hover:underline"
+                                className="flex items-center gap-1 text-ens-light-blue-primary hover:underline dark:text-ens-dark-blue-primary"
                             >
                                 <FiExternalLink />
                                 Read more
@@ -143,12 +143,12 @@ export const CodePanel: FC<PropsWithChildren<CodePanelProperties>> = ({
                             <Link
                                 href={stackblitz}
                                 target="_blank"
-                                className="text-ens-light-blue-primary dark:text-ens-dark-blue-primary rounded-md p-1 pr-2 text-xs transition hover:bg-gray-100"
+                                className="rounded-md p-1 pr-2 text-xs text-ens-light-blue-primary transition hover:bg-gray-100 dark:text-ens-dark-blue-primary"
                             >
                                 <img
                                     src="/icons/stackblitz.svg"
                                     alt="Stackblitz"
-                                    className="mr-1 inline-block h-4 w-4"
+                                    className="mr-1 inline-block size-4"
                                 />
                                 Try it out
                             </Link>

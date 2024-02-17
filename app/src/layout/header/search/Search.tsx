@@ -62,11 +62,11 @@ export function Search() {
                 )}
                 onClick={() => setOpen(true)}
             >
-                <SearchIcon className="h-5 w-5 stroke-current" />
+                <SearchIcon className="size-5 stroke-current" />
                 Search Content...
                 <span className="ml-auto inline-flex p-1">
                     {modifierKey && (
-                        <kbd className="border-ens-light-border text-2xs dark:border-ens-dark-border my-1 flex h-full items-center rounded-md border px-1">
+                        <kbd className="my-1 flex h-full items-center rounded-md border border-ens-light-border px-1 text-2xs dark:border-ens-dark-border">
                             <kbd className="font-sans">{modifierKey}</kbd>+
                             <kbd className="font-sans">k</kbd>
                         </kbd>
@@ -85,11 +85,11 @@ export function MobileSearch() {
         <div className="contents lg:hidden">
             <button
                 type="button"
-                className="flex h-6 w-6 items-center justify-center rounded-md transition-all hover:bg-zinc-900/5 dark:hover:bg-white/5 lg:hidden"
+                className="flex size-6 items-center justify-center rounded-md transition-all hover:bg-zinc-900/5 dark:hover:bg-white/5 lg:hidden"
                 aria-label="Search Content..."
                 onClick={() => setOpen(true)}
             >
-                <SearchIcon className="h-5 w-5 stroke-zinc-900 dark:stroke-white" />
+                <SearchIcon className="size-5 stroke-zinc-900 dark:stroke-white" />
             </button>
             <SearchModal open={isOpen} onClose={() => setOpen(false)} />
         </div>

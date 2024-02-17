@@ -10,7 +10,6 @@ import { forwardRef } from 'react';
 import { FaGithub } from 'react-icons/fa';
 
 import { ClientOnly } from '@/ClientOnly';
-import { cx } from '@/lib/cx';
 import {
     useIsInsideMobileNavigation,
     useMobileNavigationStore,
@@ -80,16 +79,8 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                             </Link>
                         </div>
 
-                        <div
-                            className={cx(
-                                'rounded-md px-2 text-xs font-bold',
-                                isDao
-                                    ? 'bg-ens-light-purple-surface dark:bg-ens-dark-purple-surface text-ens-light-purple-primary dark:text-ens-dark-purple-primary'
-                                    : 'bg-ens-light-blue-surface dark:bg-ens-dark-blue-surface text-ens-light-blue-primary dark:text-ens-dark-blue-primary'
-                            )}
-                        >
-                            Docs
-                        </div>
+                        {/* @ts-ignore */}
+                        <thorin-tag>Docs</thorin-tag>
                     </div>
                     <div
                         className={clsx(
@@ -103,12 +94,13 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                     </div>
                     <div className="float-right flex h-full items-center gap-4">
                         <ClientOnly child={() => <ThemeSwitcher />} />
-                        <div className="md:dark:bg-white/15 hidden md:block md:h-5 md:w-px md:bg-zinc-900/10" />
+                        <div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />
                         <div className="flex gap-4">
                             <MobileSearch />
                             <Link
                                 href="https://github.com/ensdomains/docs-v2"
                                 target="_blank"
+                                aria-label="GitHub Repository"
                             >
                                 <FaGithub
                                     size={'1.4rem'}

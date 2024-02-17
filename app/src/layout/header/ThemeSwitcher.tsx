@@ -13,6 +13,7 @@ export const ThemeSwitcher = () => {
             onClick={() => {
                 setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
             }}
+            aria-label="Toggle theme"
         >
             <div className="bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary relative flex gap-2 rounded-xl p-1 text-sm">
                 <div

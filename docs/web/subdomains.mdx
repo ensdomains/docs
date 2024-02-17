@@ -14,6 +14,17 @@ export const meta = {
 Names come in handy in many situations. We believe that any place an address is used, a name should be able to be used instead.
 The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
 
+<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
+    <div className="text-right font-bold">
+        {
+            ["vault", "domico", "subname", "nick", "cold"].map((subname, i) => (
+                <div className={["opacity-20", "opacity-50", "", "opacity-50", "opacity-20"][i]}>{subname}</div>
+            ))
+        }
+    </div>
+    <div className="font-bold">.nick.eth</div>
+</div>
+
 Luckily, the ENS Protocol has so much to offer for you to play with. There are a variety of ways you can give out subdomains to your apps users, set them up for yourself, or more.
 
 If you are interested in naming smart-contracts specifically, check out the [Naming Smart Contracts](/web/naming-contracts) page.
@@ -25,7 +36,7 @@ If you are interested in naming smart-contracts specifically, check out the [Nam
 The [NameWrapper](/wrapper/overview) is a smart contract that allows you to issue trustless on-chain subdomains.
 NameWrapper subdomains come in the form of [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) NFTs, which can be transferred, sold, or traded.
 
-In addition NameWrapper subnames have fuzes which allow you to limit permissions, or even emmancipate a subname entirely.
+In addition NameWrapper subnames have fuzes which allow you to limit permissions, or even emancipate a subname entirely.
 You can interact directly with the namewrapper from the [ENS Manager App](https://ens.app/).
 
 <EmbedLink title="NameWrapper Overview" href="/wrapper/overview" description="" />
@@ -39,7 +50,7 @@ You can register a legacy subdomain by calling the `setSubnodeRecord` function o
 
 ## Writing your own Resolver
 
-You can always opt to [write your own resolver](/resolvers/writing) in solidity, doing so will give you absolute programatic control over how resolution for your name and its subnames will behave.
+You can always opt to [write your own resolver](/resolvers/writing) in solidity, doing so will give you absolute programmatic control over how resolution for your name and its subnames will behave.
 Requires deploying a smart contract.
 
 ### Offchain & Layer 2

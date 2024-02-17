@@ -14,10 +14,10 @@ export const meta = {
 We can all agree 42-character long machine-optimized addresses (eg. 0x225...c3b5) are not aesthetically pleasing.
 Fortunately, it is super easy to retrieve a user's preferred name, and this page will show you how.
 
-<div className="card1 px-8 py-4 flex justify-center gap-2">
+<div className="card1 px-8 py-4 flex justify-center gap-2 items-center">
     <span>0x225...c3B5</span>
-    <span>➡️</span>
-    <span>luc.eth</span>
+    <span>to</span>
+    <Usertag name="luc.eth" />
 </div>
 
 In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
@@ -82,11 +82,25 @@ func main() {
 
 🎉 And that's it! Now you can turn all your pages from this, to this:
 
-<img src="/content/web/reverse/example1.png" className="w-full border rounded-lg" />
+<div className="card1 px-8 py-8 flex items-center gap-2 flex-col">
+    <div className="flex gap-2 items-center">
+        <Usertag name="0x225...c3B5" variant="small" />
+        <span> sent 0.1 ETH to </span>
+        <Usertag name="0x123...4567" variant="small" />
+    </div>
+    <div className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary">
+        <span>turns into</span>
+    </div>
+    <div className="flex gap-2 items-center">
+        <Usertag name="luc.eth" variant="small" />
+        <span> sent 0.1 ETH to </span>
+        <Usertag name="domico.eth" variant="small" />
+    </div>
+</div>
 
-### Do's and Dont's
+{/* ### Do's and Dont's
 
-<WIP />
+<WIP /> */}
 
 ## Setting Primary Names {{ navtitle: 'Setting your Name', id: 'set' }}
 

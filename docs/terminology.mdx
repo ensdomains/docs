@@ -1,11 +1,11 @@
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'A technical overview of all the terminology used in the ENS documentation.',
-    emoji: '📓',
-    contributors: [
-        'lucemans',
-        'serenae-fansubs'
-    ]
+description: 'A technical overview of all the terminology used in the ENS documentation.',
+emoji: '📓',
+contributors: [
+'lucemans',
+'serenae-fansubs'
+]
 };
 
 # Terminology
@@ -112,16 +112,15 @@ A resolver is a contract that maps from name to the resource (e.g., cryptocurren
 
 ### Wildcard Resolver
 
-This refers to a resolver that supports [ENSIP-10](/ensip/10). This scheme allows clients to resolve data for subnames that either don't have a resolver of their own, or subnames that may not even exist on-chain at all. For offchain names, this is typically used in conjunction with [CCIP-read](#ccip-read).
+This refers to a resolver that supports [ENSIP-10](/ensip/10). This scheme allows clients to resolve data for subnames that either don't have a resolver of their own, or subnames that may not even exist on-chain at all. For offchain names, this is typically used in conjunction with [CCIP Read](#ccip-read).
 
 ## Public Resolver
 
 This is a standard resolver contract implementation written by ENS Labs. It supports all record types and anyone can use it. This is the default resolver used when registering a new name via the official manager app.
 
-
 ## Offchain
 
-This term is typically used with respect to the Ethereum Mainnet blockchain. If data is not posted to the chain via an actual Ethereum Mainnet transaction, then it is "offchain". ENS names can also be offchain. For example names can use a special resolver to resolve records for subnames that don't exist on-chain in the Registry. This is also typically done with [CCIP-read](#ccip-read).
+This term is typically used with respect to the Ethereum Mainnet blockchain. If data is not posted to the chain via an actual Ethereum Mainnet transaction, then it is "offchain". ENS names can also be offchain. For example names can use a special resolver to resolve records for subnames that don't exist on-chain in the Registry. This is also typically done with [CCIP Read](#ccip-read).
 
 ### CCIP Read
 
@@ -131,19 +130,18 @@ It allows for an Ethereum call to defer to an [offchain gateway](/resolvers/ccip
 With respect to ENS, this is typically used for offchain subnames that don't exist in the core Registry.
 
 <EmbedLink
-    title="Offchain Resolution"
-    href="/learn/ccip#offchain-resolution"
-    description="Read more about offchain resolution and CCIP Read here"
+  title="Offchain Resolution"
+  href="/learn/ccip#offchain-resolution"
+  description="Read more about offchain resolution and CCIP Read here"
 />
 
 ## Primary Name
 
 The ENS name that you want a particular ETH account to be associated with. When set, it will be displayed instead of your 0x address on integrating websites/apps. This is also often referred to as the "reverse record".
 
-
 ### Reverse Node
 
-A node in the Registry that can be claimed for any Ethereum account. The name this node represents is `<addr>.addr.reverse`, where `<addr>` is the Ethereum public address (lowercase, without the "0x"). These reverse nodes are typically used to set a [Primary Name](#primary-name) for an account.
+A node in the Registry that can be claimed for any Ethereum account. The name this node represents is `[addr].addr.reverse`, where `[addr]` is the Ethereum public address (lowercase, without the "0x"). These reverse nodes are typically used to set a [Primary Name](#primary-name) for an account.
 
 ### Reverse Record
 
@@ -162,5 +160,5 @@ The technical term for a specific "permission" bit for a wrapped name. As the na
 ## Subgraph
 
 An indexed collection of data using TheGraph protocol.
-In this documnetation portal, "the subgraph" usually refers to the official ENS subgraph maintained by ENS Labs.
+In this documentation portal, "the subgraph" usually refers to the official ENS subgraph maintained by ENS Labs.
 This is a useful offchain service that allows clients to query for information about names or accounts.

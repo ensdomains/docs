@@ -37,7 +37,7 @@ export const Records: FC<{ records?: Record<RecordType, string> }> = ({
                         <div>
                             {recordIcons[record] ? (
                                 <div className="flex items-center gap-0.5">
-                                    <div className="flex h-4 w-4 items-center justify-center">
+                                    <div className="flex size-4 items-center justify-center">
                                         {typeof recordIcons[record] ===
                                         'string' ? (
                                             <img
