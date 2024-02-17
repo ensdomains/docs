@@ -1,13 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { goerli, mainnet, sepolia } from 'viem/chains';
 import { useAccount, useChainId } from 'wagmi';
 
 import { ClientOnly } from '@/ClientOnly';
-import { Button } from '@/components/Button';
 
-import { ChainField } from '../ethregistry/inputs/ChainField';
 import { DurationField } from '../ethregistry/inputs/DurationField';
 import { LabelField } from '../ethregistry/inputs/LabelField';
 import { RentPriceCheck } from '../ethregistry/stage/RentPriceCheck';
@@ -39,26 +36,8 @@ const Demo = () => {
     const { isConnected } = useAccount();
 
     return (
-        <div className="-m-4">
-            <div className="border-ens-light-border dark:border-ens-dark-border w-full border-b px-4 py-2">
-                Renew a Name (Live Demo)
-            </div>
+        <div className="">
             <div className="space-y-4 p-4">
-                {!isConnected && (
-                    <div>
-                        <Button
-                            variant="primary"
-                            onClick={() => {
-                                // connect();
-                            }}
-                        >
-                            Connect
-                        </Button>
-                    </div>
-                )}
-                <ChainField
-                    available={new Set([goerli.id, mainnet.id, sepolia.id])}
-                />
                 <LabelField label={label} setLabel={setLabel} />
                 <DurationField duration={duration} setDuration={setDuration} />
                 <RentPriceCheck

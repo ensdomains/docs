@@ -1,172 +1,52 @@
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-description: '',
-emoji: '📰',
-contributors: [
-'lucemans'
-]
+    description: '',
+    emoji: '📰',
+    contributors: [
+        'lucemans'
+    ]
 };
 
 # Deployments
 
-<Note>
+{/* <Note>
     This page contains information that is only relevant to developers who would
     like to interact with the contract manually. Most libraries will handle this
     for you.
-</Note>
+</Note> */}
 
-Though ENS is a platform-agnostic (read more [here](/learn/multichain)), the ENS Protocol smart-contracts are deployed on Ethereum mainnet, as well as the most popular test-networks, such as goerli, ropsten, rinkeby, and kovan.
-Listed below you will find a list of latest deployments of registries, resolvers, and more.
-If you are looking for our legacy contracts please refer to the [changelog section](/changelog).
+ENS is multichain (read more [here](/learn/multichain)) and can be used in any application.
+In addition to being able to query many address formats and record types, data can be stored [practically anywhere](/learn/ccip).
+However, resolution needs to start somewhere, so the entrypoint for resolution is Ethereum Mainnet, alongside the most popular testnets.
 
-## Active Deployments
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-<ChainDeployments
-    chain="mainnet"
-    deployments={[
-        {
-            name: "Registry",
-            path: "ENSRegistry",
-        },
-        {
-            name: "Base Registrar",
-            path: "BaseRegistrarImplementation",
-        },
-        {
-            name: "ETH Registrar Controller",
-            path: "ETHRegistrarController",
-        },
-        {
-            name: "DNS Registrar",
-            path: "DNSRegistrar",
-        },
-        {
-            name: "Reverse Registrar",
-            path: "ReverseRegistrar",
-        },
-        {
-            name: "Name Wrapper",
-            path: "NameWrapper",
-        },
-        {
-            name: "Public Resolver",
-            path: "PublicResolver",
-        },
-    ]}
-/>
-
-<ChainDeployments
-    chain="goerli"
-    deployments={[
-        {
-            name: "Registry",
-            path: "ENSRegistry",
-        },
-        {
-            name: "Base Registrar",
-            path: "BaseRegistrarImplementation",
-        },
-        {
-            name: "ETH Registrar Controller",
-            path: "ETHRegistrarController",
-        },
-        {
-            name: "DNS Registrar",
-            path: "DNSRegistrar",
-        },
-        {
-            name: "Reverse Registrar",
-            path: "ReverseRegistrar",
-        },
-        {
-            name: "Name Wrapper",
-            path: "NameWrapper",
-        },
-        {
-            name: "Public Resolver",
-            path: "PublicResolver",
-        },
-    ]}
-/>
-
-<ChainDeployments
-    chain="sepolia"
-    deployments={[
-        {
-            name: "Registry",
-            path: "ENSRegistry",
-        },
-        {
-            name: "Base Registrar",
-            path: "BaseRegistrarImplementation",
-        },
-        {
-            name: "ETH Registrar Controller",
-            path: "ETHRegistrarController",
-        },
-        {
-            name: "DNS Registrar",
-            path: "DNSRegistrar",
-        },
-        {
-            name: "Reverse Registrar",
-            path: "ReverseRegistrar",
-        },
-        {
-            name: "Name Wrapper",
-            path: "NameWrapper",
-        },
-        {
-            name: "Public Resolver",
-            path: "PublicResolver",
-        },
-    ]}
-/>
-
-<ChainDeployments
-    chain="holesky"
-    deployments={[
-        {
-            name: "Registry",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "ENSRegistry",
-        },
-        {
-            name: "Base Registrar",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "BaseRegistrarImplementation",
-        },
-        {
-            name: "ETH Registrar Controller",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "ETHRegistrarController",
-        },
-        {
-            name: "DNS Registrar",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "DNSRegistrar",
-        },
-        {
-            name: "Reverse Registrar",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "ReverseRegistrar",
-        },
-        {
-            name: "Name Wrapper",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "NameWrapper",
-        },
-        {
-            name: "Public Resolver",
-            branch: "141eda59e777319a73073b4f3654b4f5ece9d0bc",
-            path: "PublicResolver",
-        },
-    ]}
-/>
-
+<div className="card1 p-4 flex justify-center gap-2">
+    <div>
+    Ethereum Mainnet
+    </div>
+    <div>
+    ->
+    </div>
+    <div>
+        <div>
+            Optimism
+        </div>
+        <div>
+            Arbitrum
+        </div>
+        <div>
+            Offchain
+        </div>
+        <div>
+            ...
+        </div>
+    </div>
 </div>
+
+## Deployments
+
+Listed below you will find a list of latest deployments of registries, resolvers, and more.
+
+<ChainDeployments />
 
 ## But what about multichain? {{ tag: "Multichain", title: "Multichain", id: "multichain" }}
 

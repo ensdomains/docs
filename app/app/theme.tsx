@@ -1,5 +1,7 @@
 'use client';
 
+import '@ens-tools/thorin-core';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { goerli, mainnet, sepolia } from 'viem/chains';

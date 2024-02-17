@@ -29,6 +29,20 @@ One of such use-cases is querying which NFT names are owned by a specific addres
 
 ## Example Queries
 
+### Getting a list of names owned by an account
+
+Ensure the address is lowercase
+
+```graphql
+query getDomainsForAccount {
+  domains(where: { owner: "0xa508c16666c5b8981fa46eb32784fccc01942a71" }) {
+    name
+  }
+}
+```
+
+<LiveDemo id="listnamesdemo" />
+
 ### Getting the top domain for an account based on the longest registry
 
 ```graphql

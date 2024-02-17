@@ -94,7 +94,7 @@ setFuses(
 
 The `setChildFuses` method is used for a subname that you own the parent of. As long as the subname has not yet been [Emancipated](/wrapper/states#emancipated), you can burn whatever [Parent-Controlled Fuses](/wrapper/fuses#parent-controlled-fuses) and [Owner-Controlled Fuses](/wrapper/fuses#owner-controlled-fuses) you want. At the same time, you must set an expiry for those fuses, if one is not already set. Note that your name must first be [Locked](/wrapper/states#locked) in order for you to burn fuses on any subnames.
 
-If you are only burning parent-controlled fuses, then there are no futher restrictions. However, if you are burning owner-controlled fuses, then you must at a minimum burn both **`PARENT_CANNOT_CONTROL`** and **`CANNOT_UNWRAP`** on the subname to lock it at the same time.
+If you are only burning parent-controlled fuses, then there are no further restrictions. However, if you are burning owner-controlled fuses, then you must at a minimum burn both **`PARENT_CANNOT_CONTROL`** and **`CANNOT_UNWRAP`** on the subname to lock it at the same time.
 
 ```solidity
 NameWrapper.setChildFuses(bytes32 parentNode, bytes32 labelhash, uint32 fuses, uint64 expiry)

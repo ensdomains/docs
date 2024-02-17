@@ -73,7 +73,7 @@ const FeedbackThanks = forwardRef(
                 className="flex justify-center md:justify-start"
             >
                 <div className="flex h-fit items-center gap-1.5 overflow-hidden rounded-lg text-sm">
-                    <CheckIcon className="dark:fill-ens-200/20 dark:stroke-ens-200 h-4 w-4 flex-none fill-ens-light-blue-primary stroke-white" />
+                    <CheckIcon className="dark:fill-ens-200/20 dark:stroke-ens-200 size-4 flex-none fill-ens-light-blue-primary stroke-white" />
                     <div className="flex gap-2 leading-5 text-ens-light-text-primary dark:text-ens-dark-text-primary">
                         <span>Thanks for your feedback!</span>
                         <span>

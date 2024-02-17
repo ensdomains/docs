@@ -1,7 +1,7 @@
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Frequently Asked Questions about the Ethereum Name Service',
-    contributors: ['lucemans']
+description: 'Frequently Asked Questions about the Ethereum Name Service',
+contributors: ['lucemans']
 };
 
 # FAQ
@@ -36,7 +36,7 @@ Read more about [labelhash, namehash, and encodings](/resolution/names).
 ENS names are generally encoded using UTS-46.
 This means there is partial support for Unicode characters, including emoji.
 
-However technically posible to register any name, names that are not valid UTS-46 will not be resolvable by most resolvers.
+However technically possible to register any name, names that are not valid UTS-46 will not be resolvable by most resolvers.
 Therefore it is generally recommended for apps that implement registration to limit the characters that can be registered to ensure a smooth experience.
 
 To read more about supported characters [name normalization](/resolution/names).
@@ -44,6 +44,7 @@ To read more about supported characters [name normalization](/resolution/names).
 ### What does it cost to register a .eth domain?
 
 Currently, registration costs are set at the following prices:
+
 - 5+ character .eth names: $5 in ETH per year.
 - 4 character .eth names: $160 in ETH per year.
 - 3 character .eth names: $640 in ETH per year.
@@ -77,6 +78,7 @@ Potential loss can occur if the owner losses access to their private key, or if 
 The ENS rootnode is currently owned by the ENS DAO. It used to be owned by the ENS Multi-sig, a group of keyholders from different parts of the ecosystem, however as of [EP4.10](/dao/proposals/4.10) the ownership has been transferred to the ENS DAO.
 
 Ownership of the rootnode grants the ability to do the following:
+
 - Control allocation and replacement of TLDs other than .eth - this is required to implement DNSSEC integration.
 - Enable and disable controllers for the .eth registrar, which affect registration and renewal policies for .eth names.
 - Update the pricing for .eth names.
@@ -84,7 +86,7 @@ Ownership of the rootnode grants the ability to do the following:
 
 ### Can I register a TLD of my own within ENS?
 
-Yes and No, We consider ENS to be part of the 'global namespace' in co-existence with DNS, and it is our priority to not polute the namespace.
+Yes and No, We consider ENS to be part of the 'global namespace' in co-existence with DNS, and it is our priority to not pollute the namespace.
 ENS-specific TLDs are restricted to only '.eth' on Mainnet Ethereum, or .eth and .test on testnets.
 
 By default ENS allows users to [import their DNS name](/learn/dns) through the use of the [DNS Registrar](/registry/dns).

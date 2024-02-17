@@ -3,7 +3,7 @@
 import { FC, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { isAddress } from 'viem';
-import { useEnsAddress } from 'wagmi';
+import { useEnsAddress, useEnsAvatar } from 'wagmi';
 
 import { Button } from '@/components/Button';
 
@@ -15,6 +15,10 @@ export const SendTransactionDemo: FC = () => {
 
     // Resolve potential ENS names (dot separated strings)
     const { data: ensAddress, isLoading: ensAddressIsLoading } = useEnsAddress({
+        name: debouncedInput.includes('.') ? debouncedInput : undefined,
+        chainId: 1,
+    });
+    const { data: ensAvatar, isLoading: ensAvatarIsLoading } = useEnsAvatar({
         name: debouncedInput.includes('.') ? debouncedInput : undefined,
         chainId: 1,
     });
@@ -30,18 +34,31 @@ export const SendTransactionDemo: FC = () => {
             : ensAddress;
 
     return (
-        <div className="text-ens-light-text-primary bg-ens-light-background-primary flex flex-col gap-2">
+        <div className="not-prose flex flex-col gap-2 p-4">
             <label htmlFor="input" className="text-base font-semibold">
                 Address or ENS Name
             </label>
             <input
                 id="input"
-                className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary border-ens-light-border dark:border-ens-dark-border w-full rounded-md border px-3 py-2"
+                className="border-ens-light-border bg-ens-light-background-primary dark:border-ens-dark-border dark:bg-ens-dark-background-primary w-full rounded-md border px-3 py-2"
                 placeholder="ens.eth"
                 onChange={(event) => setInput(event.target.value)}
             />
 
-            {ensAddress && address && <span>{address}</span>}
+            {ensAddress && address && (
+                <div className="flex items-center gap-2">
+                    {ensAvatar && (
+                        <div className="size-4">
+                            <img
+                                src={ensAvatar}
+                                alt="Avatar"
+                                className="size-full rounded-full object-cover"
+                            />
+                        </div>
+                    )}
+                    <span>{address}</span>
+                </div>
+            )}
 
             <Button
                 variant="primary"

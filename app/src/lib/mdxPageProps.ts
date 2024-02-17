@@ -125,10 +125,12 @@ export const mdxPagePropsSchema = z
     .passthrough();
 
 export type MdxPageProps = z.infer<typeof mdxPagePropsSchema>;
-export type MdxMetaProps = z.infer<typeof mdxPagePropsSchema['shape']['meta']>;
+export type MdxMetaProps = z.infer<
+    (typeof mdxPagePropsSchema)['shape']['meta']
+>;
 export type MdxENSIPProps = z.infer<
-    typeof mdxPagePropsSchema['shape']['meta']['shape']['ensip']
+    (typeof mdxPagePropsSchema)['shape']['meta']['shape']['ensip']
 >;
 export type MdxDAOProposalProps = z.infer<
-    typeof mdxPagePropsSchema['shape']['meta']['shape']['proposal']
+    (typeof mdxPagePropsSchema)['shape']['meta']['shape']['proposal']
 >;

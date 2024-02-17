@@ -1,23 +1,49 @@
+import clsx from 'clsx';
 import Link from 'next/link';
-import { createPublicClient, http, MulticallReturnType, namehash } from 'viem';
+import { FiExternalLink } from 'react-icons/fi';
+import { createPublicClient, http, namehash } from 'viem';
 import { mainnet } from 'viem/chains';
 
+import { SmallCopy } from '@/components/SmallCopy';
 import { TLDs } from '#/data/tlds';
 
 const ADDRESS_MAP = {
-    '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85': (
-        <span className="text-ens-light-blue-primary">ETH Registrar</span>
-    ),
-    '0x58774Bb8acD458A640aF0B88238369A167546ef2': (
-        <span className="text-ens-light-green-bright">DNS Registrar</span>
-    ),
-    '0x828D6e836e586B53f1da3403FEda923AEd431019':
-        '(Custom) Protocol.ART Registrar',
-    '0x0b9BB06Ebf35A755998B60353546ae8A055554d2': '(Custom) Box Registrar',
-    '0x04ebA57401184A97C919b0B6b4e8dDE263BCb920': '(Custom) HipHop Registrar',
-    '0x1eb4b8506fca65e6B229E346dfBfd349956A66e3': '(Custom) Club Registrar',
-    '0x56ca9514363F68d622931dce1566070f86Ce5550': '(Custom) Kred Registrar',
-    '0xA86ba3b6d83139a49B649C05DBb69E0726DB69cf': '(Custom) Luxe Registrar',
+    '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85': {
+        name: 'ETH Registrar',
+        color: 'text-ens-light-blue-primary dark:text-ens-dark-blue-primary',
+        surface:
+            'bg-ens-light-blue-surface dark:bg-ens-dark-blue-surface border-ens-light-blue-surface dark:border-ens-dark-blue-surface',
+    },
+    '0x58774Bb8acD458A640aF0B88238369A167546ef2': {
+        name: 'DNS Registrar',
+        color: 'text-ens-light-green-primary dark:text-ens-dark-green-primary',
+        surface:
+            'bg-ens-light-green-surface dark:bg-ens-dark-green-surface border-ens-light-green-surface dark:border-ens-dark-green-surface',
+    },
+    '0xB32cB5677a7C971689228EC835800432B339bA2B': {
+        name: 'DNS Registrar (Supports Gasless)',
+        color: 'text-ens-light-green-primary dark:text-ens-dark-green-primary',
+        surface:
+            'bg-ens-light-green-surface dark:bg-ens-dark-green-surface border-ens-light-green-surface dark:border-ens-dark-green-surface',
+    },
+    '0x828D6e836e586B53f1da3403FEda923AEd431019': {
+        name: '(Custom) Protocol.ART Registrar',
+    },
+    '0x0b9BB06Ebf35A755998B60353546ae8A055554d2': {
+        name: '(Custom) Box Registrar',
+    },
+    '0x04ebA57401184A97C919b0B6b4e8dDE263BCb920': {
+        name: '(Custom) HipHop Registrar',
+    },
+    '0x1eb4b8506fca65e6B229E346dfBfd349956A66e3': {
+        name: '(Custom) Club Registrar',
+    },
+    '0x56ca9514363F68d622931dce1566070f86Ce5550': {
+        name: '(Custom) Kred Registrar',
+    },
+    '0xA86ba3b6d83139a49B649C05DBb69E0726DB69cf': {
+        name: '(Custom) Luxe Registrar',
+    },
 };
 
 const classifyOwner = (owner_address: string) => {
@@ -40,7 +66,7 @@ const classifyOwner = (owner_address: string) => {
 const computeTLD = (owner_address: string) => {
     if (!owner_address) return;
 
-    if (ADDRESS_MAP[owner_address]) return ADDRESS_MAP[owner_address];
+    if (ADDRESS_MAP[owner_address]) return ADDRESS_MAP[owner_address].name;
 
     if (owner_address === '0x0000000000000000000000000000000000000000')
         return (
@@ -79,16 +105,19 @@ export const TLDList = async () => {
         chunks.push(TLDs.slice(index, index + 100));
     }
 
-    const results: [string[], MulticallReturnType][] = [];
+    const results: [string[], any][] = [];
 
     for (const chunk of chunks) {
         const result = await client.multicall({
-            contracts: chunk.map((tld) => ({
-                ...contract,
-                args: [namehash(tld)],
-                functionName: 'owner',
-            })),
-        });
+            contracts: chunk.map(
+                (tld) =>
+                    ({
+                        ...contract,
+                        args: [namehash(tld)],
+                        functionName: 'owner',
+                    } as any)
+            ),
+        } as any);
 
         results.push([chunk, result]);
     }
@@ -112,39 +141,37 @@ export const TLDList = async () => {
     return (
         <div>
             <h2>Totals</h2>
-            <div className="card1 p-4">
+            <div className="">
                 {Object.entries(unique_results)
                     .sort((a, b) => {
                         return classifyOwner(b[0]) - classifyOwner(a[0]);
                     })
                     .map(([k, v]) => {
+                        const entry = ADDRESS_MAP[k];
+
                         return (
                             <div className="flex items-center gap-1">
-                                <span className="flex rounded-md border px-2 py-0.5 leading-5">
+                                <span
+                                    className={clsx(
+                                        'flex rounded-md border px-2 py-0.5 leading-5',
+                                        entry?.surface ||
+                                            'border-ens-light-border dark:border-ens-dark-border'
+                                    )}
+                                >
                                     {v}
                                 </span>
                                 <span>-</span>
                                 <span>{computeTLD(k)}</span>
-                                <span>-</span>
-                                <Link
-                                    className="text-xs"
-                                    href={'https://etherscan.io/address/' + k}
-                                    target="_blank"
-                                >
-                                    {k}
-                                </Link>
                             </div>
                         );
                     })}
             </div>
             <h2>By Name</h2>
-            <p>Lorem ipsum dolor</p>
             <table>
                 <thead>
                     <tr>
                         <th>TLD</th>
                         <th>Controller</th>
-                        <th>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -156,6 +183,9 @@ export const TLDList = async () => {
                                     owner_index: classifyOwner(
                                         result[index].result as string
                                     ),
+                                    data: ADDRESS_MAP[
+                                        result[index].result as string
+                                    ],
                                     domain: chunk,
                                 };
                             });
@@ -167,8 +197,28 @@ export const TLDList = async () => {
                             return (
                                 <tr key={v.domain}>
                                     <td>.{v.domain}</td>
-                                    <td>{computeTLD(v.result as string)}</td>
-                                    <td></td>
+                                    <td>
+                                        <div className={v.data?.color}>
+                                            {computeTLD(v.result as string)}
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <span className="">
+                                                {v.result as any}
+                                            </span>
+                                            {v.result && (
+                                                <SmallCopy
+                                                    data={v.result as string}
+                                                    className="text-ens-light-blue-primary dark:text-ens-dark-blue-primary"
+                                                />
+                                            )}
+                                            <Link
+                                                href={`https://etherscan.io/address/${v.result}`}
+                                                target="_blank"
+                                            >
+                                                <FiExternalLink />
+                                            </Link>
+                                        </div>
+                                    </td>
                                 </tr>
                             );
                         })}

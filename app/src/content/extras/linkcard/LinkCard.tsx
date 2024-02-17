@@ -22,7 +22,7 @@ export const LinkCard = ({
     return (
         <a
             href={link}
-            className="card !m-0 flex w-full flex-col p-2 px-4 pb-4 hover:outline focus:outline focus:outline-4"
+            className="card not-prose !m-0 flex w-full flex-col p-2 px-4 pb-4 hover:outline focus:outline focus:outline-4"
             style={{
                 borderColor: bgColor,
                 outlineColor: fgColor,
@@ -38,7 +38,7 @@ export const LinkCard = ({
                 </div>
                 {domain && (
                     <div
-                        className="my-auto h-fit w-fit px-2 text-xs"
+                        className="my-auto size-fit px-2 text-xs"
                         style={{ background: fgColor, color: bgColor }}
                     >
                         {domain}

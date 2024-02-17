@@ -6,9 +6,16 @@ export const DurationField: FC<{
     duration: number;
     setDuration: (_duration: number) => void;
 }> = ({ duration, setDuration }) => {
+    const id = 'duration';
+
     return (
         <div>
-            <p>Duration (in seconds):</p>
+            <label
+                htmlFor={id + 'duration'}
+                className="px-2 font-bold text-ens-light-text-secondary"
+            >
+                Duration (in seconds)
+            </label>
             <div className="flex items-center gap-2">
                 {(
                     [

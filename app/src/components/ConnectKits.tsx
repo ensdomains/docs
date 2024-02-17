@@ -102,6 +102,7 @@ export const kits: Kit[] = [
         creator_url: 'https://walletconnect.org',
         logo: '/icons/legacy/logos/walletconnect.svg',
         url: 'https://docs.walletconnect.com/2.0/web3modal/about',
+        demo: 'https://web3modal.com/',
         templates: [
             {
                 name: 'React',
@@ -139,21 +140,21 @@ export const kits: Kit[] = [
 
 export const ConnectKits = () => {
     return (
-        <div className="not-prose">
-            <div className="xl:max-w-none">
-                <div className="flex justify-stretch gap-3">
+        <div className="">
+            <div className="not-prose xl:max-w-none">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                     {kits.map((library) => (
                         <div
                             key={library.name}
-                            className="not-prose card !m-0 h-fit w-full min-w-[12rem] items-center justify-center p-3"
+                            className="not-prose card1 !m-0 flex w-full min-w-[12rem] flex-col items-stretch justify-center gap-4 p-4"
                         >
                             <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
-                                    <div className="aspect-square w-6">
+                                    <div className="flex aspect-square w-10 items-center">
                                         <img
                                             src={library.logo}
                                             className={cx(
-                                                'w-6',
+                                                'w-10',
                                                 library.name.toLowerCase() ==
                                                     'rainbowkit'
                                                     ? 'rounded-xl'
@@ -178,27 +179,15 @@ export const ConnectKits = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div>
-                                    {library.demo && (
-                                        <Button
-                                            variant="primary"
-                                            href={library.demo}
-                                            target="_blank"
-                                        >
-                                            Try it!
-                                        </Button>
-                                    )}
-                                </div>
                             </div>
-                            <div className="mt-2 text-left text-sm">
+                            <div className="grow text-left text-sm">
                                 <ul>
                                     {library.templates?.map((template) => (
-                                        <li className="px-3">
-                                            with{' '}
+                                        <li className="px-2">
                                             <a
                                                 href={template.url}
                                                 target="_blank"
-                                                className="inline-flex items-center gap-0.5 text-blue-500 hover:underline"
+                                                className="inline-flex items-center gap-1 text-blue-500 hover:underline"
                                             >
                                                 {template.icon && (
                                                     <span className="h-fit">
@@ -210,6 +199,20 @@ export const ConnectKits = () => {
                                         </li>
                                     ))}
                                 </ul>
+                            </div>
+                            <div>
+                                <div>
+                                    {library.demo && (
+                                        <Button
+                                            variant="primary"
+                                            href={library.demo}
+                                            className="w-full"
+                                            target="_blank"
+                                        >
+                                            Try it!
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}

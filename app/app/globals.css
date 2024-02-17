@@ -67,10 +67,10 @@
 }
 
 .card1 {
-    @apply rounded-lg bg-ens-light-background-primary dark:bg-ens-dark-background-primary border border-ens-light-border dark:border-ens-dark-border;
+    @apply rounded-2xl bg-ens-light-background-primary dark:bg-ens-dark-background-primary border border-ens-light-border dark:border-ens-dark-border;
 }
 .card2 {
-    @apply rounded-lg bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary border border-ens-light-border dark:border-ens-dark-border;
+    @apply rounded-2xl bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary border border-ens-light-border dark:border-ens-dark-border;
 }
 
 .card:not(.no-margin) {
@@ -302,6 +302,15 @@ tbody tr:last-child td {
     @apply rounded-lg py-2.5 px-5;
 }
 
+.btn-red-primary {
+    @apply bg-ens-light-red-primary dark:bg-ens-dark-red-primary;
+    @apply text-ens-light-text-accent dark:text-ens-dark-text-accent;
+    @apply hover:bg-ens-light-red-bright dark:hover:bg-ens-dark-red-bright hover:text-ens-light-text-accent hover:dark:text-ens-dark-text-accent;
+    @apply active:bg-ens-light-red-bright dark:active:bg-ens-dark-red-bright; /* */
+    @apply focus:ring focus:ring-offset-2 focus:ring-ens-light-red-bright dark:focus:ring-ens-dark-red-bright focus:outline-none; /* */
+    @apply rounded-lg py-2.5 px-5;
+}
+
 .btn-disabled {
     @apply bg-ens-light-background-disabled dark:bg-ens-dark-background-disabled;
     @apply text-ens-light-text-disabled dark:text-ens-dark-text-disabled;
@@ -349,4 +358,19 @@ tbody tr:last-child td {
 
 .ReactModal__Overlay {
     @apply bg-ens-light-grey-active/20 dark:bg-ens-dark-grey-active/20;
+}
+
+label.label {
+    @apply text-ens-light-text-secondary px-2 font-bold;
+}
+
+.card1.card-green {
+    @apply rounded-2xl bg-ens-light-green-surface dark:bg-ens-dark-green-surface border border-ens-light-green-primary dark:border-ens-dark-green-primary text-ens-light-green-primary dark:text-ens-dark-green-primary;
+}
+.card1.card-red {
+    @apply rounded-2xl bg-ens-light-red-surface dark:bg-ens-dark-red-surface border border-ens-light-red-primary dark:border-ens-dark-red-primary text-ens-light-red-primary dark:text-ens-dark-red-primary;
+}
+
+.card1::scrollbar {
+    @apply rounded-tr-xl overflow-hidden;
 }

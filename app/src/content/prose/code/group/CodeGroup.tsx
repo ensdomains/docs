@@ -50,7 +50,7 @@ export const CodeGroup: FC<PropsWithChildren<CodeGroupProperties>> = ({
     const hasTabs = Children.count(children) > 1;
 
     return (
-        <div className="not-prose my-6 bg-[--var(--shiki-color-background)] text-ens-light-text-primary dark:text-ens-dark-text-primary ">
+        <div className="my-6 bg-[--var(--shiki-color-background)] text-ens-light-text-primary dark:text-ens-dark-text-primary ">
             <CodeGroupHeader
                 snippets={codeSnippets}
                 title={title}
@@ -58,7 +58,7 @@ export const CodeGroup: FC<PropsWithChildren<CodeGroupProperties>> = ({
                 presets={presets}
             />
             {hasTabs ? (
-                <div className="">
+                <div className="not-prose">
                     {codeSnippets.map((child) => {
                         return cloneElement(child.element as any, {
                             isChild: true,

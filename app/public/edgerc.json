@@ -34,11 +34,11 @@
             },
             {
                 "pattern": "^/deploying-ens-on-a-private-chain$",
-                "destination": "/dissapeared"
+                "destination": "/disappeared"
             },
             {
                 "pattern": "^/dns-registrar-guide$",
-                "destination": "/dissapeared"
+                "destination": "/disappeared"
             },
             {
                 "pattern": "^/bug-bounty-program$",
@@ -210,7 +210,7 @@
             },
             {
                 "pattern": "^/contract-developer-guide/resolving-names-on-chain$",
-                "destination": "/dissapeared"
+                "destination": "/disappeared"
             },
             {
                 "pattern": "^/contract-developer-guide/writing-a-resolver$",
@@ -222,11 +222,11 @@
             },
             {
                 "pattern": "^/ens-migration-february-2020/guide-for-dapp-developers$",
-                "destination": "/dissapeared"
+                "destination": "/disappeared"
             },
             {
                 "pattern": "^/ens-migration-february-2020/technical-description$",
-                "destination": "/dissapeared"
+                "destination": "/disappeared"
             },
             {
                 "pattern": "^/v/governance/$",

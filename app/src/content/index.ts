@@ -1,4 +1,4 @@
-import { NestedMDXComponents } from 'mdx/types';
+import { MDXComponents } from 'mdx/types';
 
 import { demos } from './demos';
 import { extras } from './extras';
@@ -16,4 +16,4 @@ export const contentComponents = {
     ...demos,
     // Other Content
     ...extras,
-} as any as Record<string, NestedMDXComponents>;
+} as any as Record<string, MDXComponents>;

@@ -23,7 +23,7 @@ export const Chains: FC<{ chains?: Record<string, string> }> = ({ chains }) => {
                         <div>
                             {multicoinIcons[chain] ? (
                                 <div className="flex items-center gap-0.5">
-                                    <div className="flex h-4 w-4 items-center justify-center">
+                                    <div className="flex size-4 items-center justify-center">
                                         <img
                                             src={multicoinIcons[chain]}
                                             alt={chain}

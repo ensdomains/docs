@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-empty-file */
 /* eslint-disable sonarjs/no-duplicate-string */
 module.exports = ({ theme }) => ({
     DEFAULT: {

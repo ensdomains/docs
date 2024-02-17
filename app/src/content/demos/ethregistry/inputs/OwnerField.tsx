@@ -5,18 +5,20 @@ import { Button } from '@/components/Button';
 
 export const OwnerField: FC<{
     owner: string;
-    setOwner: (owner: string) => void;
+    setOwner: (_owner: string) => void;
 }> = ({ owner, setOwner }) => {
     const { address } = useAccount();
 
     return (
         <div>
-            <p>Owner (address):</p>
+            <label className="label" htmlFor="owner">
+                Owner (address):
+            </label>
             <div className="flex items-center gap-2">
                 <input
                     value={owner}
                     onChange={(event) => setOwner(event.target.value)}
-                    className="input max-w-sm"
+                    className="input"
                     placeholder="0x225f137127d9067788314bc7fcc1f36746a3c3B5"
                 />
                 {address && (

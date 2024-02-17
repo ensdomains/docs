@@ -30,7 +30,7 @@ export const PageDetails: FC<{
 
     return (
         <>
-            <div className="border-ens-light-border text-ens-light-text-primary dark:border-ens-dark-border dark:text-ens-dark-text-primary border-t pt-2">
+            <div className="border-t border-ens-light-border pt-2 text-ens-light-text-primary dark:border-ens-dark-border dark:text-ens-dark-text-primary">
                 <div className="leading-6">
                     {mdxProperties.meta?.ensip && (
                         <ENSIPDetails

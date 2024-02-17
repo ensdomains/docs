@@ -27,37 +27,39 @@ Before the Name Wrapper, only .eth 2LDs (second-level domains, like `ens.eth`) h
 
 ## With the Name Wrapper
 
-<div className="card1 not-prose grid grid-cols-1 md:grid-cols-2">
-  <div className="flex flex-col">
-    <div className="grow p-4 flex items-center justify-center">
-        <img src="/content/namewrapper/namewrapper-overview-wrapped.jpg" alt="Name Wrapper Diagram" />
+<div>
+    <div className="card1 not-prose grid grid-cols-1 md:grid-cols-2">
+    <div className="flex flex-col">
+        <div className="grow p-4 flex items-center justify-center">
+            <img src="/content/namewrapper/namewrapper-overview-wrapped.jpg" alt="Name Wrapper Diagram" />
+        </div>
     </div>
-  </div>
-  <div className="flex flex-col border-l border-ens-light-border dark:border-ens-dark-border">
-    <div className="grow p-4 flow items-left justify-left">
-        <p><b>Parent-Controlled Fuses:</b></p>
-        <ul style={{listStyle: 'inside'}}>
-            <li key="pcf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that only the parent owner can burn</li>
-            <li key="pcf2">"Perks" that can be given to the owner of a name</li>
-        </ul>
-        <p><b>Example:</b> By burning `CAN_EXTEND_EXPIRY`, you allow the owner to extend/renew their own subname</p>
-        <br/>
+    <div className="flex flex-col border-l border-ens-light-border dark:border-ens-dark-border">
+        <div className="grow p-4 flow items-left justify-left">
+            <p><b>Parent-Controlled Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="pcf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that only the parent owner can burn</li>
+                <li key="pcf2">"Perks" that can be given to the owner of a name</li>
+            </ul>
+            <p><b>Example:</b> By burning `CAN_EXTEND_EXPIRY`, you allow the owner to extend/renew their own subname</p>
+            <br/>
 
-        <p><b>Owner-Controlled Fuses:</b></p>
-        <ul style={{listStyle: 'inside'}}>
-            <li key="ocf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that either the owner or parent owner can burn</li>
-            <li key="ocf2">"Permissions" that can be revoked on a name</li>
-        </ul>
-        <p><b>Example:</b> By burning `CANNOT_TRANSFER`, the wrapped NFT can no longer be transferred or sold.</p>
-        <br/>
+            <p><b>Owner-Controlled Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="ocf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that either the owner or parent owner can burn</li>
+                <li key="ocf2">"Permissions" that can be revoked on a name</li>
+            </ul>
+            <p><b>Example:</b> By burning `CANNOT_TRANSFER`, the wrapped NFT can no longer be transferred or sold.</p>
+            <br/>
 
-        <p><b>Subname Fuses:</b></p>
-        <ul style={{listStyle: 'inside'}}>
-            <li key="sf1">The parent owner has the power to burn fuses when creating subnames</li>
-            <li key="sf2">Decides what perks, permissions, or guarantees to give to subname owners</li>
-        </ul>
+            <p><b>Subname Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="sf1">The parent owner has the power to burn fuses when creating subnames</li>
+                <li key="sf2">Decides what perks, permissions, or guarantees to give to subname owners</li>
+            </ul>
+        </div>
     </div>
-  </div>
+    </div>
 </div>
 
 <b>With this new contract, you can wrap:</b>

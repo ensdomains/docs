@@ -25,7 +25,7 @@ export const Anchor = ({ id, inView, children }) => {
                 {inView && (
                     <div className="transition group-hover:opacity-100 group-focus:opacity-100 md:block lg:z-50">
                         <div className="group/anchor w-5transition block h-5">
-                            <AnchorIcon className="h-5 w-5 stroke-zinc-500 transition dark:stroke-zinc-400 dark:group-hover/anchor:stroke-white" />
+                            <AnchorIcon className="size-5 stroke-zinc-500 transition dark:stroke-zinc-400 dark:group-hover/anchor:stroke-white" />
                         </div>
                     </div>
                 )}

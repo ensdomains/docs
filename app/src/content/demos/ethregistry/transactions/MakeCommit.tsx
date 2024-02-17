@@ -6,6 +6,7 @@ import { useEstimateGas, useWriteContract } from 'wagmi';
 
 import { Button } from '@/components/Button';
 
+import { EthCall } from '../../call/EthCall';
 import { ETHRegistrarABI } from '../ETHRegistryABI';
 
 export const MakeCommit: FC<{ commithash: string }> = ({ commithash }) => {
@@ -23,23 +24,23 @@ export const MakeCommit: FC<{ commithash: string }> = ({ commithash }) => {
 
     return (
         <div>
-            <div className="border-ens-light-border dark:border-ens-dark-border space-y-2 rounded-lg border p-4">
-                <div className="space-x-2">
-                    <div className="tag tag-yellow">Transaction</div>
-                    <div className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary inline">
-                        This checks if the name is available.
+            <EthCall
+                type="transaction"
+                gas={gas?.toString()}
+                description="This checks if the name is available."
+                call={
+                    <div>
+                        <span className="text-ens-light-blue-primary">
+                            ETHRegistrarController
+                        </span>
+                        .commit(
+                        <span className="text-ens-light-pink-primary">
+                            "{commithash}"
+                        </span>
+                        )
                     </div>
-                </div>
-                <div className="border-ens-light-border dark:border-ens-dark-border break-all rounded-lg border p-2">
-                    <span className="text-ens-light-blue-primary">
-                        ETHRegistrarController
-                    </span>
-                    .commit(
-                    <span className="text-ens-light-pink-primary">
-                        "{commithash}"
-                    </span>
-                    )
-                </div>
+                }
+            >
                 <div className="flex w-full items-center justify-end gap-4">
                     <div>{gas?.toString()} gas</div>
                     <Button
@@ -54,12 +55,12 @@ export const MakeCommit: FC<{ commithash: string }> = ({ commithash }) => {
                     </Button>
                 </div>
                 {isError && (
-                    <div className="border-ens-light-red-primary bg-ens-light-red-surface text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface flex items-center gap-1 rounded-lg px-3 py-2">
+                    <div className="flex items-center gap-1 rounded-lg border-ens-light-red-primary bg-ens-light-red-surface px-3 py-2 text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface">
                         <FiX />
                         Problem
                     </div>
                 )}
-            </div>
+            </EthCall>
         </div>
     );
 };

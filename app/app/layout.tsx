@@ -1,5 +1,6 @@
 import './globals.css';
 import 'focus-visible';
+import '@ens-tools/thorin-core/style.css';
 
 import { Theme } from './theme';
 

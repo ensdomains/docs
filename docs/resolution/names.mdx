@@ -12,13 +12,6 @@ export const meta = {
 
 # Name Processing
 
-<WIP
-    missing={[
-        'Namehash code examples',
-        'DNS Encoding'
-    ]}
-/>
-
 When interacting with the ENS protocol smart-contracts directly it is important to note that names are not stored in their human readable format.
 In fact there are a few steps a name undergoes before it can be used by a smart-contract.
 
@@ -85,19 +78,27 @@ const node = namehash('name.eth');
 ```
 
 ```jsx {{ title: "ens-namehash-py" }}
-https://github.com/ConsenSysMesh/ens-namehash-py
+// https://github.com/ConsenSysMesh/ens-namehash-py
 
+from namehash import namehash
+
+node = namehash('name.eth')
 ```
 
-```rust {{ title: "rust hash" }}
-https://github.com/ConsenSysMesh/ens-namehash-py
+```rust {{ title: "namehash-rust" }}
+// https://github.com/InstateDev/namehash-rust
 
+fn main() {
+  let node = &namehash("name.eth");
+  let s = hex::encode(&node);
+}
 ```
 
 </CodeGroup>
 
 [ENSjs](https://github.com/ensdomains/ensjs-v3/blob/main/packages/ensjs/src/utils/normalise.ts#L29)
 https://github.com/ConsenSysMesh/ens-namehash-py
+https://github.com/InstateDev/namehash-rust
 
 ### Algorithm
 
@@ -134,6 +135,24 @@ If you plug everything in above, you'll end up with the final namehash value:
     * `keccak256(0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae5cee339e13375638553bdf5a6e36ba80fb9f6a4f0783680884d92b558aa471da)` =
     * **`0x4e34d3a81dc3a20f71bbdf2160492ddaa17ee7e5523757d47153379c13cb46df`**
 
+### Reverse Nodes {{ title: "Reverse Nodes", id: "reverse-nodes" }}
+
+The [Reverse Node](/terminology#reverse-node) is a node in the Registry that can be claimed for any Ethereum account. The name this node represents is `[addr].addr.reverse`, where `[addr]` is the Ethereum public address (lowercase, without the "0x"). These reverse nodes are typically used to set a [Primary Name](#primary-name) for an account.
+
+To generate the namehash for a reverse node:
+
+* Take the input address and:
+  * Remove the "0x" at the beginning
+  * Convert all characters to lowercase
+* Add `.addr.reverse` to the end
+* Run this result through the namehash algorithm
+
+For example, for address `0x481f50a5BdcCC0bc4322C4dca04301433dED50f0`, the name for the reverse node is:
+* `481f50a5bdccc0bc4322c4dca04301433ded50f0.addr.reverse`
+
+And the resulting namehash for the reverse node is:
+* `0x58354ffdde6ac279f3a058aafbeeb14059bcb323a248fb338ee41f95fa544c86`
+
 ## Labelhash {{ title: "Labelhash", id: "labelhash" }}
 
 <Note>
@@ -151,7 +170,29 @@ const labelhash = '0x' + require('js-sha3').keccak_256('name')
 
 ## DNS Encoding {{ title: "DNS Encoding", id: "dns" }}
 
+<Note>
+    You **MUST** [normalize](#normalize) a name before you DNS-encode it! If you don't, then when you pass those DNS-encoded bytes into a contract method, incorrect namehashes/labelhashes may be derived.
+</Note>
+
 This is a binary format for domain names, which encodes the length of each label along with the label itself. It is used by some of the ENS contracts, such as when wrapping a subname or DNS name using the Name Wrapper.
+
+To DNS-encode a name, first split the name into labels (delimited by `.`). Then for each label from left-to-right:
+
+* One byte to denote the length of the label
+* The UTF-8 encoded bytes for the label
+* If this is the last label, then one final NUL (`0x00`) byte.
+
+For example, to DNS-encode `my.name.eth`:
+
+* `0x02` (length of the label "my")
+* `0x6D79` (UTF-8 encoded bytes of "my")
+* `0x04` (length of the label "name")
+* `0x6E616D65` (UTF-8 encoded bytes of "name")
+* `0x03` (length of the label "eth")
+* `0x657468` (UTF-8 encoded bytes of "eth")
+* `0x00` (end of name marker)
+
+Final result: `0x026d79046e616d650365746800`
 
 ```js
 // https://npmjs.com/package/dns-packet
@@ -159,3 +200,7 @@ const dnsEncodedBytes = require('dns-packet').name.encode('name.eth');
 const dnsEncodedHexStr = '0x' + require('dns-packet').name.encode('name.eth').toString('hex');
 // => 0x046e616d650365746800
 ```
+
+<Note>
+    Since the length of each label is stored in a single byte, that means that with this DNS-encoding scheme, each label is limited to being 255 UTF-8 encoded bytes in length. Because of this, names with longer labels cannot be wrapped in the [Name Wrapper](/wrapper/overview), as that contract uses the DNS-encoded name.
+</Note>

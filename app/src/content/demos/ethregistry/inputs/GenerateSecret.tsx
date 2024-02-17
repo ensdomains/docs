@@ -14,7 +14,7 @@ export const GenerateSecret: FC<{
                 <input
                     value={secret}
                     onChange={(event) => setSecret(event.target.value)}
-                    className="input max-w-sm"
+                    className="input"
                     placeholder="0x0000000000000000000000000000000000000000000000000000000000000000"
                 />
                 <Button

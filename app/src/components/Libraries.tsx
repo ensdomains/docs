@@ -150,26 +150,49 @@ export const ensLibraries: Language[] = [
 
 export function Libraries() {
     return (
-        <div className="not-prose mt-4">
-            <div className="flex flex-wrap gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-4">
+            <div className="not-prose grid gap-x-4 sm:grid-cols-2 xl:grid-cols-3">
                 {ensLibraries.map((language) => (
-                    <>
-                        {language.libraries.map((library) => (
-                            <Link
-                                href={library.href}
-                                className="card !m-0 p-3"
-                                target="_blank"
-                            >
-                                <div className="flex items-center gap-2 px-2 text-lg">
-                                    <div>{library.name}</div>
-                                    <div>{language.logo}</div>
-                                    <div className="rounded-xl border border-ens-light-border bg-ens-light-blue-surface px-2 text-xs text-ens-light-blue-primary dark:border-ens-dark-border dark:bg-ens-dark-blue-surface dark:text-ens-dark-blue-primary">
-                                        {language.name}
+                    <div
+                        className="h-fit space-y-1"
+                        style={{
+                            gridRow:
+                                'span ' +
+                                Math.round(language.libraries.length * 2) +
+                                1,
+                        }}
+                    >
+                        <div>
+                            <div className="text-base font-bold">
+                                {language.name}
+                            </div>
+                        </div>
+                        <div className="space-y-2 pb-2">
+                            {language.libraries.map((library) => (
+                                <Link
+                                    href={library.href}
+                                    className="card1 block rounded-xl p-3"
+                                    target="_blank"
+                                    key={library.name}
+                                >
+                                    <div className="flex items-center gap-2 px-2 text-lg">
+                                        {library.logo ? (
+                                            <div className="flex size-5 items-center justify-center">
+                                                <img
+                                                    src={library.logo}
+                                                    alt={library.name}
+                                                    className="size-5 object-contain"
+                                                />
+                                            </div>
+                                        ) : (
+                                            language.logo
+                                        )}
+                                        {library.name}
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
                 ))}
             </div>
         </div>

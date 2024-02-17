@@ -3,6 +3,7 @@ import { getAllPageSlugs } from 'data/get_pages';
 import { NextResponse } from 'next/server';
 
 import { navigation } from '../../src/config/navigation';
+
 const { protocol } = navigation;
 
 export async function GET() {
