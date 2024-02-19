@@ -25,7 +25,7 @@ function FeedbackButton(properties) {
                     .replace('yes', 'Positive Page Rating')
                     .replace('no', 'Negative Page Rating');
 
-                await fetch('https://plausible.io/api/event', {
+                await fetch('https://ens.v3x.report/api/event', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
