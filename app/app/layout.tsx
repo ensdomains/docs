@@ -22,17 +22,12 @@ export default function RootLayout(properties) {
                 <script
                     defer
                     data-domain="docs.ens.domains"
+                    src="https://ens.v3x.report/js/script.js"
+                ></script>
+                <script
+                    defer
+                    data-domain="docs.ens.domains"
                     src="https://plausible.io/js/script.js"
-                ></script>
-                <script
-                    defer
-                    data-domain="docs.ens.domains"
-                    src="https://ens.v3x.report/js/script.js"
-                ></script>
-                <script
-                    defer
-                    data-domain="docs.ens.domains"
-                    src="https://ens.v3x.report/js/script.js"
                 ></script>
             </body>
         </html>
