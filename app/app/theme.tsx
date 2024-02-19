@@ -2,6 +2,7 @@
 
 import '@ens-tools/thorin-core';
 
+import { setupConfig } from '@ens-tools/thorin-core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { goerli, mainnet, sepolia } from 'viem/chains';
@@ -17,6 +18,8 @@ const config = createConfig({
         [sepolia.id]: http(),
     },
 });
+
+setupConfig(config);
 
 declare module 'wagmi' {
     interface Register {
