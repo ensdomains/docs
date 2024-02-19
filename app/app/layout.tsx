@@ -21,8 +21,13 @@ export default function RootLayout(properties) {
                 <Theme>{children}</Theme>
                 <script
                     defer
-                    data-domain="alpha-docs.ens.domains"
+                    data-domain="docs.ens.domains"
                     src="https://plausible.io/js/script.js"
+                ></script>
+                <script
+                    defer
+                    data-domain="docs.ens.domains"
+                    src="https://ens.v3x.report/js/script.js"
                 ></script>
                 <script
                     defer

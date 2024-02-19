@@ -33,7 +33,7 @@ function FeedbackButton(properties) {
                     body: JSON.stringify({
                         name: response,
                         url: window.location.href,
-                        domain: 'alpha-docs.ens.domains',
+                        domain: 'docs.ens.domains',
                     }),
                 });
             }}
