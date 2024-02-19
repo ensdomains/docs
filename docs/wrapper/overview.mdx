@@ -1,0 +1,79 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '🎁',
+    contributors: [
+        'serenae-fansubs'
+    ]
+};
+
+# Name Wrapper Overview
+
+<Note>
+    Are you looking for user-facing guides on how to interact with the Name Wrapper in the ENS Manager App? If so, see here instead: <a href="https://support.ens.domains/en/collections/4194784-name-wrapper-guides">Name Wrapper Guides</a>
+</Note>
+
+<iframe className="w-full aspect-video rounded-lg shadow-sm" src="https://www.youtube-nocookie.com/embed/njb7jp5_Qoo?si=YyESSjAk4W5btawz" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+
+The <b>Name Wrapper</b> is a new contract for ENS that allows you to "wrap" any ENS name into a ERC-1155 NFT.
+
+## Without the Name Wrapper
+
+Before the Name Wrapper, only .eth 2LDs (second-level domains, like `ens.eth`) had ERC-721 NFTs associated with them, unless the owner created a separate custom contract.
+
+<div className="card1">
+    <img src="/content/namewrapper/namewrapper-overview-subnames.jpg" alt="Subnames without NFTs" />
+</div>
+
+## With the Name Wrapper
+
+<div>
+    <div className="card1 not-prose grid grid-cols-1 md:grid-cols-2">
+    <div className="flex flex-col">
+        <div className="grow p-4 flex items-center justify-center">
+            <img src="/content/namewrapper/namewrapper-overview-wrapped.jpg" alt="Name Wrapper Diagram" />
+        </div>
+    </div>
+    <div className="flex flex-col border-l border-ens-light-border dark:border-ens-dark-border">
+        <div className="grow p-4 flow items-left justify-left">
+            <p><b>Parent-Controlled Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="pcf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that only the parent owner can burn</li>
+                <li key="pcf2">"Perks" that can be given to the owner of a name</li>
+            </ul>
+            <p><b>Example:</b> By burning `CAN_EXTEND_EXPIRY`, you allow the owner to extend/renew their own subname</p>
+            <br/>
+
+            <p><b>Owner-Controlled Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="ocf1"><a href="/wrapper/fuses" style={{color: '#5298ff', textDecoration: 'underline transparent'}}>Fuses</a> that either the owner or parent owner can burn</li>
+                <li key="ocf2">"Permissions" that can be revoked on a name</li>
+            </ul>
+            <p><b>Example:</b> By burning `CANNOT_TRANSFER`, the wrapped NFT can no longer be transferred or sold.</p>
+            <br/>
+
+            <p><b>Subname Fuses:</b></p>
+            <ul style={{listStyle: 'inside'}}>
+                <li key="sf1">The parent owner has the power to burn fuses when creating subnames</li>
+                <li key="sf2">Decides what perks, permissions, or guarantees to give to subname owners</li>
+            </ul>
+        </div>
+    </div>
+    </div>
+</div>
+
+<b>With this new contract, you can wrap:</b>
+<ul>
+    <li key="wrapex1">
+        <p>Any .eth name or subname</p>
+        <p><b>Examples:</b> `name.eth`, `sub.name.eth`</p>
+    </li>
+    <li key="wrapex2">
+        <p>Any DNS name or subname</p>
+        <p><b>Examples:</b> `name.com`, `sub.name.com`</p>
+    </li>
+</ul>
+
+Unwrapped .eth 2LDs have the concept of a separate **Owner** (Registrant) and **Manager** (Controller). 
+
+This changes after you wrap the name, because there is only a single account that serves as both the **Owner** and **Manager** for the wrapped name.

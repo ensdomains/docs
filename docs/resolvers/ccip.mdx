@@ -1,0 +1,188 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    title: 'Cross Chain Interoperability Protocol (CCIP)',
+    description: '',
+    emoji: '⛓️',
+    contributors: ['lucemans'],
+};
+
+# Cross Chain / Offchain Resolvers
+
+{/* This document covers what it takes to write a gateway resolver. */}
+
+The source of truth for a name and its subdomains does not always have to be on-chain or on Ethereum L1 at all.
+By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), the Cross Chain Interoperability Protocol (or CCIP Read for short), we can load information by hitting a so called "Gateway".
+Within the context of ENS, this enables us, to read names, addresses, records, and more from other chains, or even off-chain.
+
+<div className="card1 p-4 flex justify-center items-center gap-4">
+    <Usertag name="lucemans.cb.id" image="https://enstate.rs/i/luc.eth" />
+    <div>➡️</div>
+    <div className="text-center leading-4">
+        <div className="font-bold">Resolver</div>
+        <div>0x1234</div>
+    </div>
+    <div>➡️</div>
+    <div className="text-center leading-4">
+        <div className="font-bold">Gateway</div>
+        <div>api.example.com</div>
+    </div>
+    <div>➡️</div>
+    <div className="text-center leading-4 card p-2 no-margin !bg-lime-50">
+        <div className="font-bold">Address:</div>
+        <div>0x225...c3b5</div>
+    </div>
+</div>
+
+## How does it work?
+
+The Cross Chain Interoperability Protocol (CCIP), is a client-side implemented protocol that introduces the [OffchainLookup](https://eips.ethereum.org/EIPS/eip-3668#contract-interface) error.
+Once the client encounters this error, it will attempt to handle it by calling a gateway url. Most Ethereum libraries handle this for you, at no additional cost.
+
+```c
+error OffchainLookup(
+    address sender,
+    string[] urls,
+    bytes callData,
+    bytes4 callbackFunction,
+    bytes extraData
+)
+```
+
+## Demo
+
+An example of CCIP in action can be found at [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
+This example application allows you to claim a subname for 24 hours.
+The name [offchaindemo.eth](https://ens.app/offchaindemo.eth) with resolver [0xDB3...4D27](https://etherscan.io/address/0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27#code), reverts with [OffchainLookup](https://eips.ethereum.org/eips/3668) and directs the client to a gateway url.
+The [gateway url](https://ens-gateway.gregskril.workers.dev/lookup/{sender}/{data}.json) returns the information and loads it from a temporary database.
+
+## EVMGateway
+
+The EVMGateway is a gateway that allows you to load data from specific Layer 2's whose proofs are verifyable on L1.
+This means if you are looking to load data from Optimism or Arbitrum, the EVMGateway allows you to trustlessly do so.
+
+<div>
+    <Repository src="ensdomains/evmgateway" />
+</div>
+
+## CCIP Read Flow
+
+When a name is looked up the resolver responsible is called to resolve the name.
+During this execution the `OffchainLookup` error is thrown, and the client will attempt to reach out to the gateway specified by the error.
+If successful the gateways results are returned to the callback function specified in the error.
+The output of the callback function is then returned to the client and considered the result of the original lookup.
+
+<img src="/content/learn/ccip/1.png" className="w-full card" />
+
+## Writing a Gateway
+
+A gateway is an off-chain service that is responsible for returning the data requested by a client.
+A gateway must be implemented using the [Gateway Interface](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) as specified in EIP-3668.
+This means it must expose an API served over https, and return data in a specific format.
+This service can be a server, a serverless function, worker, etc.
+The URL for this gateway is determined by the `OffchainLookup` error, and is passed as a parameter to the error.
+
+### Template Repositories
+
+<div>
+    <Repository src="ensdomains/offchain-resolver" description="CCIP Offchain ENS Resolver with Cloudflare Workers"/>
+    <Repository src="ensdomains/offchain-gateway-rs" description="Offchain CCIP Gateway Resolver implementation in Rust (& postgres)"/>
+    <Repository src="ensdomains/offchain-resolver-example" />
+    <Repository src="gskril/ens-offchain-resolver-read-from-api" />
+</div>
+
+### Implement Gateway Endpoint {{ navtitle: 'Implement Gateway', id: 'endpoint' }}
+
+There are two methods (GET and POST) you can choose to implement when writing a gateway. When your smart-contract reverts with the `OffchainLookup` error you can decide the url it returns.
+If `{data}` can be successfully substituted out of the URL a GET request will be made, if no `{data}` is present a POST request will be made instead, with the data instead submitted as the post body.
+
+<CodeGroup title="Request" presets="method">
+
+```yaml {{ title: 'POST', variant: 'post' }}
+// POST if URL does not include '{data}' parameter
+URL: https://example.com/gateway/{sender}.json
+Method: POST
+Body: data
+```
+
+```yaml {{ title: 'GET', variant: 'get' }}
+// GET if URL includes '{data}' parameter
+URL: https://example.com/gateway/{sender}/{data}.json
+Method: GET
+```
+
+</CodeGroup>
+
+<Properties>
+  <Property name="sender" type="address">
+    Lowercased address of the contract reverting with the `OffchainLookup` error.
+  </Property>
+  <Property name="data" type="bytes">
+    0x prefixed bytes of the data passed to the `OffchainLookup` error.
+  </Property>
+</Properties>
+
+#### Trust Assumptions
+
+The gateways response is returned to a callback function on the resolver, we assume this function verifies the data returned by the gateway.
+Gateways form a "one-of-many" trust relationship as we require only one gateway to be honest for the system to keep functioning.
+
+### Deploying a Resolver
+
+Once you have written your gateway you need to deploy a resolver contract.
+For ready-to-deploy contracts check the demo's above or visit [ccip.tools](https://ccip.tools/ref=ens-docs).
+If you would like to read more about writing your own resolver checkout the [Writing a Resolver](/resolvers/writing) guide.
+
+The gist is that this resolver must implement the specifications you plan to support (such as `addr()` or `resolve()`), and then revert with `OffchainLookup` and your gateway URL.
+
+#### Callback Function
+
+When reverting with an `OffchainLookup` error you can specify a callback function.
+The callback function is evaluated on the client side with the data returned from the gateway.
+This makes it a perfect place to validate proofs, signatures, or other data.
+
+### Enabling your Resolver {{ navtitle: 'Setting Resolver', id: 'set' }}
+
+Last but not least you need to instruct your name to use the resolver-gateway combo.
+To do this, simply visit the [ENS Manager App](https://ens.app/) and set the resolver of your name to the contract address of your resolver.
+This means that all resolution for this name from now on will be handled by your resolver.
+
+An alternative option is to [set the Resolver manually](/resolvers/interacting) or [from a dApp](/resolvers/interacting).
+
+## Testing your Gateway
+
+To test your gateway you can use the [ENS Manager App](https://ens.app/) or if you want more detail try using [enstate](https://enstate.rs/n/luc.willbreak.eth) and notice the `ccip_urls` field.
+If your results are loaded successfully, you have successfully implemented a gateway resolver.
+
+A testing tool for CCIP functions will be available soon.
+
+{/* ```mermaid
+sequenceDiagram
+    participant Client
+    box Ethereum L1
+    participant ENS
+    participant Resolver
+    end
+    participant Gateway as Gateway Service*
+    participant L2 as L2 or Database*
+
+    Client->>ENS: get resolver for luc.eth
+    ENS->>Client: 
+    Client->>Resolver: get 'avatar' for hello.luc.eth 
+    rect rgb(82, 152, 255)
+    Resolver->>Client: revert with OffchainLookup(sender, urls, callData,<br />callbackFunction, extraData)
+    end
+
+    Client->>Gateway: get 'avatar' for hello.luc.eth
+    
+    opt Retrieve data from L2 or Database
+        Gateway->>L2: 
+        L2->>Gateway: 
+    end
+
+    Gateway->>Client: Return Results
+
+    opt Verify signature of gateway results
+        Client->>Resolver: Do these results look right?
+        Resolver->>Client: 
+    end
+``` */}

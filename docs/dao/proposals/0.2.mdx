@@ -1,0 +1,48 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: "Send 213,049 ENS tokens to a new airdrop contract for users who did not receive the 2x multiplier despite owning a name that was used as a primary ENS name. As amended by EP3.",
+    emoji: '📘',
+    contributors: [
+        // TODO: Add contributors
+    ],
+    proposal: {
+        discourse: '6755',
+        snapshot: '0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f',
+        type: 'executable'
+    }
+};
+
+# [EP0.2] [Executable] Retrospective airdrop for accounts that owned another account's primary ENS 1
+
+_Note: This was previously numbered EP2._
+
+## Abstract
+
+One of the criteria used for the ENS airdrop was whether the account had a primary ENS name set. Those accounts that did got a 2x multiplier on their airdrop amount. The intention was to use this as a measure of involvement in the ENS ecosystem; those accounts that set primary ENS names are typically using their names in supported applications, while those that don't are less likely to be doing so.
+
+The way this was implemented was to award the multiplier to all accounts that had interacted with the reverse registrar. This had the unintended side effect that if a user owned an ENS name on account A, and configured it to resolve to account B, which used it as its primary name, account A would get tokens, and account B would get the multiplier. As B doesn't own any names, the multiplier has no effect and the end result is that some users got fewer tokens than they would have if they had used the same account for everything.
+
+This proposal aims to correct this, by introducing a new criteria for determining who to award the multiplier to, and creating a new airdrop contract for all accounts that qualify for the new criteria but not the old one.
+
+In plain english terms, the new criteria is that the account must have at some point in time owned a name that was used as the primary ENS name for an account.
+
+More formally, for each account `a`, the account is assigned the multiplier if there exists a name `n` and a time before 2021-11-01 00:00:00 UTC, where all of the following are true:
+
+1. `a` is the registrant of `n`.
+2. `n` has a resolver, `r`, set on the ENS registry.
+3. `r` has an `addr` record, `a'`, set for `n`, and has emitted an `AddrChanged` event to record this fact.
+4. The reverse record for `a'` has a resolver, `r'`, set on the ENS registry.
+5. `r'` has a `name` record, `n'`, set for the reverse record of `a`. `r'` is either the default reverse resolver, or has emitted a `NameChanged` event for `n'` and `a'`.
+6. `n == n'`.
+
+This logic is implemented by [this series of BigQuery queries](https://gist.github.com/Arachnid/667178e854945abaecb6dfd3b6c0c279/106d9bc156988cf96786c71f6448f13fb11599fc), and shows that 1,969 accounts meet these criteria but did not qualify for the multiplier under the original criteria. The sum of the tokens these accounts would be entitled to comes to \~213,049 ENS tokens. A list of affected accounts and balances is [here](https://gist.github.com/Arachnid/e8b1a18fc19818fb00f51fbb8d90e429).
+
+Further, a number of users have accidentally transferred their ENS tokens to the token contract, totalling 6,246 contracts across 49 transfers. These tokens should be returned to their previous owners. This proposal, if executed, will transfer 219,295 ENS tokens to [a new merkle airdrop contract ](https://github.com/ensdomains/governance/pull/9)allowing affected users to claim them.
+
+## Specification
+
+1. Request that True Names Limited write and deploy a contract that allows claiming of tokens via Merkle Proofs using the same methodology as was used for the airdrop.
+2. Request that True Names Limited make changes to the claim.ens.domains site to support claiming this additional airdrop for qualifying accounts.
+3. Authorise the contract deployed in (1) to spend 219295650978169915391391 base ENS tokens from the ENS DAO account.
+
+## Code

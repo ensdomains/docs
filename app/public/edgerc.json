@@ -1,0 +1,449 @@
+{
+    "config": {
+        "routing": {
+            "trailing_slash": "never"
+        },
+        "redirects": [
+            {
+                "pattern": "^/namewrapper$",
+                "destination": "/wrapper/overview"
+            },
+            {
+                "pattern": "^/(tools?|sdks?)$",
+                "destination": "/web/libraries"
+            },
+            {
+                "pattern": "^/quickstart$",
+                "destination": "/web/quickstart"
+            },
+            {
+                "pattern": "^/ccip$",
+                "destination": "/learn/ccip"
+            },
+            {
+                "pattern": "^/(frequently-asked-questions|faqs)$",
+                "destination": "/faq"
+            },
+            {
+                "pattern": "^/ens-deployments$",
+                "destination": "/learn/deployments"
+            },
+            {
+                "pattern": "^/permanent-registrar-faq$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/deploying-ens-on-a-private-chain$",
+                "destination": "/disappeared"
+            },
+            {
+                "pattern": "^/dns-registrar-guide$",
+                "destination": "/disappeared"
+            },
+            {
+                "pattern": "^/bug-bounty-program$",
+                "destination": "/bugs"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-1-ens$",
+                "destination": "/ensip/1"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-2-initial-hash-registrar$",
+                "destination": "/ensip/2"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-3-reverse-resolution$",
+                "destination": "/ensip/3"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-4-support-for-contract-abis$",
+                "destination": "/ensip/4"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-5-text-records$",
+                "destination": "/ensip/5"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-6-dns-in-ens$",
+                "destination": "/ensip/6"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-7-contenthash-field$",
+                "destination": "/ensip/7"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-8-interface-discovery$",
+                "destination": "/ensip/8"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-9-multichain-address-resolution$",
+                "destination": "/ensip/9"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-10-wildcard-resolution$",
+                "destination": "/ensip/10"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-11-evmchain-address-resolution$",
+                "destination": "/ensip/11"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-12-avatar-text-records$",
+                "destination": "/ensip/12"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-13-secondary-authentication-for-ens$",
+                "destination": "/ensip/13"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-14-platform-pattern-parameter$",
+                "destination": "/ensip/14"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-15-normalization-standard$",
+                "destination": "/ensip/15"
+            },
+            {
+                "pattern": "^/ens-improvement-proposals/ensip-16-offchain-metadata$",
+                "destination": "/ensip/16"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/quickstart$",
+                "destination": "/web/quickstart"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/ens-enabling-your-dapp$",
+                "destination": "/web/quickstart"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/ens-libraries$",
+                "destination": "/web/libraries"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/working-with-ens$",
+                "destination": "/web/libraries"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/resolving-names$",
+                "destination": "/web/resolution"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/managing-names$",
+                "destination": "/resolvers/interacting"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/registering-and-renewing-names$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/front-end-design-guidelines$",
+                "destination": "/web/design"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/ens-as-nft$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/ens-l2-offchain$",
+                "destination": "/learn/ccip"
+            },
+            {
+                "pattern": "^/dapp-developer-guide/ens-data-guide$",
+                "destination": "/web/libraries"
+            },
+            {
+                "pattern": "^/contract-api-reference/ens-contracts-overview$",
+                "destination": "/contracts"
+            },
+            {
+                "pattern": "^/contract-api-reference/name-processing$",
+                "destination": "/resolution/names"
+            },
+            {
+                "pattern": "^/contract-api-reference/ens$",
+                "destination": "/registry/ens"
+            },
+            {
+                "pattern": "^/contract-api-reference/reverseregistrar$",
+                "destination": "/registry/reverse"
+            },
+            {
+                "pattern": "^/contract-api-reference/testregistrar$",
+                "destination": "/registry/test"
+            },
+            {
+                "pattern": "^/contract-api-reference/publicresolver$",
+                "destination": "/resolvers/public"
+            },
+            {
+                "pattern": "^/contract-api-reference/.eth-permanent-registrar$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/contract-api-reference/.eth-permanent-registrar/registrar$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/contract-api-reference/.eth-permanent-registrar/controller$",
+                "destination": "/registry/eth"
+            },
+            {
+                "pattern": "^/contract-api-reference/subgraphdata$",
+                "destination": "/web/subgraph"
+            },
+            {
+                "pattern": "^/contract-api-reference/dns-registrar$",
+                "destination": "/registry/dns"
+            },
+            {
+                "pattern": "^//contract-api-reference/subgraphdata$",
+                "destination": "/web/subgraph"
+            },
+            {
+                "pattern": "^/contract-api-reference/subgraphdata/entities$",
+                "destination": "/web/subgraph"
+            },
+            {
+                "pattern": "^/contract-api-reference/subgraphdata/queries$",
+                "destination": "/web/subgraph"
+            },
+            {
+                "pattern": "^/contract-developer-guide/resolving-names-on-chain$",
+                "destination": "/disappeared"
+            },
+            {
+                "pattern": "^/contract-developer-guide/writing-a-resolver$",
+                "destination": "/resolvers/writing"
+            },
+            {
+                "pattern": "^/contract-developer-guide/writing-a-registrar$",
+                "destination": "/registry/writing"
+            },
+            {
+                "pattern": "^/ens-migration-february-2020/guide-for-dapp-developers$",
+                "destination": "/disappeared"
+            },
+            {
+                "pattern": "^/ens-migration-february-2020/technical-description$",
+                "destination": "/disappeared"
+            },
+            {
+                "pattern": "^/v/governance/$",
+                "destination": "/dao"
+            },
+            {
+                "pattern": "^/v/governance/stewards$",
+                "destination": "/dao/stewards"
+            },
+            {
+                "pattern": "^/v/governance/stewards/active-working-group-rules$",
+                "destination": "/dao/wg/rules"
+            },
+            {
+                "pattern": "^/v/governance/process$",
+                "destination": "/dao/governance/process"
+            },
+            {
+                "pattern": "^/v/governance/process/moderator-checklists$",
+                "destination": "/dao/governance/moderator"
+            },
+            {
+                "pattern": "^/v/governance/ens-dao-constitution$",
+                "destination": "/dao/constitution"
+            },
+            {
+                "pattern": "^/v/governance/the-ens-foundation$",
+                "destination": "/dao/foundation"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals$",
+                "destination": "/dao/proposals"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-0$",
+                "destination": "/dao/proposals"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1$",
+                "destination": "/dao/proposals"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2$",
+                "destination": "/dao/proposals"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3$",
+                "destination": "/dao/proposals"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-0/ep1-social-proposal-transfer-ens-treasury-and-contract-ownership$",
+                "destination": "/dao/proposals/0.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-0/ep2-executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-1$",
+                "destination": "/dao/proposals/0.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-0/ep3-social-amend-airdrop-proposal-to-include-accidentally-returned-funds$",
+                "destination": "/dao/proposals/0.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-0/ep4-social-proposal-creation-of-foundational-working-groups-and-working-group-rules$",
+                "destination": "/dao/proposals/0.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep5-executable-set-the-temporary-premium-start-price-to-usd100-000$",
+                "destination": "/dao/proposals/1.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep6.1-social-removal-of-brantly-millegan-as-director-of-the-ens-foundation$",
+                "destination": "/dao/proposals/1.2.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep6.2-social-election-of-a-new-director-of-the-ens-foundation$",
+                "destination": "/dao/proposals/1.2.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep7.1-executable-q1-and-q2-2022-meta-governance-wg-budget$",
+                "destination": "/dao/proposals/1.3.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep7.2-executable-q1-and-q2-2022-ens-ecosystem-wg-budget$",
+                "destination": "/dao/proposals/1.3.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep7.3-executable-q1-and-q2-2022-community-wg-budget$",
+                "destination": "/dao/proposals/1.3.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep7.4-executable-q1-and-q2-2022-public-goods-wg-budget$",
+                "destination": "/dao/proposals/1.3.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep8-executable-reimburse-true-names-for-expenses-and-tax-obligations-incurred-for-the-dao$",
+                "destination": "/dao/proposals/1.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep9-executable-change-to-exponential-premium-price-oracle$",
+                "destination": "/dao/proposals/1.5"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep10-executable-a-dao-governed-identity-server$",
+                "destination": "/dao/proposals/1.6"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep11-executable-end-airdrop$",
+                "destination": "/dao/proposals/1.7"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep12-working-group-rules$",
+                "destination": "/dao/proposals/1.8"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-1/ep13-protocol-guild-pilot$",
+                "destination": "/dao/proposals/1.9"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/ep14-funding-true-names-ltd$",
+                "destination": "/dao/proposals/2.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/ep16.1-executable-q3-and-q4-2022-meta-governance-wg-budget$",
+                "destination": "/dao/proposals/2.2.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/ep16.2-executable-q3-and-q4-2022-ens-ecosystem-wg-budget$",
+                "destination": "/dao/proposals/2.2.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/ep16.3-executable-q3-and-q4-2022-public-goods-wg-budget$",
+                "destination": "/dao/proposals/2.2.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/ep2.2.4-social-ens-endaoment-rfp$",
+                "destination": "/dao/proposals/2.2.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-2/social-ep2.2.5-selection-of-an-ens-endowment-fund-manager$",
+                "destination": "/dao/proposals/2.2.5"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.1.1-social-q1-q2-2023-funding-request-ens-ecosystem-working-group$",
+                "destination": "/dao/proposals/3.1.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.1.2-social-q1-q2-2023-funding-request-meta-governance-working-group$",
+                "destination": "/dao/proposals/3.1.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.1.3-social-q1-q2-2023-funding-request-public-goods-working-group$",
+                "destination": "/dao/proposals/3.1.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.2-executable-q1-q2-2023-working-group-funding$",
+                "destination": "/dao/proposals/3.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.3-executable-sell-eth-to-usdc$",
+                "destination": "/dao/proposals/3.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.4-fund-the-endowment$",
+                "destination": "/dao/proposals/3.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.5-executable-activate-new-eth-controller-and-reverse-registrar$",
+                "destination": "/dao/proposals/3.5"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.6-social-election-of-new-ens-foundation-director$",
+                "destination": "/dao/proposals/3.6"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-3/ep3.7-social-approval-of-ens-name-normalization-standard-ensip-15$",
+                "destination": "/dao/proposals/3.7"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.1-executable-approve-further-actions-and-strategies-for-the-endowment$",
+                "destination": "/dao/proposals/4.1"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.2-executable-fund-the-endowment-second-tranche$",
+                "destination": "/dao/proposals/4.2"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.3-executabe-refund-invalid-names$",
+                "destination": "/dao/proposals/4.3"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.4-ens-working-group-budget-proposals$",
+                "destination": "/dao/proposals/4.4"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.5-executable-endowment-permissions-to-karpatkey-update-3$",
+                "destination": "/dao/proposals/4.5"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.6-executable-october-2023-working-group-funding$",
+                "destination": "/dao/proposals/4.6"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.7-create-service-provider-streams$",
+                "destination": "/dao/proposals/4.7"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.8-social-extend-stewards-terms$",
+                "destination": "/dao/proposals/4.8"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.9-social-select-providers-for-ep4.7-streams$",
+                "destination": "/dao/proposals/4.9"
+            },
+            {
+                "pattern": "^/v/governance/governance-proposals/term-4/ep4.10-social-transfer-ens-root-key-ownership-to-the-ens-dao$",
+                "destination": "/dao/proposals/4.10"
+            }
+        ]
+    }
+}

@@ -1,0 +1,73 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.',
+    emoji: '⚙️',
+    contributors: [
+        'lucemans'
+    ]
+};
+
+# Subdomains
+
+Names come in handy in many situations. We believe that any place an address is used, a name should be able to be used instead.
+The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
+
+<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
+    <div className="text-right font-bold">
+        {
+            ["vault", "domico", "subname", "nick", "cold"].map((subname, i) => (
+                <div className={["opacity-20", "opacity-50", "", "opacity-50", "opacity-20"][i]}>{subname}</div>
+            ))
+        }
+    </div>
+    <div className="font-bold">.nick.eth</div>
+</div>
+
+Luckily, the ENS Protocol has so much to offer for you to play with. There are a variety of ways you can give out subdomains to your apps users, set them up for yourself, or more.
+
+If you are interested in naming smart-contracts specifically, check out the [Naming Smart Contracts](/web/naming-contracts) page.
+
+## Pre-built Tooling
+
+### NameWrapper
+
+The [NameWrapper](/wrapper/overview) is a smart contract that allows you to issue trustless on-chain subdomains.
+NameWrapper subdomains come in the form of [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) NFTs, which can be transferred, sold, or traded.
+
+In addition NameWrapper subnames have fuzes which allow you to limit permissions, or even emancipate a subname entirely.
+You can interact directly with the namewrapper from the [ENS Manager App](https://ens.app/).
+
+<EmbedLink title="NameWrapper Overview" href="/wrapper/overview" description="" />
+
+### Legacy Subdomains
+
+In the previous version of the ETHRegistrar you could register subdomains for a name. These subdomains are always owner-controlled, and can be transferred.
+They are also stored on-chain, but are not in the form of an ERC1155.
+
+You can register a legacy subdomain by calling the `setSubnodeRecord` function on the [ENS Registry](/registry/ens) contract.
+
+## Writing your own Resolver
+
+You can always opt to [write your own resolver](/resolvers/writing) in solidity, doing so will give you absolute programmatic control over how resolution for your name and its subnames will behave.
+Requires deploying a smart contract.
+
+### Offchain & Layer 2
+
+To load data from an off-chain location, such as layer 2, database, or file.
+A resolver can leverage [CCIP Read](/resolvers/ccip) to load data from an off-chain location.
+
+Tooling has been built to allow you to easily deploy a template resolver, or leverage a library to load data from offchain.
+
+#### EVM Gateway
+
+The [EVM Gateway](https://github.com/ensdomains/evmgateway) is a set of solidity tooling that allows you to write a resolver that can trustlessly load storage slots from an EVM-compatible chain.
+It currently supports *Optimism* and *Arbitrum*.
+
+#### CCIP Tools
+
+If you are looking to skip writing & deploying a contract to mainnet you can use [ccip.tools](https://ccip.tools)'s proxy factory.
+This allows you to easily, and at low deployment cost deploy a resolver that can load data from a CCIP endpoint.
+
+This allows you to easily deploy a resolver that can load from your [Gateway API](/resolvers/ccip) without having to write any solidity code.

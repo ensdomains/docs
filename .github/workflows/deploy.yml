@@ -1,0 +1,64 @@
+name: 🚚 Deploy
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+-?[0-9]+"
+
+env:
+  NODE_OPTIONS: "--max_old_space_size=8192"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Tools & Dependencies
+        uses: ./.github/actions/install
+
+      - name: Build
+        working-directory: ./app
+        run: pnpm run build
+        env:
+          TALLY_API_KEY: ${{ secrets.TALLY_API_KEY }}
+
+      - name: Prepare tag
+        id: prepare_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME="${GITHUB_REF##refs/tags/}"
+          echo "::set-output name=tag_name::${TAG_NAME}"
+          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+
+      - name: Edgeserver Upload
+        uses: lvkdotsh/edgeserver-action@v0.1.2-pre.4
+        with:
+          app_id: "207908995888658940"
+          server: https://api.edgeserver.io
+          token: ${{ secrets.EDGESERVER_TOKEN }}
+          directory: app/out
+
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+        working-directory: app/scripts
+        shell: bash
+
+      - name: Build search.json
+        run: bun run build-search
+        working-directory: app/scripts
+        shell: bash
+
+      - name: Index search.json
+        shell: bash
+        run: |
+          curl --silent -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${{secrets.SEARCH_TOKEN}}" -d @app/out/search.json https://search.v3x.systems/indexes/ens-docs/documents?primaryKey=id

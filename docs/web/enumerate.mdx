@@ -1,0 +1,99 @@
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+description: 'List all names a user has, owns, or might have access to.',
+contributors: [
+'lucemans',
+'gskril'
+]
+};
+
+# Listing a Users Names
+
+In some cases you might want to show off all names that a user owns. Due to the nature of how the ENS Protocol works under the hood, this might be a slightly more difficult task than expected.
+
+Fortunately, tooling has been developed to accommodate for this and to make it easier.
+
+<div className="card1 px-8 py-4 flex justify-center gap-2">
+  <span>0x225...c3B5</span>
+  <span>➡️</span>
+  <div className="block border-l-2 pl-2">
+    <div>luc.eth</div>
+    <div>lucemans.eth</div>
+    <div>keukenrol.eth</div>
+  </div>
+</div>
+
+Try it out using the widget below!
+
+<LiveDemo id="listnamesdemo" />
+
+## Why not all names? {{ title: "Enumeration", id: "enumeration" }}
+
+Not all ENS names exist onchain ([learn more about wildcard resolution](/ensip/10)), meaning we don't always know which names a user owns/controls.
+
+The notable exception is [second-level](/terminology#first-layer) [.eth names](/registry/eth). Ownership of these names are onchain and indexable through scanning events on the appropriate smart contracts. Note that this does not necessarily mean address and text records associated with the name are onchain ([read more about offchain resolvers](/resolvers/ccip)).
+
+## Guidelines
+
+When using one of the methods described below it is important to keep in mind that you should always allow for a user to manually enter a name, as not all names are indexable.
+
+It is generally recommended to allow users to input a name using an [input box](/web/design#2-resolving-input-fields) and to verify it resolves to the correct address upon user-completion.
+
+## The Graph {{ title: "The Graph" }}
+
+The [ENS subgraph](/web/subgraph) indexes all events from relevant smart contracts and exposes them via a GraphQL endpoint. Note that addresses in filters must be lowercased.
+
+```graphql {{ title: 'GraphQL', language: 'gql', variant: 'gql', link: "https://thegraph.com/hosted-service/subgraph/ensdomains/ens" }}
+{
+  domains(where: { owner: "0x225f137127d9067788314bc7fcc1f36746a3c3b5" }) {
+    name
+  }
+  wrappedDomains(
+    where: { owner: "0x225f137127d9067788314bc7fcc1f36746a3c3b5" }
+  ) {
+    name
+  }
+}
+```
+
+## Airstack {{ title: "Airstack" }}
+
+Airstack is an API provider that includes a GraphQL endpoint to query all ENS names owned by a given address.
+
+```graphql {{ title: 'GraphQL', language: 'gql', variant: 'gql', link: "https://app.airstack.xyz/api-studio" }}
+{
+  Domains(
+    input: {
+      filter: { owner: { _eq: "0x179A862703a4adfb29896552DF9e307980D19285" } }
+      blockchain: ethereum
+    }
+  ) {
+    Domain {
+      name
+    }
+  }
+}
+```
+
+## Alchemy {{ title: "Alchemy" }}
+
+Alchemy has several API endpoints for fetching NFTs, which we can use to query a list of names owned by a given address.
+
+```ts {{ title: 'Alchemy', variant: 'alchemy-sdk', link: "https://docs.alchemy.com/docs/how-to-resolve-ens-domains-given-a-wallet-address" }}
+// Setup: npm install alchemy-sdk
+import { Alchemy, Network } from 'alchemy-sdk'
+
+const config = {
+  apiKey: '<-- ALCHEMY APP API KEY -->',
+  network: Network.ETH_MAINNET,
+}
+const alchemy = new Alchemy(config)
+
+const walletAddress = '0x458d1E307CcA61C0Bea82f7663F66831175EcDe8' // replace with wallet address
+const ensContractAddress = '0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85'
+const nfts = await alchemy.nft.getNftsForOwner(walletAddress, {
+  contractAddresses: [ensContractAddress],
+})
+
+console.log(nfts)
+```

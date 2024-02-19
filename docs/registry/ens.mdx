@@ -1,0 +1,73 @@
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'Root Registry of the Ethereum Name Service',
+    contributors: []
+};
+
+# The Registry
+
+The ENS registry is the core contract that lies at the heart of ENS resolution. All ENS lookups start by querying the registry. The registry maintains a list of domains, recording the owner, resolver, and TTL for each, and allows the owner of a domain to make changes to that data.
+
+The ENS registry is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
+
+## Why Registries?
+
+Top-Level Domains (TLDs), like `.eth`, `.com`, and `.test`, are owned by smart contracts called <b>registrars</b>, which specify rules governing the allocation of their names.
+Anyone may, by following the rules imposed by these registrar contracts, obtain ownership of a domain for their own use.
+
+| TLD                 | Registrar Contract                     |
+| ------------------- | -------------------------------------- |
+| `[root]`            | [The Registry](/registry/ens)          |
+| `.eth`              | [ETH Registry](/registry/eth)          |
+| `.com`, `.xyz`, etc | [DNS Registrar](/registry/dns)         |
+| `.addr.reverse`     | [Reverse Registrar](/registry/reverse) |
+
+## Who owns the root Registry?
+
+The [ENS Registry](https://etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e) is owned by the [ENS Root](https://etherscan.io/address/0xaB528d626EC275E3faD363fF1393A41F581c5897) which is owned by the [ENS DAO Wallet](https://etherscan.io/address/0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7).
+To verify this you can run the `owner` function on the registry & root contracts.
+
+## Other Functions
+
+```ts
+// Get Owner
+ENS.owner(bytes32 node) view returns (address)
+// Get Resolver
+ENS.resolver(bytes32 node) view returns (address)
+// Get TTL
+ENS.ttl(bytes32 node) view returns (uint64)
+// Get Approval
+ENS.isApprovedForAll(address owner, address operator) view returns (bool)
+// Check Record Existence
+ENS.recordExists(bytes32 node) view returns (bool)
+```
+
+```ts
+// Set Owner (only callable by current owner)
+ENS.setOwner(bytes32 node, address owner)
+// Set Resolver
+ENS.setResolver(bytes32 node, address resolver)
+// Set TTL
+ENS.setTTL(bytes32 node, uint64 ttl)
+// Set Subnode Owner
+ENS.setSubnodeOwner(bytes32 node, bytes32 label, address owner)
+// Set Multiple (convenience function (setResolver, setTTL, setOwner))
+ENS.setRecord(bytes32 node, address owner, address resolver, uint64 ttl)
+// Set Multiple Subnode
+ENS.setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl)
+// Set Approval
+ENS.setApprovalForAll(address operator, bool approved)
+```
+
+Events
+
+```ts
+// Transfer Event
+event Transfer(bytes32 indexed node, address owner)
+// New Resolver Event
+event NewResolver(bytes32 indexed node, address resolver)
+// New TTL Event
+event NewTTL(bytes32 indexed node, uint64 ttl)
+// New Owner Event
+event NewOwner(bytes32 indexed node, bytes32 indexed label, address owner)
+```

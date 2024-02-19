@@ -1,0 +1,60 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '📰',
+    contributors: [
+        'lucemans'
+    ]
+};
+
+# Deployments
+
+{/* <Note>
+    This page contains information that is only relevant to developers who would
+    like to interact with the contract manually. Most libraries will handle this
+    for you.
+</Note> */}
+
+ENS is multichain (read more [here](/learn/multichain)) and can be used in any application.
+In addition to being able to query many address formats and record types, data can be stored [practically anywhere](/learn/ccip).
+However, resolution needs to start somewhere, so the entrypoint for resolution is Ethereum Mainnet, alongside the most popular testnets.
+
+<div className="card1 p-4 flex justify-center gap-2">
+    <div>
+    Ethereum Mainnet
+    </div>
+    <div>
+    ->
+    </div>
+    <div>
+        <div>
+            Optimism
+        </div>
+        <div>
+            Arbitrum
+        </div>
+        <div>
+            Offchain
+        </div>
+        <div>
+            ...
+        </div>
+    </div>
+</div>
+
+## Deployments
+
+Listed below you will find a list of latest deployments of registries, resolvers, and more.
+
+<ChainDeployments />
+
+## But what about multichain? {{ tag: "Multichain", title: "Multichain", id: "multichain" }}
+
+The ENS Protocol can be used on/for any chain! If you are building a dApp and want to use ENS you might have to add a [Mainnet RPC to your Wagmi config](/web/libraries).
+This allows tools like wagmi to access mainnet, and load ENS information!
+
+<EmbedLink
+    title="Layer 2 & Offchain"
+    description="Learn more about ENS on Layer 2 and Offchain solutions"
+    href="/learn/ccip"
+/>

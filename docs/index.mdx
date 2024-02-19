@@ -1,0 +1,173 @@
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+  description: 'Learn everything about the Ethereum Name Service (ENS). How to integrate names into your dApp, issue subnames, and so much more!',
+  title: 'ENS Documentation',
+  emoji: '👋',
+  showDetailsSection: false,
+  contributors: [
+    'lucemans',
+    'arachnid',
+  ]
+};
+
+<div className="bg-ens-light-background-secondary dark:bg-ens-dark-background-secondary">
+    <div className="max-w-5xl mx-auto space-y-4 py-16 px-4 sm:px-6">
+        <h1>ENS Docs</h1>
+
+        <p>Learn about building applications with decentralized identity.</p>
+
+        <div className="flex gap-3 flex-col sm:flex-row">
+            <thorin-button href="/learn/protocol">Open Docs</thorin-button>
+            <thorin-button variant="subtle" href="/web/quickstart">Integrate into your app!</thorin-button>
+        </div>
+    </div>
+
+</div>
+
+<div className="max-w-5xl !mx-auto space-y-6 pt-6 px-4 sm:px-6 w-full">
+<div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+    {
+        [
+            {
+                title: 'Get Started',
+                links: [
+                    ["Protocol Docs", "/learn/protocol"],
+                    ["Resolution", "/resolution"],
+                    ["Tools and Libraries", "/web/libraries"],
+                    ["Layer 2 & Offchain", "/learn/ccip"]
+                ]
+            },
+            {
+                title: 'Use ENS',
+                links: [
+                    ["Address Lookup", "/web/resolution"],
+                    ["Text Records", "/web/records"],
+                    ["Avatars", "/web/avatars"],
+                    ["Primary Names", "/web/reverse"],
+                    ["List Names", "/web/enumerate"]
+                ]
+            },
+            {
+                title: 'Registries',
+                links: [
+                    ["ENS Registrar", "/registry/ens"],
+                    ["ETH Registrar", "/registry/eth"],
+                    ["DNS Registrar", "/registry/dns"],
+                    ["Reverse Registrar", "/registry/reverse"]
+                ]
+            },
+            {
+                title: 'Resolvers',
+                links: [
+                    ["Public Resolver", "/resolvers/public"],
+                    ["Writing a Resolver", "/resolvers/writing"],
+                    ["Interacting with a Resolver", "/resolvers/interacting"],
+                    ["Cross Chain Resolvers", "/resolvers/ccip"],
+                    ["Interface Reference", "/resolvers/interfaces"]
+                ]
+            },
+            {
+                title: 'Governance',
+                links: [
+                    ["Welcome", "/dao"],
+                    ["Constitution", "/dao/constitution"],
+                    ["Foundation", "/dao/foundation"],
+                    ["Airdrop", "/dao/airdrop"]
+                ]
+            },
+            {
+                title: 'Extra',
+                links: [
+                    ["Naming Smart-Contracts", "/web/naming-contracts"],
+                    // ["Issuing Subdomains", "/web/subdomains"],
+                    ["Name Wrapper", "/wrapper/overview"],
+                    ["Subgraph", "/web/subgraph"],
+                    ["Sign In With Ethereum (SIWE)", "/web/siwe"]
+                ]
+            },
+            {
+                title: 'Design',
+                links: [
+                    ["Thorin", "https://thorin.ens.domains/"],
+                    ["Thorin (Figma)", "https://www.figma.com/community/file/1303431204471074291"],
+                    // ["Design Guidelines", "/web/design"],
+                    ["Media Kit", "https://github.com/ensdomains/media-kit"]
+                ]
+            },
+            {
+                title: 'Support',
+                links: [
+                    ["Knowledgebase", "https://support.ens.domains/"],
+                    ["Community Blog", "https://blog.ens.domains"],
+                    ["Discord", "https://chat.ens.domains/"]
+                ]
+            }
+        ].map((column) => (
+            <div>
+                <div className="font-bold">{column.title}</div>
+                {
+                    column.links.map(([title, href]) => (
+                        <div className="flex items-center gap-3">
+                            <a href={href}>{title}</a>
+                        </div>
+                    ))
+                }
+            </div>
+        ))
+    }
+</div>
+
+<h3 className="pt-4">Videos</h3>
+<div className="w-full gap-4 pb-4 mt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 not-prose">
+  {[
+    {
+      title: "ETHRome ENS Workshop 1",
+      location: "ETHRome",
+      description:
+        "Greg, from ENS, gives an introductory workshop around what ENS is, why it is important, how it works, and how to build on top of it.",
+      href: "https://www.youtube.com/watch?v=HIDPGdTDCj8",
+      cover: "https://i3.ytimg.com/vi_webp/HIDPGdTDCj8/mqdefault.webp",
+    },
+    {
+      title: "ETHRome ENS Workshop 2",
+      location: "ETHRome",
+      description: "Luc, from ENS, ",
+      href: "https://www.youtube.com/watch?v=SHuCDqPbAP4",
+      cover: "https://i3.ytimg.com/vi_webp/SHuCDqPbAP4/mqdefault.webp",
+    },
+    {
+      title: "Cross Chain Interoperability",
+      location: "ETHPrague",
+      description: "",
+      href: "https://www.youtube.com/watch?v=URnUs4sSrU4",
+      cover: "https://i3.ytimg.com/vi_webp/URnUs4sSrU4/mqdefault.webp",
+    },
+    {
+      title: "State of ENS by Nick Johnson",
+      location: "Devcon Bogota",
+      description:
+        "An overview of ENS's innovations and progress in the last couple of years",
+      href: "https://www.youtube.com/watch?v=Pta198KJTaw",
+      cover: "https://i3.ytimg.com/vi_webp/Pta198KJTaw/mqdefault.webp",
+    },
+  ].map((entry, i) => (
+    <a
+      className="w-full border flex flex-col rounded-lg border-ens-light-border dark:border-ens-dark-border overflow-hidden my-0 py-0 bg-ens-light-background-primary dark:bg-ens-dark-background-primary hover:bg-ens-light-background-secondary/50 hover:dark:bg-ens-dark-background-secondary/50"
+      href={entry.href}
+      hideExtras={true}
+    >
+      <div className="w-full bg-ens-light-background-disabled dark:bg-ens-dark-background-secondary aspect-video">
+        {entry.cover && (
+          <img src={entry.cover} alt="" className="w-full aspect-video" />
+        )}
+      </div>
+      <div className="w-full border-t border-ens-light-border dark:border-ens-dark-border px-3 pt-2 pb-3 overflow-ellipsis">
+        <span className="font-bold">{entry.title}</span>
+        <p className="tag tag-blue">{entry.location}</p>
+        {/*<p className="h-16 overflow-ellipsis text-xs">{entry.description}</p>*/}
+      </div>
+    </a>
+  ))}
+</div>
+
+</div>

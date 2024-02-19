@@ -1,0 +1,144 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'To lookup the name of an address we use a reverse resolution. This allows users to indicate a primary name.',
+    emoji: '🔍',
+    contributors: [
+        'lucemans'
+    ]
+};
+
+# Primary Names
+
+We can all agree 42-character long machine-optimized addresses (eg. 0x225...c3b5) are not aesthetically pleasing.
+Fortunately, it is super easy to retrieve a user's preferred name, and this page will show you how.
+
+<div className="card1 px-8 py-4 flex justify-center gap-2 items-center">
+    <span>0x225...c3B5</span>
+    <span>to</span>
+    <Usertag name="luc.eth" />
+</div>
+
+In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
+The reverse registrar is a smart contract that allows users to register their preferred name, referred to as their "primary name" for simplicity purposes.
+
+## Getting a Primary Name {{ navtitle: 'Getting Primary Name', id: 'get' }}
+
+To get a users preferred primary name is very simple. In most libraries you will find a function to do a lookup by address as shown below.
+This allows us to turn any address into a human-readable name.
+
+<CodeGroup title="Reverse Lookup">
+
+```tsx {{ meta: 'focus=4:8', variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsName', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-name' }}
+import { useEnsName } from 'wagmi';
+
+export const Name = () => {
+    const { data: name, chainId } = useEnsName({
+        address: '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+    });
+
+    return <div>Name: {name}</div>;
+};
+```
+
+```ts {{ variant: 'ethers-v5' }}
+// 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
+const name = await provider.lookupAddress(
+    '0x225f137127d9067788314bc7fcc1f36746a3c3B5'
+);
+```
+
+```ts {{ variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsName.html', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-name' }}
+// 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
+import { publicClient } from './client';
+
+const ensName = await publicClient.getEnsName({
+    address: '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+});
+```
+
+```go {{ variant: 'go', title: 'Go' }}
+package main
+
+import (
+	"fmt"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
+	ens "github.com/wealdtech/go-ens/v3"
+)
+
+func main() {
+	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
+
+	name, _ := ens.ReverseResolve(client, common.HexToAddress("0x225f137127d9067788314bc7fcc1f36746a3c3B5"))
+	fmt.Println("Name:", name)
+	// Name: luc.eth
+}
+```
+
+</CodeGroup>
+
+🎉 And that's it! Now you can turn all your pages from this, to this:
+
+<div className="card1 px-8 py-8 flex items-center gap-2 flex-col">
+    <div className="flex gap-2 items-center">
+        <Usertag name="0x225...c3B5" variant="small" />
+        <span> sent 0.1 ETH to </span>
+        <Usertag name="0x123...4567" variant="small" />
+    </div>
+    <div className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary">
+        <span>turns into</span>
+    </div>
+    <div className="flex gap-2 items-center">
+        <Usertag name="luc.eth" variant="small" />
+        <span> sent 0.1 ETH to </span>
+        <Usertag name="domico.eth" variant="small" />
+    </div>
+</div>
+
+{/* ### Do's and Dont's
+
+<WIP /> */}
+
+## Setting Primary Names {{ navtitle: 'Setting your Name', id: 'set' }}
+
+In some cases you might want to encourage users to set their primary name.
+This might be in the event you are issuing names, or want people to be part of a community.
+Most users are expected to do this through the ENS Manager, however it is totally doable from 3rd-party platforms as well.
+
+<CodeGroup title="Setting Primary Name">
+
+```tsx {{ meta: 'focus=4:9', variant: 'wagmi' }}
+// TODO: Write Code Snippet
+```
+
+```ts {{ variant: 'ethers-v5' }}
+
+```
+
+```ts {{ variant: 'ensjs' }}
+import { createWalletClient, custom } from 'viem';
+import { mainnet } from 'viem/chains';
+
+import { addEnsContracts } from '@ensdomains/ensjs';
+import { setPrimaryName } from '@ensdomains/ensjs/wallet';
+
+const wallet = createWalletClient({
+    chain: addEnsContracts(mainnet),
+    transport: custom(window.ethereum),
+});
+
+const hash = await setPrimaryName(wallet, {
+    name: 'ens.eth',
+});
+// 0x...
+```
+
+</CodeGroup>
+
+### Do's and Dont's
+
+It must be noted that under no situation is it recommended to force a user to change their primary name, nor doing so without clearly notifying the user of what the transaction they are about to execute could modify.
+Doing so could be seen as hostile or undesired behaviour by end users and might degrade their experience with your app.
