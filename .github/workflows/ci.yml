@@ -2,10 +2,10 @@ name: 🔎
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   merge_group:
   pull_request:
-    branches: [main]
+    branches: [master]
 
 # Automatically cancel in-progress actions on the same branch
 concurrency:
