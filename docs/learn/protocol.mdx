@@ -68,7 +68,7 @@ Users can create subdomains manually, or take matters into their own hands and w
 
 <div className="card1 p-4">
   <div className="flex justify-center">
-    alice.eth
+    <Usertag name="alice.eth" variant="small" />
   </div>
   <div className="flex justify-center">
     /|\
@@ -77,8 +77,12 @@ Users can create subdomains manually, or take matters into their own hands and w
   {
     ['vault', 'hot', 'cold'].map((subname, i) => (
       <div>
-      {subname}
-      <span className="opacity-50">.alice.eth</span>
+        <Usertag name={
+          <span>
+          {subname}
+          <span className="opacity-70">.alice.eth</span>
+          </span>
+        } variant="small" />
       </div>
     ))
   }

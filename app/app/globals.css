@@ -77,6 +77,18 @@
     @apply my-6;
 }
 
+html body {
+    font-family: 'Inter', 'Satoshi', sans-serif;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Satoshi', sans-serif;
+}
+
+.font-satoshi {
+    font-family: 'Satoshi', sans-serif;
+}
+
 .prose {
     /* max-width: 720px; */
     /* width: 720px; */
