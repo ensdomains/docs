@@ -102,7 +102,7 @@ export const kits: Kit[] = [
         creator_url: 'https://walletconnect.org',
         logo: '/icons/legacy/logos/walletconnect.svg',
         url: 'https://docs.walletconnect.com/2.0/web3modal/about',
-        demo: 'https://web3modal.com/',
+        demo: 'https://lab.web3modal.com/',
         templates: [
             {
                 name: 'React',

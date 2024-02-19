@@ -6,10 +6,10 @@
         "redirects": [
             {
                 "pattern": "^/namewrapper$",
-                "destination": "/namewrapper/wrapper"
+                "destination": "/wrapper/overview"
             },
             {
-                "pattern": "^/(tools|sdk)$",
+                "pattern": "^/(tools?|sdks?)$",
                 "destination": "/web/libraries"
             },
             {
@@ -21,7 +21,7 @@
                 "destination": "/learn/ccip"
             },
             {
-                "pattern": "^/frequently-asked-questions$",
+                "pattern": "^/(frequently-asked-questions|faqs)$",
                 "destination": "/faq"
             },
             {
