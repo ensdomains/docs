@@ -13,7 +13,7 @@ export default function RootLayout(properties) {
     const { children } = properties;
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="not-system">
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
             </head>
