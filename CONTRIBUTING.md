@@ -1,6 +1,6 @@
 # Welcome to ENS docs contributing guide
 
-Thank you for investing your time in contributing to our documentation! Any contribution you make will be reflected on [alpha-docs.ens.domains](https://alpha-docs.ens.domains) :sparkles:.
+Thank you for investing your time in contributing to our documentation! Any contribution you make will be reflected on [docs.ens.domains](https://docs.ens.domains) :sparkles:.
 
 In this guide you will get an overview of the contribution workflow from opening an issue, creating a PR, reviewing, and merging the PR.
 
@@ -51,4 +51,4 @@ Once you submit your PR, a Docs team member will review your proposal. We may as
 
 Congratulations :tada::tada: The ENS team thanks you :sparkles:.
 
-Once your PR is merged, your contributions will be publicly visible on the [ENS docs](https://alpha-docs.ens.domains).
+Once your PR is merged, your contributions will be publicly visible on the [ENS Docs](https://docs.ens.domains).

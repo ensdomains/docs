@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             }
 
             return {
-                url: 'https://alpha-docs.ens.domains/' + processSlugs(slug),
+                url: 'https://docs.ens.domains/' + processSlugs(slug),
                 lastModified: lastUpdated,
             };
         })
