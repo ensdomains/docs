@@ -403,7 +403,21 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📖 Proposals Term 4',
+                title: '📖 Proposals Term 5',
+                links: [
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.2 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
+                        href: '/dao/proposals/5.2',
+                    },
+                    {
+                        title: '5.1 - [Executable] Upgrade DNSSEC support',
+                        href: '/dao/proposals/5.1',
+                    },
+                ],
+            },
+            {
+                title: '📙 Proposals Term 4',
                 links: [
                     {
                         title: '4.10 - [Social] Transfer ENS Root Key Ownership to the ENS DAO',
