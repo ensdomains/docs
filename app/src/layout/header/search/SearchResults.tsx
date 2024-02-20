@@ -1,7 +1,7 @@
 'use client';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 import { SearchResult } from './types/result';
 
@@ -10,9 +10,13 @@ export const SearchResults: FC<{
     select: any;
     setSelect: any;
 }> = ({ data, select, setSelect }) => {
+    const dataReference = useRef(data);
+
+    dataReference.current = data;
+
     useEffect(() => {
         const thateventlistener = (event) => {
-            if (!data?.hits?.length) {
+            if (!dataReference.current?.hits?.length) {
                 return;
             }
 
@@ -20,7 +24,10 @@ export const SearchResults: FC<{
                 case 'ArrowDown': {
                     event.preventDefault();
                     setSelect((select) => {
-                        return Math.min(select + 1, data.hits.length - 1);
+                        return Math.min(
+                            select + 1,
+                            dataReference.current?.hits.length - 1
+                        );
                     });
 
                     break;
@@ -28,7 +35,7 @@ export const SearchResults: FC<{
                 case 'ArrowUp': {
                     event.preventDefault();
                     setSelect((select) => {
-                        return Math.max(select - 1, -1);
+                        return Math.max(select - 1, -2);
                     });
 
                     break;
@@ -47,7 +54,7 @@ export const SearchResults: FC<{
     }, []);
 
     useEffect(() => {
-        if (select !== -1) {
+        if (select !== -2 && select !== -1) {
             const element = document.querySelector(
                 '#search-result-link-' + select
             );
@@ -55,7 +62,7 @@ export const SearchResults: FC<{
             if (element instanceof HTMLElement) {
                 element.focus();
             }
-        } else {
+        } else if (select === -2) {
             const element = document.querySelector('#search-input');
 
             if (element instanceof HTMLElement) {
@@ -64,24 +71,20 @@ export const SearchResults: FC<{
         }
     }, [select]);
 
-    useEffect(() => {
-        setSelect(-1);
-    }, [data.hits]);
-
     return (
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="flex w-full flex-col items-center py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
+                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center rounded-b-xl py-8 text-center">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
                     </div>
                 ) : (
-                    <ul className="border-t border-t-ens-light-border dark:border-t-ens-dark-border">
+                    <ul className="border-t-ens-light-border dark:border-t-ens-dark-border border-t">
                         {data.hits.map((hit, index) => (
                             <li
-                                className="hlem outline-0 focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary"
+                                className="hlem focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary outline-0"
                                 id={'search-result-' + index}
                                 key={hit.slug}
                             >
@@ -98,7 +101,7 @@ export const SearchResults: FC<{
                                     }}
                                     href={'/' + hit.slug}
                                     id={'search-result-link-' + index}
-                                    className="z-10 flex w-full p-4 outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary"
+                                    className="outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary z-10 flex w-full p-4"
                                 >
                                     <span className="grow overflow-hidden">
                                         <span className="w-full truncate font-bold">

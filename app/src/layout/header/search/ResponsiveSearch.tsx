@@ -2,7 +2,7 @@
 
 import { MagnifyingGlassSVG } from '@ensdomains/thorin';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiLoader } from 'react-icons/fi';
 import useSWR from 'swr';
 
@@ -11,7 +11,6 @@ import { SearchResults } from './SearchResults';
 
 export const ResponsiveSearch = () => {
     const [tag, setTag] = useState('All');
-
     const [search, setSearch] = useState('');
     const { data, error, isLoading, isValidating } = useSWR(
         { search, tag },
@@ -20,22 +19,99 @@ export const ResponsiveSearch = () => {
             keepPreviousData: true,
         }
     );
-    const [select, setSelect] = useState(-1);
+    const [select, setSelect] = useState(-2);
+
+    const tags = [
+        'All',
+        'Intro',
+        'Using ENS',
+        'Smart Contracts',
+        'Governance',
+        'Improvement Proposals',
+    ];
+
+    useEffect(() => {
+        if (select !== -1) return;
+
+        const element = document.querySelector(
+            '.filter-selected'
+        ) as HTMLElement;
+
+        if (element) {
+            element.focus();
+        }
+    }, [select]);
     const showSearch = search.length > 0 && data;
+
+    const selectReference = useRef(select);
+
+    selectReference.current = select;
+
+    const tagReference = useRef(tag);
+
+    tagReference.current = tag;
+
+    useEffect(() => {
+        const thateventlistener = (event) => {
+            if (selectReference.current !== -1) return;
+
+            const index = tags.indexOf(tagReference.current);
+
+            switch (event.key) {
+                case 'ArrowRight': {
+                    const realIndex = Math.min(index + 1, tags.length - 1);
+
+                    event.preventDefault();
+                    // Increment the index, except if it's the last element
+                    setTag(tags[realIndex]);
+                    const element = document.querySelectorAll('.filter-tag')[
+                        realIndex
+                    ] as HTMLElement;
+
+                    if (element) {
+                        element.focus();
+                    }
+
+                    break;
+                }
+                case 'ArrowLeft': {
+                    const realIndex = Math.max(index - 1, 0);
+
+                    event.preventDefault();
+                    setTag(tags[realIndex]);
+                    const element = document.querySelectorAll('.filter-tag')[
+                        realIndex
+                    ] as HTMLElement;
+
+                    if (element) {
+                        element.focus();
+                    }
+
+                    break;
+                }
+            }
+        };
+
+        document.addEventListener('keydown', thateventlistener);
+
+        return () => {
+            document.removeEventListener('keydown', thateventlistener);
+        };
+    }, []);
 
     return (
         <div
             id="searchbar"
-            className="w-full rounded-2xl bg-ens-light-background-primary text-[#18181b] dark:bg-ens-dark-background-primary dark:text-white"
+            className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary w-full rounded-2xl text-[#18181b] dark:text-white"
         >
             <div className="space-y-3 p-4">
                 <div className="relative z-10">
                     <input
                         type="text"
                         onClick={() => {
-                            setSelect(-1);
+                            setSelect(-2);
                         }}
-                        className="w-full rounded-xl border border-ens-light-border py-2 pl-10 text-xl outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border"
+                        className="border-ens-light-border outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border w-full rounded-xl border py-2 pl-10 text-xl"
                         placeholder="Search Content..."
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={true}
@@ -65,27 +141,24 @@ export const ResponsiveSearch = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <div className="flex w-fit gap-2 whitespace-nowrap">
-                        {[
-                            'All',
-                            'Intro',
-                            'Using ENS',
-                            'Smart Contracts',
-                            'Governance',
-                            'Improvement Proposals',
-                        ].map((item, _index) => (
-                            <button
-                                className={clsx(
-                                    'tag',
-                                    tag === item ? 'tag-blue' : 'tag-grey'
-                                )}
-                                key={_index}
-                                onClick={() => {
-                                    setTag(item);
-                                }}
-                            >
-                                {item}
-                            </button>
-                        ))}
+                        {data?.hits?.length > 0 &&
+                            search !== '' &&
+                            tags.map((item, _index) => (
+                                <button
+                                    className={clsx(
+                                        'tag filter-tag',
+                                        tag === item
+                                            ? 'tag-blue filter-selected'
+                                            : 'tag-grey'
+                                    )}
+                                    key={_index}
+                                    onClick={() => {
+                                        setTag(item);
+                                    }}
+                                >
+                                    {item}
+                                </button>
+                            ))}
                     </div>
                 </div>
             </div>
