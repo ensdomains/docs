@@ -15,14 +15,14 @@ The ETH Registrar is a special registrar. It allows for trustless on-chain name 
 
 ## BaseRegistrar vs Controller
 
-The ETH Registrar is split into two contracts. The [BaseRegistrar](#todo) and the [ETHRegistrarController](#todo).
+The ETH Registrar is split into two contracts. The [BaseRegistrar](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/BaseRegistrarImplementation.sol) and the [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol).
 The BaseRegistrar is responsible for name ownership, transfers, etc (ownership related),
 while the Controller is responsible for registration & renewal (pricing related).
 This separation is done to reduce the attack surface of the registrar, and provides users with the guarantees of continued ownership of a name so long as the registrar is in place.
 
 ### Controllers
 
-The [ETHRegistrarController](#todo) is the main controller for the ETH Registrar, and provides a straightforward registration and renewal mechanism.
+The [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol) is the main controller for the ETH Registrar, and provides a straightforward registration and renewal mechanism.
 
 ## Pricing Structure
 
