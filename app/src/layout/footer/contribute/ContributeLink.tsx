@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 import { FiGithub } from 'react-icons/fi';
 
-const ROOT_REPO = 'ensdomains/docs-v2';
+const ROOT_REPO = 'ensdomains/docs';
 
 export const ContributeLink: FC<{ url?: string }> = ({ url }) => {
     if (!url) {

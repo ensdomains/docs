@@ -3,8 +3,8 @@ type URLType = string;
 export type GithubRepositoryData = {
     id: string;
     node_id: string;
-    name: 'docs-v2';
-    full_name: 'ensdomains/docs-v2';
+    name: 'docs';
+    full_name: 'ensdomains/docs';
     private: false;
     // Big
     owner: object;

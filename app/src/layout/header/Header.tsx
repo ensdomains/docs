@@ -98,7 +98,7 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                         <div className="flex gap-4">
                             <MobileSearch />
                             <Link
-                                href="https://github.com/ensdomains/docs-v2"
+                                href="https://github.com/ensdomains/docs"
                                 target="_blank"
                                 aria-label="GitHub Repository"
                             >

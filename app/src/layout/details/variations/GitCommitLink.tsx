@@ -8,7 +8,7 @@ import { FC, PropsWithChildren } from 'react';
 import { cx } from '@/lib/cx';
 
 const prefix = 'docs';
-const repo = 'ensdomains/docs-v2';
+const repo = 'ensdomains/docs';
 
 export const GitCommitLink: FC<
     PropsWithChildren<{ file: string; hash: string }>
