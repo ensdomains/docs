@@ -27,7 +27,7 @@ export const ensLibraries: Language[] = [
                 href: 'https://wagmi.sh/',
                 name: 'Wagmi',
                 description: '',
-                logo: '/icons/legacy/logos/wagmi.svg',
+                logo: undefined,
             },
         ],
     },
@@ -39,7 +39,7 @@ export const ensLibraries: Language[] = [
                 href: 'https://viem.sh/',
                 name: 'Viem',
                 description: '',
-                logo: '/icons/legacy/logos/viem.svg',
+                logo: undefined,
             },
             {
                 href: 'https://docs.ethers.org/',
