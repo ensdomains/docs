@@ -27,7 +27,7 @@ export const ContributeLink: FC<{ url?: string }> = ({ url }) => {
             rel="nofollow"
         >
             <FiGithub />
-            <span>Edit this page on Github</span>
+            <span>Edit this page on GitHub</span>
         </a>
     );
 };
