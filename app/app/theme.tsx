@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useEffect } from 'react';
 import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
-import { createConfig, http, WagmiProvider } from 'wagmi';
+import { Config, createConfig, http, WagmiProvider } from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
 
 const config = createConfig({
@@ -43,7 +43,7 @@ export const Theme = ({ children }) => {
         (async () => {
             const { setupConfig } = await import('@ens-tools/thorin-core');
 
-            setupConfig(config as any);
+            setupConfig(() => (config as Config));
         })();
     }, []);
 

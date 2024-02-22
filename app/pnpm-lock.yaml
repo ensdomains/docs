@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.0.2
     version: 0.0.2
   '@ens-tools/thorin-core':
-    specifier: 0.0.3-5
-    version: 0.0.3-5(@wagmi/connectors@4.1.14)(@wagmi/core@2.6.4)(rollup@4.11.0)(viem@2.7.8)
+    specifier: 0.0.3-7
+    version: 0.0.3-7(@wagmi/connectors@4.1.14)(@wagmi/core@2.6.4)(rollup@4.11.0)(viem@2.7.8)
   '@ensdomains/thorin':
     specifier: ^0.6.44
     version: 0.6.44(react-dom@18.2.0)(react-transition-state@1.1.5)(react@18.2.0)(styled-components@5.3.11)
@@ -1799,8 +1799,8 @@ packages:
     resolution: {integrity: sha512-hgIznthtDRaxtmuGsvv51RpL840daIk619nBG90lTWFGnrfzKWaKNo98QA/n+7WWd//47Bvy/3unv0VVgQaggA==}
     dev: false
 
-  /@ens-tools/thorin-core@0.0.3-5(@wagmi/connectors@4.1.14)(@wagmi/core@2.6.4)(rollup@4.11.0)(viem@2.7.8):
-    resolution: {integrity: sha512-Z/BBmZbQxxLj81oPgVabpiEawH/DW3CivIP6CaT2Dh88Ulwtao73d1yHL9Qo7H1RMbqrwRB6SE/QVrosS16awg==}
+  /@ens-tools/thorin-core@0.0.3-7(@wagmi/connectors@4.1.14)(@wagmi/core@2.6.4)(rollup@4.11.0)(viem@2.7.8):
+    resolution: {integrity: sha512-MQHmZw+M+CoYVJv8icw+mx26k00Zo9eulSlrEIgAV8hdJXbFKP5EwQ2sFzo01RL/XOl9EUUcmWhgXue6cewVfg==}
     peerDependencies:
       '@wagmi/connectors': ^4.1.14
       '@wagmi/core': ^2.6.5
