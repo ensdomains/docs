@@ -101,8 +101,10 @@ export const TLDList = async () => {
 
     const chunks: string[][] = [];
 
-    for (let index = 0; index < TLDs.length; index += 100) {
-        chunks.push(TLDs.slice(index, index + 100));
+    const batch_size = 400;
+
+    for (let index = 0; index < TLDs.length; index += batch_size) {
+        chunks.push(TLDs.slice(index, index + batch_size));
     }
 
     const results: [string[], any][] = [];

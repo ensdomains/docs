@@ -12,7 +12,13 @@ const config = createConfig({
     connectors: [
         injected({}),
         walletConnect({
-            projectId: 'b451d5ff25d61b3fde7b30f167a5a957',
+            projectId: '3b205429cec06896f1d18c3b46dc5a68',
+            metadata: {
+                name: 'ENS Documentation',
+                description: 'Ethereum Name Service Documentation',
+                icons: ['https://docs.ens.domains/favicon.ico'],
+                url: 'https://docs.ens.domains',
+            },
             showQrModal: false,
         }),
     ],
