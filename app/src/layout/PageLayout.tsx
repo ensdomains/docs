@@ -31,6 +31,8 @@ export const Layout: FC<{
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: mdxProperties.meta.title,
+        description: mdxProperties.meta.description,
+        // keywords
         // image: mdxProperties.meta.,
         author: mdxProperties.meta.contributors?.map((author) => ({
             '@type': 'Person',

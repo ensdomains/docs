@@ -12,8 +12,7 @@
     "browserslist": "defaults, not ie <= 11",
     "dependencies": {
         "@ens-tools/format": "^0.0.2",
-        "@ens-tools/thorin-core": "0.0.3",
-        "@ens-tools/thorin-react": "0.0.3",
+        "@ens-tools/thorin-core": "0.0.3-8",
         "@ensdomains/thorin": "^0.6.44",
         "@headlessui/react": "^1.7.18",
         "@mdx-js/loader": "^3.0.0",
@@ -59,6 +58,7 @@
         "use-debounce": "^10.0.0",
         "viem": "^2.7.8",
         "wagmi": "^2.5.6",
+        "webcomponent-qr-code": "^1.2.0",
         "zod": "^3.22.4",
         "zustand": "^4.5.0"
     },

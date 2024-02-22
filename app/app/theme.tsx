@@ -1,20 +1,32 @@
 'use client';
 
-import '@ens-tools/thorin-core';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
-import { goerli, mainnet, sepolia } from 'viem/chains';
+import { useEffect } from 'react';
+import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
 import { createConfig, http, WagmiProvider } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import { injected, walletConnect } from 'wagmi/connectors';
 
 const config = createConfig({
-    chains: [mainnet, goerli, sepolia],
-    connectors: [injected({})],
+    chains: [mainnet, goerli, sepolia, holesky],
+    connectors: [
+        injected({}),
+        walletConnect({
+            projectId: '3b205429cec06896f1d18c3b46dc5a68',
+            metadata: {
+                name: 'ENS Documentation',
+                description: 'Ethereum Name Service Documentation',
+                icons: ['https://docs.ens.domains/favicon.ico'],
+                url: 'https://docs.ens.domains',
+            },
+            showQrModal: false,
+        }),
+    ],
     transports: {
         [mainnet.id]: http(),
         [goerli.id]: http(),
         [sepolia.id]: http(),
+        [holesky.id]: http(),
     },
 });
 
@@ -27,6 +39,14 @@ declare module 'wagmi' {
 const queryClient = new QueryClient();
 
 export const Theme = ({ children }) => {
+    useEffect(() => {
+        (async () => {
+            const { setupConfig } = await import('@ens-tools/thorin-core');
+
+            setupConfig(() => config as any);
+        })();
+    }, []);
+
     return (
         <ThemeProvider attribute="class">
             <QueryClientProvider client={queryClient}>
