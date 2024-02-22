@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useEffect } from 'react';
 import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
-import { Config, createConfig, http, WagmiProvider } from 'wagmi';
+import { createConfig, http, WagmiProvider } from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
 
 const config = createConfig({
