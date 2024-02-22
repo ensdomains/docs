@@ -43,7 +43,7 @@ export const Theme = ({ children }) => {
         (async () => {
             const { setupConfig } = await import('@ens-tools/thorin-core');
 
-            setupConfig(() => (config as Config));
+            setupConfig(() => config as any);
         })();
     }, []);
 
