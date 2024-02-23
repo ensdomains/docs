@@ -9,17 +9,14 @@ export const SearchResults: FC<{
     data: SearchResult;
     select: any;
     setSelect: any;
-}> = ({ data, select, setSelect }) => {
+    search: string;
+}> = ({ data, select, setSelect, search }) => {
     const dataReference = useRef(data);
 
     dataReference.current = data;
 
     useEffect(() => {
         const thateventlistener = (event) => {
-            if (!dataReference.current?.hits?.length) {
-                return;
-            }
-
             switch (event.key) {
                 case 'ArrowDown': {
                     event.preventDefault();
@@ -71,20 +68,24 @@ export const SearchResults: FC<{
         }
     }, [select]);
 
+    if (search === '') {
+        return <div className="w-full"></div>;
+    }
+
     return (
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center rounded-b-xl py-8 text-center">
+                    <div className="flex w-full flex-col items-center rounded-b-xl py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
                     </div>
                 ) : (
-                    <ul className="border-t-ens-light-border dark:border-t-ens-dark-border border-t">
+                    <ul className="border-t border-t-ens-light-border dark:border-t-ens-dark-border">
                         {data.hits.map((hit, index) => (
                             <li
-                                className="hlem focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary outline-0"
+                                className="hlem outline-0 focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary"
                                 id={'search-result-' + index}
                                 key={hit.slug}
                             >
@@ -101,7 +102,7 @@ export const SearchResults: FC<{
                                     }}
                                     href={'/' + hit.slug}
                                     id={'search-result-link-' + index}
-                                    className="outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary z-10 flex w-full p-4"
+                                    className="z-10 flex w-full p-4 outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary"
                                 >
                                     <span className="grow overflow-hidden">
                                         <span className="w-full truncate font-bold">

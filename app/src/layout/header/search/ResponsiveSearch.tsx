@@ -41,7 +41,6 @@ export const ResponsiveSearch = () => {
             element.focus();
         }
     }, [select]);
-    const showSearch = search.length > 0 && data;
 
     const selectReference = useRef(select);
 
@@ -102,7 +101,7 @@ export const ResponsiveSearch = () => {
     return (
         <div
             id="searchbar"
-            className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary w-full rounded-2xl text-[#18181b] dark:text-white"
+            className="w-full rounded-2xl bg-ens-light-background-primary text-[#18181b] dark:bg-ens-dark-background-primary dark:text-white"
         >
             <div className="space-y-3 p-4">
                 <div className="relative z-10">
@@ -111,7 +110,7 @@ export const ResponsiveSearch = () => {
                         onClick={() => {
                             setSelect(-2);
                         }}
-                        className="border-ens-light-border outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border w-full rounded-xl border py-2 pl-10 text-xl"
+                        className="w-full rounded-xl border border-ens-light-border py-2 pl-10 text-xl outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border"
                         placeholder="Search Content..."
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={true}
@@ -141,36 +140,34 @@ export const ResponsiveSearch = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <div className="flex w-fit gap-2 whitespace-nowrap">
-                        {data?.hits?.length > 0 &&
-                            search !== '' &&
-                            tags.map((item, _index) => (
-                                <button
-                                    className={clsx(
-                                        'tag filter-tag',
-                                        tag === item
-                                            ? 'tag-blue filter-selected'
-                                            : 'tag-grey'
-                                    )}
-                                    key={_index}
-                                    onClick={() => {
-                                        setTag(item);
-                                    }}
-                                >
-                                    {item}
-                                </button>
-                            ))}
+                        {tags.map((item, _index) => (
+                            <button
+                                className={clsx(
+                                    'tag filter-tag',
+                                    tag === item
+                                        ? 'tag-blue filter-selected'
+                                        : 'tag-grey'
+                                )}
+                                key={_index}
+                                onClick={() => {
+                                    setTag(item);
+                                    setSelect(-1);
+                                }}
+                            >
+                                {item}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
             <div className="w-full">
                 <div className="w-full">
-                    {showSearch && (
-                        <SearchResults
-                            data={data}
-                            select={select}
-                            setSelect={setSelect}
-                        />
-                    )}
+                    <SearchResults
+                        data={data}
+                        select={select}
+                        search={search}
+                        setSelect={setSelect}
+                    />
                 </div>
             </div>
         </div>
