@@ -2,7 +2,7 @@ import { WIP } from '@/components/wip/WIP';
 
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-  description: '',
+  description: 'Introduction to hosting a decentralized website using ENS',
   emoji: '🔍',
   contributors: [
     'lucemans'
@@ -21,20 +21,30 @@ The ContentHash is a very popular component of an ENS name.
 It can be queried by hitting the [contenthash(bytes32)](/resolvers/interfaces#0xbc1c58d1) function on a name's resolver.
 You can also [set the contenthash on a name](/resolvers/interfaces#0x304e6ade) if the resolver supports it.
 
+<div className="card1 p-4 flex justify-center gap-4">
+  {
+    ['ipfs://qMhx...', 'ar://HGa8...'].map((tag) => (
+      <span key={tag} className="tag tag-blue">{tag}</span> 
+    ))
+  }
+</div>
+
 ## Hosting & Pinning {{id: 'hosting'}}
 
-Lorem ipsum dolor set amet.
+When it comes to hosting your files there are many options to choose from.
 
-- IPFS / Filecoin
-- Swarm
-- Arweave
 
-- Fleek
+<div className="card1 p-4 flex justify-center gap-4">
+  {
+    ['IPFS / Filecoin', 'Swarm', 'Arweave'].map((tag) => (
+      <span key={tag} className="tag tag-blue">{tag}</span> 
+    ))
+  }
+</div>
 
 ## Setting your ContentHash
 
 If you are using the public resolver (the default for names registered using the ENS Manager App), you can set the contenthash directly from within the ENS Manager App.
 
-### Alternative Methods
-
-Not every name uses the public resolver.
+If you are using a custom resolver, or are writing your own resolver you will be able to have more fine grained control over the contenthash field.
+See [ENSIP-7](/ensip/7) for more information on the contenthash field.
