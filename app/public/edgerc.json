@@ -29,6 +29,10 @@
                 "destination": "/learn/ccip-read"
             },
             {
+                "pattern": "^/resolvers/ccip$",
+                "destination": "/resolvers/ccip-read"
+            },
+            {
                 "pattern": "^/(frequently-asked-questions|faqs)$",
                 "destination": "/faq"
             },
