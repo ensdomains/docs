@@ -25,8 +25,8 @@
                 "destination": "/web/quickstart"
             },
             {
-                "pattern": "^/ccip$",
-                "destination": "/learn/ccip"
+                "pattern": "^/(ccip|learn/ccip)$",
+                "destination": "/learn/ccip-read"
             },
             {
                 "pattern": "^/(frequently-asked-questions|faqs)$",
@@ -154,7 +154,7 @@
             },
             {
                 "pattern": "^/dapp-developer-guide/ens-l2-offchain$",
-                "destination": "/learn/ccip"
+                "destination": "/learn/ccip-read"
             },
             {
                 "pattern": "^/dapp-developer-guide/ens-data-guide$",

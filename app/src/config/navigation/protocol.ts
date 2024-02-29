@@ -31,7 +31,7 @@ export const navigation: SectionData[] = [
                     {
                         title: 'Layer 2 & Offchain',
                         icon: '🔗',
-                        href: '/learn/ccip',
+                        href: '/learn/ccip-read',
                     },
                 ],
             },
@@ -231,7 +231,7 @@ export const navigation: SectionData[] = [
                     },
                     {
                         title: 'Cross Chain Resolvers',
-                        href: '/resolvers/ccip',
+                        href: '/resolvers/ccip-read',
                         icon: '⛓️',
                     },
                     {

@@ -21,10 +21,10 @@ const guides = [
             'Learn how to write a resolver to resolve on-chain names and subnames.',
     },
     {
-        href: '/ccip',
+        href: '/ccip-read',
         name: 'Cross Chain Interoperability',
         description:
-            'Explore the CCIP, the protocol that allows your ENS resolvers to be off-chain or on other chains.',
+            'Learn about CCIP Read, the protocol that allows your ENS resolvers to be off-chain or on other chains.',
     },
     {
         href: '/dns',
