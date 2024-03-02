@@ -407,9 +407,13 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
-                        title: '5.2 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
-                        href: '/dao/proposals/5.2',
+                        title: '5.3 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
+                        href: '/dao/proposals/5.3',
                     },
+                    // {
+                    //     title: '5.2 - [Executable] Commence Streams for Service Providers',
+                    //     href: '/dao/proposals/5.2',
+                    // },
                     {
                         title: '5.1 - [Executable] Upgrade DNSSEC support',
                         href: '/dao/proposals/5.1',
