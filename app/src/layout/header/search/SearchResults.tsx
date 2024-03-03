@@ -9,7 +9,8 @@ export const SearchResults: FC<{
     data: SearchResult;
     select: any;
     setSelect: any;
-}> = ({ data, select, setSelect }) => {
+    query: string;
+}> = ({ data, select, setSelect, query }) => {
     useEffect(() => {
         const thateventlistener = (event) => {
             if (!data?.hits?.length) {
@@ -72,16 +73,16 @@ export const SearchResults: FC<{
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="flex w-full flex-col items-center py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
+                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center py-8 text-center">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
                     </div>
                 ) : (
-                    <ul className="border-t border-t-ens-light-border dark:border-t-ens-dark-border">
+                    <ul className="border-t-ens-light-border dark:border-t-ens-dark-border border-t">
                         {data.hits.map((hit, index) => (
                             <li
-                                className="hlem outline-0 focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary"
+                                className="hlem focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary outline-0"
                                 id={'search-result-' + index}
                                 key={hit.slug}
                             >
@@ -91,14 +92,29 @@ export const SearchResults: FC<{
                                     }}
                                     onKeyDown={(event) => {
                                         if (event.key === 'Enter') {
-                                            // setSelect(-1);
+                                            event.preventDefault();
                                             // @ts-ignore
                                             event.target.click();
                                         }
                                     }}
+                                    onClick={() => {
+                                        // Here we will run a network request to log the click, but since that will take time we'll do it in the background. Luckily, NextJS doesn't replace the page, but only the content, so we can do this without any issues.
+                                        // @ts-ignore
+                                        const { plausible } = window;
+
+                                        if (!plausible) return;
+
+                                        plausible('Search', {
+                                            props: {
+                                                query: query,
+                                                result: hit.title,
+                                                index: index + 1,
+                                            },
+                                        });
+                                    }}
                                     href={'/' + hit.slug}
                                     id={'search-result-link-' + index}
-                                    className="z-10 flex w-full p-4 outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary"
+                                    className="outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary z-10 flex w-full p-4"
                                 >
                                     <span className="grow overflow-hidden">
                                         <span className="w-full truncate font-bold">

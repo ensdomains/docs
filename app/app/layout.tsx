@@ -16,14 +16,19 @@ export default function RootLayout(properties) {
         <html lang="en" suppressHydrationWarning className="not-system">
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
-            </head>
-            <body className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary text-ens-light-text-primary dark:text-ens-dark-text-primary">
-                <Theme>{children}</Theme>
                 <script
                     defer
                     data-domain="docs.ens.domains"
-                    src="https://ens.v3x.report/js/script.js"
+                    src="https://science.nt3.me/js/script.local.js"
                 ></script>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: 'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }',
+                    }}
+                />
+            </head>
+            <body className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary text-ens-light-text-primary dark:text-ens-dark-text-primary">
+                <Theme>{children}</Theme>
                 <script
                     defer
                     data-domain="docs.ens.domains"

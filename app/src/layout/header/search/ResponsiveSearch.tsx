@@ -96,6 +96,7 @@ export const ResponsiveSearch = () => {
                             data={data}
                             select={select}
                             setSelect={setSelect}
+                            query={search}
                         />
                     )}
                 </div>
