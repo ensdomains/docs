@@ -5,6 +5,14 @@
         },
         "redirects": [
             {
+                "pattern": "^/tlds?$",
+                "destination": "/dns/tlds"
+            },
+            {
+                "pattern": "^/deploy(s|ments)?$",
+                "destination": "/learn/deployments"
+            },
+            {
                 "pattern": "^/namewrapper$",
                 "destination": "/wrapper/overview"
             },
