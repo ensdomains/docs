@@ -35,7 +35,7 @@ Within the context of ENS, this enables us, to read names, addresses, records, a
 
 ## How does it work?
 
-The Cross Chain Interoperability Protocol (CCIP), is a client-side implemented protocol that introduces the [OffchainLookup](https://eips.ethereum.org/EIPS/eip-3668#contract-interface) error.
+The Cross Chain Interoperability Protocol (CCIP Read), is a client-side implemented protocol that introduces the [OffchainLookup](https://eips.ethereum.org/EIPS/eip-3668#contract-interface) error.
 Once the client encounters this error, it will attempt to handle it by calling a gateway url. Most Ethereum libraries handle this for you, at no additional cost.
 
 ```c
@@ -50,7 +50,7 @@ error OffchainLookup(
 
 ## Demo
 
-An example of CCIP in action can be found at [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
+An example of CCIP Read in action can be found at [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
 This example application allows you to claim a subname for 24 hours.
 The name [offchaindemo.eth](https://ens.app/offchaindemo.eth) with resolver [0xDB3...4D27](https://etherscan.io/address/0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27#code), reverts with [OffchainLookup](https://eips.ethereum.org/eips/3668) and directs the client to a gateway url.
 The [gateway url](https://ens-gateway.gregskril.workers.dev/lookup/{sender}/{data}.json) returns the information and loads it from a temporary database.
@@ -71,7 +71,7 @@ During this execution the `OffchainLookup` error is thrown, and the client will 
 If successful the gateways results are returned to the callback function specified in the error.
 The output of the callback function is then returned to the client and considered the result of the original lookup.
 
-<img src="/content/learn/ccip/1.png" className="w-full card" />
+<img src="/content/learn/ccip-read/1.png" className="w-full card" />
 
 ## Writing a Gateway
 
@@ -84,8 +84,8 @@ The URL for this gateway is determined by the `OffchainLookup` error, and is pas
 ### Template Repositories
 
 <div>
-    <Repository src="ensdomains/offchain-resolver" description="CCIP Offchain ENS Resolver with Cloudflare Workers"/>
-    <Repository src="ensdomains/offchain-gateway-rs" description="Offchain CCIP Gateway Resolver implementation in Rust (& postgres)"/>
+    <Repository src="ensdomains/offchain-resolver" description="CCIP Read Offchain ENS Resolver with Cloudflare Workers" />
+    <Repository src="ensdomains/offchain-gateway-rs" description="Offchain CCIP Read Gateway Resolver implementation in Rust (& postgres)" />
     <Repository src="ensdomains/offchain-resolver-example" />
     <Repository src="gskril/ens-offchain-resolver-read-from-api" />
 </div>
@@ -153,7 +153,7 @@ An alternative option is to [set the Resolver manually](/resolvers/interacting) 
 To test your gateway you can use the [ENS Manager App](https://ens.app/) or if you want more detail try using [enstate](https://enstate.rs/n/luc.willbreak.eth) and notice the `ccip_urls` field.
 If your results are loaded successfully, you have successfully implemented a gateway resolver.
 
-A testing tool for CCIP functions will be available soon.
+ A testing tool for CCIP Read functions will be available soon.
 
 {/* ```mermaid
 sequenceDiagram
