@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 
-import { navigation } from '@/config/navigation';
+import { navigation } from '#/config/navigation';
 import { useIsInsideMobileNavigation } from '@/lib/mobile';
 
 import { NavigationGroup } from './navgroup';

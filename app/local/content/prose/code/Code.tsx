@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 import {
     CodePanel,
     CodePanelProperties,
-} from '@/content/prose/code/snippet/CodeSnippet';
+} from '#/content/prose/code/snippet/CodeSnippet';
 
 import { CodeGroup } from './group/CodeGroup';
 

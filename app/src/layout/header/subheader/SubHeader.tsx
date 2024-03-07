@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { navigation } from '@/config/navigation';
+import { navigation } from '#/config/navigation';
 
 export const SubHeader = () => {
     const pathname = usePathname();

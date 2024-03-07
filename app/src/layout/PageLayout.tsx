@@ -4,7 +4,7 @@ import { Article, WithContext } from 'schema-dts';
 
 import { Prose } from '@/components/mdx/Prose';
 import { SectionProvider } from '@/components/SectionProvider';
-import { Breadcrumbs } from '@/content/prose/breadcrumbs/Breadcrumbs';
+import { Breadcrumbs } from '#/content/prose/breadcrumbs/Breadcrumbs';
 import { MdxPageProps } from '@/lib/mdxPageProps';
 
 import { PageDetails } from './details/PageDetails';

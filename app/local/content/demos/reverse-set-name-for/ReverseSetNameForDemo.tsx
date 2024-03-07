@@ -7,7 +7,7 @@ import { FiCheck, FiLoader, FiX } from 'react-icons/fi';
 import { mainnet, sepolia } from 'viem/chains';
 import { useAccount, useReadContract } from 'wagmi';
 
-import { ALink } from '@/content/prose/link/ALink';
+import { ALink } from '#/content/prose/link/ALink';
 
 import { EthCall } from '../call/EthCall';
 

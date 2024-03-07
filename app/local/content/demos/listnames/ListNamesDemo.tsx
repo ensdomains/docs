@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi';
 
 import { ClientOnly } from '@/ClientOnly';
 import { Button } from '@/components/Button';
-import { ProfileAvatar } from '@/content/prose/profile/ProfileAvatar';
+import { ProfileAvatar } from '#/content/prose/profile/ProfileAvatar';
 
 import { OwnerField } from '../ethregistry/inputs/OwnerField';
 

@@ -11,7 +11,7 @@ import {
     navigation,
     routeElement,
     routeGroup,
-} from '@/config/navigation';
+} from '#/config/navigation';
 import { Header } from '@/layout/header/Header';
 import {
     IsInsideMobileNavigationContext,
