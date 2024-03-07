@@ -44,6 +44,7 @@ export const VideoGallery: FC<{}> = () => {
                     title: 'State of ENS by Nick Johnson',
                     location: 'Devcon Bogota',
                     description:
+                        // eslint-disable-next-line quotes
                         "An overview of ENS's innovations and progress in the last couple of years",
                     href: 'https://www.youtube.com/watch?v=Pta198KJTaw',
                     cover: 'https://i3.ytimg.com/vi_webp/Pta198KJTaw/mqdefault.webp',
