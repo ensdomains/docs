@@ -329,6 +329,17 @@ tbody tr:last-child td {
     @apply rounded-lg py-2.5 px-5;
 }
 
+.btn-subtle {
+    @apply bg-ens-light-background-primary dark:bg-ens-dark-background-primary;
+    @apply text-ens-light-text-secondary dark:text-ens-dark-text-secondary;
+    @apply hover:bg-ens-light-background-secondary dark:hover:bg-ens-dark-background-secondary hover:text-ens-light-text-secondary hover:dark:text-ens-dark-text-secondary;
+    @apply active:bg-ens-light-blue-bright dark:active:bg-ens-dark-blue-bright; /* */
+    @apply focus:ring focus:ring-offset-2 focus:ring-ens-light-border dark:focus:ring-ens-dark-border focus:outline-none; /* */
+    @apply border border-ens-light-border dark:border-ens-dark-border;
+    @apply rounded-lg py-2.5 px-5;
+    @apply font-bold;
+}
+
 .input {
     @apply block w-full border border-ens-light-border dark:border-ens-dark-border;
     @apply outline-none;
