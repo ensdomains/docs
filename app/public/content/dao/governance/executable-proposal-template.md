@@ -24,6 +24,7 @@ description: A short (1-2 sentence) description of the proposal.
 -->
 
 ## Transactions
+
 <!--
   The transactions section describes all the calls that should be encoded in the onchain version of this proposal. Use the table below as a starting point.
 -->
