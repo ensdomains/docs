@@ -63,30 +63,21 @@ interface IOffChainResolver {
     // The same function name exists on L2 where delegate returns address instead of bytes
     function isApprovedFor(bytes context, bytes32 node, bytes delegate) returns (bool);
 
-    /** @dev Returns the owner of the resolver on L2
-     * @return name can be l2 chain name or url if offchain
-     * @return coinType according to https://github.com/ensdomains/address-encoder
+    /** @dev Returns the metadata of the resolver on L2
      * @return graphqlUrl url of graphql endpoint that provides additional information about the offchain name and its subdomains
-     * @return storageType 0 = EVM, 1 = Non blockchain, 2 = Starknet
-     * @storageLocation = l2 contract address
-     * @return context = an arbitrary bytes string to define the namespace to which a record belongs such as the name owner.
      */
     function metadata(bytes calldata name)
         external
         view
-        returns (string memory, uint256, string memory, uint8, bytes memory, bytes memory)
+        returns (string memory)
     {
-        return (name, coinType, graphqlUrl, storageType, storageLocation, context);
+        return (graphqlUrl);
     }
 
     // Optional. If context is dynamic, the event won't be emitted.
     event MetadataChanged(
         string name,
-        uint256 coinType,
         string graphqlUrl,
-        uint8 storageType,
-        bytes storageLocation,
-        bytes context
     );
 }
 ```
@@ -145,18 +136,8 @@ type Metadata @entity {
   id: ID!
   "Name of the Chain"
   name: String
-  "coin type"
-  coinType: BigInt
   "url of the graphql endpoint"
   graphqlUrl: String
-  "0 for evm, 1 for non blockchain, 2 for starknet"
-  storageType: Int
-  "l2 contract address"
-  storageLocation: Bytes
-  "optional field to store an arbitrary bytes string to define the namespace to which a record belongs"
-  context: Bytes
-  "optional field if the name has expiry date offchain"
-  expiryDate: BigInt
 }
 
 ```
