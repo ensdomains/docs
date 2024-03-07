@@ -7,6 +7,7 @@ import { SmartContractMap } from './smartcontractmap/SmartContractMap';
 import { DNSGrid } from './tld-list/DNSGrid';
 import { TLDList } from './tld-list/TLDList';
 import { Usertag } from './usertag/Usertag';
+import { VideoGallery } from './videos/VideoGallery';
 
 export const extras = {
     DNSUsageExamples,
@@ -18,4 +19,5 @@ export const extras = {
     SmartContractMap,
     Icons,
     LinkCard,
+    VideoGallery,
 };
