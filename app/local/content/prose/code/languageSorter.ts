@@ -1,4 +1,4 @@
-import { LanguagePresets } from '@/config/languages';
+import { LanguagePresets } from '#/config/languages';
 
 import { LanguageSettings } from './types/language';
 

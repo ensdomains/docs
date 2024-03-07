@@ -1,4 +1,4 @@
-import { configureLanguages } from '@/content/prose/code/types/language';
+import { configureLanguages } from '#/content/prose/code/types/language';
 
 export const LanguagePresets = configureLanguages({
     typescript: {

@@ -1,6 +1,6 @@
 import type { MDXComponents } from 'mdx/types';
 
-import { contentComponents } from '@/content';
+import { contentComponents } from '#/content';
 
 /**
  * This file needs to be named `mdx-components.ts` and needs to stay in this directory.

@@ -4,7 +4,7 @@ import { Children, cloneElement, FC, PropsWithChildren } from 'react';
 import {
     CodePanel,
     CodeSnippetProperties,
-} from '@/content/prose/code/snippet/CodeSnippet';
+} from '#/content/prose/code/snippet/CodeSnippet';
 
 import { getLanguage } from '../languageSorter';
 import { CodeGroupHeader } from './CodeGroupHeader';

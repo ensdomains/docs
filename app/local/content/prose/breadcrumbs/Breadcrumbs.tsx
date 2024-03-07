@@ -8,8 +8,8 @@ import {
     isSectionData,
     routeElement,
     routeGroup,
-} from '@/config/navigation';
-import { navigation } from '@/config/navigation/protocol';
+} from '#/config/navigation';
+import { navigation } from '#/config/navigation/protocol';
 
 const getPageAndGroup = (
     routes: routeGroup[] | undefined,

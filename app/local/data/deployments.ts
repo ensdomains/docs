@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
 
-import { DeploymentData } from '@/content/extras/deployments/deployment';
+import { DeploymentData } from '#/content/extras/deployments/deployment';
 
 type Deployment = {
     name: string;
