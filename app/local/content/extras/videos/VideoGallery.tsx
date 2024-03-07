@@ -53,7 +53,6 @@ export const VideoGallery: FC<{}> = () => {
                 <a
                     className="border-ens-light-border dark:border-ens-dark-border bg-ens-light-background-primary dark:bg-ens-dark-background-primary hover:bg-ens-light-background-secondary/50 hover:dark:bg-ens-dark-background-secondary/50 my-0 flex w-full flex-col overflow-hidden rounded-lg border py-0"
                     href={entry.href}
-                    hideExtras={true}
                 >
                     <div className="bg-ens-light-background-disabled dark:bg-ens-dark-background-secondary aspect-video w-full">
                         {entry.cover && (
