@@ -12,6 +12,13 @@ export const VideoGallery: FC<{}> = () => {
                     cover: '/content/videos/ethdenver24.webp',
                 },
                 {
+                    title: 'February 2024 Docs Update',
+                    location: 'Documentation',
+                    description: '',
+                    href: 'https://www.youtube.com/watch?v=GwX_m28SSOA',
+                    cover: 'https://i3.ytimg.com/vi_webp/GwX_m28SSOA/mqdefault.webp',
+                },
+                {
                     title: 'ETHRome ENS Workshop 1',
                     location: 'ETHRome',
                     description:
