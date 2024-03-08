@@ -6,7 +6,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint -c .eslintrc.json --ext .jsx,.tsx ./src",
+        "lint": "eslint -c .eslintrc.json --ext .jsx,.tsx ./src ./local ./data ./app",
         "typecheck": "tsc --noEmit"
     },
     "browserslist": "defaults, not ie <= 11",

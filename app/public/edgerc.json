@@ -25,6 +25,10 @@
                 "destination": "/web/quickstart"
             },
             {
+                "pattern": "^/resolvers?$",
+                "destination": "/resolvers/quickstart"
+            },
+            {
                 "pattern": "^/(ccip|learn/ccip)$",
                 "destination": "/learn/ccip-read"
             },

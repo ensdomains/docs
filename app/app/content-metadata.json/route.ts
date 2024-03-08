@@ -2,7 +2,7 @@ import { getPageBySlug } from 'data/get_page';
 import { getAllPageSlugs } from 'data/get_pages';
 import { NextResponse } from 'next/server';
 
-import { navigation } from '../../src/config/navigation';
+import { navigation } from '../../local/config/navigation';
 
 const { protocol } = navigation;
 
