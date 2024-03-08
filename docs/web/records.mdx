@@ -51,7 +51,7 @@ To fetch the record for a specific name, you can use one of the following method
 
 <CodeGroup title="Get records by name">
 
-```tsx {{ title: "ens-tools (React)", meta: "focus=4:8", variant: "ens-tools", link: "https://github.com/v3xlabs/ens-tools" }}
+{/* ```tsx {{ title: "ens-tools (React)", meta: "focus=4:8", variant: "ens-tools", link: "https://github.com/v3xlabs/ens-tools" }}
 import { useRecords } from "ens-tools/react";
 
 export const MyProfile: FC<{ name: string }> = ({ name }) => {
@@ -60,7 +60,7 @@ export const MyProfile: FC<{ name: string }> = ({ name }) => {
         records: ["com.twitter", "com.github", "description"],
         normalize: true,
     });
-
+ 
     return (
         <div>
             {data.map((record) => (
@@ -71,31 +71,23 @@ export const MyProfile: FC<{ name: string }> = ({ name }) => {
         </div>
     );
 };
-```
+``` */}
 
-```tsx {{ title: "Wagmi", variant: "wagmi" }}
-// Warning, wagmi does not include a nice "hook" for records yet.
-// We recommend you use ENS Tools or Viem for now.
-
-import { useReadContract } from "wagmi";
+```tsx {{ title: "Wagmi", variant: "wagmi", link: "https://wagmi.sh/react/api/hooks/useEnsText" }}
+import { useEnsText } from "wagmi";
+import { normalize } from "viem/ens";
 
 export const MyProfile: FC<{ name: string }> = ({ name }) => {
-    const {} = useReadContract({
-        address: "0xc0497E381f536Be9ce14B0dD3817cBcAe57d2F62",
-        abi: universalResolverABI,
-        functionName: "resolve",
-        args: [
-            "", // DNS Encoded ENS name (eg luc.eth)
-            [
-                "", // Array of wildcard resolution calldata
-                "",
-            ],
-        ],
-        chainId: 1,
+    const { data } = useEnsText({
+        name: normalize("luc.eth"),
+        key: "com.twitter",
     });
-    // TODO: This demo outputs [ calldata_result[], resolver_address]
 
-    return <>TODO</>;
+    return (
+        <div>
+            <span>Twitter: </span><span>{data}</span>
+        </div>
+    );
 };
 ```
 
