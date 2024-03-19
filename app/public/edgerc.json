@@ -245,7 +245,7 @@
                 "destination": "/disappeared"
             },
             {
-                "pattern": "^/v/governance/$",
+                "pattern": "^/v/governance/?$",
                 "destination": "/dao"
             },
             {
