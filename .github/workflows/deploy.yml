@@ -36,6 +36,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: ens-docs
+          branch: master
           directory: app/out
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: '3'
