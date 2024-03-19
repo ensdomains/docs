@@ -30,6 +30,16 @@ jobs:
         env:
           TALLY_API_KEY: ${{ secrets.TALLY_API_KEY }}
 
+      - name: Cloudflare Pages Upload
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ens-docs
+          directory: app/out
+          # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: '3'
+
       - name: Edgeserver Upload
         uses: lvkdotsh/edgeserver-action@v0.1.2-pre.4
         with:
