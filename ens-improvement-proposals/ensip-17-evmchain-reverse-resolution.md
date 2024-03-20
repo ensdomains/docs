@@ -27,7 +27,7 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 * Reverse registrars will be setup on each L2, with a corresponding registry
 * Reverse registrar will only allow setting the name, without resolver customisability. This is to allow a consistent storage slot that can be checked on L1.
 * User can now claim their reverse on this L2 and set it to their ENS name
-* Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ens-improvement-proposals/ensip-9-multichain-address-resolution).
+* Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ensip/11).
 * A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[evmChainCointype].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
 * Dapp will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up CCIP-read records for each network and put those addresses wherever they want.
 
@@ -50,8 +50,8 @@ To determine the avatar URI for a specific EVM chain address, the client MUST re
 
 If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.<evmChainId>.reverse'))`. If this method returns a valid ENS name, the client MUST:
 
-1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original <chaiId> address.
-2. Perform the process described under 'ENS Name' to look for a valid avatar URI on the name.
+1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original <chainId> address.
+2. Perform [ENSIP-12 Avatar resolution](https://docs.ens.domains/ensip/12) on the primary name.
 
 A failure at any step of this process MUST be treated by the client identically as a failure to find a valid avatar URI.
 
