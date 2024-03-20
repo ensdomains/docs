@@ -28,13 +28,13 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 * Reverse registrar will only allow setting the name, without resolver customisability. This is to allow a consistent storage slot that can be checked on L1.
 * User can now claim their reverse on this L2 and set it to their ENS name
 * Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ensip/11).
-* A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[evmChainCointype].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
+* A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].e[evmChainId].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
 * Dapp will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up CCIP-read records for each network and put those addresses wherever they want.
 
 ### Resolving Primary ENS Names by a dapp
 
 1) If a dapp has a connected user it SHOULD first check the chainId of the user.
-2) If the chainId is not 1, it SHOULD then construct the ENS name [address].[evmChainCoinType].reverse to obtain the primary ENS name of the user. 
+2) If the chainId is not 1, it SHOULD then construct the ENS name [address].[evmChainId].reverse to obtain the primary ENS name of the user. 
 3) If none is found, it SHOULD check check mainnet [address].default.reverse.
 4) If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id that the user.
 
@@ -46,12 +46,12 @@ ENSIP-12 was concieved before the ENS L2 reverse resolution specification and th
 
 #### Example for an EVM Address
 
-To determine the avatar URI for a specific EVM chain address, the client MUST reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<evmChainId>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash('<address>.<evmChainId>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
+To determine the avatar URI for a specific EVM chain address, the client MUST reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<evmChainId>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash('<address>.e<evmChainId>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
 
-If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.<evmChainId>.reverse'))`. If this method returns a valid ENS name, the client MUST:
+If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.e<evmChainId>.reverse'))`. If this method returns a valid ENS name, the client MUST:
 
-1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original <chainId> address.
-2. Perform [ENSIP-12 Avatar resolution](https://docs.ens.domains/ensip/12) on the primary name.
+1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original evmChainId (converted to cointype) address.
+2. Perform [ENSIP-12 Avatar text record resolution](https://docs.ens.domains/ensip/12) on the primary name.
 
 A failure at any step of this process MUST be treated by the client identically as a failure to find a valid avatar URI.
 
