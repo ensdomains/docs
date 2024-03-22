@@ -18,7 +18,6 @@ This ENSIP specifies a way for reverse resolution to be used on other EVM chains
 
 Reverse resolution has been in use since ENS's inception, however at the time Ethereum had no concrete scaling plans. In the past 5 years, we've seen layer 2s and sidechains become more prevalent and we first allowed support for these with ENSIP-9 (formerly EIP-2304) to allow addresses from other chains to be stored on ENS. Reverse resolution can be expanded to allow the forward resolution to first check the records for the chain that the user is on.
 
-With account abstraction becoming more popular, it is becoming increasingly important to be able to setup different addresses for each L2, but using the same ENS name. It is no longer good practise to assume that the address of a user in mainnet is also controlled by the same user on an EVM-compatible L2. This can be solved with ENS names resolving to different addresses on each chain, but also additionally the primary ENS name being set to the same ENS name on each chain preserving the identity of the user across chains.
 
 ## Specification
 
@@ -28,11 +27,7 @@ With account abstraction becoming more popular, it is becoming increasingly impo
 * Reverse registrar will only allow setting the name, without resolver customisability. This is to allow a consistent storage slot that can be checked on L1.
 * User can now claim their reverse on this L2 and set it to their ENS name
 * Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ensip/11).
-<<<<<<< HEAD
 * A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[coinType].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
-=======
-* A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[evmChainCointype].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
->>>>>>> 00d9d74b6149bd3113b191291d05aa31f3b2782a
 * Dapp will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up CCIP-read records for each network and put those addresses wherever they want.
 * Once matched, the dapp can then also resolve any text records on the primary ENS name, such as avatar.
 
