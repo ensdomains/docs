@@ -61,7 +61,6 @@ const SearchResultEntry: FC<{
                     {hit.slug.startsWith('dao') && (
                         <span className="tag tag-purple">DAO</span>
                     )}
-                    <span className="tag">{index}</span>
                 </span>
             </Link>
         </li>

@@ -155,7 +155,10 @@ export const ResponsiveSearch = () => {
             case 'ArrowDown': {
                 event.preventDefault();
                 setSelect((select) => {
-                    return Math.min(select + 1, data.hits.length - 1);
+                    return Math.min(
+                        select + 1,
+                        (search.length > 0 && data?.hits.length) - 1
+                    );
                 });
 
                 break;
@@ -223,7 +226,6 @@ export const ResponsiveSearch = () => {
                         {isLoading && <FiLoader />}
                     </div>
                 </div>
-                <span>{select}</span>
                 <div className="overflow-x-auto">
                     <div className="flex w-fit gap-2 whitespace-nowrap">
                         <Tags
