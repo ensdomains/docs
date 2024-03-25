@@ -3,7 +3,7 @@ import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
 
 import { DeploymentData } from '#/content/extras/deployments/deployment';
 
-type Deployment = {
+export type Deployment = {
     name: string;
     slug: string;
     id: number;
