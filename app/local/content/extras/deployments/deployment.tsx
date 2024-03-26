@@ -75,13 +75,11 @@ const ChainDeployment: FC<{
                                     </Link>
                                 )}
 
-                                {deployment.path && (
+                                {deployment.srcPath && (
                                     <Link
                                         href={`https://github.com/ensdomains/ens-contracts/blob/${
                                             deployment.branch || 'staging'
-                                        }/deployments/${chain.slug}/${
-                                            deployment.path
-                                        }.json`}
+                                        }/${deployment.srcPath}`}
                                         target="_blank"
                                         className="inline-flex items-center text-xs font-bold leading-4"
                                     >
