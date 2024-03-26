@@ -2,17 +2,141 @@
 
 import { MagnifyingGlassSVG } from '@ensdomains/thorin';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FC, useEffect, useRef, useState } from 'react';
 import { FiLoader } from 'react-icons/fi';
 import useSWR from 'swr';
+
+import { useEvent } from '@/lib/useEvent';
 
 import { searchFetcher } from './lib/fetcher';
 import { SearchResults } from './SearchResults';
 
+const Tag: FC<{
+    tag: string;
+    index: number;
+    currentTag: string;
+    setCurrentTag: (tag: string) => void;
+    selectedTag: number;
+    setSelectedTag: (tag: number) => void;
+    select: number;
+    setSelect: (select: number) => void;
+}> = ({
+    tag,
+    index,
+    currentTag,
+    setCurrentTag,
+    selectedTag,
+    setSelectedTag,
+    select,
+    setSelect,
+}) => {
+    const tagReference = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (index === selectedTag && select === -1) {
+            tagReference.current?.focus();
+        }
+    }, [selectedTag, select]);
+
+    return (
+        <button
+            className={clsx(
+                'tag focus:outline-1',
+                tag === currentTag ? 'tag-blue' : 'tag-grey'
+            )}
+            onFocus={() => {
+                if (selectedTag !== index) {
+                    setSelectedTag(index);
+                    setSelect(-1);
+                }
+            }}
+            onClick={() => {
+                setCurrentTag(tag);
+            }}
+            onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                    setCurrentTag(tag);
+                }
+            }}
+            ref={tagReference}
+        >
+            {tag}
+        </button>
+    );
+};
+const TAGS = [
+    'All',
+    'Intro',
+    'Using ENS',
+    'Smart Contracts',
+    'Governance',
+    'Improvement Proposals',
+];
+
+const Tags: FC<{
+    tag: string;
+    setTag: (tag: string) => void;
+    select: number;
+    setSelect: (select: number) => void;
+}> = ({ tag, setTag, select, setSelect }) => {
+    const [selectedTag, setSelectedTag] = useState(0);
+
+    useEvent('keydown', (event) => {
+        if (select !== -1) return;
+
+        switch (event.key) {
+            case 'ArrowRight': {
+                event.preventDefault();
+                setSelectedTag((selectedTag) => {
+                    return Math.min(selectedTag + 1, TAGS.length - 1);
+                });
+
+                if (select !== -1) {
+                    setSelect(-1);
+                }
+
+                break;
+            }
+            case 'ArrowLeft': {
+                event.preventDefault();
+                setSelectedTag((selectedTag) => {
+                    return Math.max(selectedTag - 1, 0);
+                });
+
+                if (select !== -1) {
+                    setSelect(-1);
+                }
+
+                break;
+            }
+            case 'Enter': {
+                event.preventDefault();
+                setTag(TAGS[selectedTag]);
+                break;
+            }
+        }
+    });
+
+    return TAGS.map((item, _index) => (
+        <Tag
+            tag={item}
+            key={item}
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+            currentTag={tag}
+            setCurrentTag={setTag}
+            select={select}
+            setSelect={setSelect}
+            index={_index}
+        />
+    ));
+};
+
 export const ResponsiveSearch = () => {
     const [tag, setTag] = useState('All');
-
     const [search, setSearch] = useState('');
+
     const { data, error, isLoading, isValidating } = useSWR(
         { search, tag },
         searchFetcher,
@@ -20,22 +144,60 @@ export const ResponsiveSearch = () => {
             keepPreviousData: true,
         }
     );
-    const [select, setSelect] = useState(-1);
+
+    const [select, setSelect] = useState(-2);
     const showSearch = search.length > 0 && data;
+
+    const router = useRouter();
+
+    useEvent('keydown', (event) => {
+        switch (event.key) {
+            case 'ArrowDown': {
+                event.preventDefault();
+                setSelect((select) => {
+                    return Math.min(
+                        select + 1,
+                        (search.length > 0 && data?.hits.length) - 1
+                    );
+                });
+
+                break;
+            }
+            case 'ArrowUp': {
+                event.preventDefault();
+                setSelect((select) => {
+                    return Math.max(select - 1, -2);
+                });
+
+                break;
+            }
+            case 'Enter': {
+                break;
+            }
+        }
+    });
+
+    const inputReference = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (select === -2) {
+            inputReference.current?.focus();
+        }
+    }, [select]);
 
     return (
         <div
             id="searchbar"
-            className="w-full rounded-2xl bg-ens-light-background-primary text-[#18181b] dark:bg-ens-dark-background-primary dark:text-white"
+            className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary w-full rounded-2xl text-[#18181b] dark:text-white"
         >
             <div className="space-y-3 p-4">
                 <div className="relative z-10">
                     <input
                         type="text"
                         onClick={() => {
-                            setSelect(-1);
+                            setSelect(-2);
                         }}
-                        className="w-full rounded-xl border border-ens-light-border py-2 pl-10 text-xl outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border"
+                        className="border-ens-light-border outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border w-full rounded-xl border py-2 pl-10 text-xl"
                         placeholder="Search Content..."
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={true}
@@ -45,16 +207,17 @@ export const ResponsiveSearch = () => {
                         }}
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
-                                const element = document.querySelector(
-                                    '#search-result-link-0'
-                                );
+                                const firstHit = data?.hits?.at(0);
 
-                                if (element && element instanceof HTMLElement) {
-                                    element.focus();
-                                    element.click();
+                                if (firstHit) {
+                                    router.push('/' + firstHit.slug);
                                 }
                             }
                         }}
+                        onFocus={() => {
+                            setSelect(-2);
+                        }}
+                        ref={inputReference}
                     />
                     <div className="absolute inset-y-0 left-3 flex h-full items-center text-neutral-300">
                         <MagnifyingGlassSVG />
@@ -65,27 +228,12 @@ export const ResponsiveSearch = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <div className="flex w-fit gap-2 whitespace-nowrap">
-                        {[
-                            'All',
-                            'Intro',
-                            'Using ENS',
-                            'Smart Contracts',
-                            'Governance',
-                            'Improvement Proposals',
-                        ].map((item, _index) => (
-                            <button
-                                className={clsx(
-                                    'tag',
-                                    tag === item ? 'tag-blue' : 'tag-grey'
-                                )}
-                                key={_index}
-                                onClick={() => {
-                                    setTag(item);
-                                }}
-                            >
-                                {item}
-                            </button>
-                        ))}
+                        <Tags
+                            tag={tag}
+                            setTag={setTag}
+                            select={select}
+                            setSelect={setSelect}
+                        />
                     </div>
                 </div>
             </div>
