@@ -10,9 +10,8 @@ export const meta = {
 # Layer 2 & Offchain Resolution
 
 All ENS resolution starts on Ethereum Mainnet.
-However by leveraging the [CCIP Read](/resolvers/ccip-read) name resolution can be taken cross-chain, off-chain, and more.
-This allows for a lot of flexibility in how you can use your ENS.
-And for storage of your ENS records on your favourite Layer 2, or even off-chain.
+However, by leveraging the [CCIP Read](/resolvers/ccip-read), name resolution can be taken cross-chain, off-chain, and more.
+This allows for a lot of flexibility in how you can use your ENS and for storage of your ENS records on your favourite Layer 2, or even off-chain.
 
 <div className="card1 p-4">
     
@@ -20,10 +19,9 @@ And for storage of your ENS records on your favourite Layer 2, or even off-chain
 
 ## Resolvers on Layer 2
 
-Its already possible to deploy a resolver to a Layer 2. This is done by verifying data returned from a gateway against for example mainnet storage proofs, or other mechanisms depending on the chain.
+It's already possible to deploy a resolver to a Layer 2. This is done by verifying data returned from a gateway against, for example, mainnet storage proofs or other mechanisms, depending on the chain.
 
-ENS Labs has created a toolkit called the [EVMGateway](https://github.com/ensdomains/evmgateway) which helps with trustless cross-chain data retrieval.
-This allows you for example to have your name be controlled by a Resolver on Optimism, or Arbitrum, with more EVM compatible chains coming soon.
+ENS Labs has created a toolkit called the [EVMGateway](https://github.com/ensdomains/evmgateway), which helps with trustless cross-chain data retrieval: this allows you to have, for example, your name controlled by a Resolver on Optimism or Arbitrum, with more EVM compatible chains coming soon.
 
 {/* ## Primary Names on Layer 2
 
@@ -33,9 +31,9 @@ The process of storing primary names on Layer 2 is still under active developmen
 
 ## Offchain Resolution
 
-Taking resolution Off-chain comes with many benefits however also with trustlessness tradeoffs.
-Depending on the implementation names could be stored in a database, or be ephemeral.
-Advantages of offchain name storage includes gaslessness, and instant updates.
+Moving resolution processes off-chain offers numerous advantages, including efficiency gains and reduced congestion on the main blockchain; however, it also introduces trade-offs in terms of trust, as it necessitates reliance on external systems.
+Depending on the implementation, names could be stored in a database or be ephemeral.
+Advantages of offchain name storage include gaslessness and instant updates.
 If this sounds appealing consider [writing an Offchain Resolver](/resolvers/ccip-read).
 
 Popular implementations of offchain names include but are not limited to:
