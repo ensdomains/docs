@@ -11,7 +11,8 @@ export const CopyButton: FC<{ text: string }> = ({ text }) => {
             onClick={() => {
                 navigator.clipboard.writeText(text);
             }}
-            variant="primary"
+            variant="text"
+            className="shrink-0"
         >
             <FiClipboard />
         </Button>

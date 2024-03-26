@@ -2,8 +2,11 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 
+import { CodeGroup } from '#/content/prose/code/group/CodeGroup';
 import { BLOCKCHAIN_EXPLORERS } from '#/data/blockchain_explorers';
-import { DEPLOYMENTS } from '#/data/deployments';
+import { Deployment, DEPLOYMENTS } from '#/data/deployments';
+
+import { CopyButton } from './copy';
 
 type githubDeploymentReturn = {
     address: string;
@@ -14,6 +17,7 @@ export type DeploymentData = {
     name: string;
     address?: string;
     path?: string;
+    srcPath?: string;
     branch?: string;
 };
 
@@ -33,103 +37,110 @@ export const getGithubDeployment = async (
     return (await response.json()) as githubDeploymentReturn;
 };
 
+const ChainDeployment: FC<{
+    identifier?: string;
+    preset: string;
+    title: string;
+    chain: Deployment;
+}> = async ({ identifier, preset, chain }) => {
+    return (
+        <div
+            className="hidable-code not-prose border-ens-light-border dark:border-ens-dark-border group overflow-hidden rounded-b-xl border"
+            data-code-variant={preset}
+            data-code-group={identifier}
+        >
+            {chain.contracts.map(
+                withDeploymentData(chain.slug, (deployment, data) => (
+                    <div
+                        key={deployment.name}
+                        className="border-b-ens-light-border dark:border-b-ens-dark-border group flex flex-col justify-between gap-2 border-b p-4 last:border-b-0 md:flex-row md:items-center"
+                    >
+                        <div className="">
+                            <div className="text-base font-bold leading-5">
+                                {deployment.name}
+                            </div>
+                            <div className="text-ens-light-blue-primary flex flex-wrap gap-x-2 text-sm font-bold">
+                                {deployment.path && (
+                                    <Link
+                                        href={`https://github.com/ensdomains/ens-contracts/blob/${
+                                            deployment.branch || 'staging'
+                                        }/deployments/${chain.slug}/${
+                                            deployment.path
+                                        }.json`}
+                                        target="_blank"
+                                        className="inline-flex items-center text-xs font-bold leading-5"
+                                    >
+                                        <FiExternalLink />
+                                        ABI
+                                    </Link>
+                                )}
+
+                                {deployment.srcPath && (
+                                    <Link
+                                        href={`https://github.com/ensdomains/ens-contracts/blob/${
+                                            deployment.branch || 'staging'
+                                        }/${deployment.srcPath}`}
+                                        target="_blank"
+                                        className="inline-flex items-center text-xs font-bold leading-4"
+                                    >
+                                        <FiExternalLink />
+                                        Source
+                                    </Link>
+                                )}
+                                {data?.address &&
+                                    BLOCKCHAIN_EXPLORERS[chain.id][0].name && (
+                                        <Link
+                                            href={BLOCKCHAIN_EXPLORERS[
+                                                chain.id
+                                            ][0].contract_url.replace(
+                                                '%ADDRESS%',
+                                                data?.address
+                                            )}
+                                            target="_blank"
+                                            className="inline-flex items-center text-xs font-bold leading-5"
+                                        >
+                                            <FiExternalLink />
+                                            {
+                                                BLOCKCHAIN_EXPLORERS[
+                                                    chain.id
+                                                ][0].name
+                                            }
+                                        </Link>
+                                    )}
+                            </div>
+                        </div>
+                        <div
+                            className={
+                                'bg-ens-light-background-secondary border-ens-light-border flex items-center justify-between gap-2 overflow-x-auto rounded-lg border px-3 py-[10px] text-base md:w-[480px]'
+                            }
+                        >
+                            <pre className="text-wrap break-all p-0 text-base">
+                                {deployment.address || data.address}
+                            </pre>
+
+                            <CopyButton
+                                text={deployment.address || data.address}
+                            />
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
+    );
+};
+
 export const ChainDeployments: FC = () => {
     return (
-        <div className="card1 no-margin">
-            <div className="">
-                {DEPLOYMENTS.map((chain, index) => (
-                    <div
-                        key={chain.slug}
-                        // TODO: Undo temporarily hiding all other chains then the first
-                        className={index == 0 ? '' : 'hidden'}
-                    >
-                        {chain.contracts.map(
-                            withDeploymentData(
-                                chain.slug,
-                                (deployment, data) => (
-                                    <div
-                                        key={deployment.name}
-                                        className="group flex items-center justify-between border-b border-b-ens-light-border p-4 last:border-b-0 dark:border-b-ens-dark-border"
-                                    >
-                                        <div className="h-fit">
-                                            <div className="text-base font-bold leading-4">
-                                                {deployment.name}
-                                            </div>
-                                            <div className="space-x-2 text-sm">
-                                                {deployment.path && (
-                                                    <Link
-                                                        href={`https://github.com/ensdomains/ens-contracts/blob/${
-                                                            deployment.branch ||
-                                                            'staging'
-                                                        }/deployments/${
-                                                            chain.slug
-                                                        }/${
-                                                            deployment.path
-                                                        }.json`}
-                                                        target="_blank"
-                                                        className="inline-flex items-center text-xs font-bold leading-4"
-                                                    >
-                                                        <FiExternalLink />
-                                                        ABI
-                                                    </Link>
-                                                )}
-                                                {/* {deployment.path && (
-                                                    <Link
-                                                        href={`https://github.com/ensdomains/ens-contracts/blob/${
-                                                            deployment.branch ||
-                                                            'staging'
-                                                        }/deployments/${
-                                                            chain.slug
-                                                        }/${
-                                                            deployment.path
-                                                        }.json`}
-                                                        target="_blank"
-                                                        className="inline-flex items-center text-xs font-bold leading-4"
-                                                    >
-                                                        <FiExternalLink />
-                                                        Source
-                                                    </Link>
-                                                )} */}
-                                                {data?.address &&
-                                                    BLOCKCHAIN_EXPLORERS[
-                                                        chain.id
-                                                    ][0].name && (
-                                                        <Link
-                                                            href={BLOCKCHAIN_EXPLORERS[
-                                                                chain.id
-                                                            ][0].contract_url.replace(
-                                                                '%ADDRESS%',
-                                                                data?.address
-                                                            )}
-                                                            target="_blank"
-                                                            className="inline-flex items-center text-xs font-bold leading-4"
-                                                        >
-                                                            <FiExternalLink />
-                                                            {
-                                                                BLOCKCHAIN_EXPLORERS[
-                                                                    chain.id
-                                                                ][0].name
-                                                            }
-                                                        </Link>
-                                                    )}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="truncate rounded-lg border border-ens-light-border bg-ens-light-background-secondary text-xs dark:border-ens-dark-border dark:bg-ens-dark-background-secondary"
-                                            style={{
-                                                fontFamily: 'monospace',
-                                            }}
-                                        >
-                                            {deployment.address || data.address}
-                                        </button>
-                                    </div>
-                                )
-                            )
-                        )}
-                    </div>
-                ))}
-            </div>
-        </div>
+        <CodeGroup title="Contracts" presets="chain">
+            {DEPLOYMENTS.map((chain) => (
+                <ChainDeployment
+                    chain={chain}
+                    preset={chain.slug}
+                    title={chain.name}
+                    key={chain.slug}
+                />
+            ))}
+        </CodeGroup>
     );
 };
 
