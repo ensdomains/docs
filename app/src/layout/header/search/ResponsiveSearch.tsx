@@ -2,7 +2,7 @@
 
 import { MagnifyingGlassSVG } from '@ensdomains/thorin';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FiLoader } from 'react-icons/fi';
 import useSWR from 'swr';
 
@@ -11,7 +11,6 @@ import { SearchResults } from './SearchResults';
 
 export const ResponsiveSearch = () => {
     const [tag, setTag] = useState('All');
-
     const [search, setSearch] = useState('');
     const { data, error, isLoading, isValidating } = useSWR(
         { search, tag },
@@ -20,8 +19,84 @@ export const ResponsiveSearch = () => {
             keepPreviousData: true,
         }
     );
-    const [select, setSelect] = useState(-1);
-    const showSearch = search.length > 0 && data;
+    const [select, setSelect] = useState(-2);
+
+    const tags = [
+        'All',
+        'Intro',
+        'Using ENS',
+        'Smart Contracts',
+        'Governance',
+        'Improvement Proposals',
+    ];
+
+    useEffect(() => {
+        if (select !== -1) return;
+
+        const element = document.querySelector(
+            '.filter-selected'
+        ) as HTMLElement;
+
+        if (element) {
+            element.focus();
+        }
+    }, [select]);
+
+    const selectReference = useRef(select);
+
+    selectReference.current = select;
+
+    const tagReference = useRef(tag);
+
+    tagReference.current = tag;
+
+    useEffect(() => {
+        const thateventlistener = (event) => {
+            if (selectReference.current !== -1) return;
+
+            const index = tags.indexOf(tagReference.current);
+
+            switch (event.key) {
+                case 'ArrowRight': {
+                    const realIndex = Math.min(index + 1, tags.length - 1);
+
+                    event.preventDefault();
+                    // Increment the index, except if it's the last element
+                    setTag(tags[realIndex]);
+                    const element = document.querySelectorAll('.filter-tag')[
+                        realIndex
+                    ] as HTMLElement;
+
+                    if (element) {
+                        element.focus();
+                    }
+
+                    break;
+                }
+                case 'ArrowLeft': {
+                    const realIndex = Math.max(index - 1, 0);
+
+                    event.preventDefault();
+                    setTag(tags[realIndex]);
+                    const element = document.querySelectorAll('.filter-tag')[
+                        realIndex
+                    ] as HTMLElement;
+
+                    if (element) {
+                        element.focus();
+                    }
+
+                    break;
+                }
+            }
+        };
+
+        document.addEventListener('keydown', thateventlistener);
+
+        return () => {
+            document.removeEventListener('keydown', thateventlistener);
+        };
+    }, []);
 
     return (
         <div
@@ -33,7 +108,7 @@ export const ResponsiveSearch = () => {
                     <input
                         type="text"
                         onClick={() => {
-                            setSelect(-1);
+                            setSelect(-2);
                         }}
                         className="w-full rounded-xl border border-ens-light-border py-2 pl-10 text-xl outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary dark:border-ens-dark-border"
                         placeholder="Search Content..."
@@ -65,22 +140,18 @@ export const ResponsiveSearch = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <div className="flex w-fit gap-2 whitespace-nowrap">
-                        {[
-                            'All',
-                            'Intro',
-                            'Using ENS',
-                            'Smart Contracts',
-                            'Governance',
-                            'Improvement Proposals',
-                        ].map((item, _index) => (
+                        {tags.map((item, _index) => (
                             <button
                                 className={clsx(
-                                    'tag',
-                                    tag === item ? 'tag-blue' : 'tag-grey'
+                                    'tag filter-tag',
+                                    tag === item
+                                        ? 'tag-blue filter-selected'
+                                        : 'tag-grey'
                                 )}
                                 key={_index}
                                 onClick={() => {
                                     setTag(item);
+                                    setSelect(-1);
                                 }}
                             >
                                 {item}
@@ -91,13 +162,12 @@ export const ResponsiveSearch = () => {
             </div>
             <div className="w-full">
                 <div className="w-full">
-                    {showSearch && (
-                        <SearchResults
-                            data={data}
-                            select={select}
-                            setSelect={setSelect}
-                        />
-                    )}
+                    <SearchResults
+                        data={data}
+                        select={select}
+                        search={search}
+                        setSelect={setSelect}
+                    />
                 </div>
             </div>
         </div>

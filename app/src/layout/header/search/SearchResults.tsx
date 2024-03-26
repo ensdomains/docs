@@ -1,7 +1,7 @@
 'use client';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 import { SearchResult } from './types/result';
 
@@ -9,18 +9,22 @@ export const SearchResults: FC<{
     data: SearchResult;
     select: any;
     setSelect: any;
-}> = ({ data, select, setSelect }) => {
+    search: string;
+}> = ({ data, select, setSelect, search }) => {
+    const dataReference = useRef(data);
+
+    dataReference.current = data;
+
     useEffect(() => {
         const thateventlistener = (event) => {
-            if (!data?.hits?.length) {
-                return;
-            }
-
             switch (event.key) {
                 case 'ArrowDown': {
                     event.preventDefault();
                     setSelect((select) => {
-                        return Math.min(select + 1, data.hits.length - 1);
+                        return Math.min(
+                            select + 1,
+                            dataReference.current?.hits.length - 1
+                        );
                     });
 
                     break;
@@ -28,7 +32,7 @@ export const SearchResults: FC<{
                 case 'ArrowUp': {
                     event.preventDefault();
                     setSelect((select) => {
-                        return Math.max(select - 1, -1);
+                        return Math.max(select - 1, -2);
                     });
 
                     break;
@@ -47,7 +51,7 @@ export const SearchResults: FC<{
     }, []);
 
     useEffect(() => {
-        if (select !== -1) {
+        if (select !== -2 && select !== -1) {
             const element = document.querySelector(
                 '#search-result-link-' + select
             );
@@ -55,7 +59,7 @@ export const SearchResults: FC<{
             if (element instanceof HTMLElement) {
                 element.focus();
             }
-        } else {
+        } else if (select === -2) {
             const element = document.querySelector('#search-input');
 
             if (element instanceof HTMLElement) {
@@ -64,15 +68,15 @@ export const SearchResults: FC<{
         }
     }, [select]);
 
-    useEffect(() => {
-        setSelect(-1);
-    }, [data.hits]);
+    if (search === '') {
+        return <div className="w-full"></div>;
+    }
 
     return (
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="flex w-full flex-col items-center py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
+                    <div className="flex w-full flex-col items-center rounded-b-xl py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
