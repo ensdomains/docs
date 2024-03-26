@@ -19,30 +19,38 @@ export const DEPLOYMENTS: Deployment[] = [
             {
                 name: 'Registry',
                 path: 'ENSRegistry',
+                srcPath: 'contracts/registry/ENSRegistry.sol',
             },
             {
                 name: 'Base Registrar',
                 path: 'BaseRegistrarImplementation',
+                srcPath:
+                    'contracts/ethregistrar/BaseRegistrarImplementation.sol',
             },
             {
                 name: 'ETH Registrar Controller',
                 path: 'ETHRegistrarController',
+                srcPath: 'contracts/ethregistrar/ETHRegistrarController.sol',
             },
             {
                 name: 'DNS Registrar',
                 path: 'DNSRegistrar',
+                srcPath: 'contracts/dnsregistrar/DNSRegistrar.sol',
             },
             {
                 name: 'Reverse Registrar',
                 path: 'ReverseRegistrar',
+                srcPath: 'contracts/reverseRegistrar/ReverseRegistrar.sol',
             },
             {
                 name: 'Name Wrapper',
                 path: 'NameWrapper',
+                srcPath: 'contracts/wrapper/NameWrapper.sol',
             },
             {
                 name: 'Public Resolver',
                 path: 'PublicResolver',
+                srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
         ],
     },
@@ -54,30 +62,38 @@ export const DEPLOYMENTS: Deployment[] = [
             {
                 name: 'Registry',
                 path: 'ENSRegistry',
+                srcPath: 'contracts/registry/ENSRegistry.sol',
             },
             {
                 name: 'Base Registrar',
                 path: 'BaseRegistrarImplementation',
+                srcPath:
+                    'contracts/ethregistrar/BaseRegistrarImplementation.sol',
             },
             {
                 name: 'ETH Registrar Controller',
                 path: 'ETHRegistrarController',
+                srcPath: 'contracts/ethregistrar/ETHRegistrarController.sol',
             },
             {
                 name: 'DNS Registrar',
                 path: 'DNSRegistrar',
+                srcPath: 'contracts/dnsregistrar/DNSRegistrar.sol',
             },
             {
                 name: 'Reverse Registrar',
                 path: 'ReverseRegistrar',
+                srcPath: 'contracts/reverseRegistrar/ReverseRegistrar.sol',
             },
             {
                 name: 'Name Wrapper',
                 path: 'NameWrapper',
+                srcPath: 'contracts/wrapper/NameWrapper.sol',
             },
             {
                 name: 'Public Resolver',
                 path: 'PublicResolver',
+                srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
         ],
     },
@@ -89,30 +105,38 @@ export const DEPLOYMENTS: Deployment[] = [
             {
                 name: 'Registry',
                 path: 'ENSRegistry',
+                srcPath: 'contracts/registry/ENSRegistry.sol',
             },
             {
                 name: 'Base Registrar',
                 path: 'BaseRegistrarImplementation',
+                srcPath:
+                    'contracts/ethregistrar/BaseRegistrarImplementation.sol',
             },
             {
                 name: 'ETH Registrar Controller',
                 path: 'ETHRegistrarController',
+                srcPath: 'contracts/ethregistrar/ETHRegistrarController.sol',
             },
             {
                 name: 'DNS Registrar',
                 path: 'DNSRegistrar',
+                srcPath: 'contracts/dnsregistrar/DNSRegistrar.sol',
             },
             {
                 name: 'Reverse Registrar',
                 path: 'ReverseRegistrar',
+                srcPath: 'contracts/reverseRegistrar/ReverseRegistrar.sol',
             },
             {
                 name: 'Name Wrapper',
                 path: 'NameWrapper',
+                srcPath: 'contracts/wrapper/NameWrapper.sol',
             },
             {
                 name: 'Public Resolver',
                 path: 'PublicResolver',
+                srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
         ],
     },
@@ -124,30 +148,38 @@ export const DEPLOYMENTS: Deployment[] = [
             {
                 name: 'Registry',
                 path: 'ENSRegistry',
+                srcPath: 'contracts/registry/ENSRegistry.sol',
             },
             {
                 name: 'Base Registrar',
                 path: 'BaseRegistrarImplementation',
+                srcPath:
+                    'contracts/ethregistrar/BaseRegistrarImplementation.sol',
             },
             {
                 name: 'ETH Registrar Controller',
                 path: 'ETHRegistrarController',
+                srcPath: 'contracts/ethregistrar/ETHRegistrarController.sol',
             },
             {
                 name: 'DNS Registrar',
                 path: 'DNSRegistrar',
+                srcPath: 'contracts/dnsregistrar/DNSRegistrar.sol',
             },
             {
                 name: 'Reverse Registrar',
                 path: 'ReverseRegistrar',
+                srcPath: 'contracts/reverseRegistrar/ReverseRegistrar.sol',
             },
             {
                 name: 'Name Wrapper',
                 path: 'NameWrapper',
+                srcPath: 'contracts/wrapper/NameWrapper.sol',
             },
             {
                 name: 'Public Resolver',
                 path: 'PublicResolver',
+                srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
         ],
     },

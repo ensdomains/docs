@@ -17,6 +17,7 @@ export type DeploymentData = {
     name: string;
     address?: string;
     path?: string;
+    srcPath?: string;
     branch?: string;
 };
 
