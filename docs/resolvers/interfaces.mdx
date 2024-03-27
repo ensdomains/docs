@@ -1,5 +1,6 @@
 import { WIP } from "@/components/wip/WIP";
 import { resolver_methods } from "#/data/resolver";
+import { h2, h3, h4 } from '@/components/mdx/heading/h2';
 
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
@@ -45,7 +46,7 @@ function supportsInterface(bytes4 interfaceID) external pure returns (bool)
     methods.map((method) => {
         return (
             <div>
-                <h2>{method.usage}</h2>
+                <h2 id={method.interface}>{method.usage}</h2>
                     <CodeGroup title="Function">
                         <code>{method.name}</code>
                     </CodeGroup>

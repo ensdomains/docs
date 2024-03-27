@@ -68,7 +68,7 @@ export const navigation: SectionData[] = [
         name: 'Using ENS',
         href: '/web',
         icon: '📖',
-        activePattern: /^\/web(\/.*)?/,
+        activePattern: /^\/d?web(\/.*)?/,
         links: [
             {
                 title: '',
@@ -137,6 +137,11 @@ export const navigation: SectionData[] = [
                     {
                         title: 'Subgraph',
                         href: '/web/subgraph',
+                    },
+                    {
+                        title: 'Decentralized Web',
+                        href: '/dweb/intro',
+                        wip: true,
                     },
                     // {
                     //     title: 'Sign In With Ethereum (SIWE)',
