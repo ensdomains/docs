@@ -27,7 +27,7 @@ export const NameLookupDemo: FC = () => {
             <div className="w-full">
                 <input
                     className="border-ens-light-border dark:border-ens-dark-border input w-full rounded-md border pl-2"
-                    placeholder="Enter name or address"
+                    placeholder="Enter name or address..."
                     onChange={(event) => setTemporaryName(event.target.value)}
                     value={temporaryName}
                 />
