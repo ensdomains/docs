@@ -5,6 +5,8 @@ import { FC, useState } from 'react';
 import { BiLoaderAlt } from 'react-icons/bi';
 import { useDebounce } from 'use-debounce';
 
+import { Button } from '@/components/Button';
+
 import { useProfile } from './logic/useProfile';
 import { Chains } from './parts/chains';
 import { Records } from './parts/records';
@@ -16,17 +18,16 @@ export const NameLookupDemo: FC = () => {
     const { data, isLoading, error } = useProfile({ name });
 
     return (
-        <div className="mx-auto flex gap-2 p-4 text-ens-light-text-primary dark:text-ens-dark-text-primary">
-            <div className="max-w-xs">
-                <div>Find user</div>
+        <div className="text-ens-light-text-primary dark:text-ens-dark-text-primary mx-auto space-y-2 p-4">
+            <div className="w-full">
                 <input
-                    className="w-full rounded-md border border-ens-light-border pl-2 dark:border-ens-dark-border"
+                    className="border-ens-light-border dark:border-ens-dark-border input w-full rounded-md border pl-2"
                     placeholder="luc.eth"
                     onChange={(event) => setTemporaryName(event.target.value)}
                     value={temporaryName}
                 />
             </div>
-            <div className="mt-2 flex h-fit flex-col gap-1.5 rounded-lg border border-ens-light-border p-4 dark:border-ens-dark-border">
+            <div className="border-ens-light-border dark:border-ens-dark-border not-prose mt-2 flex h-fit flex-col gap-1.5 rounded-lg border p-4">
                 {isLoading && <BiLoaderAlt className="animate-spin" />}
                 {!isLoading && (
                     <>
@@ -34,15 +35,33 @@ export const NameLookupDemo: FC = () => {
                         {!data && (
                             <div>
                                 <div>Unknown Name 🤷‍♀️</div>
-                                <div>
-                                    Try <b>luc.eth</b>
+                                <div className="flex gap-2">
+                                    Try{' '}
+                                    <ul>
+                                        {[
+                                            'luc.eth',
+                                            'irc.eth',
+                                            'domico.eth',
+                                        ].map((name) => (
+                                            <li>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => {
+                                                        setTemporaryName(name);
+                                                    }}
+                                                >
+                                                    <b>{name}</b>
+                                                </Button>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
                         )}
                         {data && (
                             <>
                                 <div className="flex gap-2">
-                                    <div className="size-8 overflow-hidden rounded-full bg-ens-light-blue-100">
+                                    <div className="bg-ens-light-blue-100 size-8 overflow-hidden rounded-full">
                                         {data?.avatar && (
                                             <img
                                                 src={data.avatar}
