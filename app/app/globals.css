@@ -397,3 +397,16 @@ label.label {
 .card1::scrollbar {
     @apply rounded-tr-xl overflow-hidden;
 }
+
+.load-width {
+    animation: load-width 1s ease-out forwards;
+}
+
+@keyframes load-width {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 90%;
+    }
+}

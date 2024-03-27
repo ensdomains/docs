@@ -34,7 +34,7 @@ export const Records: FC<{ records?: Record<RecordType, string> }> = ({
                 .sort((a, b) => b.length - a.length)
                 .map((record) => (
                     <Fragment key={record}>
-                        <div>
+                        <div className="py-1">
                             {recordIcons[record] ? (
                                 <div className="flex items-center gap-0.5">
                                     <div className="flex size-4 items-center justify-center">
