@@ -22,14 +22,12 @@ export const NameLookupDemo: FC = () => {
         !isLoading && ((data && data['status'] == 404) || !data);
     const isOtherError = !isLoading && error && data['status'] !== 404;
 
-    console.log({ isValidName, isUnknownName, isOtherError });
-
     return (
         <div className="text-ens-light-text-primary dark:text-ens-dark-text-primary mx-auto space-y-2 p-4">
             <div className="w-full">
                 <input
                     className="border-ens-light-border dark:border-ens-dark-border input w-full rounded-md border pl-2"
-                    placeholder="luc.eth"
+                    placeholder="Enter name or address"
                     onChange={(event) => setTemporaryName(event.target.value)}
                     value={temporaryName}
                 />

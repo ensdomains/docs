@@ -6,7 +6,7 @@ export const rawFetchEnstateProfile = async (
     name: string,
     instance: string = ENSTATE_PUBLIC_INSTANCE
 ): Promise<ENStateProfile> => {
-    const request = await fetch(instance + '/n/' + name);
+    const request = await fetch(instance + '/u/' + name);
 
     return request.json() as Promise<ENStateProfile>;
 };
