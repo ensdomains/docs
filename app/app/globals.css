@@ -399,7 +399,7 @@ label.label {
 }
 
 .load-width {
-    animation: load-width 1s ease-out;
+    animation: load-width 1s ease-out forwards;
 }
 
 @keyframes load-width {
@@ -407,6 +407,6 @@ label.label {
         width: 0;
     }
     100% {
-        width: 100%;
+        width: 90%;
     }
 }
