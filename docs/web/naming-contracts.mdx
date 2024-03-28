@@ -1,0 +1,84 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '⚙️',
+    contributors: []
+};
+
+# Naming Contracts
+
+For most regular wallets you can set your primary name from within the [Manager App](https://ens.domains).
+However also smart contracts can have names, and even better they can have primary names.
+
+```
+governance.uniswap.eth
+```
+
+In order for you to manage the primary name of your smart contract, you need to own the [reverse node](/terminology#reverse-node) for the contract address.
+There are several ways of doing this, depending on if you are actively developing your contract or if it is already deployed.
+
+## New Contracts
+
+If you are developing a new contract, and you want to be able to easily set the ENS Primary Name for it.
+
+### ReverseClaimer.sol
+
+There is a simple drop-in module called the [ReverseClaimer.sol](https://github.com/ensdomains/ens-contracts/blob/master/contracts/reverseRegistrar/ReverseClaimer.sol)
+
+```solidity
+contract MyContract is ReverseClaimer {
+    constructor (ENS ens) ReverseClaimer(ens, msg.sender) {
+        // ...
+    }
+}
+```
+
+When you deploy your contract it will automatically claim the reverse node for that contract address.
+
+### Ownable (OpenZeppelin) {{ id: 'ownable' }}
+
+You can can also choose to have your smart-contract implement [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) from OpenZeppelin.
+The ReverseRegistrar supports the Ownable interface and will let the `Owner` set a Primary name.
+
+### Manually
+
+```solidity
+//SPDX-License-Identifier: MIT
+pragma solidity >=0.8.17 <0.9.0;
+
+import {ENS} from "../registry/ENS.sol";
+import {IReverseRegistrar} from "../reverseRegistrar/IReverseRegistrar.sol";
+
+contract ReverseClaimer {
+    bytes32 constant ADDR_REVERSE_NODE =
+        0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
+
+    constructor(ENS ens, address claimant) {
+        IReverseRegistrar reverseRegistrar = IReverseRegistrar(ens.owner(ADDR_REVERSE_NODE));
+        reverseRegistrar.claim(claimant);
+    }
+}
+```
+
+You can read more about setting a primary name for a contract in on the [support page](https://support.ens.domains/en/articles/7902626-set-primary-name-for-contract).
+
+## Existing Contracts
+
+If your contract is already deployed you might still be able to set a name for it.
+If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, you can use the tool above to set a name for it.
+
+### Safe, Multisig & DAO
+
+If your contract is a Safe, Multisig, DAO, or has a function that can send arbitrary ETH calls, you can use the [ReverseRegistrar](/registry/reverse) contract directly to set a name for it.
+You might even be able to use the [ENS Manager App](https://ens.app/) inside of your safe app to set a primary name.
+
+## Setting a name for your contract
+
+Once you have granted yourself ownership of the contract's reverse node you can set the name for the contract.
+You can do so by hitting the `setNameForAddr` function on the [Reverse Registrar](/registry/reverse).
+
+From your contract you can execute `setName` function on the [Reverse Registrar](/registry/reverse)
+
+<LiveDemo id="reversesetnamefordemo" />

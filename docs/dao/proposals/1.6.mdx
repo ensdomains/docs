@@ -1,0 +1,51 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: "This proposal is for the funding and establishment of a community-run OIDC Identity Provider Server for Sign-In with Ethereum, maintained by Spruce.",
+    emoji: '📗',
+    contributors: [
+        // Gregory Rocco
+        'obstropolos',
+        // Wayne Chang
+        'wyc'
+    ],
+    proposal: {
+        snapshot: '0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16',
+        tally: '82659277767818009782194204088226418907972756681918239480374274857360772298879',
+        type: 'executable'
+    }
+};
+
+# [EP1.6] [Executable] A DAO-Governed Identity Server
+
+_Note: This was previously numbered EP10._
+
+## Abstract
+
+In our research, we found that many services wanted to integrate the Sign-In with Ethereum workflow but did not have the ability to add new passwordless authentication methods to their installations.
+
+We also learned that most services already support OpenID Connect, and were open to adding a new Identity Provider that supported the SIWE workflow. By meeting those services where they are today, we can provide a pragmatic stepping stone towards true decentralization, with an upgrade path to direct authentication.
+
+To ensure adherence to the vision, it's critical that we collaborate with the ENS DAO on hosting and maintenance of this identity server, ensuring the identity server's governance ultimately resides with the community, whom we believe will always put users first. This would be the world’s first DAO-hosted, transparent identity server.
+
+## Rationale
+
+The ENS service and community would benefit from increased adoption of Sign-In with Ethereum due to the enablement of organizations to use ENS as a core touchpoint for a user’s basic identity and information (via ENS profiles).
+
+Additionally, we believe that a community server could be governed by a credibly neutral party that Ethereum users accept as an intermediary. We think a non-profit or DAO are the right structures to help govern such a server, which is why we would like to collaborate with the ENS DAO on hosting and maintenance.
+
+## Specification and Proposal Request
+
+* **Establish a Subgroup in the Ecosystem Working Group: Community Managed Identity Server**
+  * **$250,000** allocated from the DAO to the Ecosystem WG to fund this Subgroup.
+    * **$75,000** from the allocated budget will be in place for community contributions related to the Subgroup, including grants for development, evangelism, and retroactive rewards for SIWE-related efforts.
+    * **$175,000** from the allocated budget will go towards Spruce's maintenance contract (see below). Paid 25% upon execution, and then an additional 25% every 3 months.
+  * This Subgroup will support the administration and maintenance of a DAO-run Identity Server for Sign-In with Ethereum. This subgroup will also serve as a support system to help onboard organizations, and evangelize Sign-In with Ethereum to allow users to control their identifiers and use ENS profiles as a base identity.
+  * An important part of duties this group will include creating training, onboarding, and maintenance materials for managing the server on a specified cloud account.
+  * Additionally, the group will be responsible for providing updates to the broader community on the health of the server.
+  * Initial lead: Rocco from Spruce, while continuing to add interested parties to the group for good governance.
+* **A 12-month maintenance contract awarded to Spruce for the continuous monitoring, maintaining, and improving of the deployed Identity Server.**
+  * Spruce will help host a [`siwe-oidc`](https://github.com/spruceid/siwe-oidc) implementation in a lightweight fashion, using a well-known infrastructure provider ultimately administered by the Subgroup.
+    * Spruce will also be responsible for the deployment, and continuous monitoring, maintenance, and improvements on the server throughout the duration of the contract.
+  * If the DAO votes to end the contract funding will be returned against the remaining days of the year and we will provide sufficient training for administrators to transfer those duties to a new organization.
+  * The server is expected to be live within 60 days of this proposal being accepted, assuming that access to the necessary systems and people is provided on a timely basis.
+  * The 1-year contract begins when this proposal is accepted, and there will not be additional setup fees even if there are increased coordination costs to get the service running.
