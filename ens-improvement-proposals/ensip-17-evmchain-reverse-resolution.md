@@ -72,7 +72,7 @@ An example of why this could be confusing:
 
 Dapp is on Arbitrum and uses mainnet primary ENS name. It resolves the ENS name's mainnet address and uses that to verify the reverse record is correct. It also uses the mainnet address to allow in-app transfers.
 
-Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user in unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
+Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user is unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
 
 If we mandated that the address cannot use `addr(node, 60)`, but only the address of the chain in question, it would be possible to use mainnet as a backup. However the fact remains that you would still need to claim and set your Primary ENS name on mainnet, and the possibility for confusion seem to outweigh the benefits of using mainnet (high gas) as a catch-all back up for other L2 EVM chains (low gas). Additionally this would only be useful for EVM-compatible chains and would not benefit non-EVM L2s that have a different address format. 
 
