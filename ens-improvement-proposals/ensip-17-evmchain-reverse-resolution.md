@@ -78,7 +78,7 @@ If we mandated that the address cannot use `addr(node, 60)`, but only the addres
 
 ## Being explicit about default Primary ENS Name
 
-To make things explicit we will allow the signing of a message to confirm that the address in question would like to use mainnet or another network as fallback. This would either resolve directly on mainnet. Defaults would only be applicable to EoAs that can sign a message. This is because smart contract accounts would not be able to reliably set a default on all chains.
+To make things explicit we will require the signing of a message to confirm that the address in question would like to use mainnet or another network as fallback. This would either resolve directly on mainnet. Defaults would only be applicable to EoAs that can sign a message. This is because smart contract accounts would not be able to reliably set a default on all chains.
 
 ### Setting default
 
