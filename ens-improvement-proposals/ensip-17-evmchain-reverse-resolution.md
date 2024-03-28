@@ -38,7 +38,7 @@ Reverse resolution has been in use since ENS's inception, however at the time Et
 3) If none is found, it SHOULD check check mainnet [address].default.reverse.
 4) If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id of the user.
 
-Note: The dapp MUST NOT use the reverse record set for mainnet even if the Primary ENS name has not been set on the target chain, and must instead show the address.
+Note: The dapp MUST NOT use the reverse record set for mainnet even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set.
 
 ### Resolving an avatar by a dapp on L2
 
