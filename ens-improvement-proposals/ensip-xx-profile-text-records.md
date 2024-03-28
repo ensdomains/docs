@@ -156,13 +156,6 @@ When creating a profile service key record, the value should be **void of option
 
 In the case that the value is always displayed in a certain format, the formatting may be kept. However, any parsing or processing done on said value should attempt to be compatible with values that do not have the formatting applied.
 
-In addition to profile service keys based on domains, there are exemptions that may be applicable to any service that does not have a specific associated domain (i.e. a decentralised service). For an exemption to apply, it must be explicitly listed here, or added retroactively by a future ENSIP.
-
-Initial exempted profile service keys are as follows:
-
-- `farcaster`
-- `lens`
-
 #### Image files
 
 When **setting** an image for an avatar or header, it is **strongly recommended** to limit the file size to an absolute maximum of 10MB. The image being set should be validated against this limit, whether it is a URL, or an NFT. Ideally, if creating an image to be set on behalf of the user, the file size should be limited to 2MB. Additionally, maintainers of image endpoints should support dimensions of images to be limited via query string `?width={width}&height={height}` wherever possible.
