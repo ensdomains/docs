@@ -680,6 +680,10 @@ export const navigation: SectionData[] = [
                         title: '16 - Offchain Metadata',
                         href: '/ensip/16',
                     },
+                    {
+                        title: '18 - Profile Text Records',
+                        href: '/ensip/18',
+                    },
                 ],
             },
         ],
