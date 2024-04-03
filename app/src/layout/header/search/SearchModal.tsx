@@ -1,5 +1,7 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import ReactModal from 'react-modal';
 
@@ -11,6 +13,9 @@ export const SearchModal: FC<{ open: boolean; onClose: () => void }> = ({
     onClose,
     open,
 }) => {
+    const router = useRouter();
+    const pathname = usePathname();
+
     return (
         <ReactModal
             isOpen={open}
@@ -19,6 +24,7 @@ export const SearchModal: FC<{ open: boolean; onClose: () => void }> = ({
             }}
             onRequestClose={() => {
                 onClose();
+                router.replace(pathname);
             }}
             onAfterClose={() => {
                 document.querySelector('html').style.overflow = 'auto';
