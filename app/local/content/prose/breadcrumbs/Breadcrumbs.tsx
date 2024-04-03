@@ -79,31 +79,35 @@ export const Breadcrumbs = () => {
                 name: 'Home',
                 item: '/',
             },
-            ...crumbs.map((crumb, index): ListItem => {
-                if (isSectionData(crumb)) {
-                    return {
-                        '@type': 'ListItem',
-                        position: index + 2,
-                        name: crumb.name,
-                        item: crumb.href,
-                    };
-                }
+            ...crumbs
+                .map((crumb, index): ListItem => {
+                    if (isSectionData(crumb)) {
+                        return {
+                            '@type': 'ListItem',
+                            position: index + 2,
+                            name: crumb.name,
+                            item: 'https://docs.ens.domains' + crumb.href,
+                        };
+                    }
 
-                if (isRouteLink(crumb)) {
+                    if (isRouteLink(crumb)) {
+                        return {
+                            '@type': 'ListItem',
+                            position: index + 2,
+                            name: crumb.title,
+                            item: 'https://docs.ens.domains' + crumb.href,
+                        };
+                    }
+
                     return {
                         '@type': 'ListItem',
                         position: index + 2,
                         name: crumb.title,
-                        item: crumb.href,
                     };
-                }
-
-                return {
-                    '@type': 'ListItem',
-                    position: index + 2,
-                    name: crumb.title,
-                };
-            }),
+                })
+                .filter((a) => {
+                    return !!a.name;
+                }),
         ],
     };
 
