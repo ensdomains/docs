@@ -16,27 +16,27 @@ export const metadata = {
     description: 'Documentation for the ENS protocol.',
 };
 
+type CustomSearchAction = SearchAction & {
+    'query-input': PropertyValueSpecification | String;
+};
+
+const searchAction: CustomSearchAction = {
+    '@type': 'SearchAction',
+    target: 'https://docs.ens.domains?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+};
+
+const jsonLD: WithContext<WebSite> = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: 'https://docs.ens.domains',
+    name: metadata.title,
+    description: metadata.description,
+    potentialAction: searchAction,
+};
+
 export default function RootLayout(properties) {
     const { children } = properties;
-
-    type CustomSearchAction = SearchAction & {
-        'query-input': PropertyValueSpecification | String;
-    };
-
-    const searchAction: CustomSearchAction = {
-        '@type': 'SearchAction',
-        target: 'https://docs.ens.domains?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
-    };
-
-    const jsonLD: WithContext<WebSite> = {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        url: 'https://docs.ens.domains',
-        name: metadata.title,
-        description: metadata.description,
-        potentialAction: searchAction,
-    };
 
     return (
         <html lang="en" suppressHydrationWarning className="not-system">
