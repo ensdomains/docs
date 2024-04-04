@@ -76,7 +76,7 @@ export const SearchResults: FC<{
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center py-8 text-center">
+                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center rounded-b-2xl py-8 text-center">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
