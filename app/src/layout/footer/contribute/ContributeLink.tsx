@@ -19,10 +19,13 @@ export const ContributeLink: FC<{ url?: string }> = ({ url }) => {
         return <></>;
     }
 
+    // Get current git branch
+    const branch = process.env.CF_PAGES_BRANCH || 'master';
+
     return (
         <a
-            href={`https://github.com/${ROOT_REPO}/edit/master${url}`}
-            className="flex items-center gap-2 text-xs text-ens-light-blue-primary dark:text-ens-dark-blue-primary"
+            href={`https://github.com/${ROOT_REPO}/edit/${branch}${url}`}
+            className="text-ens-light-blue-primary dark:text-ens-dark-blue-primary flex items-center gap-2 text-xs"
             target="_blank"
             rel="nofollow"
         >
