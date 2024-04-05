@@ -19,8 +19,7 @@ export const ContributeLink: FC<{ url?: string }> = ({ url }) => {
         return <></>;
     }
 
-    // Get current git branch
-    const branch = process.env.CF_PAGES_BRANCH || 'master';
+    const branch = 'master';
 
     return (
         <a
