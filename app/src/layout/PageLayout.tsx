@@ -32,8 +32,7 @@ export const Layout: FC<{
         '@type': 'Article',
         headline: mdxProperties.meta.title,
         description: mdxProperties.meta.description,
-        // keywords
-        // image: mdxProperties.meta.,
+        image: 'https://docs.ens.domains/opengraph' + programmedSlug + '.png',
         author: mdxProperties.meta.contributors?.map((author) => ({
             '@type': 'Person',
             name: author,
