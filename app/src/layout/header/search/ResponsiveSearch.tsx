@@ -2,7 +2,7 @@
 
 import { MagnifyingGlassSVG } from '@ensdomains/thorin';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useRef, useState } from 'react';
 import { FiLoader } from 'react-icons/fi';
 import useSWR from 'swr';
@@ -135,7 +135,11 @@ const Tags: FC<{
 
 export const ResponsiveSearch = () => {
     const [tag, setTag] = useState('All');
-    const [search, setSearch] = useState('');
+    const searchParameters = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const [search, setSearch] = useState(searchParameters.get('q') || '');
 
     const { data, error, isLoading, isValidating } = useSWR(
         { search, tag },
@@ -147,8 +151,6 @@ export const ResponsiveSearch = () => {
 
     const [select, setSelect] = useState(-2);
     const showSearch = search.length > 0 && data;
-
-    const router = useRouter();
 
     useEvent('keydown', (event) => {
         switch (event.key) {
@@ -202,8 +204,14 @@ export const ResponsiveSearch = () => {
                         // eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus={true}
                         id="search-input"
+                        value={search}
                         onChange={(event) => {
                             setSearch(event.target.value);
+                            router.replace(
+                                pathname +
+                                    '?q=' +
+                                    encodeURIComponent(event.target.value || '')
+                            );
                         }}
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
@@ -214,10 +222,10 @@ export const ResponsiveSearch = () => {
                                 }
                             }
                         }}
+                        ref={inputReference}
                         onFocus={() => {
                             setSelect(-2);
                         }}
-                        ref={inputReference}
                     />
                     <div className="absolute inset-y-0 left-3 flex h-full items-center text-neutral-300">
                         <MagnifyingGlassSVG />

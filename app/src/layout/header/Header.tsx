@@ -6,7 +6,7 @@ import { useTransform } from 'framer-motion';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { forwardRef } from 'react';
+import { forwardRef, Suspense } from 'react';
 import { FaGithub } from 'react-icons/fa';
 
 import { ClientOnly } from '@/ClientOnly';
@@ -90,13 +90,17 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                         )}
                     />
                     <div className="mx-auto w-full max-w-lg">
-                        <Search />
+                        <Suspense>
+                            <Search />
+                        </Suspense>
                     </div>
                     <div className="float-right flex h-full items-center gap-4">
                         <ClientOnly child={() => <ThemeSwitcher />} />
                         <div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />
                         <div className="flex gap-4">
-                            <MobileSearch />
+                            <Suspense>
+                                <MobileSearch />
+                            </Suspense>
                             <Link
                                 href="https://github.com/ensdomains/docs"
                                 target="_blank"
