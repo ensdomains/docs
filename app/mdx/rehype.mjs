@@ -135,6 +135,7 @@ const rehypeShikiFromHighlighter = function (highlighter, options) {
         });
     };
 };
+
 const rehypeShiki = function (options = {}) {
     const themeNames = (
         'themes' in options ? Object.values(options.themes) : [options.theme]
