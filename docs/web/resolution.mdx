@@ -1,13 +1,14 @@
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: '',
-    emoji: '🔍',
-    contributors: [
-        'lucemans'
-    ]
+description: 'Learn how to resolve blockchain addresses from human-readable names with ENS.',
+emoji: '🔍',
+contributors: [
+'lucemans',
+'gskril'
+]
 };
 
-# Lookup Address
+# Address Lookup
 
 The ENS Protocol aims to make it easy to use Ethereum.
 It does this by providing a simple way to use human-readable names instead of long machine-readable addresses.
@@ -17,9 +18,9 @@ It does this by providing a simple way to use human-readable names instead of lo
 The goal here is to take a name, such as `nick.eth`, and convert it to an address, such as `0x225f137127d9067788314bc7fcc1f36746a3c3B5`.
 
 <div className="card1 px-8 py-4 flex justify-center gap-2">
-    <span>luc.eth</span>
-    <span>➡️</span>
-    <span>0x225...c3B5</span>
+  <span>luc.eth</span>
+  <span>➡️</span>
+  <span>0x225...c3B5</span>
 </div>
 
 The simplest thing you can do is start with a name, and resolve it to an address.
@@ -29,29 +30,29 @@ Think of places where users can enter names, such as sending transactions, chatt
 <CodeGroup title="Forward Resolution">
 
 ```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsAddress', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-address' }}
-import { useAccount, useEnsName, useEnsAvatar } from "wagmi";
+import { useAccount, useEnsName, useEnsAvatar } from 'wagmi'
 
 export const Name = () => {
-    const { data: ensName } = useEnsAddress({
-        address: "luc.eth", // The name to lookup
-        chainId: 1, // The chainId to lookup on
-    });
+  const { data: ensName } = useEnsAddress({
+    address: 'luc.eth', // The name to lookup
+    chainId: 1, // The chainId to lookup on
+  })
 
-    return <div>{ensName || address}</div>;
-};
+  return <div>{ensName || address}</div>
+}
 ```
 
 ```ts {{ title: 'Ethers.js (TS)', variant: 'ethers-v5' }}
-const address = await provider.lookupAddress("luc.eth");
+const address = await provider.lookupAddress('luc.eth')
 ```
 
 ```ts {{ title: 'Viem (TS)', variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
-import { normalize } from "viem/ens";
-import { publicClient } from "./client";
+import { normalize } from 'viem/ens'
+import { publicClient } from './client'
 
 const ensAddress = await publicClient.getEnsAddress({
-    name: normalize("luc.eth"),
-});
+  name: normalize('luc.eth'),
+})
 ```
 
 ```rust {{ variant: 'ethers-rs' }}
@@ -83,15 +84,15 @@ func main() {
 
 ```ts {{ title: 'Alchemy', variant: 'alchemy-sdk', link: "https://docs.alchemy.com/docs/how-to-resolve-ewallet-given-ens" }}
 // Setup: npm install alchemy-sdk
-import { Alchemy, Network } from "alchemy-sdk";
+import { Alchemy, Network } from 'alchemy-sdk'
 
 const config = {
-    apiKey: "<-- ALCHEMY APP API KEY -->",
-    network: Network.ETH_MAINNET,
-};
-const alchemy = new Alchemy(config);
+  apiKey: '<-- ALCHEMY APP API KEY -->',
+  network: Network.ETH_MAINNET,
+}
+const alchemy = new Alchemy(config)
 
-alchemy.core.resolveName("vitalik.eth").then(console.log);
+alchemy.core.resolveName('vitalik.eth').then(console.log)
 ```
 
 ```ts {{ variant: 'ensjs', link: 'https://github.com/ensdomains/ensjs-v3/blob/feat/viem/docs/basics/fetching-a-profile.md' }}
@@ -137,65 +138,70 @@ To learn what happens under the hood when you do a forward lookup, read the [res
 
 ## Multi-Chain Addresses (BTC, LTC, etc) {{ navtitle: 'Multi-Chain Addresses', label: 'Multi-Chain', id: 'multi-chain', tag: '', }}
 
-ENS Names aren't just limited to storing Ethereum Addresses,
-Names can be queried with any [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) coin type,
-meaning you can also get addresses such as BTC, LTC. In addition to the above, Ethereum Chain specific addresses can also be queried using [ENSIP-11](/ensip/11).
+ENS Names aren't just limited to storing Ethereum addresses.
+Any blockchain address (BTC, LTC, SOL, etc.) can be queried by [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) coin type or a value derived from an EVM Chain ID (specified in [ENSIP-11](/ensip/11)). This includes Ethereum L2 networks such as OP Mainnet and Base.
+
+For EVM Chains, always use its [ENSIP-11](/ensip/11) coin type, irrespective of being included in SLIP-0044 (like Ether Classic).
 
 The standardization of multichain addresses was first introduced in [ENSIP-9](/ensip/9), and also [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304).
 
 <CodeGroup title="Multichain Address Lookup">
 
 ```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi' }}
-import { useEnsMultichainAddress } from "ens-tools/react";
+import { useEnsMultichainAddress } from 'ens-tools/react'
 
 export const BitcoinAddress = () => {
-    const { address: btcAddress, chainId } = useEnsMultichainAddress({
-        name: "luc.eth",
-        coinType: 0, // BTC
-    });
+  const { address: btcAddress, chainId } = useEnsMultichainAddress({
+    name: 'luc.eth',
+    coinType: 0, // BTC
+  })
 
-    return <div>BTC: {btcAddress}</div>;
-};
+  return <div>BTC: {btcAddress}</div>
+}
 ```
 
 ```ts {{ title: 'Viem (TS)', variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html#cointype-optional', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
 const ensName = await publicClient.getEnsAddress({
-    name: normalize("wagmi-dev.eth"),
-    coinType: 0, // BTC
-});
+  name: normalize('wagmi-dev.eth'),
+  coinType: 0, // BTC
+})
 ```
 
 ```ts {{ title: 'Ethers.js (TS)', variant: 'ethers-v5', link: 'https://docs.ethers.org/v5/api/providers/provider/#EnsResolver' }}
-const resolver = await provider.getResolver("luc.eth");
-const btcAddress = await resolver?.getAddress(0);
+const resolver = await provider.getResolver('luc.eth')
+const btcAddress = await resolver?.getAddress(0)
 ```
 
 </CodeGroup>
 
-| Chain / Network | ID  |
-| --------------- | --- |
-| BTC             | 0   |
-| LTC             | 2   |
-| DOGE            | 3   |
-| Solana          | 501 |
-| Optimism        | 614 |
-| Polygon (Matic) | 966 |
+| Network      | Coin Type  |
+| ------------ | ---------- |
+| Bitcoin      | 0          |
+| Litecoin     | 2          |
+| Dogecoin     | 3          |
+| Ethereum     | 60         |
+| Solana       | 501        |
+| OP Mainnet   | 2147483658 |
+| Polygon      | 2147483785 |
+| Base         | 2147492101 |
+| Arbitrum One | 2147525809 |
 
 <div className="w-full flex items-center justify-center gap-1">
-    ... and many many more following
-    [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
-    and [ENSIP-11](/ensip/11)
+  ... and many many more following
+  [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) and
+  [ENSIP-11](/ensip/11)
 </div>
 
 ### Decoding Address Hashes
 
-Most libraries provide address decoding, however if you are reading these records raw values and would like to decode them to their multicoin appropriate address format, we recommend you read [ENSIP-9](/ensip/9), [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-11](/ensip/11).
+ENS resolvers store all addresses in bytes, which may have to be encoded to their respective address formats. To do this, we recommend using the [@ensdomains/address-encoder](https://www.npmjs.com/package/@ensdomains/address-encoder) package.
 
 ## Advanced
 
 <EmbedLink
-    href="/resolution"
-    title="In-Depth Resolution"
-    tag="Advanced"
-    description="To learn more about the resolution process, please read the Resolution section."
+  href="/resolution"
+  title="In-Depth Resolution"
+  tag="Advanced"
+  description="To learn more about the resolution process, please read the Resolution section."
 />
+```
