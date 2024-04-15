@@ -18,9 +18,9 @@ It does this by providing a simple way to use human-readable names instead of lo
 The goal here is to take a name, such as `nick.eth`, and convert it to an address, such as `0x225f137127d9067788314bc7fcc1f36746a3c3B5`.
 
 <div className="card1 px-8 py-4 flex justify-center gap-2">
-  <span>luc.eth</span>
-  <span>➡️</span>
-  <span>0x225...c3B5</span>
+    <span>luc.eth</span>
+    <span>➡️</span>
+    <span>0x225...c3B5</span>
 </div>
 
 The simplest thing you can do is start with a name, and resolve it to an address.
@@ -30,29 +30,29 @@ Think of places where users can enter names, such as sending transactions, chatt
 <CodeGroup title="Forward Resolution">
 
 ```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsAddress', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-address' }}
-import { useAccount, useEnsName, useEnsAvatar } from 'wagmi'
+import { useAccount, useEnsName, useEnsAvatar } from "wagmi";
 
 export const Name = () => {
-  const { data: ensName } = useEnsAddress({
-    address: 'luc.eth', // The name to lookup
-    chainId: 1, // The chainId to lookup on
-  })
+    const { data: ensName } = useEnsAddress({
+        address: "luc.eth", // The name to lookup
+        chainId: 1, // The chainId to lookup on
+    });
 
-  return <div>{ensName || address}</div>
-}
+    return <div>{ensName || address}</div>;
+};
 ```
 
 ```ts {{ title: 'Ethers.js (TS)', variant: 'ethers-v5' }}
-const address = await provider.lookupAddress('luc.eth')
+const address = await provider.lookupAddress("luc.eth");
 ```
 
 ```ts {{ title: 'Viem (TS)', variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
-import { normalize } from 'viem/ens'
-import { publicClient } from './client'
+import { normalize } from "viem/ens";
+import { publicClient } from "./client";
 
 const ensAddress = await publicClient.getEnsAddress({
-  name: normalize('luc.eth'),
-})
+    name: normalize("luc.eth"),
+});
 ```
 
 ```rust {{ variant: 'ethers-rs' }}
@@ -84,43 +84,43 @@ func main() {
 
 ```ts {{ title: 'Alchemy', variant: 'alchemy-sdk', link: "https://docs.alchemy.com/docs/how-to-resolve-ewallet-given-ens" }}
 // Setup: npm install alchemy-sdk
-import { Alchemy, Network } from 'alchemy-sdk'
+import { Alchemy, Network } from "alchemy-sdk";
 
 const config = {
-  apiKey: '<-- ALCHEMY APP API KEY -->',
-  network: Network.ETH_MAINNET,
-}
-const alchemy = new Alchemy(config)
+    apiKey: "<-- ALCHEMY APP API KEY -->",
+    network: Network.ETH_MAINNET,
+};
+const alchemy = new Alchemy(config);
 
-alchemy.core.resolveName('vitalik.eth').then(console.log)
+alchemy.core.resolveName("vitalik.eth").then(console.log);
 ```
 
 ```ts {{ variant: 'ensjs', link: 'https://github.com/ensdomains/ensjs-v3/blob/feat/viem/docs/basics/fetching-a-profile.md' }}
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
-import { createEnsPublicClient } from '@ensdomains/ensjs'
+import { http } from "viem";
+import { mainnet } from "viem/chains";
+import { createEnsPublicClient } from "@ensdomains/ensjs";
 
 const client = createEnsPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    chain: mainnet,
+    transport: http(),
+});
 
-const subgraphRecords = client.getSubgraphRecords({ name: 'ens.eth' })
+const subgraphRecords = client.getSubgraphRecords({ name: "ens.eth" });
 
 const records = client.getRecords({
-  name: 'ens.eth',
-  records: {
-    coins: [...(subgraphRecords?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
-    texts: [
-      ...(subgraphRecords?.texts || []),
-      'avatar',
-      'email',
-      'description',
-    ],
-    contentHash: true,
-    abi: true,
-  },
-})
+    name: "ens.eth",
+    records: {
+        coins: [...(subgraphRecords?.coins || []), "BTC", "ETH", "ETC", "SOL"],
+        texts: [
+            ...(subgraphRecords?.texts || []),
+            "avatar",
+            "email",
+            "description",
+        ],
+        contentHash: true,
+        abi: true,
+    },
+});
 ```
 
 ```python {{ variant: 'web3py' }}
@@ -148,28 +148,28 @@ The standardization of multichain addresses was first introduced in [ENSIP-9](/e
 <CodeGroup title="Multichain Address Lookup">
 
 ```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi' }}
-import { useEnsMultichainAddress } from 'ens-tools/react'
+import { useEnsMultichainAddress } from "ens-tools/react";
 
 export const BitcoinAddress = () => {
-  const { address: btcAddress, chainId } = useEnsMultichainAddress({
-    name: 'luc.eth',
-    coinType: 0, // BTC
-  })
+    const { address: btcAddress, chainId } = useEnsMultichainAddress({
+        name: "luc.eth",
+        coinType: 0, // BTC
+    });
 
-  return <div>BTC: {btcAddress}</div>
-}
+    return <div>BTC: {btcAddress}</div>;
+};
 ```
 
 ```ts {{ title: 'Viem (TS)', variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html#cointype-optional', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
 const ensName = await publicClient.getEnsAddress({
-  name: normalize('wagmi-dev.eth'),
-  coinType: 0, // BTC
-})
+    name: normalize("wagmi-dev.eth"),
+    coinType: 0, // BTC
+});
 ```
 
 ```ts {{ title: 'Ethers.js (TS)', variant: 'ethers-v5', link: 'https://docs.ethers.org/v5/api/providers/provider/#EnsResolver' }}
-const resolver = await provider.getResolver('luc.eth')
-const btcAddress = await resolver?.getAddress(0)
+const resolver = await provider.getResolver("luc.eth");
+const btcAddress = await resolver?.getAddress(0);
 ```
 
 </CodeGroup>
@@ -187,9 +187,9 @@ const btcAddress = await resolver?.getAddress(0)
 | Arbitrum One | 2147525809 |
 
 <div className="w-full flex items-center justify-center gap-1">
-  ... and many many more following
-  [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) and
-  [ENSIP-11](/ensip/11)
+    ... and many many more following
+    [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+    and [ENSIP-11](/ensip/11)
 </div>
 
 ### Decoding Address Hashes
@@ -199,9 +199,9 @@ ENS resolvers store all addresses in bytes, which may have to be encoded to thei
 ## Advanced
 
 <EmbedLink
-  href="/resolution"
-  title="In-Depth Resolution"
-  tag="Advanced"
-  description="To learn more about the resolution process, please read the Resolution section."
+    href="/resolution"
+    title="In-Depth Resolution"
+    tag="Advanced"
+    description="To learn more about the resolution process, please read the Resolution section."
 />
 ```
