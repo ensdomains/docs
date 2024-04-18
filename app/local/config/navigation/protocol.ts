@@ -407,6 +407,11 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
+                        title: '5.4.2 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
+                        href: '/dao/proposals/5.4.2',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
                         title: '5.4.1 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
                         href: '/dao/proposals/5.4.1',
                     },
