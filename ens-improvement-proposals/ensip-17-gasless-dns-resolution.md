@@ -48,7 +48,7 @@ The `OffchainDNSResolver` decodes or resolves the address of the resolver to use
        4. Treat the returned address as the resolver address to use in subsequent steps.
     5. If `resolver-name-or-address` does not contain a '.' character, treat it as a hexadecimal address and decode it. Treat the decoded address as the resolver address to use in subsequent steps.
     6. Using ERC165, check if the returned resolver supports `IExtendedDNSResolver`. If it does, call `resolve(bytes name, bytes query, bytes context)`, passing `context` from the TXT record as the last argument. The call to `resolve` may use CCIP-Read; if it does, reverts will be handled appropriately. Return the result of this call as the result of the initial resolution request and halt.
-    7. Using ERC165, check if the returned resolver supporst `IExtendedResolver`. If it does, call `resolve(bytes name, bytes query)`. The call to `resolve` may use CCIP-Read; if it does, reverts will be handled appropriately. Return the result of tihs call as the result of the initial resolution request and halt.
+    7. Using ERC165, check if the returned resolver supporst `IExtendedResolver`. If it does, call `resolve(bytes name, bytes query)`. The call to `resolve` may use CCIP-Read; if it does, reverts will be handled appropriately. Return the result of this call as the result of the initial resolution request and halt.
     8. Otherwise, call the resolver with calldata equal to the `query` originally supplied to `OffchainDNSResolver.resolve` and return its result as the result of the initial resolution request and halt. This resolution path does NOT support nested CCIP-Read requests.
 
 The `IExtendedDNSResolver` interface is defined as follows:
