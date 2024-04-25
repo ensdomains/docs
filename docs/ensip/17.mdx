@@ -1,23 +1,33 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    contributors: [
+        'arachnid',
+    ],
+    ensip: {
+        status: 'draft',
+        created: '2024-02-09',
+    }
+};
+
 # ENSIP-17: Gasless DNS Resolution
 
-| **Author**  | Nick Johnson \<nick@ens.domains>     |
-| ----------- | ------------------------------------ |
-| **Status**  | Draft                                |
-| **Created** | 2024-02-09                           |
-| **Updated** | 2024-02-09                           |
-
 ## Abstract
+
 This standard describes a mechanism by which users can specify ENS resolvers and resolution data as DNS TXT records, resulting in a system where DNS names are resolvable in ENS with no onchain actions required.
 
 ## Motivation
+
 ENS has had DNS integration for some time, facilitated by the ability to prove the contents of a DNS TXT record onchain, and thereby claim the corresponding name in the ENS registry. This has several shortcomings, the most notable of which is the high transaction fees associated, as verifying a DNSSEC proof often costs in excess of 1,000,000 gas.
 
 Wildcard resolution (ENSIP-10) and CCIP-Read (EIP-3668) now permit a new approach, by which DNSSEC proofs are fetched and verified at resolution time instead. This permits users to enable ENS resolution of their names simply by setting a TXT record on their DNS name and enabling DNSSEC.
 
 ## Specification
+
 A new resolver, `OffchainDNSResolver`, is deployed and set as the resolver for all DNS TLDs; this resolver will be consulted whenever resolution is attempted for a nonexistent subdomain of these TLDs. The resolver then initiates a CCIP-Read request to a gateway which fetches and returns DNSSEC proofs for TXT records on that name. In the CCIP-Read callback function, the resolver verifies the DNSSEC proofs using an updated version of the DNSSEC oracle, and if they verify correctly, decodes the address of a resolver and optional extra data from the TXT record. The resolution request is then completed by invoking the resolver, optionally passing the extra data contained in the TXT record to enable it to vary its response dynamically.
 
 ### TXT record format
+
 Compliant TXT records MUST adhere to this format:
 ```
 ENS1 <resolver-name-or-address> [context]
@@ -29,7 +39,9 @@ Where:
  - `context` is arbitrary additional data that may be passed to the resolver to complete the request (see below).
 
 ### Resolution Process
+
 #### Summary
+
 The `OffchainDNSResolver` decodes or resolves the address of the resolver to use from `resolver-name-or-address`, and calls whichever of `IExtendedDNSResolver.resolve`, `IExtendedResolver.resolve` or a legacy resolution function is first supported. If either `resolve` function is invoked, nested CCIP-Read requests are handled correctly.
 
 #### Detailed Description
@@ -66,6 +78,7 @@ This acts as an extension of `IExtendedResolver` defined in ENSIP-10, providing 
 Note that a TXT record may contain multiple text fields; in this implementation only the first field of each TXT record is considered. TXT record fields are limited to a maximum of 255 bytes each.
 
 ### DNSSEC Gateway API
+
 The DNSSEC Gateway implements the following API over CCIP-Read:
 ```
 struct RRSetWithSignature {
