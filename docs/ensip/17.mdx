@@ -107,8 +107,14 @@ A Solidity DNSSEC implementation for decoding and verifying RRSET data is availa
 
 ## Backwards Compatibility
 
+DNS names imported using the existing functionality will continue to function as before, and new names can still be imported using the DNS import functionality. If an imported name exists, it is used to resolve the request, and any TXT records for gasless DNSSEC are ignored. If desired, the owner of the name can set the resolver to `address(0)` to cause resolution to fall back to gasless DNSSEC.
+
 ## Security Considerations
-		
+
+Gasless DNSSEC relies on a gateway and CCIP-Read to fetch cryptographic proofs of the chain of trust between the DNS root and the desired text record. It uses the same code, and hence has the same trust model, as the DNS import functionality; forging a DNS record would require access to a signing key somewhere in the chain of trust between DNS root and the record in question.
+
+Due to the use of a gateway service to generate responses, there is additional risk of unavailability: the gateway could be out of operation, or could choose to selectively refuse to answer (censor) certain queries.
+
 ## Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
