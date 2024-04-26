@@ -29,7 +29,8 @@ A new resolver, `OffchainDNSResolver`, is deployed and set as the resolver for a
 ### TXT record format
 
 Compliant TXT records MUST adhere to this format:
-```
+
+```ts
 ENS1 <resolver-name-or-address> [context]
 ```
 
@@ -64,7 +65,8 @@ The `OffchainDNSResolver` decodes or resolves the address of the resolver to use
     8. Otherwise, call the resolver with calldata equal to the `query` originally supplied to `OffchainDNSResolver.resolve` and return its result as the result of the initial resolution request and halt. This resolution path does NOT support nested CCIP-Read requests.
 
 The `IExtendedDNSResolver` interface is defined as follows:
-```
+
+```go
 interface IExtendedDNSResolver {
     function resolve(
         bytes memory name,
@@ -80,7 +82,8 @@ Note that a TXT record may contain multiple text fields; in this implementation 
 ### DNSSEC Gateway API
 
 The DNSSEC Gateway implements the following API over CCIP-Read:
-```
+
+```go
 struct RRSetWithSignature {
     bytes rrset;
     bytes sig;
