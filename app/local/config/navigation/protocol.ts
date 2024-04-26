@@ -691,6 +691,10 @@ export const navigation: SectionData[] = [
                         href: '/ensip/16',
                     },
                     {
+                        title: '17 - Gasless DNS Resolution',
+                        href: '/ensip/17',
+                    },
+                    {
                         title: '18 - Profile Text Records',
                         href: '/ensip/18',
                     },
