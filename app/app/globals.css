@@ -1,6 +1,6 @@
 :root.dark {
-    --shiki-color-text: theme('colors.ens.dark.text.primary');
-    --shiki-color-background: theme('colors.ens.dark.background.primary');
+    --shiki-foreground: theme('colors.ens.dark.text.primary');
+    --shiki-background: theme('colors.ens.dark.background.primary');
     --shiki-token-constant: theme('colors.ens.dark.blue.primary');
     --shiki-token-string: theme('colors.ens.dark.green.primary');
     --shiki-token-comment: theme('colors.ens.dark.text.secondary');
@@ -12,8 +12,8 @@
 }
 
 :root {
-    --shiki-color-text: #0969da;
-    --shiki-color-background: #afb8c133;
+    --shiki-foreground: #0969da;
+    --shiki-background: #afb8c133;
     --shiki-token-constant: #0044ff;
     --shiki-token-string: #0a3069;
     --shiki-token-comment: #6e7781;

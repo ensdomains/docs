@@ -3,9 +3,12 @@ import * as acorn from 'acorn';
 import { toString } from 'mdast-util-to-string';
 import { mdxAnnotations } from 'mdx-annotations';
 import rehypeMdxTitle from 'rehype-mdx-title';
-import shiki from 'shiki';
+import {
+    bundledLanguages,
+    createCssVariablesTheme,
+    getHighlighter,
+} from 'shiki';
 import { visit } from 'unist-util-visit';
-
 /**
  * @type {import('unified').Plugin[]}
  */
@@ -42,48 +45,128 @@ function rehypeParseCodeBlocks() {
     };
 }
 
-let highlighter;
+const rehypeShikiFromHighlighter = function (highlighter, options) {
+    const {
+        addLanguageClass = false,
+        parseMetaString,
+        cache,
+        ...rest
+    } = options;
+    const prefix = 'language-';
 
-function rehypeShiki() {
-    return async (tree) => {
-        // lightHighlighter =
-        //     lightHighlighter ??
-        //     (await shiki.getHighlighter({ theme: 'min-light' }));
-        highlighter =
-            highlighter ??
-            (await shiki.getHighlighter({ theme: 'css-variables' }));
+    return function (tree) {
+        visit(tree, 'element', (node, index, parent) => {
+            if (!parent || index == undefined || node.tagName !== 'pre') return;
 
-        visit(tree, 'element', (node) => {
+            const [head] = node.children;
+
             if (
-                node.tagName === 'pre' &&
-                node.children[0]?.tagName === 'code'
-            ) {
-                const codeNode = node.children[0];
-                const textNode = codeNode.children[0];
+                !head ||
+                head.type !== 'element' ||
+                head.tagName !== 'code' ||
+                !head.properties
+            )
+                return;
 
-                node.properties.code = textNode.value;
-                node.properties.meta = codeNode?.data?.meta;
+            const [textNode] = head.children;
 
-                if (node.properties.language) {
-                    const lightTokens = highlighter.codeToThemedTokens(
-                        textNode.value,
-                        node.properties.language
-                    );
+            const classes = head.properties.className;
 
-                    const renderLight = shiki.renderToHtml(lightTokens, {
-                        elements: {
-                            pre: ({ children }) => children,
-                            code: ({ children }) => children,
-                            line: ({ children }) => `<span>${children}</span>`,
-                        },
-                    });
+            if (!Array.isArray(classes)) return;
 
-                    textNode.value = renderLight;
-                }
+            const language = classes.find(
+                (d) => typeof d === 'string' && d.startsWith(prefix)
+            );
+
+            if (typeof language !== 'string') return;
+
+            const code = toString(textNode);
+
+            const cachedValue = cache?.get(code);
+
+            if (cachedValue) {
+                textNode.value = cachedValue;
+
+                return;
+            }
+
+            const metaString =
+                head.data?.meta ?? head.properties.metastring ?? '';
+
+            const meta = parseMetaString?.(metaString, node, tree) || {};
+            const codeOptions = {
+                ...rest,
+                lang: language.slice(prefix.length),
+                meta: {
+                    ...rest.meta,
+                    ...meta,
+                    __raw: metaString,
+                },
+                transformers: [
+                    {
+                        root: ({ children }) => children.at(0),
+                        pre: ({ children }) => children.at(0),
+                        code: ({ children }) => children,
+                    },
+                ],
+            };
+
+            if (addLanguageClass) {
+                codeOptions.transformers || (codeOptions.transformers = []);
+                codeOptions.transformers.push({
+                    name: 'rehype-shiki:code-language-class',
+                    code(node2) {
+                        this.addClassToHast(node2, language);
+
+                        return node2;
+                    },
+                });
+            }
+
+            try {
+                const fragment = highlighter.codeToHtml(code, codeOptions);
+
+                cache?.set(code, fragment);
+                textNode.value = fragment;
+            } catch (error) {
+                if (options.onError) options.onError(error);
+                else throw error;
             }
         });
     };
-}
+};
+
+const rehypeShiki = function (options = {}) {
+    const themeNames = (
+        'themes' in options ? Object.values(options.themes) : [options.theme]
+    ).filter(Boolean);
+    const langs = options.langs || Object.keys(bundledLanguages);
+    // eslint-disable-next-line unicorn/no-this-assignment
+    const context = this;
+    let promise;
+
+    return async function (tree) {
+        if (!promise) {
+            promise = getHighlighter({
+                themes: themeNames,
+                langs,
+            }).then((highlighter) =>
+                rehypeShikiFromHighlighter.call(context, highlighter, options)
+            );
+        }
+
+        const handler = await promise;
+
+        return handler(tree);
+    };
+};
+
+const shikiCssTheme = createCssVariablesTheme({
+    name: 'css-variables',
+    variablePrefix: '--shiki-',
+    variableDefaults: {},
+    fontStyle: true,
+});
 
 function rehypeSlugify() {
     return (tree) => {
@@ -208,7 +291,13 @@ export const rehypePlugins = [
     /**
      * Add syntax highlighting to code blocks
      */
-    rehypeShiki,
+    [
+        rehypeShiki,
+        {
+            theme: shikiCssTheme,
+            addLanguageClass: true,
+        },
+    ],
     /**
      * Add an id to h2 elements
      */
