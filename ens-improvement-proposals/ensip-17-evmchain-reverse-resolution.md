@@ -30,12 +30,18 @@ Reverse resolution has been in use since ENS's inception, however at the time Et
 * A dapp can then detect the chainID that a user is on, find the corresponding cointype and resolve their primary ens name by resolving the name record at [userAddress].[coinType].reverse. This will be resolved via CCIP-read and look up the reverse record on the corresponding EVM-chain.
 * Dapp will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up CCIP-read records for each network and put those addresses wherever they want.
 * Once matched, the dapp can then also resolve any text records on the primary ENS name, such as avatar.
+* Discovery of the reverse registrar on each chain will be done by looking up the `addr()` of [coinType].reverse.
+* coinType in all instances will be the hex representation to reduce the length of the name
+
+### Deployment and discovery of L2 Reverse registrars
+
+When a new L2 reverse registrar is deployed, it will need to be setup by the owner of the `reverse` node, to setup a subdomain [coinType].reverse. It must then be setup with an Offchain resolver that has an onchain L1 address record that return the contract address of the L2 reverse registrar for that L2. The Offchain resolver will also support wildcard of all the address subdomains with the format [address].coinType].reverse. Additionally there must be a new EVM gateway setup to handle the CCIP-read revert errors that will go to the corresponding network to gather the L2 reverse record and verify this data on L1.
 
 ### Resolving Primary ENS Names by a dapp
 
 1) If a dapp has a connected user it SHOULD first check the chainId of the user.
 2) If the chainId is not 1, it SHOULD then construct the ENS name [address].[coinType].reverse to obtain the primary ENS name of the user. 
-3) If none is found, it SHOULD check check mainnet [address].default.reverse.
+3) If none is found or an empty string is found, it SHOULD check check mainnet [address].default.reverse.
 4) If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id of the user.
 
 Note: The dapp MUST NOT use the reverse record set for mainnet even if the Primary ENS name has not been set on the target chain, and must instead show the address.
@@ -46,9 +52,9 @@ ENSIP-12 was concieved before the ENS L2 reverse resolution specification and th
 
 #### Example for an EVM Address
 
-To determine the avatar URI for a specific EVM chain address, the client MUST reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<coinType>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash('<address>.<coinType>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
+To determine the avatar URI for a specific EVM chain address, the client may reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<coinType>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client can call `.text(namehash('<address>.<coinType>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
 
-If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.<coinType>.reverse'))`. If this method returns a valid ENS name, the client MUST:
+If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client CAN call `.name(namehash('<address>.<coinType>.reverse'))`. If this method returns a valid ENS name, the client MUST:
 
 1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original evmChainId (converted to cointype) address.
 2. Perform [ENSIP-12 Avatar text record resolution](https://docs.ens.domains/ensip/12) on the primary name.
