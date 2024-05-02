@@ -2,8 +2,9 @@
 
 import { formatAddress } from '@ens-tools/format';
 import clsx from 'clsx';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useDebounce } from 'use-debounce';
+import { normalize } from 'viem/ens';
 
 import { Button } from '@/components/Button';
 
