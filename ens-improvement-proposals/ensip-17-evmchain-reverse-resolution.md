@@ -44,7 +44,7 @@ When a new L2 reverse registrar is deployed, it will need to be setup by the own
 3) If none is found or an empty string is found, it SHOULD check check mainnet [address].default.reverse.
 4) If the dapp finds an ENS name, it MUST first check the forward resolution. The forward resolution MUST match the same coin type as the chain id of the user.
 
-Note: The dapp MUST NOT use the reverse record set for mainnet even if the Primary ENS name has not been set on the target chain, and must instead show the address.
+Note: The dapp MUST NOT use the reverse record set for mainnet even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set.
 
 ### Resolving an avatar by a dapp on L2
 
@@ -78,13 +78,13 @@ An example of why this could be confusing:
 
 Dapp is on Arbitrum and uses mainnet primary ENS name. It resolves the ENS name's mainnet address and uses that to verify the reverse record is correct. It also uses the mainnet address to allow in-app transfers.
 
-Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user in unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
+Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user is unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
 
 If we mandated that the address cannot use `addr(node, 60)`, but only the address of the chain in question, it would be possible to use mainnet as a backup. However the fact remains that you would still need to claim and set your Primary ENS name on mainnet, and the possibility for confusion seem to outweigh the benefits of using mainnet (high gas) as a catch-all back up for other L2 EVM chains (low gas). Additionally this would only be useful for EVM-compatible chains and would not benefit non-EVM L2s that have a different address format. 
 
 ## Being explicit about default Primary ENS Name
 
-To make things explicit we will allow the signing of a message to confirm that the address in question would like to use mainnet or another network as fallback. This would either resolve directly on mainnet. Defaults would only be applicable to EoAs that can sign a message. This is because smart contract accounts would not be able to reliably set a default on all chains.
+To make things explicit we will require the signing of a message to confirm that the address in question would like to use mainnet or another network as fallback. This would either resolve directly on mainnet. Defaults would only be applicable to EoAs that can sign a message. This is because smart contract accounts would not be able to reliably set a default on all chains.
 
 ### Setting default
 
