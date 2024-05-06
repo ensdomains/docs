@@ -54,7 +54,7 @@ When a new L2 reverse registrar is deployed, it will need to be setup by the own
 13) It MUST then call the registry to retrieve the resolver `registry.resolver(primaryName)`
 14) Once it has the resolver it MUST call the addr function with the appropriate coinType. If a name was found on step 6, it must use the `coinType` from the chainId of the user. If a name was found at step 9, which is the default Primary name for EoAs, it must check the coinType of chainId 0, which represents [an EoA across all EVM chains](https://namespaces.chainagnostic.org/eip155/caip10). `resolvedAddress = resolver.addr(coinType)`
 15) If `resolvedAddress == address`, the dapp SHOULD consider the Primary Name verified, and can now show this instead of the address within the application.
-16) If `resolverAddress != address` the dapp MUST consider the Primary Name unverified and MUST show the address instead.
+16) If `resolvedAddress != address` the dapp MUST consider the Primary Name unverified and MUST show the address instead.
     
 Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set.
 
