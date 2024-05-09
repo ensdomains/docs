@@ -54,12 +54,11 @@ export const navigation: SectionData[] = [
                         href: '/bugs',
                         icon: '🪲',
                     },
-                    // {
-                    //     title: 'Changelog',
-                    //     href: '/changelog',
-                    //     wip: 5,
-                    //     icon: '📝',
-                    // },
+                    {
+                        title: 'Changelog',
+                        href: '/changelog',
+                        icon: '📝',
+                    },
                 ],
             },
         ],
@@ -614,7 +613,7 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/0.3',
                     },
                     {
-                        title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account’s primary ENS 1',
+                        title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
                         href: '/dao/proposals/0.2',
                     },
                     {
