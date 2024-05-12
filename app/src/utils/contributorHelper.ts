@@ -1,16 +1,14 @@
+export const GITHUB_REGEX = /^[\da-z](?:[\da-z]|-(?=[\da-z])){0,38}$/i;
+export const ENS_REGEX = /^([\da-z]+(-[\da-z]+)*\.)+[a-z]{2,}$/i;
+
 export const getUsernameType = (
     username: string
 ): 'ens' | 'github' | 'unknown' => {
-    console.log(username);
-
-    const github = /^[\da-z](?:[\da-z]|-(?=[\da-z])){0,38}$/i;
-    const ens_domain = /^([\da-z]+(-[\da-z]+)*\.)+[a-z]{2,}$/i;
-
-    if (ens_domain.test(username)) {
+    if (ENS_REGEX.test(username)) {
         return 'ens';
     }
 
-    if (github.test(username)) {
+    if (GITHUB_REGEX.test(username)) {
         return 'github';
     }
 

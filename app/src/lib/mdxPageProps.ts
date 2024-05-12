@@ -1,6 +1,8 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 import { z } from 'zod';
 
+import { ENS_REGEX, GITHUB_REGEX } from '@/utils/contributorHelper';
+
 export const mdxPagePropsSchema = z
     .object({
         /**
@@ -31,13 +33,8 @@ export const mdxPagePropsSchema = z
             contributors: z
                 .array(
                     z.union([
-                        // Validate using github username regex (source: https://github.com/shinnn/github-username-regex/blob/master/index.js)
-                        z
-                            .string()
-                            .regex(/^[\da-z](?:[\da-z]|-(?=[\da-z])){0,38}$/i),
-                        z
-                            .string()
-                            .regex(/^([\da-z]+(-[\da-z]+)*\.)+[a-z]{2,}$/i),
+                        z.string().regex(GITHUB_REGEX),
+                        z.string().regex(ENS_REGEX),
                     ])
                 )
                 .optional(),
