@@ -34,11 +34,11 @@ export const getLinkHref = (username: string) => {
 
     if (type === 'ens') {
         // Contenthash support soon™
-        return `https://ens.page/${username}?utm_campaign=ens-docs`;
+        return `https://ens.page/${username}?ref=ens-docs`;
     }
 
     if (type === 'github') {
-        return `https://github.com/${username}`;
+        return `https://github.com/${username}?ref=ens-docs`;
     }
 
     return '#';
