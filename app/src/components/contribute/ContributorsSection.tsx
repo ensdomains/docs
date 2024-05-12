@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 
+import { getLinkHref, getProfilePicture } from '@/utils/contributorHelper';
+
 export const ContributorsSection: FC<{
     contributors?: string[];
     expandSingle?: boolean;
@@ -11,13 +13,13 @@ export const ContributorsSection: FC<{
         <div className="flex -space-x-2">
             {contributors.length === 1 && expandSingle && (
                 <a
-                    href={`https://github.com/${contributors[0]}?ref=ens-docs`}
+                    href={getLinkHref(contributors[0])}
                     rel="nofollow"
                     target="_blank"
                     className="flex w-fit items-center gap-2 transition-all hover:scale-105"
                 >
                     <img
-                        src={`https://github.com/${contributors[0]}.png?size=100`}
+                        src={getProfilePicture(contributors[0])}
                         className="my-0 aspect-square size-6 rounded-full shadow-md"
                         alt={contributors[0]}
                     />
@@ -30,14 +32,14 @@ export const ContributorsSection: FC<{
             {contributors.length > (expandSingle ? 1 : 0) &&
                 contributors.map((contributor) => (
                     <a
-                        href={`https://github.com/${contributor}?ref=ens-docs`}
+                        href={getLinkHref(contributor)}
                         key={contributor}
                         rel="nofollow"
                         target="_blank"
                         className="group relative transition-all hover:scale-105"
                     >
                         <img
-                            src={`https://github.com/${contributor}.png?size=100`}
+                            src={getProfilePicture(contributor)}
                             className="my-0 aspect-square w-6 rounded-full shadow-md"
                             alt={contributor}
                         />

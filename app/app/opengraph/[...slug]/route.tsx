@@ -4,6 +4,19 @@ import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import { readFile } from 'node:fs/promises';
 
+const getProfilePictureJPG = (username: string) => {
+    const type = getUsernameType(username);
+
+    if (type === 'ens') {
+        return `https://avatarservice.xyz/64/${username}.jpg`;
+    }
+
+    if (type === 'github') {
+        return `https://github.com/${username}.png?size=42`;
+    }
+};
+
+import { getUsernameType } from '@/utils/contributorHelper';
 import { navigation } from '#/config/navigation';
 
 // Route segment config
@@ -297,7 +310,9 @@ export async function GET(request: NextRequest) {
                                 }}
                             >
                                 <img
-                                    src={'https://github.com/' + key + '.png'}
+                                    src={getProfilePictureJPG(key)}
+                                    height={42}
+                                    width={42}
                                     alt=""
                                     style={{
                                         width: '100%',
