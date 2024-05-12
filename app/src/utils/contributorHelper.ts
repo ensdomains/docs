@@ -17,15 +17,15 @@ export const getUsernameType = (
     return 'unknown';
 };
 
-export const getProfilePicture = (username: string) => {
+export const getProfilePicture = (username: string, format: 'webp' | 'jpg') => {
     const type = getUsernameType(username);
 
     if (type === 'ens') {
-        return `https://avatarservice.xyz/64/${username}.webp`;
+        return `https://avatarservice.xyz/64/${username}.${format}`;
     }
 
     if (type === 'github') {
-        return `https://github.com/${username}.png?size=100`;
+        return `https://github.com/${username}.png?size=64`;
     }
 };
 
@@ -33,7 +33,6 @@ export const getLinkHref = (username: string) => {
     const type = getUsernameType(username);
 
     if (type === 'ens') {
-        // Contenthash support soon™
         return `https://ens.page/${username}?ref=ens-docs`;
     }
 
