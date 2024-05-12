@@ -6,6 +6,7 @@ import { ClientOnly } from '@/ClientOnly';
 import { Layout } from '@/layout/PageLayout';
 import { redirectToIndex } from '@/layout/RouteCheck';
 import { createMetadata } from '@/lib/metadata';
+import { getLinkHref } from '@/utils/contributorHelper';
 
 type PageProperties = {
     params: { slug: string[] };
@@ -34,8 +35,8 @@ export const generateMetadata = async (
                 description: meta.description,
                 images: `/opengraph/${params.slug.join('/')}.png`,
                 tags: ['ENS', 'Ethereum Name Service', '.eth'],
-                authors: meta.contributors?.map(
-                    (contributor) => 'https://github.com/' + contributor
+                authors: meta.contributors?.map((contributor) =>
+                    getLinkHref(contributor)
                 ),
             },
             twitter: {
@@ -43,7 +44,7 @@ export const generateMetadata = async (
             },
             authors: meta.contributors?.map((contributor) => ({
                 name: contributor,
-                url: 'https://github.com/' + contributor,
+                url: getLinkHref(contributor),
             })),
         }
     );
