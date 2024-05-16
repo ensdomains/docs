@@ -27,6 +27,8 @@ The simplest thing you can do is start with a name, and resolve it to an address
 We call this a "forward lookup".
 Think of places where users can enter names, such as sending transactions, chatting, etc.
 
+Note that all dot-separated strings should be treated as potential ENS names, since ENS supports [many TLDs](/dns/tlds). A common mistake is to only treat strings that end in `.eth` as ENS names.
+
 <CodeGroup title="Forward Resolution">
 
 ```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsAddress', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-address' }}
