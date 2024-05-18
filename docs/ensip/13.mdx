@@ -55,7 +55,7 @@ Rather than 're-invent the wheel', this proposal aims to use the widely adopted 
 From there, the benefits are twofold. This EIP gives users increased security via outsourcing potentially malicious signing operations to wallets that are more accessible (hot wallets), while being able to maintain the intended security assumptions of wallets that are not frequently used for signing operations.
 
 #### Improving dApp Interaction Security
-Many dApps requires one to prove control of a wallet to gain access. At the moment, this means that you must interact with the dApp using the wallet itself. This is a security issue, as malicious dApps or phishing sites can lead to the assets of the wallet being compromised by having them sign malicious payloads.
+Many dApps require one to prove control of a wallet to gain access. At the moment, this means that you must interact with the dApp using the wallet itself. This is a security issue, as malicious dApps or phishing sites can lead to the assets of the wallet being compromised by having them sign malicious payloads.
 
 However, this risk would be mitigated if one were to use a secondary wallet for these interactions. Malicious interactions would be isolated to the assets held in the secondary wallet, which can be set up to contain little to nothing of value.
 
@@ -67,10 +67,10 @@ Instead, each device can have its own unique wallet that is an authorized second
 Further, wallet authentication can be matokenUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
 Let:
- - `mainAddress` represent the wallet address we are trying to authenticate or prove asset ownership for.
- - `mainENS` represent the reverse lookup ENS string for `mainAddress`.
- - `authAddress` represent the address we want to use for signing in lieu of `mainAddress`.
- - `authENS` represent the reverse lookup ENS string for `authAddress`.
+ - `mainAddress` represents the wallet address we are trying to authenticate or prove asset ownership for.
+ - `mainENS` represents the reverse lookup ENS string for `mainAddress`.
+ - `authAddress` represents the address we want to use for signing in lieu of `mainAddress`.
+ - `authENS` represents the reverse lookup ENS string for `authAddress`.
  - `authKey` represents a string in the format `[0-9A-Za-z]+`.
 
 Control of `mainAddress` and ownership of `mainAddress` assets by `authAddress` is proven if all the following conditions are met:
@@ -87,7 +87,7 @@ In order to automatically discover the linked account, the `authAddress` SHOULD 
 2. Set a TEXT record `eip5131:<authKey>` on `mainENS`, with the value set to the desired `authAddress`.
 3. Set a TEXT record `eip5131:vault` on `authENS`, with the value set to the `<authKey>:mainAddress`.
 
-Currently this EIP does not enforce an upper-bound on the number of `authAddress` entries you can include. Users can repeat this process with as many address as they like.
+Currently this EIP does not enforce an upper-bound on the number of `authAddress` entries you can include. Users can repeat this process with as many addresses as they like.
 
 ### Authenticating `mainAddress` via `authAddress`
 Control of `mainAddress` and ownership of `mainAddress` assets is proven if any associated `authAddress` is the `msg.sender` or has signed the message.
@@ -108,7 +108,7 @@ To revoke permission of `authAddress`, delete the `eip5131:<authKey>` TEXT recor
 ## Rationale
 
 ### Usage of EIP-137
-The proposed specification makes use of EIP-137 rather than introduce another registry paradigm. The reason for this is due to the existing wide adoption of EIP-137 and ENS.
+The proposed specification makes use of EIP-137 rather than introducing another registry paradigm. The reason for this is due to the existing wide adoption of EIP-137 and ENS.
 
 However, the drawback to EIP-137 is that any linked `authAddress` must contain some ETH in order to set the `authENS` reverse record as well as the `eip5131:vault` TEXT record. This can be solved by a separate reverse lookup registry that enables `mainAddress` to set the reverse record and TEXT record with a message signed by `authAddress`.
 
@@ -174,7 +174,7 @@ export async function getLinkedAddress(
 
 #### With a backend
 
-If your application operates a secure backend server, you could run the client/server code above, then use the result in conjunction with specs like [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271) : `Standard Signature Validation Method for Contracts` for a cheap and secure way to validate that the the message signer is indeed authenticated for the main address.
+If your application operates a secure backend server, you could run the client/server code above, then use the result in conjunction with specs like [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271) : `Standard Signature Validation Method for Contracts` for a cheap and secure way to validate that the message signer is indeed authenticated for the main address.
 
 #### Without a backend (JavaScript only)
 
@@ -204,7 +204,7 @@ interface Resolver {
 }
 
 /**
- * Validate a signing address is associtaed with a linked address
+ * Validate a signing address is associated with a linked address
  */
 library LinkedAddress {
     /**
