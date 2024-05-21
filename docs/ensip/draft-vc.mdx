@@ -14,7 +14,7 @@ export const meta = {
 
 ### Abstract
 
-This ENSIP aims to standardize the usage of Verifiable Credentials & Presentations within ENS records.
+This ENSIP aims to standardize the usage of [W3C Verifiable Credentials & Presentations](https://www.w3.org/TR/vc-data-model-2.0/) within ENS records.
 
 ### Motivation
 
@@ -22,9 +22,39 @@ With the increasing prevalence of self-custodial digital identity & attestation 
 
 ### Specification
 
+#### Verifications in Profiles
+
+Defines the use of the `verifications` record.
+This record aims to store a list of verifiable credentials or did's, pointing towards certain credentials
+
+#### Draft
+
+did/url links to vc
+vc contains **metadata** **claims** & **proof**
+implementations choose what "proof"s they support (aka, what credentials they accept/trust)
+claims are the actual data thats being attested
+
 #### Example
 
-An example of a verifiable credential including ENS audience
+An example of a verifiable credential
+
+```json
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://schema.org/"
+  ],
+  "id": "https://example.com/credentials/3847",
+  "type": ["VerifiableCredential"],
+  "issuanceDate": "2019-01-01T19:23:24Z",
+  "credentialSubject": {
+    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    "knows": "did:example:6f1c276e12ec21ebfeb1f712ebc"
+  }
+}
+```
+
+f
 
 ```json
 // this example is wip
@@ -64,6 +94,15 @@ An example of a verifiable credential including ENS audience
   }
 }
 ```
+
+### Considerations
+
+#### Revocation & Expiration
+
+Verifiable Credentials are meant to be used as long-lived documents.
+However this does not mean that they can't be revoked or expired.
+In a similar manner to physical documents, a credentials validity can be checked by contacting the issuer.
+The implementation of verification is specific to each issuer, however can be inferred from `verificationMethod` in the credential.
 
 ### Backwards Compatibility
 
