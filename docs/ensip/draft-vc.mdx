@@ -39,14 +39,14 @@ This record aims to store a list of verifiable credentials or did's, pointing to
 An example of a verifiable credential
 
 ```json
+// this example is wip
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://schema.org/"
+    "https://www.w3.org/2018/credentials/v1"
   ],
   "id": "https://example.com/credentials/3847",
   "type": ["VerifiableCredential"],
-  "issuanceDate": "2019-01-01T19:23:24Z",
+  "issuanceDate": "2024-05-21T00:00:00Z",
   "credentialSubject": {
     "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
     "knows": "did:example:6f1c276e12ec21ebfeb1f712ebc"
@@ -54,7 +54,7 @@ An example of a verifiable credential
 }
 ```
 
-f
+or in the form of a presentation:
 
 ```json
 // this example is wip
@@ -62,9 +62,7 @@ f
   "@context": [
     "https://www.w3.org/2018/credentials/v1"
   ],
-  "type": [
-    "VerifiablePresentation"
-  ],
+  "type": ["VerifiablePresentation"],
   "verfiableCredential": [
     {
       "@context": [
