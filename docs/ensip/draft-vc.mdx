@@ -1,0 +1,78 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'A standard for verifiable credentials in text records in ENS',
+    contributors: [
+        'luc.eth',
+    ],
+    ensip: {
+        status: 'draft',
+        created: '2024-05-21',
+    }
+};
+
+# ENSIP-XX: Verifiable Credentials / Presentations
+
+### Abstract
+
+This ENSIP aims to standardize the usage of Verifiable Credentials & Presentations within ENS records.
+
+### Motivation
+
+With the increasing prevalence of self-custodial digital identity & attestation solutions, it is of importance to have a standardized way to publicly share verifiable credentials using your ENS profile.
+
+### Specification
+
+#### Example
+
+An example of a verifiable credential including ENS audience
+
+```json
+// this example is wip
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "type": [
+    "VerifiablePresentation"
+  ],
+  "verfiableCredential": [
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+      ],
+      "id": "https://credentials.dentity.com/credentials/1234",
+      "type": [
+        "VerifiableCredential",
+        "ProofOfTwitterCredential"
+      ],
+      "issuer": {
+        "id": "did:example:dentity"
+      },
+      "issuanceDate": "2000-00-00T00:00:00Z",
+      "twitter": "lucemansnl",
+      ...
+      "proof": {
+          ...
+      }
+   }
+  ],
+  "id": "12345",
+  "holder": "did:ens:luc.eth",
+  "proof": {
+    ...
+  }
+}
+```
+
+### Backwards Compatibility
+
+This ENSIP relies on the existing ENS text record functionality introduced in [ENSIP-5](/ensip/5), and only standardizes the usage of the specific `verifications` record.
+
+### Security Considerations
+
+None.
+
+### Copyright
+
+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
