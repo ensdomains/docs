@@ -58,6 +58,14 @@ const ensName = await publicClient.getEnsName({
 });
 ```
 
+```py {{ variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#get-the-ens-name-for-an-address' }}
+from ens.auto import ns
+
+# 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
+name = ns.name('0x225f137127d9067788314bc7fcc1f36746a3c3B5')
+```
+
+
 ```go {{ variant: 'go', title: 'Go' }}
 package main
 
@@ -134,6 +142,12 @@ const hash = await setPrimaryName(wallet, {
     name: 'ens.eth',
 });
 // 0x...
+```
+
+```py {{ variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#link-an-address-to-a-name' }}
+from ens.auto import ns
+
+ns.setup_name('myname.eth', my_address)
 ```
 
 </CodeGroup>
