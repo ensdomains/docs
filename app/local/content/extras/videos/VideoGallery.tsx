@@ -8,8 +8,8 @@ export const VideoGallery: FC<{}> = () => {
                     title: 'ETHGlobal London Workshop',
                     location: 'ETHGlobal London',
                     description: '',
-                    href: 'https://www.youtube.com/watch?v=SOHsmBwxgFs',
-                    cover: 'https://i3.ytimg.com/vi_webp/SOHsmBwxgFs/mqdefault.webp',
+                    href: 'https://www.youtube.com/watch?v=sT8GcDaNpc4',
+                    cover: 'https://i3.ytimg.com/vi_webp/sT8GcDaNpc4/mqdefault.webp',
                 },
                 {
                     title: 'ETHDenver ENS Workshop',
