@@ -2,8 +2,8 @@ name: 🚚 Deploy
 
 on:
   push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+-?[0-9]+"
+    branches:
+      - master
 
 env:
   NODE_OPTIONS: "--max_old_space_size=8192"
