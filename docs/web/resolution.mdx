@@ -165,24 +165,7 @@ export const MyAddresses = () => {
     const { data: polygon } = useEnsAddress({ name, coinType: 2147483658 });
     const { data: arbitrum } = useEnsAddress({ name, coinType: 2147525809 });
 
-    return (
-        <div>
-            Bitcoin {bitcoin}
-            <br />
-            Litecoin {litecoin}
-            <br />
-            Solana {solana}
-            <br />
-            Optimism {optimism}
-            <br />
-            Base {base}
-            <br />
-            Polygon {polygon}
-            <br />
-            Arbitrum {arbitrum}
-            <br />
-        </div>
-    );
+    return <div>{JSON.stringify({ name, bitcoin, litecoin, solana, optimism, base, polygon, arbitrum })}</div>;
 };
 ```
 
