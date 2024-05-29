@@ -1,11 +1,11 @@
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-description: 'Learn how to resolve blockchain addresses from human-readable names with ENS.',
-emoji: '🔍',
-contributors: [
-'lucemans',
-'gskril'
-]
+    description: 'Learn how to resolve blockchain addresses from human-readable names with ENS.',
+    emoji: '🔍',
+    contributors: [
+        'luc.eth',
+        'gregskril.eth'
+    ]
 };
 
 # Address Lookup
@@ -147,27 +147,36 @@ The standardization of multichain addresses was first introduced in [ENSIP-9](/e
 
 <CodeGroup title="Multichain Address Lookup">
 
-```tsx {{ title: 'Wagmi (React)', language: 'tsx', meta: 'focus=4:9', variant: 'wagmi' }}
-import { useEnsMultichainAddress } from "ens-tools/react";
+```tsx {{ variant: 'wagmi', link: 'https://wagmi.sh/react/api/hooks/useEnsAddress', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
+import { useAccount, useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi';
+import { formatAddress } from '@ens-tools/format';
 
-export const BitcoinAddress = () => {
-    const { address: btcAddress, chainId } = useEnsMultichainAddress({
-        name: "luc.eth",
-        coinType: 0, // BTC
-    });
+export const MyAddresses = () => {
+    const { data: name } = useEnsName({ address: "0x225f137127d9067788314bc7fcc1f36746a3c3B5" });
 
-    return <div>BTC: {btcAddress}</div>;
+    // SLIP-0044 Coin Types
+    const { data: bitcoin } = useEnsAddress({ name, coinType: 0 });
+    const { data: litecoin } = useEnsAddress({ name, coinType: 2 });
+    const { data: solana } = useEnsAddress({ name, coinType: 501 });
+
+    // EVM Chain IDs (see ENSIP-9)
+    const { data: optimism } = useEnsAddress({ name, coinType: 2147483658 });
+    const { data: base } = useEnsAddress({ name, coinType: 2147492101 });
+    const { data: polygon } = useEnsAddress({ name, coinType: 2147483658 });
+    const { data: arbitrum } = useEnsAddress({ name, coinType: 2147525809 });
+
+    return <div>{JSON.stringify({ name, bitcoin, litecoin, solana, optimism, base, polygon, arbitrum })}</div>;
 };
 ```
 
-```ts {{ title: 'Viem (TS)', variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html#cointype-optional', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
+```ts {{ variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAddress.html#cointype-optional', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
 const ensName = await publicClient.getEnsAddress({
     name: normalize("wagmi-dev.eth"),
     coinType: 0, // BTC
 });
 ```
 
-```ts {{ title: 'Ethers.js (TS)', variant: 'ethers-v5', link: 'https://docs.ethers.org/v5/api/providers/provider/#EnsResolver' }}
+```ts {{ variant: 'ethers-v5', link: 'https://docs.ethers.org/v5/api/providers/provider/#EnsResolver' }}
 const resolver = await provider.getResolver("luc.eth");
 const btcAddress = await resolver?.getAddress(0);
 ```
