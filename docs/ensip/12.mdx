@@ -41,9 +41,9 @@ The client MUST treat the absence of a resolver, an revert when calling the `add
 
 ### Ethereum Address
 
-To determine the avatar URI for an Ethereum address, the client MUST reverse-resolve the address by querying the ENS registry for the resolver of `<address>.addr.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash('<address>.addr.reverse'), 'avatar')` to retrieve the avatar URI for the address.
+To determine the avatar URI for an Ethereum address, the client MUST reverse-resolve the address by querying the ENS registry for the resolver of `&lt;address&gt;.addr.reverse`, where `&lt;address&gt;` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client calls `.text(namehash(&lt;address&gt;.addr.reverse'), 'avatar')` to retrieve the avatar URI for the address.
 
-If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('<address>.addr.reverse'))`. If this method returns a valid ENS name, the client MUST:
+If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client MUST call `.name(namehash('&lt;address&gt;.addr.reverse'))`. If this method returns a valid ENS name, the client MUST:
 
 1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original Ethereum address.
 2. Perform the process described under 'ENS Name' to look for a valid avatar URI on the name.

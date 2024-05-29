@@ -37,7 +37,7 @@ export const convertEVMChainIdToCoinType = (chainId: number) =>{
 }
 ```
 
-And to reverse the operation, bitwise-AND the cointType with `0x7fffffff`: `0x7fffffff & coinType`.
+And to reverse the operation, bitwise-AND the coinType with `0x7fffffff`: `0x7fffffff & coinType`.
 
 ```typescript
 export const convertCoinTypeToEVMChainId = (coinType: number) =>{
