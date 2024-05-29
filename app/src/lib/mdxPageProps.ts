@@ -27,8 +27,8 @@ export const mdxPagePropsSchema = z
              */
             showDetailsSection: z.boolean().default(true),
             /**
-             * Optional list of github usernames of contributors
-             * @example ['lucemans', 'svemat01']
+             * Optional list of ENS or github usernames of contributors
+             * @example ['luc.eth', 'lucemans', 'svemat01']
              */
             contributors: z
                 .array(

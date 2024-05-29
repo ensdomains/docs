@@ -1,12 +1,12 @@
 import { ConnectKits } from '@/components/ConnectKits';
 
 export const meta = {
-    description: '',
-    emoji: '⚡',
-    showDetailsSection: false,
-    contributors: [
-        'lucemans'
-    ]
+	description: '',
+	emoji: '⚡',
+	showDetailsSection: false,
+	contributors: [
+		'luc.eth'
+	]
 };
 
 # Quickstart
@@ -142,14 +142,25 @@ func main() {
 
 <LiveDemo id="name_lookup" />
 
-<CodeGroup>
+<CodeGroup title="Lookup a name">
 
 ```tsx {{ variant: "wagmi", link: "https://wagmi.sh/react/hooks/useEnsAddress", stackblitz: "https://stackblitz.com/edit/ens-wagmi-quickstart-lookup" }}
-// TODO: Write Code Snippet
-```
+import { useAccount, useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi';
+import { normalize } from 'viem/ens';
+import { formatAddress } from '@ens-tools/format';
 
-```tsx {{ variant: "ens-tools" }}
-// TODO: Write Code Snippet
+export const NameLookup = () => {
+    const name = normalize("luc.eth");
+    const { data: avatar } = useEnsAvatar({ name })
+    const { data: ethereum } = useEnsAddress({ name, coinType: 60 });
+
+    return (
+        <div>
+			{ethereum && formatAddress(ethereum)}<br />
+			{avatar && <img src={avatar} />}
+		</div>
+    );
+};
 ```
 
 ```go {{ variant: "go", name: "Go" }}
