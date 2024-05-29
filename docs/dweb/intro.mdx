@@ -1,0 +1,67 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+  description: 'Introduction to hosting a decentralized website using ENS',
+  emoji: '🔍',
+  contributors: [
+    'luc.eth'
+  ]
+};
+
+# Hosting a Decentralized Website
+
+<WIP />
+
+{/* TODO: Graphic here */}
+
+## ContentHash {{ title: 'the \'contenthash\' field' }}
+
+The ContentHash is a very popular component of an ENS name, first introduced in [ENSIP-7](/ensip/7).
+It can be queried by hitting the [contenthash(bytes32)](/resolvers/interfaces#0xbc1c58d1) function on a name's resolver.
+You can also [set the contenthash on a name](/resolvers/interfaces#0x304e6ade) if the resolver supports it.
+
+<div className="card1 p-4 flex justify-center gap-4">
+  {
+    ['ipfs://qMhx...', 'bzz:/2477', 'ar://HGa8...'].map((tag) => (
+      <span key={tag} className="tag tag-blue">{tag}</span> 
+    ))
+  }
+</div>
+
+## Hosting & Pinning {{ id: 'hosting' }}
+
+When it comes to hosting your files there are many options to choose from.
+
+
+<div className="card1 p-4 flex justify-center gap-4">
+  {
+    ['IPFS / Filecoin', 'Swarm', 'Arweave'].map((tag) => (
+      <span key={tag} className="tag tag-blue">{tag}</span> 
+    ))
+  }
+</div>
+
+Popular options include [IPFS](https://ipfs.io), [Swarm](https://ethswarm.org), and [Arweave](https://arweave.org).
+Depending on what option you go with your files are either permanently stored on a network,
+or require to be actively stored on atleast one machine, also known as "pinning".
+
+### Deploy your site {{ id: 'deploy' }}
+
+Several helpful tools and platforms exist that you can use to deploy your website to IPFS, Swarm, or Arweave.
+Most notably [fleek](https://fleek.co), [Pinata](https://pinata.cloud), and [Blumen](https://blumen.stauro.dev/).
+Helping you easily deploy your website to a decentralized storage network.
+
+## Setting your ContentHash {{ id: 'set' }}
+
+If you are using the public resolver (the default for names registered using the ENS Manager App), you can set the contenthash directly from within the [ENS Manager App](https://app.ens.domains).
+
+If you are using a custom resolver, or are writing your own resolver you will be able to have more fine grained control over the contenthash field.
+See [ENSIP-7](/ensip/7) for more information on the contenthash field.
+
+## Browser Support & Gateways {{ id: 'gateway' }}
+
+In the ideal world every browser supports decentralized websites out of the box.
+If you are using [MetaMask](https://metamask.io) or [Brave Browser](https://brave.com) you can already access IPFS websites directly.
+On non-conforming browsers you can use a gateway such as [eth.link](https://eth.link) or [eth.limo](https://eth.limo) to access your website.
+You can test if your browser supports decentralized websites by visiting [ens.eth](https://ens.eth) or use a gateway via [ens.eth.link](https://ens.eth.link).
