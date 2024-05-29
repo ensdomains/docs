@@ -24,6 +24,7 @@ const config = createConfig({
     ],
     transports: {
         [mainnet.id]: http(),
+        [goerli.id]: http(),
         [sepolia.id]: http(),
         [holesky.id]: http(),
     },
