@@ -39,7 +39,7 @@ When a new EVM reverse registrar is deployed, it will need to be setup by the ow
 ### Resolving Primary ENS Names by a dapp
 
 1) If a dapp has a connected user it SHOULD first check the chainId of the user.
-2) It MUST then construct the cointype using ENSIP11: `coinType = 0x80000000 | chainId`, which must be converted to the hexadecimal representation.
+2) It MUST then construct the cointype using ENSIP11: `coinType = 0x80000000 | chainId`, which must be converted to lower-case hexadecimal representation.
 3) If the chainId is not 1, it SHOULD then construct the ENS node representing the reverse node on that network using the coinType and the user's connected `address`: `node = namehash([address].[coinTypeAsHex].reverse)`
 4) Call the registry with the namehash to retrieve the resolver `resolver = registry.resolver(node)`
 5) Call name on the resolver `name = resolver.name(node)`
