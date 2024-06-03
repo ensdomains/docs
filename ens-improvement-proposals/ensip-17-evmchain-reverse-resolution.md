@@ -38,7 +38,7 @@ When a new EVM reverse registrar is deployed, it will need to be setup by the ow
 
 ### Resolving Primary ENS Names by a dapp
 
-Below is a step-by-step resolution process of ENS reverse resolution. A dapp must adhere to these rules to be compliant with the reverse resolution process. 
+Below is a step-by-step resolution process of ENS reverse resolution. A dapp must adhere to these rules to be compliant with the reverse resolution process. This reverse resolution process adds on to ENSIP-3's original reverse resolution process and will act as a replacement for applications that support Primary ENS names on multiple chains.
 
 #### Glossary of terms
 
@@ -68,11 +68,10 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 10) Call name on the resolver `name = resolver.name(node)`
 11) If a string is found, skip to step 13
 12) If `name` is an empty string, the dapp assumes that a primary name does not exist and instead show the address instead. The name resolution process ends here.
-13) If the dapp finds an ENS name, it first checks the forward resolution. This can be done by constructing the ENS node for the primary name found: `primaryName = namehash(name)`
-14) It calls the registry to retrieve the resolver `registry.resolver(primaryName)`
-15) Once it has the resolver it then calls the addr function with the appropriate coinType. If the chainId was 1, it uses chainId 60 (mainnet) without converting. If a name was found on step 7, it must use the `coinType` from the chainId of the user. If a name was found at step 10, which is the default Primary name for EoAs, it must check the coinType of chainId 0, which represents [an EoA across all EVM chains](https://namespaces.chainagnostic.org/eip155/caip10). `resolvedAddress = resolver.addr(coinType)`
-16) If `resolvedAddress == address`, the dapp considers the Primary Name verified, and can now show this instead of the address within the application.
-17) If `resolvedAddress != address` the dapp considers the Primary Name unverified and shows the address instead.
+13) If the dapp finds an ENS name, it first checks the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10)
+14) In constructing the ENSIP-10 `resolve` calldata it will construct the addr function with the appropriate coinType. If the chainId was 1, it uses chainId 60 (mainnet) without converting. If a name was found on step 7, it must use the `coinType` from the chainId of the user. If a name was found at step 10, which is the default Primary name for EoAs, it must check the coinType of chainId 0, which represents [an EoA across all EVM chains](https://namespaces.chainagnostic.org/eip155/caip10). `resolvedAddress = resolver.addr(coinType)`
+15) If `resolvedAddress == address`, the dapp considers the Primary Name verified, and can now show this instead of the address within the application.
+16) If `resolvedAddress != address` the dapp considers the Primary Name unverified and shows the address instead.
     
 Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([address].addr.reverse) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
 
