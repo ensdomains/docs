@@ -120,8 +120,6 @@ To make things explicit we will require the signing of a message to confirm that
 1) Sign a message to set a default record
 2) call `setName()` on the default registrar on L1
 
-Possibility: Allowing L1 Primary ENS names to also use `default.reverse`. This could be incorporated into the public resolver's `name()` function.
-
 ### Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
