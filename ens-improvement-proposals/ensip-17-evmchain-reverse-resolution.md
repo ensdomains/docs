@@ -92,12 +92,12 @@ A failure at any step of this process MUST be treated by the client identically 
 
 ### Examples of valid L2 reverse resolution
 
-* Arbitrum: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.2147525809.reverse
+* Arbitrum: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.8000A4B1.reverse
 * Optimism:
-0F32b753aFc8ABad9Ca6fE589F707755f4df2353.2147483658.reverse
-* Base: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.2147492101.reverse
-* Polygon ZKEVM: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.2147484749.reverse
-* ZKSync Era: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.2147483972.reverse
+0F32b753aFc8ABad9Ca6fE589F707755f4df2353.8000000A.reverse
+* Base: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.80002105.reverse
+* Polygon ZKEVM: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.8000044D.reverse
+* ZKSync Era: 0F32b753aFc8ABad9Ca6fE589F707755f4df2353.80000144.reverse
 
 ### Deprecating use of mainnet primary ENS name on other chains
 
