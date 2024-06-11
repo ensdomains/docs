@@ -74,3 +74,11 @@ More about loading information from a resolver can be found [here](/resolvers/in
 
 In addition, all of the above functions can be sent to the `resolve()` function, specified in [ENSIP-10](/ensip/10).
 This allows for not only multicall functionality, but also easier implementation of EIP-3668, and more.
+
+## Reverse Resolution
+
+Due to the modular nature of how ENS is designed, it is also possible to lookup the "primary name" of an address.
+This process actually uses forward resolution under the hood, you read that right - its just forwards resolution.
+
+To look up the primary name of a given address you must do a resolver lookup for `addr.reverse` and then query the `name()` field on the resolver.
+This name field returns the "preferred" name for the address. Note that the implementing client MUST perform a forward resolution on this name to verify the address matches the one you are looking up.
