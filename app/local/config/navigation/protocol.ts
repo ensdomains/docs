@@ -84,14 +84,14 @@ export const navigation: SectionData[] = [
                 icon: '🌐',
                 links: [
                     {
-                        title: 'Quickstart',
-                        href: '/web/quickstart',
-                        icon: '⚡',
-                    },
-                    {
                         title: 'Tools and Libraries',
                         href: '/web/libraries',
                         icon: '🛠️',
+                    },
+                    {
+                        title: 'Quickstart',
+                        href: '/web/quickstart',
+                        icon: '⚡',
                     },
                     {
                         title: 'Address Lookup',
@@ -108,11 +108,6 @@ export const navigation: SectionData[] = [
                         title: 'Primary Names',
                         href: '/web/reverse',
                         icon: '🔍',
-                    },
-                    {
-                        title: 'Multichain',
-                        href: '/web/multichain',
-                        icon: '⛓️',
                     },
                     {
                         title: 'List Names',
@@ -132,6 +127,11 @@ export const navigation: SectionData[] = [
                     {
                         title: 'Issuing Subdomains',
                         href: '/web/subdomains',
+                    },
+                    {
+                        title: 'Multichain',
+                        href: '/web/multichain',
+                        icon: '⛓️',
                     },
                     {
                         title: 'Subgraph',
