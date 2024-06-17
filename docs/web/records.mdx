@@ -114,6 +114,17 @@ const ensText = await publicClient.getEnsText({
 });
 ```
 
+```python {{ title: "web3.py", variant: "web3.py", link: "https://web3py.readthedocs.io/en/latest/ens_overview.html#text-records" }}
+from ens.auto import ns
+
+# set text
+ns.set_text('alice.eth', 'url', 'https://example.com')
+
+# get text
+url = ns.get_text('alice.eth', 'url')
+assert url == 'https://example.com'
+```
+
 ```tsx {{ title: "Ethers.rs", variant: "rust" }}
 // TODO: Not Implemented
 ```

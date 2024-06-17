@@ -58,6 +58,12 @@ const ensResolver = await publicClient.getEnsResolver({
 });
 ```
 
+```py {{ variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#working-with-resolvers' }}
+from ens.auto import ns
+
+resolver = ns.resolver('alice.eth')
+```
+
 </CodeGroup>
 
 To verify which specifications are implemented by a resolver you can call the `supportsInterface(bytes4 interfaceID)` on the resolver with the interfaceID you would like to test for.

@@ -93,7 +93,7 @@ export const LanguagePresets = configureLanguages({
     },
     web3py: {
         icon: '',
-        name: 'Web3.py',
+        name: 'web3.py',
         language: 'python',
         fallback: [],
     },
