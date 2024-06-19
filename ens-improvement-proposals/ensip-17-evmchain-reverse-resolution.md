@@ -108,15 +108,6 @@ Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract w
 
 If we mandated that the address cannot use `addr(node, 60)`, but only the address of the chain in question, it would be possible to use mainnet as a backup. However the fact remains that you would still need to claim and set your Primary ENS name on mainnet, and the possibility for confusion seem to outweigh the benefits of using mainnet (high gas) as a catch-all back up for other L2 EVM chains (low gas). Additionally this would only be useful for EVM-compatible chains and would not benefit non-EVM L2s that have a different address format. 
 
-## Being explicit about default Primary ENS Name
-
-To make things explicit we will require the signing of a message to confirm that the address in question would like to use mainnet or another network as fallback. This would either resolve directly on mainnet. Defaults would only be applicable to EoAs that can sign a message. This is because smart contract accounts would not be able to reliably set a default on all chains.
-
-### Setting default
-
-1) Sign a message to set a default record
-2) call `setName()` on the default registrar on L1
-
 ### Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
