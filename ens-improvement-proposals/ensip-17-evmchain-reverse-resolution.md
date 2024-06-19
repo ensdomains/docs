@@ -76,16 +76,12 @@ Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([addres
 
 ENSIP-12 was concieved before the ENS L2 reverse resolution specification and therefore should be updated to reflect the current state of ENS primary name resolution. This means that all avatar records are able to be updated on a per-chain basis by updating the avatar record on their reverse node.
 
-#### Example of resolving an avatar on an L2 or EVM chain
+To determine the avatar URI for a specific EVM chain address, the client can follow the resolution process above until step 6) And then do the following
 
-To determine the avatar URI for a specific EVM chain address, the client MUST reverse-resolve the address by querying the ENS registry on Ethereum for the resolver of `<address>.<coinTypeAsHex>.reverse`, where `<address>` is the lowercase hex-encoded Ethereum address, without leading '0x'. Then, the client SHOULD call `.text(namehash('<address>.<coinType>.reverse'), 'avatar')` to retrieve the avatar URI for the address.
-
-If a resolver is returned for the reverse record, but calling `text` causes a revert or returns an empty string, the client CAN call `.name(namehash('<address>.<coinType>.reverse'))`. If this method returns a valid ENS name, the client MUST:
-
-1. Validate that the reverse record is valid, by resolving the returned name and calling `addr` on the resolver, checking it matches the original evmChainId (converted to cointype) address.
-2. Perform [ENSIP-12 Avatar text record resolution](https://docs.ens.domains/ensip/12) on the primary name.
-
-A failure at any step of this process MUST be treated by the client identically as a failure to find a valid avatar URI.
+1. Perform [Ethereum address avatar text record resolution](https://docs.ens.domains/ensip/12#ethereum-address) on the reverse node.
+2. If none is found, proceed to step 7), if no primary name is found, consider the avatar resolution a failure
+3. Perform [ENS name avatar text record resolution](https://docs.ens.domains/ensip/12#ens-name) on the ENS name.
+4. Complete the Reverse resolution process and consider the avatar found valid if the Primary name has been verified on step 12)
 
 ### Examples of valid L2 reverse resolution
 
