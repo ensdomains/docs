@@ -63,12 +63,12 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 5) Set `node = namehash(reverseName)`.
 6) Fetch the resolver for the reverse name: `resolver = registry.resolver(node)`
 7) Fetch the primary name from the reverse record's resolver: `name = resolver.name(node)`
-8) If the primary name is not the empty string, go to step 13.
+8) If the primary name is not the empty string, go to step 11.
 9) If `name` is an empty string, and `coinType` is not 0, set `reverseName = '[address].default.reverse'` and `coinType = 0` and go to step 5.
-12) Otherwise, no primary name exists for this account on this chain; halt and display the address instead.
-13) If the dapp finds an ENS name, it MUST then check the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10). When constructing the ENSIP-10 `resolve()` calldata, encode a call to `addr(bytes32 node, uint256 coinType)`. Set `resolvedAddress` to the result of calling `resolve` on the resolver with this calldata.
-15) If `resolvedAddress == address`, the dapp considers the Primary Name valid, and can now show this instead of the address within the application.
-16) If `resolvedAddress != address` the dapp considers the Primary Name invalid and MUST show the address instead.
+10) Otherwise, no primary name exists for this account on this chain; halt and display the address instead.
+11) If the dapp finds an ENS name, it MUST then check the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10). When constructing the ENSIP-10 `resolve()` calldata, encode a call to `addr(bytes32 node, uint256 coinType)`. Set `resolvedAddress` to the result of calling `resolve` on the resolver with this calldata.
+12) If `resolvedAddress == address`, the dapp considers the Primary Name valid, and can now show this instead of the address within the application.
+13) If `resolvedAddress != address` the dapp considers the Primary Name invalid and MUST show the address instead.
     
 Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([address].addr.reverse) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
 
