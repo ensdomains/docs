@@ -56,22 +56,19 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 
 #### Resolution process
 
-1) If a dapp has a connected user it SHOULD first check the chainId of the user.
-2) It will then construct the cointype using ENSIP-11: `coinType = 0x80000000 | chainId`, which must be converted to lower-case hexadecimal representation.
-3) If the chainId is 1, it should call `[address].addr.reverse`, then skip to step 5.
-4) If the chainId is not 1, it should then construct the ENS node representing the reverse node on that network using the coinType and the user's connected `address`: `node = namehash([address].[coinTypeAsHex].reverse)`
-5) Call the registry with the namehash to retrieve the resolver `resolver = registry.resolver(node)`
-6) Call name on the resolver `name = resolver.name(node)`
-7) If a string is found, skip to step 13
-8) If `name` is an empty string, it will check the default primary name for all EVM chains by constructing its node as follows: `node = namehash([address].default.reverse)`.
-9) Call the registry with the namehash to retrieve the resolver `resolver = registry.resolver(node)`
-10) Call name on the resolver `name = resolver.name(node)`
-11) If a string is found, skip to step 13
-12) If `name` is an empty string, the dapp assumes that a primary name does not exist and instead show the address instead. The name resolution process ends here.
-13) If the dapp finds an ENS name, it first checks the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10)
-14) In constructing the ENSIP-10 `resolve()` calldata it will construct the addr function with the appropriate coinType. If the chainId was 1, it uses chainId 60 (mainnet) without converting or using the legacy `addr(bytes32 node)` function without an additional cointype argument. If a name was found on step 7, it must use the `coinType` from the chainId of the user. If a name was found at step 10, which is the default Primary name for EoAs, it must check the coinType of chainId 0, which represents [an EoA across all EVM chains](https://namespaces.chainagnostic.org/eip155/caip10). `resolvedAddress = resolver.addr(coinType)`
-15) If `resolvedAddress == address`, the dapp considers the Primary Name verified, and can now show this instead of the address within the application.
-16) If `resolvedAddress != address` the dapp considers the Primary Name unverified and shows the address instead.
+1) Let `chainId` be the chain ID of the DApp's currently connected chain.
+2) If `chainId` is 1, set `reverseName = "[address].addr.reverse" and `coinType = 60` and go to step 5.
+3) Otherwise, set `coinType` using ENSIP-11: `coinType = 0x80000000 | chainId`.
+4) Set `reverseName = '[address].[coinTypeAsHex].reverse'`
+5) Set `node = namehash(reverseName)`.
+6) Fetch the resolver for the reverse name: `resolver = registry.resolver(node)`
+7) Fetch the primary name from the reverse record's resolver: `name = resolver.name(node)`
+8) If the primary name is not the empty string, go to step 13.
+9) If `name` is an empty string, and `coinType` is not 0, set `reverseName = '[address].default.reverse'` and `coinType = 0` and go to step 5.
+12) Otherwise, no primary name exists for this account on this chain; halt and display the address instead.
+13) If the dapp finds an ENS name, it MUST then check the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10). When constructing the ENSIP-10 `resolve()` calldata, encode a call to `addr(bytes32 node, uint256 coinType)`. Set `resolvedAddress` to the result of calling `resolve` on the resolver with this calldata.
+15) If `resolvedAddress == address`, the dapp considers the Primary Name valid, and can now show this instead of the address within the application.
+16) If `resolvedAddress != address` the dapp considers the Primary Name invalid and MUST show the address instead.
     
 Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([address].addr.reverse) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
 
