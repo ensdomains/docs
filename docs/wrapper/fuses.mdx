@@ -13,6 +13,8 @@ A "fuse" is a permission or perk that can be granted/revoked on a name. As the n
 
 Fuses will only reset when the **expiry** is reached. In the ENS Manager UI, this is available in the "Permissions" section of the name.
 
+By **wrapped expiry**, we mean that for .eth second-level names (like `name.eth`), this is the end of the 90-day grace period, the time at which the .eth 2LD is truly released. For all other names (such as subnames), there is no grace period, so the expiry is just the expiration date for that specific subname.
+
 For example, by default when you wrap a name, you can transfer that NFT around freely, just as you can with other NFTs. However, if the **`CANNOT_TRANSFER`** fuse is burned, then the NFT becomes non-transferrable. In the ENS Manager UI, you would do this by revoking the "Can send this name" permission.
 
 In order to burn fuses on a name, the parent name must be **Locked** (meaning, you cannot unwrap the name). The reason is, if the parent name was not locked, then the owner of the parent name could simply get around the constraints of the Name Wrapper by unwrapping the name, and replacing/revoking subnames against the core ENS Registry.
