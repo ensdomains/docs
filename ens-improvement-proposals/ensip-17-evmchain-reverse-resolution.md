@@ -54,7 +54,7 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 
 * Primary Name is the common name use for the reverse node's record `name`
 
-#### Resolution process
+#### Primary Name Resolution process
 
 1) Let `chainId` be the chain ID of the DApp's currently connected chain.
 2) If `chainId` is 1, set `reverseName = "[address].addr.reverse" and `coinType = 60` and go to step 5.
@@ -79,9 +79,8 @@ ENSIP-12 was concieved before the ENS L2 reverse resolution specification and th
 To determine the avatar URI for a specific EVM chain address, the client can follow the resolution process above until step 6) And then do the following
 
 1. Perform [Ethereum address avatar text record resolution](https://docs.ens.domains/ensip/12#ethereum-address) on the reverse node.
-2. If none is found, proceed to step 7), if no primary name is found, consider the avatar resolution a failure
+2. If none is found, proceed to step 7) in the [Primary name resolution process](#primary-name-resolution-process) above, if no primary name is found, consider the avatar resolution a failure.
 3. Perform [ENS name avatar text record resolution](https://docs.ens.domains/ensip/12#ens-name) on the ENS name.
-4. Complete the Reverse resolution process and consider the avatar found valid if the Primary name has been verified on step 12)
 
 ### Examples of valid L2 reverse resolution
 
