@@ -1,0 +1,111 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'Specifies reverse resolution in a cross-chain context',
+    contributors: [
+        'jefflau.eth',
+    ],
+    ensip: {
+        status: 'draft',
+        created: '2023-03-14',
+    }
+};
+
+# ENSIP-19: EVM-chain Reverse Resolution
+
+## Abstract
+
+This ENSIP specifies a way for reverse resolution to be used on other EVM chains. This allows setting primary names on L2s, as well as resolving any other records set on this specific reverse record, such as the avatar.
+
+## Motivation
+
+Reverse resolution has been in use since ENS's inception, however at the time Ethereum had no concrete scaling plans. In the past 5 years, we've seen layer 2s and sidechains become more prevalent and we first allowed support for these with ENSIP-9 (formerly EIP-2304) to allow addresses from other chains to be stored on ENS. To complete support for other EVM chains, reverse resolution needs to be expanded to allow reverse resolution to also exist.
+
+## Specification
+
+### Overview
+
+* Reverse registrars will be setup on each EVM-chain, with a corresponding registry
+* Reverse registrar will only allow setting the name and text record without resolver customisability.
+  This is to allow a consistent storage slot that can be checked on L1.
+* User can now claim their reverse on this chain and set it to their ENS name
+* Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ensip/11).
+* A dapp can then detect the chainID that a user is on, convert that into coinType in hexadecimal and resolve their primary ens name by resolving the name record at [userAddress].[coinTypeAsHex].reverse. This will be resolved via a CCIP-read gateway and look up the reverse record on the corresponding EVM-chain. Depending on if the chain is an L2 that has state roots on L1 or sidechain, verification can be done with trusted signatures or trustlessly on Ethereum mainnet.
+* Dapps will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up a CCIP-read resolver and records for each network and put those addresses wherever they want (such as on another L2)
+* Once matched, the dapp can then also resolve any text records on the primary ENS name, such as avatar.
+* Discovery of the reverse registrar on each chain will be done by looking up the `addr()` of [coinTypeAsHex].reverse.
+* coinType in all instances will be the hex representation to reduce the length of the name
+
+### Deployment and discovery of EVM Reverse registrars
+
+When a new EVM reverse registrar is deployed, it will need to be setup by the owner of the `reverse` node, to setup a subdomain [coinTypeAsHex].reverse. It must then be setup with an Offchain resolver that has an onchain L1 address record that return the contract address of the reverse registrar for that chain. The Offchain resolver will also support wildcard of all the address subdomains with the format [address].[coinTypeAsHex].reverse. Additionally there must be a new EVM gateway setup to handle the CCIP-read revert errors that will go to the corresponding network to gather the chain-specific reverse record and verify this data on L1.
+
+### Resolving Primary ENS Names by a dapp
+
+Below is a step-by-step resolution process of ENS reverse resolution. A dapp must adhere to these rules to be compliant with the reverse resolution process. This reverse resolution process adds on to ENSIP-3's original reverse resolution process and will act as a replacement for applications that support Primary ENS names on multiple chains.
+
+#### Glossary of terms
+
+* `[address]` is the lowercase hexadecimal representation of an Ethereum address with prefix `0x` removed.
+
+* `coinType` for chain ids is derived using [ENSIP-11](https://docs.ens.domains/ensip/11) by ORing the chainId with `0x80000000`
+
+* `coinTypeAsHex` is the cointype converted to hexadecimal.
+
+* Registry refers to the ENS registry on Ethereum L1
+
+* Resolver refers to the resolver of the Reverse node whether on L1 or another chain
+
+* Primary Name is the common name use for the reverse node's record `name`
+
+#### Primary Name Resolution process
+
+1) Let `chainId` be the chain ID of the DApp's currently connected chain.
+2) If `chainId` is 1, set `reverseName = "[address].addr.reverse" and `coinType = 60` and go to step 5.
+3) Otherwise, set `coinType` using ENSIP-11: `coinType = 0x80000000 | chainId`.
+4) Set `reverseName = '[address].[coinTypeAsHex].reverse'`
+5) Set `node = namehash(reverseName)`.
+6) Fetch the resolver for the reverse name: `resolver = registry.resolver(node)`
+7) Fetch the primary name from the reverse record's resolver: `name = resolver.name(node)`
+8) If the primary name is not the empty string, go to step 11.
+9) If `name` is an empty string, and `coinType` is not 0, set `reverseName = '[address].default.reverse'` and `coinType = 0` and go to step 5.
+10) Otherwise, no primary name exists for this account on this chain; halt and display the address instead.
+11) If the dapp finds an ENS name, it MUST then check the forward resolution. This can be done by using the resolution processs in [ENSIP-10](https://docs.ens.domains/ensip/10). When constructing the ENSIP-10 `resolve()` calldata, encode a call to `addr(bytes32 node, uint256 coinType)`. Set `resolvedAddress` to the result of calling `resolve` on the resolver with this calldata.
+12) If `resolvedAddress == address`, the dapp considers the Primary Name valid, and can now show this instead of the address within the application.
+13) If `resolvedAddress != address` the dapp considers the Primary Name invalid and MUST show the address instead.
+    
+Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([address].addr.reverse) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
+
+### Resolving an avatar by a dapp on another EVM chain
+
+ENSIP-12 was concieved before the ENS L2 reverse resolution specification and therefore should be updated to reflect the current state of ENS primary name resolution. This means that all avatar records are able to be updated on a per-chain basis by updating the avatar record on their reverse node.
+
+To determine the avatar URI for a specific EVM chain address, the client can follow the resolution process above until step 6) And then do the following
+
+1. Perform [Ethereum address avatar text record resolution](https://docs.ens.domains/ensip/12#ethereum-address) on the reverse node.
+2. If none is found, proceed to step 7) in the [Primary name resolution process](#primary-name-resolution-process) above, if no primary name is found, consider the avatar resolution a failure.
+3. Perform [ENS name avatar text record resolution](https://docs.ens.domains/ensip/12#ens-name) on the ENS name.
+
+### Examples of valid L2 reverse resolution
+
+* Arbitrum: 0f32b753afc8abad9ca6fe589f707755f4df2353.8000A4B1.reverse
+* Optimism:
+0f32b753afc8abad9ca6fe589f707755f4df2353.8000000A.reverse
+* Base: 0f32b753afc8abad9ca6fe589f707755f4df2353.80002105.reverse
+* Polygon ZKEVM: 0f32b753afc8abad9ca6fe589f707755f4df2353.8000044D.reverse
+* ZKSync Era: 0f32b753afc8abad9ca6fe589f707755f4df2353.80000144.reverse
+
+### Deprecating use of mainnet primary ENS name on other chains
+
+ENS has not been explicit about how to use the mainnet `addr()` record and it is often used as a backup to a user not having an address record set. The mainnet reverse record has also historically been used on other EVM chains due to no alternative on that specific chain. There are a few reasons why it would undesirable to encourage use of mainnet primary name and/or `addr(node, 60)` record as a backup for it not being set on another EVM chain.
+
+An example of why this could be confusing:
+
+Dapp is on Arbitrum and uses mainnet primary ENS name. It resolves the ENS name's mainnet address and uses that to verify the reverse record is correct. It also uses the mainnet address to allow in-app transfers.
+
+Mainnet primary ENS name that has an `addr(node, 60)` that is a smart contract wallet. The smart contract wallet is only on Ethereum and the user is unable to use `CREATE2` to deploy the same smart contract wallet on arbitrum. User 2 sees this Primary ENS name and wants to send funds to User 1. User 2 resolves the `addr()` of the ENS name and sends the funds to an address that doesn't exist on arbitrum and User 1 has no way to access the counterfactual address on that chain.
+
+If we mandated that the address cannot use `addr(node, 60)`, but only the address of the chain in question, it would be possible to use mainnet as a backup. However the fact remains that you would still need to claim and set your Primary ENS name on mainnet, and the possibility for confusion seem to outweigh the benefits of using mainnet (high gas) as a catch-all back up for other L2 EVM chains (low gas). Additionally this would only be useful for EVM-compatible chains and would not benefit non-EVM L2s that have a different address format. 
+
+## Copyright
+
+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
