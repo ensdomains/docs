@@ -1,0 +1,69 @@
+import { WIP } from '@/components/wip/WIP';
+
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'The Ethereum Name Service Smart Contracts Overview',
+ emoji: '🗒️',
+    contributors: []
+};
+
+# Smart Contracts
+
+The Ethereum Name Service is made up of a set of smart contracts.
+These smart contracts are responsible for storing and managing information associated with names.
+
+## Resolution
+
+The resolution process outlines how a name is resolved.
+This includes the process of finding a resolver, and then using that resolver to fetch information about a name.
+
+<EmbedLink
+    title="Resolution Process"
+    description="The resolution process"
+    href="/resolution"
+/>
+
+## Resolvers
+
+Every name has a resolver, responsible for fetching information about a name, such as address, avatar, and more.
+Resolvers allow for programmatic control over the information associated with a name, implemented in solidity.
+
+There are various resolvers to choose from, such as the [Public Resolver](/resolvers/public) or [write your own](/resolvers/writing).
+
+<EmbedLink
+    title="Resolvers Quickstart"
+    description=""
+    href="/resolvers/quickstart"
+/>
+
+## Registry & Registrars
+
+The smart contracts can be found on github at [ensdomains/ens-contracts]().
+
+<div>
+    <div className="grid grid-cols-3 gap-4 not-prose">
+        {
+            [
+                ['The Registry', '/registry/ens'],
+                ['ETH Registrar', '/registry/eth'],
+                ['DNS Registrar', '/registry/dns'],
+                ['Reverse Registrar', '/registry/reverse']
+            ].map((list, i) => (
+                <EmbedLink
+                    title={list[0]}
+                    description="The resolution process"
+                    href={list[1]}
+                    key={i}
+                />
+            ))
+        }
+    </div>
+</div>
+
+## Source Code
+
+The code for the ENS Smart Contracts as well as information around the latest deploys, tests, and more can be found on github.
+
+<div>
+    <Repository src="ensdomains/ens-contracts" description="Ethereum Name Service Contracts"/>
+</div>
