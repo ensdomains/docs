@@ -15,17 +15,17 @@ export const meta = {
 
 # ENSIP-16: Offchain Metadata
 
-### Abstract
+## Abstract
 
 This ENSIP specifies APIs for querying metadata directly on the resolver for EIP-3668 (CCIP Read: Secure offchain data retrieval) enabled names. EIP-3668 will power many of the domains in the future, however since the retrieval mechanism uses wildcard + offchain resolver, there is no standardised way to retrieve important metadata information such as the owner (who can change the records), or which L2/offchain database the records are stored on.
 
-### Motivation
+## Motivation
 
 With EIP-3668 subdomains already starting to see wide adoption, it is important that there is a way for frontend interfaces to get important metadata to allow a smooth user experience. For instance a UI needs to be able to check if the currently connected user has the right to update an EIP-3668 name.
 
 This ENSIP addresses this by adding a way of important metadata to be gathered on the offchain resolver, which would likely revert and be also resolved offchain, however there is an option for it to be also left onchain if there value was static and wouldn't need to be changed often.
 
-### Specification
+## Specification
 
 The metadata should include 2 different types of info
 
@@ -33,20 +33,20 @@ The metadata should include 2 different types of info
 
 - Ownership related info: `owner`, `isApprovedForAll` defines who can own or update the given record.
 
-#### Context
+### Context
 
 An optional field "context" is introduced by utilizing an arbitrary bytes string to define the namespace to which a record belongs.
 
 For example, this "context" can refer to the address of the entity that has set a particular record. By associating records with specific addresses, users can confidently manage their records in a trustless manner on Layer 2 without direct access to the ENS Registry contract on the Ethereum mainnet. Please refer to [ENS-Bedrock-Resolver](https://github.com/corpus-io/ENS-Bedrock-Resolver#context) for the reference integration
 
-#### Dynamic Metadata
+### Dynamic Metadata
 
 Metadata serves a crucial role in providing valuable insights about a node owner and their specific resolver. In certain scenarios, resolvers may choose to adopt diverse approaches to resolve data based on the node. An example of this would be handling subdomains of a particular node differently. For instance, we could resolve "optimism.foo.eth" using a contract on optimism and "gnosis.foo.eth" using a contract on gnosis.
 By passing the name through metadata, we empower the resolution process, enabling CcipResolve flows to become remarkably flexible and scalable. This level of adaptability ensures that our system can accommodate a wide array of use cases, making it more user-friendly and accommodating for a diverse range of scenarios.
 
-### Implementation
+## Implementation
 
-#### L1
+### L1
 
 ```solidity
 // To be included in
@@ -82,7 +82,7 @@ interface IOffChainResolver {
 }
 ```
 
-#### L2 (EVM compatible chain only)
+### L2 (EVM compatible chain only)
 
 ```solidity
 // To be included in the contract returned by `metadata` function `storageLocation`
@@ -116,11 +116,11 @@ const dataLocation = await.resolver.graphqlUrl()
 // }
 ```
 
-##### GraphQL schema
+#### GraphQL schema
 
 [GraphQL](https://graphql.org) is a query language for APIs and a runtime for fulfilling those queries with onchain event data. You can use the hosted/decentralised indexing service such as [The Graph](https://thegraph.com), [Goldsky](https://docs.goldsky.com/introduction), [QuickNode](https://marketplace.quicknode.com/add-on/subgraph-hosting) or host your own using The Graph, or [ponder](https://ponder.sh)
 
-##### L1
+#### L1
 
 `Metadata` is an optional schema that indexes `MetadataChanged` event.
 
@@ -142,7 +142,7 @@ type Metadata @entity {
 
 ```
 
-##### L2
+#### L2
 
 L2 graphql URL is discoverable via `metadata` function `graphqlUrl` field.
 Because the canonical ownership of the name exists on L1, some L2/offchain storage may choose to allow multiple entities to update the same node namespaced by `context`. When querying the domain data, the query should be filtered by `context` that is returned by `metadata`function `context` field
@@ -176,15 +176,15 @@ type Resolver @entity {
 }
 ```
 
-### Backwards Compatibility
+## Backwards Compatibility
 
 None
 
-### Open Items
+## Open Items
 
 - Should `owner` and `isApprovedForAll` be within graphql or should be own metadata function?
 
-### Copyright
+## Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 

@@ -14,19 +14,21 @@ export const meta = {
 
 # ENSIP-18: Profile Text Records
 
-### Abstract
+## Abstract
 
 This ENSIP which extends [ENSIP-5: Text Records](ensip-5-text-records.md) defines a set of text records that should be used for profile information, along with the format that each should have.
 
-### Motivation
+## Motivation
 
 ENS names have become increasingly popular to use as an identifying profile across the Ethereum ecosystem. Although many apps have started integrating ENS "profiles", the only defined global text record keys are in ENSIP-5. These global keys were defined based on the usecase of ENS names at the time, and were not created with profiles in mind.
 
 This specification extends the existing set of global keys, as well as creating a new subset within global keys called "profile keys".
 
-### Specification
+## Specification
 
 The Profile Keys are a subset of Global Keys, the newly defined global keys are specified in the "Global Keys" section.
+
+### Profile Keys
 
 #### `alias`
 
@@ -132,7 +134,7 @@ Colours can be full or half length hex codes (e.g. `FFFFFF`, or `FFF`). A colour
 
 **Design Considerations:** None.
 
-### `primary-contact`
+#### `primary-contact`
 
 **Description:** The record key for a primary contact
 
@@ -142,7 +144,7 @@ Colours can be full or half length hex codes (e.g. `FFFFFF`, or `FFF`). A colour
 
 **Design Considerations:** When resolving `primary-contact` for a profile, the value should resolve to the service (which could be logo or name) and the corresponding value. Direct links to the service should be supported on a best-effort basis (e.g. `com.github` => `https://github.com/`)
 
-#### Global Keys
+### Global Keys
 
 Profile Keys are a subset of Global Keys, therefore these global keys extend the existing global keys defined in ENSIP-5.
 
@@ -161,20 +163,20 @@ When creating a profile service key record, the value should be **void of option
 
 In the case that the value is always displayed in a certain format, the formatting may be kept. However, any parsing or processing done on said value should attempt to be compatible with values that do not have the formatting applied.
 
-#### Image files
+### Image files
 
 When **setting** an image for an avatar or header, it is **strongly recommended** to limit the file size to an absolute maximum of 10MB. The image being set should be validated against this limit, whether it is a URL, or an NFT. Ideally, if creating an image to be set on behalf of the user, the file size should be limited to 2MB. Additionally, maintainers of image endpoints should support dimensions of images to be limited via query string `?width={width}&height={height}` wherever possible.
 
 When **retrieving** an image for an avatar or header, images should attempt to be loaded if 10MB or less in file size. Loading images above 10MB is not required, but ideally loading should still be attempted. If retrieving an image via URL, a query string can be optionally appended to the URL to limit the dimensions via `?width={width}&height={height}`. However, the query string may have no effect.
 
-### Backwards Compatibility
+## Backwards Compatibility
 
 The `alias` key replaces the pre-existing `name` key. When displaying an alias, you should consider also resolving the `name` key and displaying it, if `alias` is not available.
 
-### Security Considerations
+## Security Considerations
 
 None.
 
-### Copyright
+## Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
