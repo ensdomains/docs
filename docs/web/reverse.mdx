@@ -17,7 +17,7 @@ Fortunately, it is super easy to retrieve a user's preferred name, and this page
 <div className="card1 px-8 py-4 flex justify-center gap-2 items-center">
     <span>0x225...c3B5</span>
     <span>to</span>
-    <Usertag name="luc.eth" />
+    <Usertag name="luc.eth" image="https://avatarservice.xyz/64/luc.eth.webp" />
 </div>
 
 In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
@@ -34,7 +34,7 @@ This allows us to turn any address into a human-readable name.
 import { useEnsName } from 'wagmi';
 
 export const Name = () => {
-    const { data: name, chainId } = useEnsName({
+    const { data: name } = useEnsName({
         address: '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
     });
 

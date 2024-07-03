@@ -10,6 +10,60 @@ export const meta = {
 
 This section walks you through how to leverage the ENS open standards to improve the user experience of your app.
 
+<div className="card1 px-8 py-4 space-y-3">
+    <div className="flex justify-center items-stretch gap-2">
+        <div className="not-prose border px-3 p-2 flex flex-col rounded-md justify-between">
+            <span>0x225...c3B5</span>
+            <span>0x179...9285</span>
+            <span>0xd8d...6045</span>
+            <span>0x225...c3B5</span>
+            <span>0x225...c3B5</span>
+        </div>
+        <span className="pt-3 flex flex-col">
+            <span>➡️</span>
+            <span className="opacity-90">➡️</span>
+            <span className="opacity-75">➡️</span>
+            <span className="opacity-50">➡️</span>
+            <span className="opacity-25">➡️</span>
+        </span>
+        <div className="border not-prose px-3 p-2 gap-2 flex flex-col rounded-md">
+            {[
+                'luc.eth', 'gregskril.eth', 'vitalik.eth', 'luc.cash', 'puma.eth'].map((name) => (
+                <div className="flex items-center gap-2">
+                    <div className="w-8 aspect-square">
+                        <object data={"https://enstate.rs/i/" + name} type="image/jpeg" className="bg-blue-500 w-full h-full">
+                            <img src="https://docs.ens.domains/fallback.svg" />
+                        </object>
+                    </div>
+                    <span>{name}</span>
+                </div>
+            ))}
+        </div>
+    </div>
+</div>
+
+<div className="card1 px-8 py-4 space-y-3">
+    <div className="flex justify-center items-start gap-2">
+        <div className="border not-prose px-3 p-2 gap-2 flex flex-col rounded-md">
+            <div className="flex items-center gap-2">
+                <div className="w-8 aspect-square">
+                    <object data={"https://enstate.rs/i/luc.eth"} type="image/jpeg" className="bg-blue-500 w-full h-full">
+                        <img src="https://docs.ens.domains/fallback.svg" />
+                    </object>
+                </div>
+                <span>luc.eth</span>
+            </div>
+        </div>
+        <span className="pt-3">
+            <span>➡️</span>
+        </span>
+        <div className="not-prose border px-3 p-2 flex flex-col rounded-md justify-start gap-1">
+            <span>DevRel @ ENS. Create Epic Shit</span>
+            <span>0x225...c3B5</span>
+        </div>
+    </div>
+</div>
+
 ## Quickstart
 
 If you are looking to jumpstart your journey with ENS, or you are looking for a quick reference, visit the [Quickstart](/web/quickstart) page.
@@ -42,6 +96,33 @@ If you just want to see some code in action we have a variety of codesnippet & t
 
 ## Avatars, Addresses & Records
 
+<div className="card1 px-8 py-4 space-y-3">
+    <div className="flex justify-center items-start gap-2">
+        <div className="border not-prose px-3 p-2 gap-2 flex flex-col rounded-md">
+            <div className="flex items-center gap-2">
+                {
+                    ['gregskril.eth', 'matoken.eth', 'luc.eth'].map(name => (
+                        <div className="w-8 aspect-square">
+                            <object data={"https://enstate.rs/i/" + name} type="image/jpeg" className="bg-blue-500 w-full h-full">
+                                <img src="https://docs.ens.domains/fallback.svg" />
+                            </object>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+        <div className="not-prose border px-3 p-2 flex flex-col rounded-md justify-start gap-1">
+            <span>0x179...9285</span>
+            <span>0x5A3...0615</span>
+            <span>0x225...c3B5</span>
+        </div>
+        <div className="not-prose border px-3 p-2 flex flex-col rounded-md justify-start gap-1">
+            <span>DevRel @ ENS. Create Epic Shit</span>
+            <span>Europe/Amsterdam</span>
+        </div>
+    </div>
+</div>
+
 Information about a name can be fetched from its resolver, this can be done using pre-built features included in your tooling, or manually by calling the resolver contract directly.
 If you're interested in interacting with the resolver contract directly, you might find the [Resolver Reference](/resolvers/interfaces) section helpful.
 
@@ -53,6 +134,17 @@ If you're interested in interacting with the resolver contract directly, you mig
 
 ## Subnames
 
+<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
+    <div className="text-right font-bold">
+        {
+          ["vault", "domico", "subname", "nick", "cold"].map((subname, i) => (
+            <div className={["opacity-20", "opacity-50", "", "opacity-50", "opacity-20"][i]}>{subname}</div>
+            ))
+        }
+    </div>
+    <div className="font-bold text-ens-light-yellow-primary dark:text-ens-dark-yellow-primary">.nick.eth</div>
+</div>
+
 <EmbedLink
     href="/web/subdomains"
     title="Issuing Subnames"
@@ -61,6 +153,16 @@ If you're interested in interacting with the resolver contract directly, you mig
 
 ## Registration
 
+<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
+    <div className="text-right font-bold">
+        {
+          ["vault", "domico", "subname", "nick", "cold"].map((subname, i) => (
+            <div className={["opacity-20", "opacity-50", "", "opacity-50", "opacity-20"][i]}>{subname}</div>
+            ))
+        }
+    </div>
+    <div className="font-bold dark:text-ens-dark-blue-primary text-ens-light-blue-primary">.eth</div>
+</div>
 <EmbedLink
     href="/registry/eth"
     title="ETH Registrar"
