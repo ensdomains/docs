@@ -4,7 +4,7 @@ The Ethereum Name Service (ENS) is a distributed, open, and extensible naming sy
 
 ## 🗒️ Documentation
 
-The ENS documentation is available at [docs.ens.domains](https://docs.ens.domains/?ref=ens-docs-github). This repository contains the source code for the documentation, as well as the markdown files that make up its contents.
+The ENS documentation is available at [docs.ens.domains](https://docs.ens.domains/?ref=ens-docs-githubdocs.ens.domains). This repository contains the source code for the documentation, as well as the markdown files that make up its contents.
 
 ## 📖 Contributing
 
