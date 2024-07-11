@@ -1,0 +1,125 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: '',
+    emoji: '🕹️',
+    contributors: [
+        'serenae-fansubs'
+    ]
+};
+
+# Creating a Subname Registrar
+
+In the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do. It's recommended to first read the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section to get an overview of the decisions you'll need to make.
+
+## Prerequisites
+
+This guide assumes that your parent name (such as `myname.eth`) is already wrapped. If you're not sure whether your name is wrapped, look at the More tab on the Manager app. If the name is unwrapped, it will say so, and it will show you a "Wrap Name" button.
+
+If you want to issue <a href="/wrapper/states#emancipated">Emancipated</a> subnames, or subnames with <a href="/wrapper/fuses">any other fuses</a> burned, then your parent name must first be <a href="/wrapper/states#locked">Locked</a>. You can do this on the Permissions tab in the ENS manager app.
+
+<Note>
+  Locking your name (in other words revoking the permission to unwrap) is an **irreversible** change. After you lock the name, you will no longer be able to unwrap it. This is a security guarantee for the holders of all subnames. It ensures that the owner of the parent name cannot get around the security guarantees of the Name Wrapper.
+
+  Best to do this on a testnet (Sepolia/Holesky) name first, for development or testing purposes.
+</Note>
+
+## Creating and Deploying your Registrar Contract
+
+In order to create a new subname, your contract should call call either `setSubnodeOwner` or `setSubnodeRecord` on the <a href="/learn/deployments#deployments">NameWrapper contract</a>. Also pass in the fuses and expiry at the same time, as needed.
+
+```solidity
+NameWrapper.setSubnodeOwner(bytes32 parentNode, string label, address owner, uint32 fuses, uint64 expiry)
+
+// For example
+setSubnodeOwner(
+    0x6cbc..., // The namehash of the parent node, e.g. "myname.eth"
+    "sub", // The label of the subname to create
+    0x1234..., // The address you want to be the owner of the new subname
+    65536, // The fuse bits OR'd together, that you want to burn
+    2021232060 // The expiry for the subname
+)
+
+NameWrapper.setSubnodeRecord(bytes32 parentNode, string label, address owner, address resolver, uint64 ttl, uint32 fuses, uint64 expiry)
+
+// For example
+setSubnodeRecord(
+    0x6cbc..., // The namehash of the parent node, e.g. "myname.eth"
+    "sub", // The label of the subname to create
+    0x1234..., // The address you want to be the owner of the new subname
+    0x5678..., // The address of the resolver to set for the new subname
+    0, // The TTL to set for the new subname
+    65536, // The fuse bits OR'd together, that you want to burn
+    2021232060 // The expiry for the subname
+)
+```
+
+Your public-facing registration function would typically take at _least_ the parent node (namehash) and subname label as inputs, such as:
+
+```solidity
+register(bytes32 parentNode, string calldata label)
+```
+
+Then under the hood, your contract will call `setSubnodeRecord` and fill in the rest of the parameters on behalf of the user:
+* owner: Typically the caller account, `msg.sender`
+* resolver: Typically the default public resolver, `resolver.eth`
+* ttl: 0
+* fuses: Up to you and your goals. See the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section for a discussion on this. Typically 65536 for an enamcipated rental subname, or 327680 for an emancipated "forever" name.
+* expiry: Up to you and your goals. If you are renting subnames for a particular length of time, this expiry would reflect that. If you are allowing registration of "forever" names, then you can just set the expiry equal to the parent name's current expiry.
+
+Of course, if you want to give the registrant more power/convenience, you could allow some of those parameters to be passed in to your public register function as well.
+
+### Setting Resolver Records
+
+If you want your subname registrar to set records on a subname in the same registration transaction, then the flow will be slightly different. In that case, perform these steps:
+
+* Call `setSubnodeOwner`, setting the _contract itself_ (`address(this)`) as the owner of the subname, temporarily. This first step is needed for the default Public Resolver so that the contract has the authority to set records for the subname.
+* Call whatever <a href="/resolvers/interacting">resolver methods</a> you need to. Perhaps these are records that you want to be pre-set on your subnames (such as an ETH address that the subname points to). Or perhaps these are records that you allow the registrant to pass in, so that they can register their subname and set whatever records they want all in one transaction.
+* Call `setSubnodeRecord`, but this time set the owner to the actual intended owner of the subname. This is the point at which you should set the appropriate fuses and expiry you want to, as well.
+
+### Taking fees
+
+If you are setting up a "rental" registrar, then your registration function should require a certain amount of ETH to be sent in as well.
+
+Alternatively, you could choose to allow users to spend ERC-20 tokens instead. To accomplish that, you would typically call the ERC-20 method `transferFrom` on the token contract. This also means that the registrant would first need to approve your contract as a spender for that token, meaning they would need to execute a separate approval transaction first (either to approve unlimited spending, or to approve the specific number of tokens needed to register the subname).
+
+### Reference Implementation
+
+Luckily, you don't need to start from scratch! The ENS Labs devs have created some example contracts you can start from:
+
+https://github.com/ensdomains/ens-contracts/tree/feature/subdomain-registrar/contracts/subdomainregistrar
+
+These contracts include two different implementations:
+
+#### Forever Subname Registrar
+
+This is a basic FIFS (First in first serve) registrar. The registration can take a fixed fee, or this fee can be set to 0 if you wish for subnames to be free. Names automatically are set to the parent's expiry can the fuse for `CAN_EXTEND_EXPIRY` will be burnt on registration so the user can extend their expiry if the parent also extends theirs. For a better UX, it is recommened that the parent sets their expiration as high as possible to allow their users to not have to think about renewing.
+
+#### Rental Subname Registrar
+
+This is a basic FIFS (First in first serve) registrar. The key difference between this and the ForeverSubdomainRegistrar is that it does not auto-burn the `CAN_EXTEND_EXPIRY` fuse and instead exposes a `renew()` function that allows paid renewal. This registrar also needs to be paired with a rental-based pricing contract. For simplicity, the deployer can deploy this pricing contract and the UI can pass this address through to `setupDomain()` when a new user wants to setup a subname.
+
+## Setting Everything Up
+
+Once you have a parent name ready and a subname registrar contract deployed, then you just need a few extra steps to set everything up:
+
+### (If needed) Call setupDomain on your contract
+
+This will only apply to you if you have a specific `setupDomain` method or something similar on your contract, such as the <a href="#reference-implementation">reference implementation contracts</a> do.
+
+Calling this method will "enable" a specific parent name in your subname registrar. It can also allow you to set or update the pricing terms or beneficiary account, if needed.
+
+### Approve your contract
+
+Call `setApprovalForAll` on the NameWrapper contract, approving your subname registrar contract as an operator for any names you own. This allows you to keep ownership of the parent name, and just delegate subname creation to your contract.
+
+### (If needed) Approve token spending
+
+If your registrar contract takes ERC-20 tokens as a registration fee, then a potential registrant will need to approve your contract as a spender first.
+
+### Register a subname
+
+Finally, the registrant will call your public registration method. Upon transaction success, they will own the wrapped name (ERC-1155 NFT) with whatever fuse/expiry guarantees that you setup in your registrar.
+
+If you are allowing "forever" subnames to be registered (meaning that you've burned the `CAN_EXTEND_EXPIRY` fuse on the subnames), then the registrant can extend their own expiry at any time. Note that a subname's expiry can be set up to a maximum of whatever the parent name's expiry is.
+
+And that's it!

@@ -126,8 +126,9 @@ setSubnodeOwner(
     2021232060 // The expiry for the subname
 )
 
-function setSubnodeRecord(bytes32 parentNode, string label, address owner, address resolver, uint64 ttl, uint32 fuses, uint64 expiry)
+NameWrapper.setSubnodeRecord(bytes32 parentNode, string label, address owner, address resolver, uint64 ttl, uint32 fuses, uint64 expiry)
 
+// For example
 setSubnodeRecord(
     0x6cbc..., // The namehash of the parent node, e.g. "myname.eth"
     "sub", // The label of the subname to create
