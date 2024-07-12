@@ -5,15 +5,15 @@ runs:
   using: composite
   steps:
     - name: Setup PNPM
-      uses: pnpm/action-setup@v2.4.0
+      uses: pnpm/action-setup@v4
       with:
         run_install: false
         standalone: true
         package_json_file: app/package.json
-        version: 8
+        version: 9
 
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 19
         cache: pnpm
