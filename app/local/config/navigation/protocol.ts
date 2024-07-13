@@ -322,6 +322,11 @@ export const navigation: SectionData[] = [
                         href: '/wrapper/usecases',
                         icon: '✨',
                     },
+                    {
+                        title: 'Creating a Subname Registrar',
+                        href: '/wrapper/creating-subname-registrar',
+                        icon: '🕹️',
+                    },
                 ],
             },
         ],
