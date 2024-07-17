@@ -40,7 +40,7 @@ export const SendTransactionDemo: FC = () => {
             </label>
             <input
                 id="input"
-                className="border-ens-light-border bg-ens-light-background-primary dark:border-ens-dark-border dark:bg-ens-dark-background-primary w-full rounded-md border px-3 py-2"
+                className="w-full rounded-md border border-ens-light-border bg-ens-light-background-primary px-3 py-2 dark:border-ens-dark-border dark:bg-ens-dark-background-primary"
                 placeholder="ens.eth"
                 onChange={(event) => setInput(event.target.value)}
             />

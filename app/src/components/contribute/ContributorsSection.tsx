@@ -45,7 +45,7 @@ export const ContributorsSection: FC<{
                         />
                         <span className="absolute left-1/2 top-0 size-0">
                             <span className="relative">
-                                <span className="border-ens-light-border bg-ens-light-background-primary dark:border-ens-dark-border dark:bg-ens-dark-background-primary absolute top-[-0.2rem] hidden -translate-x-1/2 -translate-y-full items-center gap-1 rounded-lg border px-2 py-1 text-xs group-hover:flex">
+                                <span className="absolute top-[-0.2rem] hidden -translate-x-1/2 -translate-y-full items-center gap-1 rounded-lg border border-ens-light-border bg-ens-light-background-primary px-2 py-1 text-xs group-hover:flex dark:border-ens-dark-border dark:bg-ens-dark-background-primary">
                                     <span>{contributor}</span>
                                     <FiExternalLink />
                                 </span>

@@ -87,7 +87,8 @@ export const ensLibraries: Language[] = [
             {
                 href: 'https://github.com/ethereum/web3.py',
                 name: 'web3.py',
-                description: 'A python interface for interacting with the Ethereum blockchain and ecosystem.',
+                description:
+                    'A python interface for interacting with the Ethereum blockchain and ecosystem.',
                 logo: undefined,
             },
         ],
