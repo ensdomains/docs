@@ -2,9 +2,9 @@ import { WIP } from "@/components/wip/WIP";
 
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-description: '',
-emoji: '🏛️',
-contributors: []
+    description: '',
+    emoji: '🏛️',
+    contributors: []
 };
 
 # Public Resolver
@@ -12,6 +12,92 @@ contributors: []
 {/* <WIP /> */}
 
 The public resolver is a general-purpose ENS resolver that is suitable for most user needs. It permits the owner of a name to update their records, includes permissions, and stores its data on layer-1 ethereum.
+
+<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl space-x-2">
+    <Usertag name="alice.eth" variant="small" />
+    <div className="bg-ens-v2-blue-light text-ens-v2-blue-default rounded-md px-3 py-2 text-sm font-bold space-y-2">
+        <div>Public Resolver</div>
+        {
+        [
+            ['addr(name, coinType)',
+                (
+                    <table className="w-full table-fixed">
+                        <thead>
+                            <tr>
+                                <th>name</th>
+                            <th>coinType</th>
+                            <th>value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>luc.eth</td>
+                            <td>60</td>
+                            <td>0x225...c3B5</td>
+                        </tr>
+                    </tbody>
+                </table>
+        )], [
+            'text(name, key)',
+            (
+                <table className="w-full table-fixed">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>key</th>
+                            <th>value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>luc.eth</td>
+                            <td>avatar</td>
+                            <td className="text-ellipsis">https://avatarservice.xyz/64/luc.eth.webp</td>
+                        </tr>
+                        <tr>
+                            <td>gregskril.eth</td>
+                            <td>description</td>
+                            <td className="text-ellipsis">I like baking and building apps on web3 protocols.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            )
+        ],
+        [
+            'contenthash(name)',
+            (
+                <table className="w-full table-fixed">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>luc.eth</td>
+                            <td>ipfs://bafybeihkg2...</td>
+                        </tr>
+                        <tr>
+                            <td>vitalik.eth</td>
+                            <td>ipfs://bafybeidvfb...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            )
+        ]
+        ].map(([name, value], index) => (
+        <div className="space-y-1">
+            <div className="-ml-4 bg-ens-v2-magenta-light text-ens-v2-magenta-default px-2 rounded-md w-fit">{name}</div>
+            <div className="text-xs max-w-md whitespace-nowrap">
+                {value}
+                <span className="text-center w-[80%] block">{'...'}</span>
+            </div>
+        </div>
+        ))
+        }
+    </div>
+</div>
 
 Most ENS names registered through the ENS Manager will use the latest version of the public resolver by default.
 Names that resolve to a supported public resolver are editable from within the ENS Manager.
@@ -39,3 +125,4 @@ The public resolver supports the following features:
 ## Permissions
 
 The public resolver supports the notion of a "owner" and "manager".
+
