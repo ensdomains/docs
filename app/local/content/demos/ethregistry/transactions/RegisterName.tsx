@@ -75,8 +75,8 @@ export const RegisterName: FC<{
                     <Button
                         onClick={() => {
                             writeContract({
-                                ...config,
-                            });
+                                ...(config as any),
+                            } as any);
                         }}
                         variant="primary"
                     >

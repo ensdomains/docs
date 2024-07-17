@@ -72,7 +72,7 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                                             ? '/ens/dao/ens_logo_dao.svg'
                                             : '/ens/primary/ens_logo_primary.svg'
                                     }
-                                    className="fill-ens-dao-400 ml-1 h-8"
+                                    className="ml-1 h-8 fill-ens-dao-400"
                                     alt="ENS Logo"
                                     height={'32'}
                                 />

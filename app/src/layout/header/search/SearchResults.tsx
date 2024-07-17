@@ -21,7 +21,7 @@ const SearchResultEntry: FC<{
 
     return (
         <li
-            className="hlem focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary outline-0"
+            className="hlem outline-0 focus-within:bg-ens-light-background-secondary hover:bg-ens-light-background-secondary focus-within:dark:bg-ens-dark-background-secondary hover:dark:bg-ens-dark-background-secondary"
             id={'search-result-' + index}
         >
             <Link
@@ -36,7 +36,7 @@ const SearchResultEntry: FC<{
                 }}
                 href={'/' + hit.slug}
                 id={'search-result-link-' + index}
-                className="outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary z-10 flex w-full p-4"
+                className="z-10 flex w-full p-4 outline-ens-dark-blue-primary focus:outline-ens-light-blue-primary"
                 ref={entryReference}
             >
                 <span className="grow overflow-hidden">
@@ -76,13 +76,13 @@ export const SearchResults: FC<{
         <>
             <div className="w-full">
                 {!data.hits || data.hits.length === 0 ? (
-                    <div className="text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary flex w-full flex-col items-center py-8 text-center">
+                    <div className="flex w-full flex-col items-center py-8 text-center text-ens-light-text-primary dark:bg-ens-dark-grey-surface dark:text-ens-dark-text-primary">
                         <div className="text-4xl">🤷‍♀️</div>
                         <div className="">No results found</div>
                         <div className="text-sm">Try a different search</div>
                     </div>
                 ) : (
-                    <ul className="border-t-ens-light-border dark:border-t-ens-dark-border border-t">
+                    <ul className="border-t border-t-ens-light-border dark:border-t-ens-dark-border">
                         {data.hits.map((hit, index) => (
                             <SearchResultEntry
                                 hit={hit}

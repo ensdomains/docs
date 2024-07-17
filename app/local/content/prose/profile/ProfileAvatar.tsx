@@ -11,7 +11,7 @@ export const ProfileAvatar: FC<{ name: string }> = ({ name }) => {
 
     return (
         <div className="relative aspect-square size-full">
-            <div className="bg-ens-light-background-secondary absolute inset-0 size-full"></div>
+            <div className="absolute inset-0 size-full bg-ens-light-background-secondary"></div>
             <div className="absolute inset-0 size-full" style={mesh}></div>
             <img
                 src={'https://enstate.rs/i/' + name}

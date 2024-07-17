@@ -47,7 +47,7 @@ export default function RootLayout(properties) {
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLD) }}
                 />
             </head>
-            <body className="bg-ens-light-background-primary dark:bg-ens-dark-background-primary text-ens-light-text-primary dark:text-ens-dark-text-primary">
+            <body className="bg-ens-light-background-primary text-ens-light-text-primary dark:bg-ens-dark-background-primary dark:text-ens-dark-text-primary">
                 <Theme>{children}</Theme>
                 <script
                     defer
