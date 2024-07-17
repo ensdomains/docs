@@ -727,6 +727,10 @@ export const navigation: SectionData[] = [
                         title: '18 - Profile Text Records',
                         href: '/ensip/18',
                     },
+                    {
+                        title: '19 - EVM-chain Reverse Resolution', // '19 - Multichain Primary Names',
+                        href: '/ensip/19',
+                    },
                 ],
             },
         ],
