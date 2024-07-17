@@ -69,7 +69,7 @@ export const RenewName: FC<{
                     <div>{rentPriceFormatted} eth</div>
                     <Button
                         onClick={() => {
-                            writeContract(config);
+                            writeContract(config as any);
                         }}
                         variant="primary"
                     >
