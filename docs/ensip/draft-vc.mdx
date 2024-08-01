@@ -34,6 +34,28 @@ claims are the actual data thats being attested
 Defines the use of the `verifications` record.
 This record aims to store a list of verifiable credentials or did's, pointing towards certain credentials
 
+Examples of these records would be:
+
+```
+https://myapp.com/credentials/1234.json
+https://api.myapp.com/verifications/1234?token=abc123
+// ipfs
+// did
+```
+
+#### Credentials & Presentations
+
+The documents stored in the `verifications` record are verifiable credentials or presentations following the [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/).
+These credentials are JSON-LD documents that contain a set of claims, metadata, and proof, signed by the issuer.
+
+#### End-User Experience
+
+The end-user experience of this ENSIP is to allow users to publicly share their verifiable credentials in a standardized way.
+Users visit an app that lets them create a verifiable credential, and then share the link to that credential in their ENS profile.
+
+Name Manager Applications can then read these credentials and display them in a user-friendly way.
+As well as allow for setting/revoking credentials.
+
 #### Example
 
 An example of a verifiable credential
@@ -45,11 +67,10 @@ An example of a verifiable credential
     "https://www.w3.org/2018/credentials/v1"
   ],
   "id": "https://example.com/credentials/3847",
-  "type": ["VerifiableCredential"],
+  "type": ["VerifiableCredential", ""],
   "issuanceDate": "2024-05-21T00:00:00Z",
   "credentialSubject": {
-    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "knows": "did:example:6f1c276e12ec21ebfeb1f712ebc"
+    "id": "did:ens:luc.eth",
   }
 }
 ```
@@ -75,13 +96,13 @@ or in the form of a presentation:
         "ProofOfTwitterCredential"
       ],
       "issuer": {
-        "id": "did:example:dentity"
+        "id": "did:ens:idp.eth"
       },
       "issuanceDate": "2000-00-00T00:00:00Z",
       "twitter": "lucemansnl",
-      ...
       "proof": {
-          ...
+          "verificationMethod": "did:ens:idp.eth",
+          "signature": "..."
       }
    }
   ],
