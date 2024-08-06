@@ -1,16 +1,16 @@
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'A standard for verifiable credentials in text records in ENS',
-    contributors: [
-        'luc.eth',
-    ],
-    ensip: {
-        status: 'draft',
-        created: '2024-05-21',
-    }
+  description: 'A standard for verifiable credentials in text records in ENS',
+  contributors: [
+    'luc.eth',
+  ],
+  ensip: {
+    status: 'draft',
+    created: '2024-05-21',
+  }
 };
 
-# ENSIP-XX: Verifiable Credentials & Presentations
+# ENSIP-20: Verifiable Credentials in ENS
 
 ### Abstract
 
@@ -19,28 +19,19 @@ This ENSIP aims to standardize the usage of [W3C Verifiable Credentials & Presen
 ### Motivation
 
 With the increasing prevalence of self-custodial digital identity & attestation solutions, it is of importance to have a standardized way to publicly share verifiable credentials using your ENS profile.
+Allowing for easy sharing of verifiable credentials right on your profile.
 
 ### Specification
-
-#### Very Rough Draft
-
-did/url links to vc
-vc contains **metadata** **claims** & **proof**
-implementations choose what "proof"s they support (aka, what credentials they accept/trust)
-claims are the actual data thats being attested
 
 #### Verifications in Profiles
 
 Defines the use of the `verifications` record.
-This record aims to store a list of verifiable credentials or did's, pointing towards certain credentials
-
-Examples of these records would be:
+This record aims to store a list of verifiable credentials or did's, pointing towards certain credentials.
+Under ideal circumstances this record relies on a yet to be written ENSIP that allows for multidimensional records.
+However in its current state assumes that the `verifications` record contains an abi encoded `string[]` of verifiable credentials.
 
 ```
 https://myapp.com/credentials/1234.json
-https://api.myapp.com/verifications/1234?token=abc123
-// ipfs
-// did
 ```
 
 #### Credentials & Presentations
@@ -48,26 +39,13 @@ https://api.myapp.com/verifications/1234?token=abc123
 The documents stored in the `verifications` record are verifiable credentials or presentations following the [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/).
 These credentials are JSON-LD documents that contain a set of claims, metadata, and proof, signed by the issuer.
 
-#### End-User Experience
-
-The end-user experience of this ENSIP is to allow users to publicly share their verifiable credentials in a standardized way.
-Users visit an app that lets them create a verifiable credential, and then share the link to that credential in their ENS profile.
-
-Name Manager Applications can then read these credentials and display them in a user-friendly way.
-As well as allow for setting/revoking credentials.
-
-#### Example
-
-An example of a verifiable credential
-
 ```json
-// this example is wip
 {
   "@context": [
     "https://www.w3.org/2018/credentials/v1"
   ],
-  "id": "https://example.com/credentials/3847",
-  "type": ["VerifiableCredential", ""],
+  "id": "https://example.com/credentials/1234",
+  "type": ["VerifiableCredential"],
   "issuanceDate": "2024-05-21T00:00:00Z",
   "credentialSubject": {
     "id": "did:ens:luc.eth",
@@ -75,44 +53,43 @@ An example of a verifiable credential
 }
 ```
 
-or in the form of a presentation:
+Note the requirement for `id` to be `did:ens:luc.eth` in order to prevent credential spoofing.
 
-```json
-// this example is wip
-{
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1"
-  ],
-  "type": ["VerifiablePresentation"],
-  "verfiableCredential": [
-    {
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://www.w3.org/2018/credentials/examples/v1"
-      ],
-      "id": "https://credentials.dentity.com/credentials/1234",
-      "type": [
-        "VerifiableCredential",
-        "ProofOfTwitterCredential"
-      ],
-      "issuer": {
-        "id": "did:ens:idp.eth"
-      },
-      "issuanceDate": "2000-00-00T00:00:00Z",
-      "twitter": "lucemansnl",
-      "proof": {
-          "verificationMethod": "did:ens:idp.eth",
-          "signature": "..."
-      }
-   }
-  ],
-  "id": "12345",
-  "holder": "did:ens:luc.eth",
-  "proof": {
-    ...
-  }
+#### End-User Experience
+
+This method allows users to publicly share their verifiable credentials in a standardized way.
+Users can visit an app that lets them create a verifiable credential, and then share the link to that credential in their ENS profile.
+
+Name Manager Applications can then read, and iterate over these credentials and display them in a user-friendly way.
+As well as allow for setting/removing/revoking credentials.
+
+#### Developer Experience
+
+{/* TODO: Reword */}
+From the front-end developer perspective reading verifiable credentials is as simple as (name, predicate):
+
+```tsx
+const { credentials } = useVC('luc.eth', (c) => c.type == 'TelegramCredential');
+```
+
+#### Resolver Interface
+
+Although no resolver modifications are required to support this ENSIP, it is recommended to implement a resolver interface that allows for easier and more gas-efficient adding and removing of verifiable credentials.
+
+```solidity
+interface IVerifiableCredentialResolver {
+    function addCredentials(bytes32 node, bytes[] calldata data) external;
+    function removeCredentials(bytes32 node, uint256[] indexes) external;
+}
+
+// TODO: Solidity Arrays vs Abi Encoded
+interface IVerifiableCredentialMultiResolver {
+    function addCredential(bytes32 node, bytes[] calldata data) external;
+    function removeCredential(bytes32 node, uint256[] indexes) external;
 }
 ```
+
+After performing a removeCredential operation it is recommended to re-fetch the credentials record to ensure your app shows the correct order.
 
 ### Considerations
 
@@ -120,20 +97,22 @@ or in the form of a presentation:
 
 Verifiable Credentials are meant to be used as long-lived documents.
 However this does not mean that they can't be revoked or expired.
-In a similar manner to physical documents, a credentials validity can be checked by contacting the issuer (Think of how a store might only look at your drivers license, while a car dealership would run it through a computer).
+In a similar manner to physical documents, a credentials validity can be checked by contacting the issuer or verifying a signature.
 
 The implementation of verification is specific to each issuer, and can be inferred from `verificationMethod` in the credential.
-In addition to the `expirationDate` field, which causes the credential to invalidate after a certain date.
+In addition to the `expirationDate` field, which causes the credential to automatically invalidate after a certain date.
 
 This means that identity platforms can allow users to revoke (or expand) credentials without needing to modify the records in ENS.
 
 ### Backwards Compatibility
 
 This ENSIP relies on the existing ENS text record functionality introduced in [ENSIP-5](/ensip/5), and only standardizes the usage of the specific `verifications` record.
+It imposes forwards compatibility by allowing for future upgrading of record dimensionality while maintaining backwards compatibility.
 
 ### Security Considerations
 
-None.
+All verifiable credentials stored in a profile or on a blockchain should be assumed to be public and unverified data.
+Platforms should decide for themselves what issuers they trust and what credentials they allow and filter for those credentials.
 
 ### Copyright
 
