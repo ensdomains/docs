@@ -46,8 +46,8 @@ export const MakeCommit: FC<{ commithash: string }> = ({ commithash }) => {
                     <Button
                         onClick={() => {
                             writeContract({
-                                ...config,
-                            });
+                                ...(config as any),
+                            } as any);
                         }}
                         variant="primary"
                     >

@@ -2,10 +2,10 @@ name: 🔎
 
 on:
   push:
-    branches: [master,main]
+    branches: [master, main]
   merge_group:
   pull_request:
-    branches: [master,main]
+    branches: [master, main]
 
 # Automatically cancel in-progress actions on the same branch
 concurrency:
@@ -13,17 +13,17 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_OPTIONS: "--max_old_space_size=8192"
+  NODE_OPTIONS: '--max_old_space_size=8192'
 
 jobs:
   typecheck:
     name: 🟦 Typescript
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       FORCE_COLOR: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -35,12 +35,12 @@ jobs:
         run: pnpm run typecheck
   eslint:
     name: 👕 Linting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       FORCE_COLOR: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Tools & Dependencies
         uses: ./.github/actions/install
@@ -50,12 +50,12 @@ jobs:
         run: pnpm run lint
   build:
     name: 🛠️ Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       FORCE_COLOR: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Tools & Dependencies
         uses: ./.github/actions/install

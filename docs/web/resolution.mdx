@@ -57,6 +57,12 @@ const ensAddress = await publicClient.getEnsAddress({
 });
 ```
 
+```py {{ title: 'web3.py (Python)', variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#get-the-address-for-an-ens-name' }}
+from ens.auto import ns
+
+address = ns.address('alice.eth')
+```
+
 ```rust {{ variant: 'ethers-rs' }}
 let provider = Provider::<Http>::try_from("https://mainnet.infura.io/v3/...")?;
 
@@ -125,9 +131,6 @@ const records = client.getRecords({
 });
 ```
 
-```python {{ variant: 'web3py' }}
-address = ns.address('alice.eth')
-```
 
 ```csharp {{ variant: "nethereum" }}
 var ensService = new Nethereum.ENS.ENSService(web3);
@@ -181,6 +184,12 @@ const ensName = await publicClient.getEnsAddress({
 ```ts {{ variant: 'ethers-v5', link: 'https://docs.ethers.org/v5/api/providers/provider/#EnsResolver' }}
 const resolver = await provider.getResolver("luc.eth");
 const btcAddress = await resolver?.getAddress(0);
+```
+
+```py {{ title: 'web3.py (Python)', variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#multichain-address-resolution' }}
+from ens.auto import ns
+
+eth_address = ns.address('alice.eth', coin_type=60)
 ```
 
 </CodeGroup>

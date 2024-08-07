@@ -69,7 +69,7 @@ export const RenewName: FC<{
                     <div>{rentPriceFormatted} eth</div>
                     <Button
                         onClick={() => {
-                            writeContract(config);
+                            writeContract(config as any);
                         }}
                         variant="primary"
                     >
@@ -77,13 +77,13 @@ export const RenewName: FC<{
                     </Button>
                 </div>
                 {!isReady && (
-                    <div className="border-ens-light-red-primary bg-ens-light-red-surface text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface flex items-center gap-1 rounded-lg px-3 py-2">
+                    <div className="flex items-center gap-1 rounded-lg border-ens-light-red-primary bg-ens-light-red-surface px-3 py-2 text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface">
                         <FiX />
                         Not Ready
                     </div>
                 )}
                 {isError && (
-                    <div className="border-ens-light-red-primary bg-ens-light-red-surface text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface flex items-center gap-1 rounded-lg px-3 py-2">
+                    <div className="flex items-center gap-1 rounded-lg border-ens-light-red-primary bg-ens-light-red-surface px-3 py-2 text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface">
                         <FiX />
                         Problem
                     </div>

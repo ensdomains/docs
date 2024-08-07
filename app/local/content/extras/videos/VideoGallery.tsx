@@ -58,10 +58,10 @@ export const VideoGallery: FC<{}> = () => {
                 },
             ].map((entry, index) => (
                 <a
-                    className="border-ens-light-border dark:border-ens-dark-border bg-ens-light-background-primary dark:bg-ens-dark-background-primary hover:bg-ens-light-background-secondary/50 hover:dark:bg-ens-dark-background-secondary/50 my-0 flex w-full flex-col overflow-hidden rounded-lg border py-0"
+                    className="my-0 flex w-full flex-col overflow-hidden rounded-lg border border-ens-light-border bg-ens-light-background-primary py-0 hover:bg-ens-light-background-secondary/50 dark:border-ens-dark-border dark:bg-ens-dark-background-primary hover:dark:bg-ens-dark-background-secondary/50"
                     href={entry.href}
                 >
-                    <div className="bg-ens-light-background-disabled dark:bg-ens-dark-background-secondary aspect-video w-full">
+                    <div className="aspect-video w-full bg-ens-light-background-disabled dark:bg-ens-dark-background-secondary">
                         {entry.cover && (
                             <img
                                 src={entry.cover}
@@ -70,7 +70,7 @@ export const VideoGallery: FC<{}> = () => {
                             />
                         )}
                     </div>
-                    <div className="border-ens-light-border dark:border-ens-dark-border w-full text-ellipsis border-t px-3 pb-3 pt-2">
+                    <div className="w-full text-ellipsis border-t border-ens-light-border px-3 pb-3 pt-2 dark:border-ens-dark-border">
                         <span className="font-bold">{entry.title}</span>
                         <p className="tag tag-blue">{entry.location}</p>
                         {/*<p className="h-16 overflow-ellipsis text-xs">{entry.description}</p>*/}

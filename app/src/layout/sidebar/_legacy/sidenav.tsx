@@ -45,7 +45,7 @@ export const Navigation = (_properties) => {
                 {/* {activeSection?.href == section.href && ( */}
                 <ul className="mb-32 px-3">
                     {!!activeSection && isInsideMobileNavigation && (
-                        <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary mb-2 text-sm font-medium">
+                        <li className="mb-2 text-sm font-medium text-ens-light-text-primary dark:text-ens-dark-text-primary">
                             {activeSection.name}
                         </li>
                     )}
@@ -53,7 +53,7 @@ export const Navigation = (_properties) => {
                         <NavigationGroup
                             key={group.title}
                             group={group}
-                            className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
+                            className="border-b border-b-ens-light-border py-2 last:border-b-0 dark:border-b-ens-dark-border"
                         />
                     ))}
                 </ul>

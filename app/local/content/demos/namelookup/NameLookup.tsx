@@ -23,21 +23,21 @@ export const NameLookupDemo: FC = () => {
     const isOtherError = !isLoading && error && data['status'] !== 404;
 
     return (
-        <div className="text-ens-light-text-primary dark:text-ens-dark-text-primary mx-auto space-y-2 p-4">
+        <div className="mx-auto space-y-2 p-4 text-ens-light-text-primary dark:text-ens-dark-text-primary">
             <div className="w-full">
                 <input
-                    className="border-ens-light-border dark:border-ens-dark-border input w-full rounded-md border pl-2"
+                    className="input w-full rounded-md border border-ens-light-border pl-2 dark:border-ens-dark-border"
                     placeholder="Enter name or address..."
                     onChange={(event) => setTemporaryName(event.target.value)}
                     value={temporaryName}
                 />
             </div>
-            <div className="border-ens-light-border dark:border-ens-dark-border not-prose mt-2 flex h-fit flex-col gap-1.5 rounded-lg border p-4">
+            <div className="not-prose mt-2 flex h-fit flex-col gap-1.5 rounded-lg border border-ens-light-border p-4 dark:border-ens-dark-border">
                 {isLoading && (
-                    <div className="bg-ens-light-background-secondary border-ens-light-border dark:border-ens-dark-border dark:bg-ens-dark-background-secondary h-4 rounded-lg border">
+                    <div className="h-4 rounded-lg border border-ens-light-border bg-ens-light-background-secondary dark:border-ens-dark-border dark:bg-ens-dark-background-secondary">
                         <div
                             className={clsx(
-                                'bg-ens-light-blue-primary dark:bg-ens-dark-blue-primary h-full rounded-lg transition',
+                                'h-full rounded-lg bg-ens-light-blue-primary transition dark:bg-ens-dark-blue-primary',
                                 temporaryName == name && 'load-width'
                             )}
                         ></div>
@@ -72,7 +72,7 @@ export const NameLookupDemo: FC = () => {
                     {isValidName && (
                         <>
                             <div className="flex gap-2">
-                                <div className="bg-ens-light-blue-100 size-10 overflow-hidden rounded-full">
+                                <div className="size-10 overflow-hidden rounded-full bg-ens-light-blue-100">
                                     {data?.avatar && (
                                         <img
                                             src={data.avatar}
