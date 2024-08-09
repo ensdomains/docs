@@ -258,6 +258,6 @@ event NameRegistered(uint256 indexed hash, address indexed owner, uint expires);
 event NameRenewed(uint256 indexed hash, uint expires);
 
 // Controller
-event NameRegistered(string name, bytes32 indexed label, address indexed owner, uint cost, uint expires);
+event NameRegistered(string name, indexed bytes32 label, indexed address owner, uint256 baseCost, uint256 premium, uint256 expires);
 event NameRenewed(string name, bytes32 indexed label, uint cost, uint expires);
 ```
