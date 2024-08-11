@@ -17,7 +17,7 @@ const mdxOptions = {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
+    // output: 'export',
     reactStrictMode: true,
     pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
     experimental: {
