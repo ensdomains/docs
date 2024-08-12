@@ -86,11 +86,11 @@ const Demo = () => {
                     Data Source
                 </label>
                 <div className="flex gap-2">
-                    <Button onClick={() => { }}>Subgraph</Button>
-                    <Button onClick={() => { }} disabled>
+                    <Button onClick={() => {}}>Subgraph</Button>
+                    <Button onClick={() => {}} disabled>
                         Airstack
                     </Button>
-                    <Button onClick={() => { }} disabled>
+                    <Button onClick={() => {}} disabled>
                         Alchemy
                     </Button>
                 </div>
