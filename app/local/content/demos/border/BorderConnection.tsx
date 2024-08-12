@@ -1,8 +1,9 @@
 'use client';
 
+import { formatAddress } from 'ens-tools';
 import { FC, useLayoutEffect, useRef, useState } from 'react';
 import { FaWallet } from 'react-icons/fa6';
-import { useAccount } from 'wagmi';
+import { useAccount, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { Button } from '@/components/Button';
 
@@ -10,6 +11,8 @@ import { ChainSwitcher } from './ChainSwitcher';
 
 export const BorderConnection: FC<{ chains?: Set<number> }> = ({ chains }) => {
     const { isConnected, address, connector } = useAccount();
+    const { data: name } = useEnsName({ address });
+    const { data: avatar } = useEnsAvatar({ name });
     const [isOpen, setIsOpen] = useState(false);
     const connectModalReference = useRef(null);
 
@@ -25,7 +28,6 @@ export const BorderConnection: FC<{ chains?: Set<number> }> = ({ chains }) => {
             {!isConnected && (
                 <Button onClick={() => setIsOpen(true)}>Connect Wallet</Button>
             )}
-
             {/* @ts-ignore */}
             <thorin-connect-modal
                 open={isOpen ? true : undefined}
@@ -36,19 +38,24 @@ export const BorderConnection: FC<{ chains?: Set<number> }> = ({ chains }) => {
 
             {isConnected && (
                 <div className="flex items-stretch gap-2">
-                    <div>
-                        <div className="text-sm text-gray-400">
-                            {connector.name}
-                        </div>
-                        <div className="text-sm font-bold">{address}</div>
-                    </div>
                     <ChainSwitcher available={chains} />
                     <Button
                         onClick={() => setIsOpen(true)}
-                        className="items-center justify-center"
+                        className="flex items-center justify-center !px-4"
                     >
-                        <div className="flex h-[1.4em] items-center justify-center">
-                            <FaWallet />
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-[1.4em] items-center justify-center">
+                                {avatar ? (
+                                    <img
+                                        src={`https://enstate.rs/i/${name}`}
+                                        className="size-8 rounded-full"
+                                        alt={name}
+                                    />
+                                ) : (
+                                    <FaWallet />
+                                )}
+                            </div>
+                            <div>{name || formatAddress(address)}</div>
                         </div>
                     </Button>
                 </div>

@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import { FC } from 'react';
-import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
+import { holesky, mainnet, sepolia } from 'viem/chains';
 import {
     useAccount,
     useChainId,
@@ -34,12 +34,11 @@ export const ChainSwitcher: FC<{ available?: Set<number> }> = ({
                         chainId: Number.parseInt(event.target.value, 10) as any,
                     });
                 }}
-                className="chainselector h-full rounded-xl border-ens-light-border bg-ens-light-background-primary px-2 dark:border-ens-dark-border dark:bg-ens-dark-background-primary"
+                className="chainselector border-ens-light-border bg-ens-light-background-primary dark:border-ens-dark-border dark:bg-ens-dark-background-primary h-full rounded-xl px-2"
             >
                 {(
                     [
                         [mainnet.id, 'Mainnet'],
-                        [goerli.id, 'Goerli'],
                         [sepolia.id, 'Sepolia'],
                         [holesky.id, 'Holesky'],
                     ] as [number, string][]
