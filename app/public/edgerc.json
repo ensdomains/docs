@@ -5,6 +5,10 @@
         },
         "redirects": [
             {
+                "pattern": "^/subgraph$",
+                "destination": "/web/subgraph"
+            },
+            {
                 "pattern": "^/tlds?$",
                 "destination": "/dns/tlds"
             },

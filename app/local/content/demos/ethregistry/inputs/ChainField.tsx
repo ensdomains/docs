@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import { FC } from 'react';
-import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
+import { holesky, mainnet, sepolia } from 'viem/chains';
 import {
     useAccount,
     useChainId,
@@ -27,7 +27,6 @@ export const ChainField: FC<{ available?: Set<number> }> = ({
                 {(
                     [
                         [mainnet.id, 'Mainnet'],
-                        [goerli.id, 'Goerli'],
                         [sepolia.id, 'Sepolia'],
                         [holesky.id, 'Holesky'],
                     ] as [number, string][]

@@ -39,7 +39,7 @@ import { useEnsAvatar } from "wagmi";
 function App() {
   const { data: ensAvatar } = useEnsAvatar({
     address: "luc.eth",
-    chainId: 1, // (1 = Ethereum Mainnet, 5 = Goerli)
+    chainId: 1, // (1 = Ethereum Mainnet, 11155111 = Sepolia)
   });
 
   return (
