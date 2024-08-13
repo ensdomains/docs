@@ -1,4 +1,4 @@
-import { goerli, holesky, mainnet, sepolia } from 'viem/chains';
+import { holesky, mainnet, sepolia } from 'viem/chains';
 
 type BlockchainExplorer = {
     name: string;
@@ -14,15 +14,6 @@ export const BLOCKCHAIN_EXPLORERS: Record<number, BlockchainExplorer[]> = {
             account_url: 'https://etherscan.io/address/%ADDRESS%',
             contract_url: 'https://etherscan.io/address/%ADDRESS%',
             name_url: 'https://etherscan.io/name-lookup-search?id=%NAME%',
-        },
-    ],
-    [goerli.id]: [
-        {
-            name: 'Etherscan',
-            account_url: 'https://ropsten.etherscan.io/address/%ADDRESS%',
-            contract_url: 'https://ropsten.etherscan.io/address/%ADDRESS%',
-            name_url:
-                'https://ropsten.etherscan.io/name-lookup-search?id=%NAME%',
         },
     ],
     [sepolia.id]: [
