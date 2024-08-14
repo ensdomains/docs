@@ -416,6 +416,26 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
+                        title: '5.12 - [Executable] Roles Modifier V2 Migration & Updates to Endowment Permissions',
+                        href: '/dao/proposals/5.12',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.11 - [Executable] Fund the Meta-Governance Working Group (Term 5)',
+                        href: '/dao/proposals/5.11',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.10 - [Social] Confirming the ENS DAO Security Council Members',
+                        href: '/dao/proposals/5.10',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.9 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
+                        href: '/dao/proposals/5.9',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
                         title: '5.8 - [Social] ENS Steward Vesting Proposal',
                         href: '/dao/proposals/5.8',
                     },
