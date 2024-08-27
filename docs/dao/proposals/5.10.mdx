@@ -1,0 +1,68 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal confirms the 8 individuals for the Security Council, as defined in EP5.7, to protect against governance attacks by canceling malicious proposals using the SecurityCouncil smart contract.',
+    emoji: '📖',
+    contributors: [
+        'alextnetto.eth'
+    ],
+    proposal: {
+        snapshot: '0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a',
+        type: 'social'
+    }
+};
+
+# [EP5.10] [Social] Confirming the ENS DAO Security Council Members
+
+## Abstract
+
+Following the successful passing of the [EP5.7](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54), this proposal aims to confirm the 8 individuals who will form the Security Council with the permissions defined in [EP5.7](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54). The Security Council will be responsible for protecting the organization from potential governance attacks by having the ability to cancel malicious proposals using the [SecurityCouncil](https://github.com/blockful-io/security-council-ens/blob/main/README.md) smart contract.
+
+## Specification
+
+A discussion was held in the ENS forum titled **[[Temp Check] Enable CANCEL role on the DAO](https://discuss.ens.domains/t/temp-check-enable-cancel-role-on-the-dao/19090)**. 
+Following that discussion, The [EP5.7](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54) proposal, which can be [found here](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54), detailed the need for a Security Council to mitigate the risk of governance attacks on the ENS DAO. The proposal passed with overwhelming support from the community, receiving 1.4 million votes and 100% approval.
+
+As outlined in the [EP5.7](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54) proposal, the [SecurityCouncil](https://github.com/blockful-io/security-council-ens/blob/main/README.md) smart contract will be deployed, and the Security Council multisig will be granted the PROPOSER_ROLE in the timelock. This will allow the Security Council to cancel malicious proposals, without granting the ability to initiate proposals, vote on proposals, or perform any other actions. The contract also features an expiration mechanism that automatically revokes the council's veto power after 2 years, promoting decentralization.
+
+### Proposed Security Council Members
+
+The proposed Security Council will consist of the following 8 individuals in a 4/8 multisig configuration:
+
+1. [nick.eth](https://www.tally.xyz/gov/ens/delegate/nick.eth)
+2. [griff.eth](https://www.tally.xyz/gov/ens/delegate/0x839395e20bbb182fa440d08f850e6c7a8f6f0780)
+3. [avsa.eth](https://www.tally.xyz/gov/ens/delegate/avsa.eth)
+4. [lefteris.eth](https://www.tally.xyz/gov/ens/delegate/lefteris.eth)
+5. [katherineykwu.eth](https://www.tally.xyz/gov/ens/delegate/katherineykwu.eth)
+6. [fireeyes.eth](https://www.tally.xyz/gov/ens/delegate/fireeyesdao.eth)
+7. [brantly.eth](https://www.tally.xyz/gov/ens/delegate/brantly.eth)
+8. [alextnetto.eth](https://www.tally.xyz/gov/ens/delegate/alextnetto.eth)
+
+The text of [EP5.7](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54) specified that the 5 delegates included on the veto contract would be included in the security council. To fill the remaining 3 places on the council, consideration was given to, delegation power, past activity in governance, economic skin on the game, and jurisdictional diversity (for legal reasons). 
+
+### Voting
+
+This social proposal seeks to confirm the complete list of 8 individuals as the Security Council members. **The vote will be a simple For/Against/Abstain vote on the entire list.** If the proposal is successful, a separate executable proposal will be put forward to deploy the SecurityCouncil smart contract and grant the necessary roles.
+
+For this vote, the 8 proposed members of the Security Council will vote "**Abstain**" to help meet quorum requirements while preserving their impartiality.
+
+### Next Steps
+
+Upon confirmation of the Security Council members through this social proposal, the following steps will be taken:
+
+1. The SecurityCouncil contract will be manually deployed to Mainnet.
+2. A multsig will be manually created with the 8 members as signers.
+3. The multisig will accept ownership of the SecurityCouncil contract.
+4. The executable proposal will grant the PROPOSER_ROLE to the SecurityCouncil contract address using the grantRole function in the timelock.
+
+Once the executable proposal is passed and the contract is deployed with the necessary roles granted, the Security Council will be able to cancel malicious proposals to protect the ENS DAO. 
+
+After the specified expiration period (2 years), anyone can revoke the PROPOSER_ROLE from the Security Council, ensuring this is a time-limited mechanism that defaults back to a more decentralized posture.
+
+
+## Success Criteria 
+
+For this social proposal to pass, the following quorum and voting requirements must be met:
+
+1. **Quorum**: The proposal must receive a minimum of 1% of the total supply of $ENS (1 million votes) in the form of "Yes" and "Abstain" votes combined. "No" votes do not count towards quorum.
+
+2. **Approval**: Once the quorum is reached, the proposal requires a simple majority (>50%) of "Yes" votes among the "Yes" and "No" votes to pass. "Abstain" votes do not count towards the approval calculation.

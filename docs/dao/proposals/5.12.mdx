@@ -1,0 +1,88 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal aims to roll out an updated version of the Zodiac Roles Modifier module. The new version improves usability and transparency of treasury management operations. Upon approval, the Roles Modifier v2 module will be activated. Furthermore, this proposal requests authorization from the DAO to revise the permissions policy.',
+    emoji: '📖',
+    contributors: [
+        'avsa.eth'
+    ],
+    proposal: {
+        tally: '107992041043258996427224563090014372885335179099580585497266204203463156791290',
+        type: 'executable'
+    }
+};
+
+# [EP 5.12] [Executable] Roles Modifier V2 Migration & Updates to Endowment Permissions
+
+## Abstract
+
+This proposal aims to roll out an updated version of the Zodiac Roles Modifier module. The new version improves usability and transparency of treasury management operations. Upon approval, the Roles Modifier v2 module will be activated.
+
+Furthermore, this proposal requests authorization from the DAO to revise the permissions policy. A notable change includes enabling swapping actions on CoW Swap while the other permissions primarily focus on eliminating obsolete actions and protocols, and refining parameters within the existing permissions.
+
+# Roles v2 Migration
+
+## Motivation
+
+As [previously stated](https://discuss.ens.domains/t/endowment-initiation/15952#a-list-of-zodiac-roles-modifier-permissions-for-the-manager-role-9), the Zodiac Roles Modifier facilitates karpatkey’s proxy management of the Endowment by ensuring that only pre-approved transactions, defined by the permissions policy voted on by the DAO, can be executed. In collaboration with karpatkey, the Gnosis Guild team has significantly upgraded the Zodiac Roles Modifier module and the Zodiac Roles app. These enhancements have resulted in a more powerful and robust on-chain permissions infrastructure with the following improvements:
+
+- **Introduction of Allowances**: Implementation of spending limits within permissions.
+- **Enhanced Call Data Scoping Toolset**: This toolset considerably broadens the range of functions that can have permissions set, increasing flexibility.
+- **Advanced Logical Conditions**: Allows for the creation of complex permissions structures to accommodate sophisticated operational needs.
+- **Compatibility with** [**DeFi Kit**](https://kit.karpatkey.com/): This feature integrates with karpatkey’s permissions policy building module, facilitating the straightforward crafting of protocol actions.
+- **Improved Visualisation and User Interface**: the new [Zodiac Roles app UI 1](https://roles.gnosisguild.org/) not only displays permissions clearly but also provides a user-friendly interface to compare changes in each policy update, enhancing transparency and simplifying audits.
+
+For more detailed information, please refer to the following resources:
+
+- **Documentation**: [The Zodiac Roles Modifier](https://docs.roles.gnosisguild.org/)\
+- **Articles**: [Evolving Smart Accounts with Onchain Permissions](https://gnosisguild.mirror.xyz/oQcy_c62huwNkFS0cMIxXwQzrfG0ESQax8EBc_tWwwk), [Permissions as code](https://engineering.gnosisguild.org/posts/permissions-as-code)
+
+## Contract audits
+
+The Zodiac Roles Modifier v2 contract has been rigorously audited by G0 Group, the internal auditing team of Gnosis DAO, and by [Omniscia](https://omniscia.io/). The detailed audit reports are available for review [here 1](https://github.com/gnosisguild/zodiac-modifier-roles/tree/main/packages/evm/docs).
+
+# Changes to Permissions policy
+
+This proposal outlines the following modifications to the permissions policy:
+
+1. **Token Arrays for Swapping**:
+
+- Considering the tokens involved in the existing permissions, we have updated the token arrays to ensure they can be seamlessly swapped across the various whitelisted protocols and aggregators.
+- **Token IN Allowlist**: \\[CRV, DAI, USDT, BAL, AURA, CVX, ETHx, COMP, rETH, SWISE, wstETH, LDO, WETH, ankrETH, USDC, stETH].
+- **Token OUT Allowlist**: \\[DAI, USDT, USDC, rETH, wstETH, WETH, stETH].
+- 4. The above arrays are to be utilised for swapping on CoW Swap, with equivalent lists replicated for Uniswap v3 and Balancer.
+
+2. **Introduction of CoW Swap** ([diff 4](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x23da9ade38e4477b23770ded512fd37b12381fab)): 
+
+- Addition of a **CoW Swap Order signer** to enable gas-minimised and MEV-protected swaps. This includes an extensive set of aggregated exchange routes, improving the efficiency and effectiveness of required swaps. 
+- Tokens will be swapped on CoW Swap according to the token IN/OUT allowlists mentioned above.
+
+3. **Deprecations and Removals**: 
+
+- **Uniswap v2 Swaps** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x472b43f3)): Removed due to insufficient liquidity in V2 pools. 
+- **Stakewise v2**: Deprecated functions related to deposit ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc874b064f465bdd6411d45734b56fac750cda29a)) and claim ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xa3f21010e8b9a3930996c8849df38f9ca3647c20)) functions in light of the recent launch of Stakewise v3. Consequently, permitted actions related to Stakewise v2’s sETH2-ETH Uniswap pool are also removed ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc36442b4a4522e871399cd717abdd847ab11fe88)). 
+- **Compound v2** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x39aa39c021dfbae8fac545936693ac917d5e7563)): Discontinued all actions targeting v2 contracts and v2 cTokens (cUSDC and cDAI) due to the ongoing transition of the protocol to its v3. 
+- **Revocation of Existing/Obsolete Allowances:** All existing and outdated allowances previously set by the Endowment are revoked (set to zero). The ability to call the corresponding approve functions is included in the newly proposed policy. Accordingly, the payload contains a bundle of transactions to revoke these allowances.
+
+4. **Updates**: 
+
+- **Uniswap v3** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x04e45aaf)) **and Balancer** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0xba12222222228d8ba445958a75a0704d566bf2c8)): Adjusted to allow the mentioned token IN/OUT allowlists. 
+- **Curve Pools**: Addition of stETH-ng (factory) pool ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x21e27a5e5513d6e65c4f830167390997aa84843a)) and removal of cUSDC + cDAI pool ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#left-0xa2b47e3d5c44877cca798226b7b8118f9bfb7a56); Compound v2 tokens). 
+- **Curve ZAP Deposit Contract** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x56c526b0159a258887e0d79ec3a80dfb940d0cd7)): Introduced to allow depositing and staking of LP tokens in a single step. 
+- **Convex Staking** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x6b27d7bc63f1999d14ff9ba900069ee516669ee8)): Added the CVX/stETH Rewards contract. 
+- **Lido Withdrawals** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x889edc2edab5f40e902b864ad4d7ade8e412f9b1)): Enhanced to include new withdrawal methods using permits for both wstETH and stETH; methods include `requestWithdrawalsWstETHWithPermit` and `requestWithdrawalsWithPermit`. 
+- **Spark Rewards Claim** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x4370d3b6c9588e02ce9d22e684387859c7ff5b34)): Added functionality to claim wstETH rewards in Spark.
+
+# Audit Considerations
+
+We highly value the community’s involvement in reviewing and providing feedback on this proposal. We encourage members with the necessary technical expertise to examine the content carefully (including this [payload 1](https://gist.github.com/santinomics/773117b729152f31a121045f4ba26b5b)) and share their insights with us. For effective testing of the permissions policy configuration, we have utilised a [Testing Avatar Safe 1](https://app.safe.global/balances?safe=eth:0xC01318baB7ee1f5ba734172bF7718b5DC6Ec90E1). This safe mirrors the current state of the [permissions policy v4 1](https://docs.google.com/document/d/1Ker_TkBJV0xmQ9Li9HB-vtdlpx1vEeVEQwpIH6WoK0o) granted by the Endowment to the Manager SAFE operated by karpatkey. The enhancements in the Zodiac Roles app interface now allow for a clear visualisation of all existing permissions, accessible [here 2](https://roles.gnosisguild.org/eth:0xbd1099dfd3c11b65fb4bb19a350da2f5b61efb0d/roles/ENS-MANAGER-V1). The updated interface also simplifies the process of identifying [changes](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false) by displaying the current permissions policy on the left side and the newly proposed policy on the right side. To further aid in the adoption and understanding of these tools for audit purposes, we have detailed the proposed changes in [version 5 documentation](https://docs.google.com/document/d/1KU4a7s-AxAAAPJxd8vexn7kCl8hsr3-c7VIDfEPHbKc/edit), following our standard Policy Update Request (PUR) format.
+
+# Additional Considerations
+
+## Roles Modifier v1 and Enabling of v2
+
+The existing Roles Modifier v1 module will remain active to ensure a smooth transition and prevent any unexpected disruptions in operational execution. Ownership of the deployed [Roles Modifier v2 module 1](https://etherscan.io/address/0x703806E61847984346d2D7DDd853049627e50A40), equipped with the new proposed permissions policy, has been [transferred 1](https://etherscan.io/tx/0x78c69c7ad0c5f430d97ec5c3bac5cb649d831a756b3d4c5b09b45152427ae8f4) to the Endowment’s Avatar Safe. These permissions are displayed [here 4](https://roles.gnosisguild.org/eth:0x703806e61847984346d2d7ddd853049627e50a40/roles/MANAGER) and match those shown on the comparison interface [here 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false). The payload will only activate this module, marking the first phase of the migration process. A subsequent policy update proposal will seek to disable the v1 module.
+
+## Policy Visualisation in Terms of DeFi Kit Actions
+
+The “show annotations” button, located at the top-right [here 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false), provides a visualisation of the proposed permissions policy expressed through the DeFi Kit Protocol Actions. This feature offers a more abstract and simplified description of the policy, enhancing understanding and accessibility.
+
