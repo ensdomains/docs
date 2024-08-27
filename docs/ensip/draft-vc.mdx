@@ -28,7 +28,7 @@ Allowing for easy sharing of verifiable credentials right on your profile.
 Defines the use of the `verifications` record.
 This record aims to store a list of verifiable credentials or did's, pointing towards certain credentials.
 Under ideal circumstances this record relies on a yet to be written ENSIP that allows for multidimensional records.
-However in its current state assumes that the `verifications` record contains an abi encoded `string[]` of verifiable credentials.
+However in its current state assumes that the `verifications` **record contains an abi encoded** `string[]` **of verifiable credentials**.
 
 ```
 https://myapp.com/credentials/1234.json
@@ -39,21 +39,23 @@ https://myapp.com/credentials/1234.json
 The documents stored in the `verifications` record are verifiable credentials or presentations following the [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/).
 These credentials are JSON-LD documents that contain a set of claims, metadata, and proof, signed by the issuer.
 
+Note the requirement for `id` to be `did:ens:luc.eth` in order to prevent credential spoofing.
+
 ```json
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1"
+    "https://www.w3.org/2018/credentials/v1",
+    "https://www.w3.org/2018/credentials/examples/v1" // your custom context
   ],
   "id": "https://example.com/credentials/1234",
   "type": ["VerifiableCredential"],
   "issuanceDate": "2024-05-21T00:00:00Z",
   "credentialSubject": {
-    "id": "did:ens:luc.eth",
+    "id": "did:ens:luc.eth", // the subject's ens name
+    "isCool": "definitely", // your custom field
   }
 }
 ```
-
-Note the requirement for `id` to be `did:ens:luc.eth` in order to prevent credential spoofing.
 
 #### End-User Experience
 
@@ -65,16 +67,20 @@ As well as allow for setting/removing/revoking credentials.
 
 #### Developer Experience
 
-{/* TODO: Reword */}
 From the front-end developer perspective reading verifiable credentials is as simple as (name, predicate):
 
 ```tsx
 const { credentials } = useVC('luc.eth', (c) => c.type == 'TelegramCredential');
 ```
 
+Under the hood this will resolve to the `verifications` record, which is a `string[]` abi encoded.
+
 #### Resolver Interface
 
 Although no resolver modifications are required to support this ENSIP, it is recommended to implement a resolver interface that allows for easier and more gas-efficient adding and removing of verifiable credentials.
+An example of such is the proposed below.
+
+It is assumed that credential data is stored in an unsorted set, and that indexes can be used to remove credentials.
 
 ```solidity
 interface IVerifiableCredentialResolver {
