@@ -84,6 +84,11 @@ export const TLDList = async () => {
         transport: http(
             process.env.RPC_URL ?? '' //?? 'https://cloudflare-eth.com/rpc'
         ),
+        batch: {
+            multicall: {
+                batchSize: 10_240,
+            },
+        },
     });
 
     const contract = {
