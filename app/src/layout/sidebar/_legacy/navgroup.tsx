@@ -30,7 +30,7 @@ export function NavLink({
             href={href}
             aria-current={active ? 'page' : undefined}
             className={clsx(
-                'ring-ens-light-blue-primary dark:ring-ens-dark-blue-primary flex justify-between gap-2 rounded-lg border-none py-1.5 pr-0 text-sm outline-none ring-offset-1 transition',
+                'flex justify-between gap-2 rounded-lg border-none py-1.5 pr-0 text-sm outline-none ring-ens-light-blue-primary ring-offset-1 transition dark:ring-ens-dark-blue-primary',
                 isAnchorLink ? 'pl-8' : 'pl-4',
                 active
                     ? 'bg-ens-light-blue-surface text-ens-light-blue dark:bg-ens-dark-blue-surface dark:text-ens-dark-text-primary'

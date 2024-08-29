@@ -49,14 +49,14 @@ export const Navigation = (_properties) => {
                         <div className="px-2 font-bold">
                             <Link
                                 href={activeSection.href}
-                                className="hover:bg-ens-light-background-secondary dark:hover:bg-ens-dark-background-secondary flex w-full rounded-md px-2"
+                                className="flex w-full rounded-md px-2 hover:bg-ens-light-background-secondary dark:hover:bg-ens-dark-background-secondary"
                             >
                                 {activeSection.name}
                             </Link>
                         </div>
                         <ul className="mb-4 px-3">
                             {!!activeSection && isInsideMobileNavigation && (
-                                <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary mb-2 text-sm font-medium">
+                                <li className="mb-2 text-sm font-medium text-ens-light-text-primary dark:text-ens-dark-text-primary">
                                     {activeSection.name}
                                 </li>
                             )}
@@ -64,7 +64,7 @@ export const Navigation = (_properties) => {
                                 <NavigationGroup
                                     key={group.title}
                                     group={group}
-                                    className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
+                                    className="border-b border-b-ens-light-border py-2 last:border-b-0 dark:border-b-ens-dark-border"
                                 />
                             ))}
                         </ul>
