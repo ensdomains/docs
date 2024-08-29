@@ -44,7 +44,7 @@ export const Navigation = (_properties) => {
                     ))}
                 </ul> */}
                 {/* {activeSection?.href == section.href && ( */}
-                {activeNavigation.map((activeSection, sectionIndex) => (
+                {activeNavigation.map((activeSection, _sectionIndex) => (
                     <div className="" style={{ fontFamily: 'Satoshi' }}>
                         <div className="px-2 font-bold">
                             <Link
@@ -54,7 +54,7 @@ export const Navigation = (_properties) => {
                                 {activeSection.name}
                             </Link>
                         </div>
-                        <ul className="mb-32 px-3">
+                        <ul className="mb-4 px-3">
                             {!!activeSection && isInsideMobileNavigation && (
                                 <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary mb-2 text-sm font-medium">
                                     {activeSection.name}
