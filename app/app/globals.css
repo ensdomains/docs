@@ -119,6 +119,10 @@ html.dark {
     color-scheme: dark;
 }
 
+.scrollbar {
+    scrollbar-gutter: stable;
+}
+
 .scrollbar::-webkit-scrollbar {
     @apply bg-transparent w-2;
 }

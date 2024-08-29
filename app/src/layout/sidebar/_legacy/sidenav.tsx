@@ -21,8 +21,8 @@ export const Navigation = (_properties) => {
     // });
 
     return (
-        <nav className="flex h-full flex-col">
-            <div className="scrollbar flex size-full flex-col justify-between overflow-auto py-2">
+        <nav className="flex h-full flex-col py-2 pr-2">
+            <div className="scrollbar flex size-full flex-col justify-between overflow-auto py-2 pt-8">
                 {/* <ul className="border-ens-light-border dark:border-ens-dark-border w-full border-b px-[16px] pb-2">
                     {activeNavigation.map((section, sectionIndex) => (
                         <li key={section.name} className="">
