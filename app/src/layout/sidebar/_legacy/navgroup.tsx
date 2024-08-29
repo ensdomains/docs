@@ -35,7 +35,7 @@ export function NavLink({
                 isAnchorLink ? 'pl-8' : 'pl-4',
                 active
                     ? 'bg-ens-light-blue-surface text-ens-light-blue dark:bg-ens-dark-blue-surface dark:text-ens-dark-text-primary'
-                    : 'text-ens-light-text-primary hover:bg-ens-light-background-secondary dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary',
+                    : 'text-ens-light-text-primary hover:bg-ens-light-background-secondary/50 dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary',
                 className
             )}
             onClick={onClick}
@@ -93,14 +93,14 @@ export const NavigationGroup = ({ group, className }) => {
             {group.title && (
                 <motion.h2
                     layout="position"
-                    className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary py-2 pl-2 text-xs font-bold leading-5 dark:text-white"
+                    className="text-ens-light-text-secondary dark:text-ens-dark-text-secondary py-2 pl-2 text-sm font-bold leading-5 dark:text-white"
                 >
                     {/* {group.icon && group.icon + ' '} */}
                     {group.title}
                 </motion.h2>
             )}
             <div className="">
-                <ul className="">
+                <ul>
                     {group.links?.map((link) => (
                         <li key={link.href} className="">
                             <NavLink
@@ -108,7 +108,7 @@ export const NavigationGroup = ({ group, className }) => {
                                 href={link.href}
                                 active={link.href === pathname}
                             >
-                                <span>{link.title}</span>
+                                <span className="text-sm">{link.title}</span>
                                 {link.external && <FiExternalLink />}
                                 {showWIP && link.wip && (
                                     <div className="bg-ens-light-blue-surface text-3xs text-ens-light-blue-primary dark:bg-ens-dark-blue-surface dark:text-ens-dark-blue-primary rounded-md px-1 font-bold">
