@@ -8,6 +8,7 @@ export type SectionData = {
     icon: ReactNode;
     activePattern?: RegExp;
     links: routeGroup[];
+    expanded?: boolean;
 };
 
 export const isSectionData = (element: any): element is SectionData => {
