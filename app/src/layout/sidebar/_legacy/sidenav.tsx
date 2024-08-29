@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { useIsInsideMobileNavigation } from '@/lib/mobile';
@@ -15,9 +16,9 @@ export const Navigation = (_properties) => {
 
     const activeNavigation = navigation['protocol'];
 
-    const activeSection = activeNavigation.find((group) => {
-        return group.activePattern.test(pathname);
-    });
+    // const activeSection = activeNavigation.find((group) => {
+    //     return group.activePattern.test(pathname);
+    // });
 
     return (
         <nav className="flex h-full flex-col">
@@ -43,20 +44,32 @@ export const Navigation = (_properties) => {
                     ))}
                 </ul> */}
                 {/* {activeSection?.href == section.href && ( */}
-                <ul className="mb-32 px-3">
-                    {!!activeSection && isInsideMobileNavigation && (
-                        <li className="mb-2 text-sm font-medium text-ens-light-text-primary dark:text-ens-dark-text-primary">
-                            {activeSection.name}
-                        </li>
-                    )}
-                    {activeSection?.links.map((group) => (
-                        <NavigationGroup
-                            key={group.title}
-                            group={group}
-                            className="border-b border-b-ens-light-border py-2 last:border-b-0 dark:border-b-ens-dark-border"
-                        />
-                    ))}
-                </ul>
+                {activeNavigation.map((activeSection, sectionIndex) => (
+                    <div className="" style={{ fontFamily: 'Satoshi' }}>
+                        <div className="px-2 font-bold">
+                            <Link
+                                href={activeSection.href}
+                                className="hover:bg-ens-light-background-secondary dark:hover:bg-ens-dark-background-secondary flex w-full rounded-md px-2"
+                            >
+                                {activeSection.name}
+                            </Link>
+                        </div>
+                        <ul className="mb-32 px-3">
+                            {!!activeSection && isInsideMobileNavigation && (
+                                <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary mb-2 text-sm font-medium">
+                                    {activeSection.name}
+                                </li>
+                            )}
+                            {activeSection?.links.map((group) => (
+                                <NavigationGroup
+                                    key={group.title}
+                                    group={group}
+                                    className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
+                                />
+                            ))}
+                        </ul>
+                    </div>
+                ))}
                 <div className="px-6 text-sm">ENS Documentation (Alpha)</div>
                 {/* )} */}
             </div>

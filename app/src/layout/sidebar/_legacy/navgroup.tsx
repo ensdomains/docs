@@ -30,10 +30,10 @@ export function NavLink({
             href={href}
             aria-current={active ? 'page' : undefined}
             className={clsx(
-                'flex justify-between gap-2 rounded-lg border-none py-1.5 pr-0 text-sm outline-none ring-ens-light-blue-primary ring-offset-1 transition dark:ring-ens-dark-blue-primary',
+                'ring-ens-light-blue-primary dark:ring-ens-dark-blue-primary flex justify-between gap-2 rounded-lg border-none py-1.5 pr-0 text-sm outline-none ring-offset-1 transition',
                 isAnchorLink ? 'pl-8' : 'pl-4',
                 active
-                    ? 'bg-ens-light-blue-surface text-ens-light-text-primary dark:bg-ens-dark-blue-surface dark:text-ens-dark-text-primary'
+                    ? 'bg-ens-light-blue-surface text-ens-light-blue dark:bg-ens-dark-blue-surface dark:text-ens-dark-text-primary'
                     : 'text-ens-light-text-primary hover:bg-ens-light-background-secondary dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary',
                 className
             )}
