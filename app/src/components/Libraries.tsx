@@ -60,6 +60,12 @@ export const ensLibraries: Language[] = [
                 description: '',
                 logo: '/icons/legacy/logos/web3js.svg',
             },
+            {
+                href: 'https://portal.thirdweb.com/typescript/v5',
+                name: 'Thirdweb',
+                description: '',
+                logo: '/icons/libraries/thirdweb.svg',
+            },
         ],
     },
     {
