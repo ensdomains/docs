@@ -5,6 +5,10 @@
         },
         "redirects": [
             {
+                "pattern": "^/dao/airdrop$",
+                "destination": "/dao/token"
+            },
+            {
                 "pattern": "^/subgraph$",
                 "destination": "/web/subgraph"
             },
