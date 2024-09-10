@@ -416,6 +416,16 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
+                        title: '5.14 - [Executable] Endowment permissions to karpatkey - Update #4',
+                        href: '/dao/proposals/5.14',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.13 - [Executable] Security Council',
+                        href: '/dao/proposals/5.13',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
                         title: '5.12 - [Executable] Roles Modifier V2 Migration & Updates to Endowment Permissions',
                         href: '/dao/proposals/5.12',
                     },
