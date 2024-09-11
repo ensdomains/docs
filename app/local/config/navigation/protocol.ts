@@ -349,7 +349,7 @@ export const navigation: SectionData[] = [
                         href: '/dao/constitution',
                     },
                     { title: '🏛️ Foundation', href: '/dao/foundation' },
-                    { title: '🪂 Airdrop', href: '/dao/airdrop' },
+                    { title: '🔷 Token', href: '/dao/token' },
                 ],
             },
             {
