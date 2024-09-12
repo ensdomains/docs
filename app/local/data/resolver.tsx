@@ -199,8 +199,8 @@ export const resolver_methods: ContractMethod[] = [
     },
     {
         name: 'setAddr(bytes32 node, address a)',
-        interface: '0x3b3b57de',
-        usage: 'Write Ethereum Adress',
+        interface: '0xd5fa2b00',
+        usage: 'Write Ethereum Address',
         seeMore: 'Implemented by Public Resolver',
         input: [
             {
@@ -217,7 +217,7 @@ export const resolver_methods: ContractMethod[] = [
         events: ['event AddrChanged(bytes32 indexed node, address a);'],
     },
     {
-        name: 'setAddr(bytes32 node, uint coinType, bytes calldata a)',
+        name: 'setAddr(bytes32 node, uint256 coinType, bytes calldata a)',
         interface: '0x8b95dd71',
         usage: 'Set Multicoin Address',
         seeMore: 'Implemented by Public Resolver',
@@ -229,7 +229,7 @@ export const resolver_methods: ContractMethod[] = [
             },
             {
                 name: 'coinType',
-                type: 'uint',
+                type: 'uint256',
                 description: 'The ENSIP-9 coin type to update.',
             },
             {
