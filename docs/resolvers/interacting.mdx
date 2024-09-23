@@ -16,7 +16,7 @@ This is possible by interacting with the resolver contract of a name directly.
 
 Before you start sending transactions to users resolvers, you should check if they support the interface you want to use. This is done by calling the `supportsInterface` (see [EIP-165](https://eips.ethereum.org/EIPS/eip-165)) function on the resolver contract.
 
-```
+```solidity
 function supportsInterface(bytes4 interfaceID) external pure returns (bool)
 ```
 

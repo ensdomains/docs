@@ -37,7 +37,7 @@ It is hoped that this sale will generate in excess of $13m in USDC. The goal is 
 
 Price checker data is configured to check the swap against the Uniswap v3 pool and limit to 2% slippage. It is generated using the below code:
 
-```
+```javascript
 import { ethers } from "https://cdn.ethers.io/lib/ethers-5.2.esm.min.js";
 
 function getCheckerData(slippage, path, fees) {

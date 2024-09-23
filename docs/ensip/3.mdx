@@ -43,7 +43,7 @@ When called by account `x`, instructs the ENS registry to transfer ownership of 
 
 Allowing the caller to specify an owner other than themselves for the relevant node facilitates contracts that need accurate reverse ENS entries delegating this to their creators with a minimum of code inside their constructor:
 
-```
+```solidity
 reverseRegistrar.claim(msg.sender)
 ```
 
