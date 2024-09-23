@@ -20,7 +20,7 @@ const NavSect: FC<{ section: SectionData; pathname: string }> = ({
 
     return (
         <div
-            className="pt-1 pl-2 last:border-b-0"
+            className="pl-2 pt-1 last:border-b-0"
             style={{ fontFamily: 'Satoshi' }}
         >
             <div className="border-b-ens-light-border dark:border-b-ens-dark-border border-b">
@@ -52,7 +52,7 @@ const NavSect: FC<{ section: SectionData; pathname: string }> = ({
                                 key={group.title}
                                 group={group}
                                 className=""
-                                // className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
+                            // className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
                             />
                         ))}
                     </ul>
