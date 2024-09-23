@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { SectionData } from '../navigation';
 
-export const showWIP = true;
+export const showWIP = false;
 
 export const navigation: SectionData[] = [
     {
