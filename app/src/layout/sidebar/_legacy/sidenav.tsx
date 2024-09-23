@@ -52,7 +52,7 @@ const NavSect: FC<{ section: SectionData; pathname: string }> = ({
                                 key={group.title}
                                 group={group}
                                 className=""
-                            // className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
+                                // className="border-b-ens-light-border dark:border-b-ens-dark-border border-b py-2 last:border-b-0"
                             />
                         ))}
                     </ul>
