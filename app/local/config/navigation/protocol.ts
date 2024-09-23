@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { SectionData } from '../navigation';
 
-export const showWIP = false;
+export const showWIP = true;
 
 export const navigation: SectionData[] = [
     {
@@ -9,7 +9,6 @@ export const navigation: SectionData[] = [
         href: '/learn/protocol',
         icon: '🏠',
         activePattern: /^\/((learn|terminology|changelog|bugs|faq)(\/.*)?)?$/,
-        expanded: true,
         links: [
             {
                 title: 'Learn',
@@ -71,7 +70,6 @@ export const navigation: SectionData[] = [
         href: '/web',
         icon: '📖',
         activePattern: /^\/d?web(\/.*)?/,
-        expanded: true,
         links: [
             {
                 title: '',
@@ -182,7 +180,6 @@ export const navigation: SectionData[] = [
         icon: '⚙️',
         activePattern:
             /^\/(resolvers|contracts|wrapper|registry|resolution|dns)(\/.*)?/,
-        expanded: true,
         links: [
             {
                 title: '',
@@ -341,7 +338,6 @@ export const navigation: SectionData[] = [
         href: '/dao',
         icon: '🏛️',
         activePattern: /^\/(dao|governance)(\/.*)?/,
-        expanded: false,
         links: [
             {
                 title: '',
@@ -695,7 +691,6 @@ export const navigation: SectionData[] = [
         href: '/ensip',
         icon: '📜',
         activePattern: /^\/(standards|ensip)(\/.*)?/,
-        expanded: false,
         links: [
             {
                 title: '',
