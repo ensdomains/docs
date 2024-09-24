@@ -18,6 +18,7 @@ import {
     routeElement,
     routeGroup,
 } from '#/config/navigation';
+import { showWIP } from '#/config/navigation/protocol';
 
 import { MenuIcon } from '../../../components/icons/MenuIcon';
 import { XIcon } from '../../../components/icons/XIcon';
@@ -80,7 +81,7 @@ export const MobileNavigation = () => {
                             >
                                 <motion.div
                                     layoutScroll
-                                    className="fixed bottom-0 left-0 top-16 z-50 w-full overflow-y-auto border border-zinc-900/7.5 bg-white pb-8 shadow-lg shadow-zinc-900/10 dark:bg-zinc-900 dark:ring-zinc-800 min-[416px]:max-w-sm sm:pl-6"
+                                    className="border-zinc-900/7.5 fixed bottom-0 left-0 top-16 z-50 w-full overflow-y-auto border bg-white pb-8 shadow-lg shadow-zinc-900/10 min-[416px]:max-w-sm sm:pl-6 dark:bg-zinc-900 dark:ring-zinc-800"
                                 >
                                     <ActualNavigation />
                                 </motion.div>
@@ -199,14 +200,14 @@ const SectionItems = () => {
 
     return (
         <>
-            <li className="py-1.5 pl-3 text-base font-medium text-ens-light-text-primary dark:text-ens-dark-text-primary">
+            <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary py-1.5 pl-3 text-base font-medium">
                 <button onClick={popNav} className="flex w-full items-center">
                     <FiChevronLeft className="text-xl" />
                     <span className="ml-1">{activeGroup?.title}</span>
                 </button>
             </li>
 
-            <div className="my-3 border-b border-ens-light-border dark:border-ens-dark-border" />
+            <div className="border-ens-light-border dark:border-ens-dark-border my-3 border-b" />
 
             {activeGroup?.links.map((group, index) => (
                 <NavItem key={group.title} item={group} index={index} />
@@ -224,7 +225,7 @@ const NavItem = ({ item, index }: { item: routeElement; index: number }) => {
             <li key={item.title} className="">
                 <button
                     onClick={() => pushNav(index)}
-                    className="flex w-full items-center gap-2 rounded-lg border-none py-2 pl-4 pr-0 text-base text-ens-light-text-primary outline-none ring-offset-1 transition hover:bg-ens-light-background-secondary dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary"
+                    className="text-ens-light-text-primary hover:bg-ens-light-background-secondary dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary flex w-full items-center gap-2 rounded-lg border-none py-2 pl-4 pr-0 text-base outline-none ring-offset-1 transition"
                 >
                     <span className="flex items-center gap-1 truncate leading-5">
                         {item.title || 'Untitled'}
@@ -246,13 +247,13 @@ const NavItem = ({ item, index }: { item: routeElement; index: number }) => {
             >
                 <span>{item.title ?? 'Untitled'}</span>
                 {item.external && <FiExternalLink />}
-                {item.wip && (
-                    <div className="rounded-md bg-ens-light-blue-surface px-1 text-3xs font-bold text-ens-light-blue-primary dark:bg-ens-dark-blue-surface dark:text-ens-dark-blue-primary">
+                {showWIP && item.wip && (
+                    <div className="bg-ens-light-blue-surface text-3xs text-ens-light-blue-primary dark:bg-ens-dark-blue-surface dark:text-ens-dark-blue-primary rounded-md px-1 font-bold">
                         {item.wip == 1 ? 'WIP' : `${item.wip}%`}
                     </div>
                 )}
-                {item.design_wip && (
-                    <div className="size-1.5 rounded-full bg-ens-light-pink-primary dark:bg-ens-dark-pink-primary"></div>
+                {showWIP && item.design_wip && (
+                    <div className="bg-ens-light-pink-primary dark:bg-ens-dark-pink-primary size-1.5 rounded-full"></div>
                 )}
             </NavLink>
         </li>

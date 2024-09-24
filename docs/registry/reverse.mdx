@@ -23,7 +23,7 @@ If you are interested in [querying the primary name for an address](/web/reverse
 
 ## Set Primary Name
 
-```
+```solidity
 function setName(string memory name) public returns (bytes32)
 ```
 
@@ -47,13 +47,13 @@ The current infrastructure for primary names across multiple chains is being wor
 
 ### Claim Address
 
-```
+```solidity
 function claim(address owner) public returns (bytes32);
 ```
 
 Claims the caller's address in the reverse registrar, assigning ownership of the reverse record to `owner`. Equivalent to calling `claimWithResolver(owner, 0)`.
 
-```
+```solidity
 function claimWithResolver(address owner, address resolver) public returns (bytes32)
 ```
 
@@ -66,7 +66,7 @@ After calling this function:
 
 ### Get Default Resolver
 
-```
+```solidity
 Resolver public defaultResolver;
 ```
 

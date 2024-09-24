@@ -6,6 +6,7 @@ import { ETHRegistryDemo } from './ethregistry/ETHRegistryDemo';
 import { ETHRegistryRenewDemo } from './ethregistryrenew/ETHRegistryRenewDemo';
 import { ListNamesDemo } from './listnames/ListNamesDemo';
 import { NameLookupDemo } from './namelookup/NameLookup';
+import { ResolverPlaygroundDemo } from './resolverplayground';
 import { ResolverTestDemo } from './resolvertest';
 import { ReverseSetNameForDemo } from './reverse-set-name-for/ReverseSetNameForDemo';
 import { SendTransactionDemo } from './send-transaction/SendTransaction';
@@ -55,6 +56,12 @@ const demos = {
         wallet: true,
         chains: new Set([mainnet.id, sepolia.id, holesky.id]),
         component: ListNamesDemo,
+    },
+    resolverdemo: {
+        title: 'Resolver Playground',
+        wallet: true,
+        chains: new Set([mainnet.id, sepolia.id, holesky.id]),
+        component: ResolverPlaygroundDemo,
     },
 };
 

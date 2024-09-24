@@ -1,0 +1,73 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal aims to introduce new permissions for deploying Endowment funds, focusing on improved diversification and alignment with the evolving market landscape and liquidity.',
+    emoji: '📖',
+    contributors: [
+        'alextnetto.eth'
+    ],
+    proposal: {
+        tally: '462537345451524095629071359388092434511638926463658570104856324869910407296726',
+        type: 'executable'
+    }
+};
+
+# [EP 5.14] [Executable] Endowment permissions to karpatkey - Update #4
+
+# Abstract
+
+This proposal aims to introduce new permissions for deploying Endowment funds, focusing on improved diversification and alignment with the evolving market landscape and liquidity. We are also introducing an independent audit report together with the Permissions Update; this will be the standard practice for Permissions Updates going forward.
+
+# Motivation
+
+Effective treasury management strategies must be adapted to market conditions and protocol updates; for existing Permissions, there might be migrations and introductions of new pools; for new Permissions, protocols and pools that were previously considered immature and unsuitable for the Endowment’s risk appetite may become viable options as they become more time- and battle-tested. This proposal seeks to request new permissions from the ENS DAO for karpatkey, enabling the introduction of new yield-generation strategies for the Endowment.
+
+The new permissions have also been audited by [ThirdGuard](https://thirdguard.com/), an independent 3rd-party, to ensure the suggested changes have been thoroughly reviewed by a technically-competent, independent party.
+
+# Specification
+
+## New permissions implemented in this payload
+
+1. Deposit osETH on Aave v3;
+2. Stake (and unstake) ETH on Stakewise v3;
+
+   1. Through the [Genesis Vault](https://app.stakewise.io/vault/mainnet/0xac0f906e433d58fa868f936e8a43230473652885).
+
+3. Mint (and burn) osETH on Stakewise v3;
+
+   1. Through the Genesis Vault
+
+4. WETH/osETH pool on Balancer;
+5. WETH/osETH pool on Aura Finance;
+6. Swaps:
+
+   1. WETH &lt;&gt; osETH on Balancer
+   2. USDC &lt;&gt; osETH on Uniswap v3
+   3. USDC &lt;&gt; WETH &lt;&gt; osETH on CoW Swap
+   4. RPL &lt;&gt; WETH on Uniswap v3
+   5. RPL &lt;&gt; WETH on CoW Swap
+
+7. Unsign order on Cow Protocol so that a pending order that has been submitted but not executed can be cancelled.
+
+## Additional implementation details
+
+1. The enableModule(address module) function is called to enable the modules, pointing it to the [Avatar address](https://app.safe.global/home?safe=eth:0x4F2083f5fBede34C2714aFfb3105539775f7FE64) (the Endowment).
+2. The payload to be executed upon the successful approval of this proposal can be found [here](https://gist.github.com/JeronimoHoulin/55f50e86d1dc874e4e685d5e9b496a67). The proposed permissions policy can be visualised in the aforementioned [link](https://roles.gnosisguild.org/eth:0x703806E61847984346d2D7DDd853049627e50A40/roles/MANAGER/diff/C5Twf3khKv2Ny8PvzoARgHFKFFK8vIiNR7nDkrIM?annotations=false) for ease of review.
+3. We have tested the payload to make sure all interactions mentioned on this proposal work as expected through our [Test Safe](https://app.safe.global/transactions/history?safe=eth:0xC01318baB7ee1f5ba734172bF7718b5DC6Ec90E1).
+4. With the introduction of the [new Roles App Permissions Visualisation tool](https://roles.gnosisguild.org/eth:0x703806E61847984346d2D7DDd853049627e50A40/roles/MANAGER?annotations=false), manually updating the “Preset Permissions - ENS Endowment” [document](https://docs.google.com/document/d/1KU4a7s-AxAAAPJxd8vexn7kCl8hsr3-c7VIDfEPHbKc/edit?usp=sharing) is no longer necessary. The new tool provides an up-to-date and accurate method for exploring the current permissions granted to karpatkey by the ENS DAO.
+
+# Auditing process
+
+## Introduction of an independent audit report
+
+We have received feedback in the previous proposal that independent, 3rd party code review would be helpful for the ENS community and delegates to make a more informed decision and to reduce delegate fatigue.
+
+In our commitment to transparency and effort towards DAO efficiency, karpatkey decided to engage with independent, third-party firms / individuals for every contract upgrade starting with this proposal. [ThirdGuard](https://thirdguard.com/) has been engaged for this proposal's code review; ThirdGuard is a provider of on-chain risk monitoring solutions, and has been working with the Zodiac Roles Modifier since its inception (and its precursor, Scope Guard). Given their past experiences across Zodiac Roles Modifier, Solidity, and DeFi risk management, ThirdGuard was deemed to be a suitable candidate to fulfil the role of policy reviewer. Their approach to auditing the permissions can be found [here](https://www.loom.com/share/0b3cbcd6907a4455ab45ead4887c7f9a?sid=9bd0a2c7-d932-45c0-acad-8516201c56ea).
+
+**The ThirdGuard audit for the permissions in this payload can be found [here](https://github.com/ThirdGuard/roles-policy-audits/blob/main/ENS/ens-policy-audit-v2-21st-Aug-2024.pdf
+).**
+
+Audit report summary is as follows:
+
+* No material findings were found.
+* Policy changes requested were considered bona fide actions needed by the Manager to carry out their DeFi operations.
+* 1 Informational Finding and 1 Warning were logged, and acknowledged by karpatkey. These findings do not post an immediate risk but are relevant to security best practices.

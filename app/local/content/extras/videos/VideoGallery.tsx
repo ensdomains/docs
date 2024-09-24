@@ -5,6 +5,13 @@ export const VideoGallery: FC<{}> = () => {
         <div className="not-prose mt-0 grid w-full grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
                 {
+                    title: 'ETHGlobal Brussels Workshop',
+                    location: 'ETHGlobal Brussels',
+                    description: '',
+                    href: 'https://www.youtube.com/watch?v=TcMUvPPW2oI',
+                    cover: 'https://i3.ytimg.com/vi_webp/TcMUvPPW2oI/mqdefault.webp',
+                },
+                {
                     title: 'ETHGlobal London Workshop',
                     location: 'ETHGlobal London',
                     description: '',

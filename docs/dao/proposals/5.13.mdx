@@ -1,0 +1,72 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal aims to establish a Security Council for the ENS DAO with the authority to veto malicious proposals, with a built-in expiration mechanism to prevent centralized control and ensure greater delegation and governance distribution over time.',
+    emoji: '📖',
+    contributors: [
+        'alextnetto.eth'
+    ],
+    proposal: {
+        tally: '42329103797433777309488042029679811802172320979541414683300183273376839219133',
+        type: 'executable'
+    }
+};
+
+# [EP 5.13] [Executable] Security Council
+
+## Abstract
+
+The primary mission of ENS DAO is to govern the protocol and allocate resources from the treasury in line with the DAO's constitution and broader objectives. However, due to changing economic dynamics, the DAO is increasingly vulnerable to attacks aimed at draining its treasury.
+
+To safeguard the DAO's integrity and longevity, a Security Council with the authority to cancel malicious proposals is needed. To avoid perpetuating centralized power, the Security Council's authority will have a built-in expiration date. After two years, anyone will be able to call a [function](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol#L59) that revokes the council's power to veto proposals, ensuring a time-limited mechanism to counter malicious attacks while promoting more delegation and governance distribution.
+
+![security-council-diagram](https://hackmd.io/\_uploads/BJb0bHP\_A.png)
+
+## Motivation
+
+As ENS continues to grow, its treasury in ETH is always growing. Simultaneously, the percentage of tokens actively delegated is on the decline.
+
+This imbalance creates a risk where an attacker could acquire enough $ENS to gain control of the DAO at a cost lower than the treasury's total value. This has been a growing concern since March 2023.
+
+Past attacks on DAOs have exploited similar vulnerabilities, with some [being thwarted](https://x.com/AragonProject/status/1656028382939815937) by components with veto power. Currently, the ENS governance process involves a proposal passing through the governor, relying on delegated voting power for approval. If approved, the governor queues the proposal in a timelock contract, delaying execution by two days. While the governor can cancel proposals, it follows the same pathway as a malicious proposal, introducing potential risks.
+
+The short-term solution was delegating 3.8M $ENS to a contract that can only vote "Against"; more details about this can be found in [Nick's forum post](https://discuss.ens.domains/t/introducing-veto-ensdao-eth/19088). The attack is still profitable and, depending on market conditions can be up to a 3x ROI, like in Dec 2023. We need a **mid-term solution** to cancel the attack, which is this proposal. An article about this research done by the Blockful team will be published [here](https://blockful.io/blog/ens-security-council) after the proposal is executed and there is no attack risk.
+
+## Specification
+
+To enhance security, the [SecurityCouncil contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol) will be deployed, receiving the PROPOSER_ROLE in the timelock, granting it the ability to cancel proposals (callable only by the [Security Council multisig](https://etherscan.io/address/0xaa5cd05f6b62c3af58ae9c4f3f7a2acc2cdc2cc7)) without the power to initiate or modify other DAO actions. **The scope of this proposal is to assign the PROPOSER_ROLE to the SecurityCouncil contract ([Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))\*\*.
+
+To ensure decentralization, the contract will also feature a time-based expiration mechanism that allows anyone to revoke the PROPOSER_ROLE after two years. This window provides time to strengthen delegation and address current vulnerabilities, facilitating the DAO's transition to a more secure governance scenario.
+
+## Security considerations
+
+Assigning the PROPOSER_ROLE to a multisig within the timelock contract is overly broad for our requirements as it allows the address to create operations in the timelock. If the multisig signers are compromised, they could potentially propose and execute malicious changes. Therefore our approach is deploying a new contract similar to the current veto.ensdao.eth contract, which can only do one action: to CANCEL a transaction in the timelock, triggered only by the security council multisig.
+
+The risk is mitigated but one scenario remains: if the whole multisig is compromised then a malicious entity could kick other signers and effectively stop the DAO from executing proposals by canceling all transactions, including any that would remove this contract from the PROPOSER_ROLE. Anyways, after 2 years, [anyone can remove the PROPOSER_ROLE from the contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol#L59).
+
+## Council Operations
+
+It is in the best interest of everyone to make clear the expectations and responsibilities ENS DAO put on those members, backed by the reputation, other roles and gains those might have in the organization.
+
+The security council is expected to act only in emergency, in the given following situations or similar cases:
+
+* If a proposal goes against the ENS constitution
+
+* If a proposal is approved with malicious intent against the DAO longevity/sustainability
+
+* If such proposal is approved by any group of voters, but directly financially incentivised to vote against the DAOs interests to preserve their own financial stake.
+
+* If any approved proposal goes directly against the DAO for the sole benefit of an attacker.
+
+## Relevant links
+
+- SecurityCouncil contract ([GitHub](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol), [Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))
+
+- Security Council multisig ([Safe](https://app.safe.global/home?safe=eth:0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7), [Etherscan](https://etherscan.io/address/0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7))
+
+- Snapshot proposals:
+
+- [[EP5.7][Social] Security Council](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54)
+
+- [[EP5.10][Social] Confirming the ENS DAO Security Council Members](https://snapshot.org/#/ens.eth/proposal/0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a)
+
+- [Forum discussion](https://discuss.ens.domains/t/temp-check-enable-cancel-role-on-the-dao/19090/19)

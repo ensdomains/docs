@@ -47,7 +47,7 @@ Let:
 
 ENSIP-10-compliant ENS resolvers MAY implement the following function interface:
 
-```
+```solidity
 interface ExtendedResolver {
     function resolve(bytes calldata name, bytes calldata data) external view returns(bytes);
 }
@@ -80,7 +80,7 @@ Also note that when wildcard resolution is in use (eg, `name != currentname`), c
 
 ### Pseudocode
 
-```
+```solidity
 function getResolver(name) {
     for(let currentname = name; currentname !== ''; currentname = parent(currentname)) {
         const node = namehash(currentname);
