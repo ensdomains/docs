@@ -43,7 +43,7 @@ When called by account `x`, instructs the ENS registry to transfer ownership of 
 
 Allowing the caller to specify an owner other than themselves for the relevant node facilitates contracts that need accurate reverse ENS entries delegating this to their creators with a minimum of code inside their constructor:
 
-```
+```solidity
 reverseRegistrar.claim(msg.sender)
 ```
 
@@ -59,7 +59,7 @@ When called by account `x`, sets the resolver for the name `hex(x) + '.addr.reve
 
 A new resolver interface is defined, consisting of the following method:
 
-```
+```solidity
 function name(bytes32 node) constant returns (string);
 ```
 
@@ -73,7 +73,7 @@ Future ENSIPs may specify more record types appropriate to reverse ENS records.
 
 This registrar, written in Solidity, implements the specifications outlined above.
 
-```
+```solidity
 pragma solidity ^0.4.10;
 
 import "./AbstractENS.sol";

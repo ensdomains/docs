@@ -186,7 +186,7 @@ If you would like to try registering a name live on a testnet you can use the li
 
 ## Renewing a Name
 
-```
+```solidity
 ETHRegistrarController.renew()
 ```
 
@@ -199,7 +199,7 @@ As per the separation between registry and controller, even with upgraded contro
 
 ## Other features
 
-```ts
+```solidity
 ETHRegistrarController.MIN_COMMITMENT_AGE uint
 ETHRegistrarController.MAX_COMMITMENT_AGE uint
 ETHRegistrarController.MIN_REGISTRATION_DURATION uint
@@ -235,7 +235,7 @@ BaseRegistrar.tokenURI(uint256 tokenId) view returns (string)
 
 Writable
 
-```ts
+```solidity
 // Transfer a Name
 BaseRegistrar.transferFrom(address from, address to, uint256 tokenId)
 BaseRegistrar.safeTransferFrom(address from, address to, uint256 tokenId)
@@ -250,7 +250,7 @@ BaseRegistrar.reclaim(uint256 label)
 
 Events
 
-```ts
+```solidity
 // BaseRegistrar
 event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
 event NameMigrated(uint256 indexed hash, address indexed owner, uint expires);
