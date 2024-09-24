@@ -4,6 +4,9 @@ import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 
 import { App } from './App';
+import { ThemeProvider } from '@ensdomains/thorin';
+
+import "./style.css";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
@@ -16,12 +19,15 @@ const config = createConfig({
   webSocketPublicClient,
 });
 
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById('root')!);
 
+// Wrap app in ThemeProvider
 root.render(
   <StrictMode>
-    <WagmiConfig config={config}>
-      <App />
-    </WagmiConfig>
+    <ThemeProvider>
+      <WagmiConfig config={config}>
+        <App />
+      </WagmiConfig>
+    </ThemeProvider>
   </StrictMode>
 );
