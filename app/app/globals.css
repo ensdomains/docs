@@ -25,7 +25,7 @@
     --shiki-token-link: #0969da;
 }
 
-/* @font-face {
+@font-face {
     font-family: 'Satoshi';
     font-style: normal;
     font-weight: normal;
@@ -43,7 +43,7 @@
     font-family: 'Satoshi';
     font-display: swap;
     src: url('/fonts/sans-serif/Satoshi-Variable.ttf') format('truetype');
-} */
+}
 
 @font-face {
     font-family: 'Inter';
@@ -117,6 +117,10 @@ h1, h2, h3, h4 {
 
 html.dark {
     color-scheme: dark;
+}
+
+.scrollbar {
+    scrollbar-gutter: stable;
 }
 
 .scrollbar::-webkit-scrollbar {

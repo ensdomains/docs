@@ -17,7 +17,6 @@ import {
 
 import { MobileNavigation } from '../sidebar/_legacy/MobileNavigation';
 import { MobileSearch, Search } from './search/Search';
-import { SubHeader } from './subheader/SubHeader';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const Header = forwardRef<HTMLDivElement, { className?: string }>(
@@ -114,7 +113,7 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                         </div>
                     </div>
                 </motion.header>
-                <SubHeader />
+                {/* <SubHeader /> */}
             </>
         );
     }

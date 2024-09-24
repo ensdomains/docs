@@ -39,7 +39,11 @@ export default function RootLayout(properties) {
     const { children } = properties;
 
     return (
-        <html lang="en" suppressHydrationWarning className="not-system">
+        <html
+            lang="en"
+            suppressHydrationWarning
+            className="not-system scrollbar"
+        >
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <script

@@ -1,6 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { SectionData } from '../navigation';
 
+export const showWIP = false;
+
 export const navigation: SectionData[] = [
     {
         name: 'Intro',
@@ -339,21 +341,38 @@ export const navigation: SectionData[] = [
         links: [
             {
                 title: '',
-                links: [{ title: '👋 Welcome', href: '/dao' }],
+                links: [{ title: 'Welcome', href: '/dao' }],
             },
             {
-                title: '🧑‍🎓 The interesting bits',
+                title: 'The interesting bits',
                 links: [
                     {
-                        title: '📜 Constitution',
+                        title: 'Constitution',
                         href: '/dao/constitution',
                     },
-                    { title: '🏛️ Foundation', href: '/dao/foundation' },
-                    { title: '🔷 Token', href: '/dao/token' },
+                    { title: 'Foundation', href: '/dao/foundation' },
+                    { title: 'Token & Airdrop', href: '/dao/token' },
                 ],
             },
             {
-                title: '🔗 Links',
+                title: 'Good to know',
+                links: [
+                    {
+                        title: 'Submit Proposal',
+                        href: '/dao/proposals/submit',
+                    },
+                    {
+                        title: 'DAO Stewards',
+                        href: '/dao/stewards',
+                    },
+                    {
+                        title: 'Working Group Rules',
+                        href: '/dao/wg/rules',
+                    },
+                ],
+            },
+            {
+                title: 'Links',
                 links: [
                     {
                         title: 'Discourse',
@@ -377,42 +396,8 @@ export const navigation: SectionData[] = [
                     },
                 ],
             },
-            // {
-            //     title: 'Governance Process',
-            //     links: [
-            //         {
-            //             title: 'Governance Process',
-            //             href: '/dao/governance/process',
-            //         },
-            //         {
-            //             title: 'Moderator Checklist',
-            //             href: '/dao/governance/moderator',
-            //         },
-            //     ],
-            // },
             {
-                title: '🧠 Good to know',
-                links: [
-                    {
-                        title: 'Submit Proposal',
-                        href: '/dao/proposals/submit',
-                    },
-                    {
-                        title: 'DAO Stewards',
-                        href: '/dao/stewards',
-                    },
-                    // {
-                    //     title: 'Voting Procedure',
-                    //     href: '/dao/proposals/voting',
-                    // },
-                    {
-                        title: 'Working Group Rules',
-                        href: '/dao/wg/rules',
-                    },
-                ],
-            },
-            {
-                title: '📖 Proposals Term 5',
+                title: 'Proposals Term 5',
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
@@ -490,7 +475,7 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📙 Proposals Term 4',
+                title: 'Proposals Term 4',
                 links: [
                     {
                         title: '4.10 - [Social] Transfer ENS Root Key Ownership to the ENS DAO',
@@ -535,7 +520,7 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📙 Proposals Term 3',
+                title: 'Proposals Term 3',
                 links: [
                     {
                         title: '3.7 - [Social] Approval of ENS Name Normalization Standard (ENSIP-15)',
@@ -576,7 +561,7 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📙 Proposals Term 2',
+                title: 'Proposals Term 2',
                 links: [
                     {
                         title: '2.2.5 - [Social] Selection of an ENS endowment fund manager',
@@ -605,7 +590,7 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📗 Proposals Term 1',
+                title: 'Proposals Term 1',
                 links: [
                     {
                         title: '1.9 - [Executable] Fund the Protocol Guild pilot with 200,000 $ENS',
@@ -662,7 +647,7 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
-                title: '📘 Proposals Term 0',
+                title: 'Proposals Term 0',
                 links: [
                     {
                         title: '0.4 - [Social] Proposal: Creation of Foundational Working Groups and Working Group Rules',
@@ -692,17 +677,14 @@ export const navigation: SectionData[] = [
         links: [
             {
                 title: '',
-                links: [{ title: 'Welcome', href: '/ensip', icon: '👋' }],
+                links: [
+                    { title: 'What is an ENSIP?', href: '/ensip', icon: '👋' },
+                ],
             },
             {
-                title: 'Improvement Proposals (ENSIPs)',
+                title: 'Proposals',
                 icon: '📖',
                 links: [
-                    {
-                        title: 'Explained',
-                        href: '/ensip',
-                        icon: '🧑‍🏫',
-                    },
                     { title: '1 - ENS', href: '/ensip/1' },
                     { title: '2 - Hash Registrar', href: '/ensip/2' },
                     {
