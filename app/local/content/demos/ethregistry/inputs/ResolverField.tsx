@@ -6,12 +6,15 @@ export const ResolverField: FC<{
 }> = ({ resolver: owner, setResolver: setOwner }) => {
     return (
         <div>
-            <p>Resolver (address):</p>
+            <label className="label" htmlFor="resolver">
+                Resolver (address):
+            </label>
             <div className="flex items-center gap-2">
                 <input
                     value={owner}
                     onChange={(event) => setOwner(event.target.value)}
                     className="input"
+                    id="resolver"
                     placeholder="0x225f137127d9067788314bc7fcc1f36746a3c3B5"
                 />
             </div>
