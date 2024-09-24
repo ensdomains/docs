@@ -41,7 +41,7 @@ const NavSect: FC<{ section: SectionData; pathname: string }> = ({
                     </button>
                 </div>
                 {expanded && (
-                    <ul className="mb-4 px-3">
+                    <ul className="mb-4">
                         {!!section && isInsideMobileNavigation && (
                             <li className="text-ens-light-text-primary dark:text-ens-dark-text-primary mb-2 text-sm font-medium">
                                 {section.name}
