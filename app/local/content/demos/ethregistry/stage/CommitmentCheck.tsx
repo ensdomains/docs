@@ -65,20 +65,28 @@ export const CommitmentCheck: FC<{
                 }
             >
                 {isLoadingCommithash ? (
-                    <div className="flex items-center gap-1 rounded-lg border-ens-light-blue-primary bg-ens-light-blue-surface px-3 py-2 text-ens-light-blue-primary dark:border-ens-dark-blue-primary dark:bg-ens-dark-blue-surface">
+                    <div className="border-ens-light-blue-primary bg-ens-light-blue-surface text-ens-light-blue-primary dark:border-ens-dark-blue-primary dark:bg-ens-dark-blue-surface flex items-center gap-1 rounded-lg px-3 py-2">
                         Loading...
                     </div>
                 ) : (
                     <div>
                         {commithash ? (
-                            <div className="flex items-center gap-1 rounded-lg border-ens-light-green-primary bg-ens-light-green-surface px-3 py-2 text-ens-light-green-primary dark:border-ens-dark-green-primary dark:bg-ens-dark-green-surface">
-                                <FiCheck />
-                                CommitHash: {commithash}
+                            <div className="border-ens-light-green-primary bg-ens-light-green-surface text-ens-light-green-primary dark:border-ens-dark-green-primary dark:bg-ens-dark-green-surface flex items-start gap-1 rounded-lg px-3 py-2">
+                                <div className="pt-2">
+                                    <FiCheck />
+                                </div>
+                                <div className="w-fit max-w-full grow text-wrap break-all">
+                                    CommitHash: {commithash}
+                                </div>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-1 rounded-lg border-ens-light-red-primary bg-ens-light-red-surface px-3 py-2 text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface">
-                                <FiX />
-                                Problem
+                            <div className="border-ens-light-red-primary bg-ens-light-red-surface text-ens-light-red-primary dark:border-ens-dark-red-primary dark:bg-ens-dark-red-surface flex items-center gap-1 rounded-lg px-3 py-2">
+                                <div className="pt-2">
+                                    <FiX />
+                                </div>
+                                <div className="w-fit max-w-full grow text-wrap break-all">
+                                    Problem
+                                </div>
                             </div>
                         )}
                     </div>

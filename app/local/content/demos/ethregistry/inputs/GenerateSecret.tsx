@@ -1,3 +1,5 @@
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import { randomBytes } from 'crypto';
 import { FC } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
@@ -23,9 +25,11 @@ export const GenerateSecret: FC<{
                 <Button
                     variant="primary"
                     onClick={() => {
-                        setSecret(
-                            '0x0000000000000000000000000000000000000000000000000000000000000000'
-                        );
+                        // generate random bytes32 hex prefixed with 0x
+                        // '0x0000000000000000000000000000000000000000000000000000000000000000'
+                        const random = '0x' + randomBytes(32).toString('hex');
+
+                        setSecret(random);
                     }}
                 >
                     <FiRefreshCcw />
