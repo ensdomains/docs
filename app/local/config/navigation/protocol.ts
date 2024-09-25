@@ -246,6 +246,12 @@ export const navigation: SectionData[] = [
                         wip: 70,
                         icon: '✍️',
                     },
+                    {
+                        title: 'Universal Resolver',
+                        href: '/resolvers/universalresolver',
+                        wip: 70,
+                        icon: '✍️',
+                    },
                 ],
             },
             {
