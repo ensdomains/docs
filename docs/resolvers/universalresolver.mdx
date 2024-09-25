@@ -19,6 +19,8 @@ export const meta = {
 
 The Universal Resolver is a contract that handles the work of resolving a name entirely onchain, making it possible to make a single smart contract call to resolve an ENS name.
 
+Note that this contract is already built into libraries like Viem and ENSjs, so most developers don't typically need to use it directly.
+
 ### Forward Resolution
 
 To resolve one or more records for a name, use one of the `resolve` methods, such as `resolve(bytes name, bytes data)`.
