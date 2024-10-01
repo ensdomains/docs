@@ -1,0 +1,33 @@
+{
+    "name": "example-profile",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "dependencies": {
+        "@ensdomains/ensjs": "4.0.1-alpha.0",
+        "@ensdomains/ensjs-react": "^0.0.3",
+        "@ensdomains/thorin": "1.0.0-beta.9",
+        "@types/react": "18.2.21",
+        "@types/react-dom": "18.2.7",
+        "@wagmi/chains": "^1.8.0",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.47",
+        "postcss-nested": "^6.2.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "tailwindcss": "^3.4.13",
+        "ts-node": "^10.9.2",
+        "viem": "^1.21.4",
+        "vite": "^5.4.7",
+        "wagmi": "~1.3.11"
+    },
+    "scripts": {
+        "start": "vite",
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@types/tailwindcss": "^3.1.0",
+        "typescript": "^5.6.2"
+    }
+}
