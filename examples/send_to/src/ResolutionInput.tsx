@@ -22,8 +22,10 @@ export const ResolutionInput: FC<{
     const [input, setInput] = useState('');
     const [debouncedInput] = useDebounce(input, 200);
 
-    const coinType = 60;
     const matchesNameRegex = NAME_REGEX.test(debouncedInput);
+
+    // ETH Mainnet
+    const coinType = 60;
 
     const { data: resolvedAddress, isLoading } = useEnsAddress({
         name: normalize(debouncedInput),
