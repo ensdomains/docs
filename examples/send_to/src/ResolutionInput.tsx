@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { FiCheck, FiLoader } from 'react-icons/fi';
 import { useDebounce } from 'use-debounce';
+import { normalize } from 'viem/ens';
 import { type Address, useEnsAddress } from 'wagmi';
 
 // regex for a valid domain name such as hello.yes.eth
@@ -25,7 +26,7 @@ export const ResolutionInput: FC<{
     const matchesNameRegex = NAME_REGEX.test(debouncedInput);
 
     const { data: resolvedAddress, isLoading } = useEnsAddress({
-        name: debouncedInput,
+        name: normalize(debouncedInput),
         // @ts-ignore
         coinType,
         enabled: matchesNameRegex && debouncedInput == input,
@@ -64,7 +65,7 @@ export const ResolutionInput: FC<{
                     placeholder="0x225... or luc.eth"
                     value={input}
                     onChange={(event) => setInput(event.target.value)}
-                    // TODO: weird type issue, 'full' doesnt seem to work either
+                    // @ts-expect-error
                     width="100%"
                     validated={isValid}
                     // stylistic choice
