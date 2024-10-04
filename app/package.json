@@ -12,7 +12,7 @@
     "browserslist": "defaults, not ie <= 11",
     "dependencies": {
         "@ens-tools/format": "^0.0.2",
-        "@ens-tools/thorin-core": "0.0.4",
+        "@ens-tools/thorin-core": "0.0.5",
         "@ensdomains/thorin": "1.0.0-beta.9",
         "@headlessui/react": "^1.7.18",
         "@mdx-js/loader": "^3.0.0",
