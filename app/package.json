@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "next build && pnpm build:examples",
+        "build:examples": "mkdir out/examples && cd ../examples && pnpm -r build && pnpm -r copy:next",
         "start": "next start",
         "lint": "eslint -c .eslintrc.json --ext .jsx,.tsx ./src ./local ./data ./app",
         "typecheck": "tsc --noEmit"

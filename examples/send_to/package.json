@@ -29,6 +29,7 @@
         "start": "vite",
         "dev": "vite",
         "build": "vite build",
+        "copy:next": "cp -r ./dist ../../app/out/examples/send_to",
         "lint": "eslint -c .eslintrc.json --ext .tsx,.ts ./src"
     },
     "devDependencies": {
