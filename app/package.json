@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build && pnpm build:examples",
-        "build:examples": "mkdir -p out/examples && cd ../examples && pnpm install && pnpm -r build:example && cp -r out ../app/out/examples",
+        "build:examples": "mkdir -p out/examples && cd ../examples && pnpm install && pnpm -r build:example && pnpm -r copy:next",
         "export": "next export",
         "start": "next start",
         "lint": "eslint -c .eslintrc.json --ext .jsx,.tsx ./src ./local ./data ./app",
