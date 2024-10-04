@@ -18,6 +18,7 @@ export function NavLink({
     tag,
     active,
     isAnchorLink = false,
+    target,
     children,
     // eslint-disable-next-line unicorn/no-useless-undefined
     onClick = undefined,
@@ -39,6 +40,7 @@ export function NavLink({
                 className
             )}
             onClick={onClick}
+            target={target}
         >
             <span className="flex items-center gap-1 truncate leading-5">
                 {children}
@@ -107,6 +109,7 @@ export const NavigationGroup = ({ group, className }) => {
                                 tag={undefined}
                                 href={link.href}
                                 active={link.href === pathname}
+                                target={link.external ? '_blank' : undefined}
                             >
                                 <span className="text-sm">{link.title}</span>
                                 {link.external && <FiExternalLink />}
