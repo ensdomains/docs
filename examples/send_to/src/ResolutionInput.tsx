@@ -12,6 +12,15 @@ import { useDebounce } from 'use-debounce';
 import { normalize } from 'viem/ens';
 import { type Address, useEnsAddress } from 'wagmi';
 
+const tri = <A extends unknown>(function_: () => A | undefined) => {
+    try {
+        return function_();
+    } catch (error) {
+        //
+        console.log(error);
+    }
+};
+
 // regex for a valid domain name such as hello.yes.eth
 const NAME_REGEX = /^(\w+\.)+\w+$/;
 const ADDRESS_REGEX = /^0x[\dA-Fa-f]{40}$/;
@@ -28,7 +37,7 @@ export const ResolutionInput: FC<{
     const coinType = 60;
 
     const { data: resolvedAddress, isLoading } = useEnsAddress({
-        name: normalize(debouncedInput),
+        name: tri(() => normalize(debouncedInput)),
         // @ts-ignore
         coinType,
         enabled: matchesNameRegex && debouncedInput == input,
