@@ -12,8 +12,8 @@ importers:
         specifier: ^0.0.2
         version: 0.0.2
       '@ens-tools/thorin-core':
-        specifier: 0.0.3-8
-        version: 0.0.3-8(xqiju3h3eq44wukvwi6pqup5mi)
+        specifier: 0.0.4
+        version: 0.0.4(xqiju3h3eq44wukvwi6pqup5mi)
       '@ensdomains/thorin':
         specifier: 1.0.0-beta.9
         version: 1.0.0-beta.9(@vanilla-extract/css@1.15.5(babel-plugin-macros@3.1.0))(@vanilla-extract/dynamic@2.1.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1009,8 +1009,11 @@ packages:
   '@ens-tools/format@0.0.2':
     resolution: {integrity: sha512-hgIznthtDRaxtmuGsvv51RpL840daIk619nBG90lTWFGnrfzKWaKNo98QA/n+7WWd//47Bvy/3unv0VVgQaggA==}
 
-  '@ens-tools/thorin-core@0.0.3-8':
-    resolution: {integrity: sha512-FWzOIyMMqnB+YdWtoBfomfRZ2bI52nSHLN+qkPwleBm86UcwrR8yYC4lP2alfpBxDopry52JY2V+hjnE1zKpOQ==}
+  '@ens-tools/format@0.0.3':
+    resolution: {integrity: sha512-uq9XsSPp1hFeHuWF+Hn1GlMU9dXl+3gsgnoJf9JaPZucg53Qn5e9FgysN/zCFh8JV5xRbjTcSzr65ajd8sywYg==}
+
+  '@ens-tools/thorin-core@0.0.4':
+    resolution: {integrity: sha512-dyNo01VP3K2s5zGeDkzLXqj5+Sa22cHMv1gnkIDyS4QWdgtuHlN5PtwP7FA1ZiR+X6FxPNWUKPhZRVgjUUcZIw==}
     peerDependencies:
       '@wagmi/connectors': ^4.1.14
       '@wagmi/core': ^2.6.5
@@ -3789,6 +3792,7 @@ packages:
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -7925,8 +7929,11 @@ snapshots:
 
   '@ens-tools/format@0.0.2': {}
 
-  '@ens-tools/thorin-core@0.0.3-8(xqiju3h3eq44wukvwi6pqup5mi)':
+  '@ens-tools/format@0.0.3': {}
+
+  '@ens-tools/thorin-core@0.0.4(xqiju3h3eq44wukvwi6pqup5mi)':
     dependencies:
+      '@ens-tools/format': 0.0.3
       '@rollup/plugin-commonjs': 25.0.7(rollup@4.11.0)
       '@rollup/plugin-json': 6.1.0(rollup@4.11.0)
       '@wagmi/connectors': 4.1.14(@react-native-async-storage/async-storage@1.21.0(react-native@0.73.4(@babel/core@7.23.9)(@babel/preset-env@7.23.9(@babel/core@7.23.9))(bufferutil@4.0.8)(encoding@0.1.13)(react@18.2.0)))(@types/react@18.2.55)(@wagmi/core@2.6.4(@tanstack/query-core@5.18.1)(@types/react@18.2.55)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(viem@2.7.8(bufferutil@4.0.8)(typescript@5.3.3)(zod@3.22.4))(zod@3.22.4))(bufferutil@4.0.8)(encoding@0.1.13)(react-dom@18.2.0(react@18.2.0))(react-native@0.73.4(@babel/core@7.23.9)(@babel/preset-env@7.23.9(@babel/core@7.23.9))(bufferutil@4.0.8)(encoding@0.1.13)(react@18.2.0))(react@18.2.0)(rollup@4.11.0)(typescript@5.3.3)(viem@2.7.8(bufferutil@4.0.8)(typescript@5.3.3)(zod@3.22.4))(zod@3.22.4)
