@@ -20,7 +20,7 @@ export const createMetadata = (
         // For some reason Next.js is returning a very weird object for `metadataBase`
         // from the parentMetadata, so we need to always set it here even if it is
         // already set in app/layout.tsx
-        metadataBase: new URL('https://docs.ens.domains'),
+        metadataBase: new URL('https://fix-copy-btn.docs-bao.pages.dev'),
         title,
         description,
         alternates: {
