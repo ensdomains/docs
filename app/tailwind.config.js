@@ -51,6 +51,37 @@ module.exports = {
             colors: {
                 searchbar: '#262929',
                 ens: {
+                    v2: {
+                        blue: {
+                            light: '#cee1e8',
+                            medium: '#093c52',
+                            dark: '#011a25',
+                            default: '#0080bc',
+                            hover: 'rgba(0,128,188,.8)',
+                        },
+                        magenta: {
+                            light: '#f2c4da',
+                            default: '#f53293',
+                            hover: 'rgba(245,50,148,.8)',
+                        },
+                        green: {
+                            light: '#c5ddcc',
+                            default: '#007c23',
+                            hover: 'rgba(0,124,35,.8)',
+                        },
+                        yellow: {
+                            light: '#f8f6d6',
+                            default: '#fff72f',
+
+                        },
+                        gray: {
+                            4: '#4a5c63',
+                            3: '#c4c7c8',
+                            2: '#e5e5e5',
+                            1: '#f6f6f6',
+                        },
+                        white: '#f6f6f6',
+                    },
                     light: {
                         blue: {
                             DEFAULT: '#5298FF',
