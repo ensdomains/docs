@@ -17,7 +17,7 @@ export function NavLink({
     href,
     tag,
     active,
-    isAnchorLink = false,
+    isStandaloneLink = false,
     target,
     children,
     // eslint-disable-next-line unicorn/no-useless-undefined
@@ -25,7 +25,7 @@ export function NavLink({
     className = '',
 }) {
     // To hide the sections of a page, uncomment this line:
-    if (isAnchorLink) return <></>;
+    // if (isAnchorLink) return <></>;
 
     return (
         <Link
@@ -33,7 +33,7 @@ export function NavLink({
             aria-current={active ? 'page' : undefined}
             className={clsx(
                 'ring-ens-light-blue-primary dark:ring-ens-dark-blue-primary flex justify-between gap-2 rounded-lg border-none py-1.5 pr-0 text-sm outline-none ring-offset-1 transition',
-                isAnchorLink ? 'pl-8' : 'pl-4',
+                isStandaloneLink ? 'pl-2' : 'pl-4',
                 active
                     ? 'bg-ens-light-blue-surface text-ens-light-blue dark:bg-ens-dark-blue-surface dark:text-ens-dark-text-primary font-bold'
                     : 'text-ens-light-text-primary hover:bg-ens-light-background-secondary/50 dark:text-ens-dark-text-primary dark:hover:bg-ens-dark-background-secondary',
@@ -110,6 +110,7 @@ export const NavigationGroup = ({ group, className }) => {
                                 href={link.href}
                                 active={link.href === pathname}
                                 target={link.external ? '_blank' : undefined}
+                                isStandaloneLink={group.title === ''}
                             >
                                 <span className="text-sm">{link.title}</span>
                                 {link.external && <FiExternalLink />}

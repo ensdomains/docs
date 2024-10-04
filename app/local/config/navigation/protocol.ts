@@ -185,7 +185,7 @@ export const navigation: SectionData[] = [
                 title: '',
                 links: [
                     {
-                        title: 'Welcome',
+                        title: 'Overview',
                         href: '/contracts',
                         icon: '👋',
                     },
