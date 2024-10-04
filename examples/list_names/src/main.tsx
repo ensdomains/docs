@@ -2,6 +2,7 @@ import './style.css';
 
 import { addEnsContracts } from '@ensdomains/ensjs';
 import { ThemeProvider } from '@ensdomains/thorin';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi';
@@ -39,12 +40,16 @@ const config = createConfig({
 
 const root = createRoot(document.querySelector('#root')!);
 
+const queryClient = new QueryClient();
+
 // Wrap app in ThemeProvider
 root.render(
     <StrictMode>
         <ThemeProvider>
             <WagmiConfig config={config}>
-                <App />
+                <QueryClientProvider client={queryClient}>
+                    <App />
+                </QueryClientProvider>
             </WagmiConfig>
         </ThemeProvider>
     </StrictMode>

@@ -16,7 +16,7 @@ importers:
         version: 4.0.1-alpha.0(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))
       '@ensdomains/ensjs-react':
         specifier: ^0.0.3
-        version: 0.0.3(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))(wagmi@1.3.11(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2)))
+        version: 0.0.3(@tanstack/react-query@5.59.0(react@18.2.0))(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))(wagmi@1.3.11(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2)))
       '@ensdomains/thorin':
         specifier: 1.0.0-beta.9
         version: 1.0.0-beta.9(@vanilla-extract/css@1.16.0)(@vanilla-extract/dynamic@2.1.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -892,6 +892,9 @@ packages:
   '@tanstack/query-core@4.36.1':
     resolution: {integrity: sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==}
 
+  '@tanstack/query-core@5.59.0':
+    resolution: {integrity: sha512-WGD8uIhX6/deH/tkZqPNcRyAhDUqs729bWKoByYHSogcshXfFbppOdTER5+qY7mFvu8KEFJwT0nxr8RfPTVh0Q==}
+
   '@tanstack/query-persist-client-core@4.36.1':
     resolution: {integrity: sha512-eocgCeI7D7TRv1IUUBMfVwOI0wdSmMkBIbkKhqEdTrnUHUQEeOaYac8oeZk2cumAWJdycu6P/wB+WqGynTnzXg==}
 
@@ -914,6 +917,11 @@ packages:
         optional: true
       react-native:
         optional: true
+
+  '@tanstack/react-query@5.59.0':
+    resolution: {integrity: sha512-YDXp3OORbYR+8HNQx+lf4F73NoiCmCcSvZvgxE29OifmQFk0sBlO26NWLHpcNERo92tVk3w+JQ53/vkcRUY1hA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -3495,6 +3503,17 @@ snapshots:
       - typescript
       - zod
 
+  '@ensdomains/ensjs-react@0.0.3(@tanstack/react-query@5.59.0(react@18.2.0))(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))(wagmi@1.3.11(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2)))':
+    dependencies:
+      '@ensdomains/ensjs': 4.0.1(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))
+      '@tanstack/react-query': 5.59.0(react@18.2.0)
+      viem: 1.21.4(typescript@5.6.2)
+      wagmi: 1.3.11(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))
+    transitivePeerDependencies:
+      - encoding
+      - typescript
+      - zod
+
   '@ensdomains/ensjs@4.0.1(typescript@5.6.2)(viem@1.21.4(typescript@5.6.2))':
     dependencies:
       '@adraffy/ens-normalize': 1.10.1
@@ -4357,6 +4376,8 @@ snapshots:
 
   '@tanstack/query-core@4.36.1': {}
 
+  '@tanstack/query-core@5.59.0': {}
+
   '@tanstack/query-persist-client-core@4.36.1':
     dependencies:
       '@tanstack/query-core': 4.36.1
@@ -4377,6 +4398,11 @@ snapshots:
       use-sync-external-store: 1.2.2(react@18.2.0)
     optionalDependencies:
       react-dom: 18.2.0(react@18.2.0)
+
+  '@tanstack/react-query@5.59.0(react@18.2.0)':
+    dependencies:
+      '@tanstack/query-core': 5.59.0
+      react: 18.2.0
 
   '@tsconfig/node10@1.0.11': {}
 
