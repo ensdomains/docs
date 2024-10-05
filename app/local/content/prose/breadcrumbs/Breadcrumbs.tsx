@@ -1,4 +1,5 @@
 'use client';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BreadcrumbList, ListItem, WithContext } from 'schema-dts';
@@ -136,7 +137,10 @@ export const Breadcrumbs = () => {
                             aria-current={
                                 array.length - 1 == index ? 'page' : undefined
                             }
-                            className="flex items-center"
+                            className={clsx(
+                                'flex items-center',
+                                index != array.length - 1 && 'opacity-70'
+                            )}
                         >
                             {item}
                         </li>

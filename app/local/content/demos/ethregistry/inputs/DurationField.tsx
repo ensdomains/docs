@@ -12,7 +12,7 @@ export const DurationField: FC<{
         <div>
             <label
                 htmlFor={id + 'duration'}
-                className="px-2 font-bold text-ens-light-text-secondary"
+                className="text-ens-light-text-secondary px-2 font-bold"
             >
                 Duration (in seconds)
             </label>
@@ -27,11 +27,12 @@ export const DurationField: FC<{
                     <Button
                         key={time}
                         variant={duration === time ? 'primary' : 'secondary'}
+                        className="text-nowrap"
                         onClick={() => {
                             setDuration(time);
                         }}
                     >
-                        <span>{name}</span>
+                        <span className="px-3">{name}</span>
                     </Button>
                 ))}
                 <input
@@ -44,6 +45,7 @@ export const DurationField: FC<{
                             console.log(error);
                         }
                     }}
+                    id={id + 'duration'}
                     className="input max-w-sm"
                     placeholder="31536000"
                 />

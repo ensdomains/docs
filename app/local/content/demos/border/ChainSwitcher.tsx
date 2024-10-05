@@ -1,22 +1,16 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import { FC } from 'react';
 import { holesky, mainnet, sepolia } from 'viem/chains';
-import {
-    useAccount,
-    useChainId,
-    useConnect,
-    useDisconnect,
-    useSwitchChain,
-} from 'wagmi';
+import { useChainId, useSwitchChain } from 'wagmi';
 
 export const ChainSwitcher: FC<{ available?: Set<number> }> = ({
     available = new Set([5]),
 }) => {
-    const { chains, error, switchChain } = useSwitchChain();
+    const { chains, error, switchChainAsync } = useSwitchChain();
     const chainId = useChainId();
-    const { isConnected, address, connector } = useAccount();
-    const { connect, connectors } = useConnect();
-    const { disconnectAsync } = useDisconnect();
+    // const { isConnected, address, connector } = useAccount();
+    // const { connect, connectors } = useConnect();
+    // const { disconnectAsync } = useDisconnect();
 
     const illegalChain = chainId && !available.has(chainId);
 
@@ -30,8 +24,11 @@ export const ChainSwitcher: FC<{ available?: Set<number> }> = ({
             <select
                 value={chainId}
                 onChange={(event) => {
-                    switchChain({
+                    switchChainAsync({
                         chainId: Number.parseInt(event.target.value, 10) as any,
+                    }).catch((error) => {
+                        // TODO: trigger toast "failed to switch to chain, see wallet for details"
+                        console.error(error);
                     });
                 }}
                 className="chainselector h-full rounded-xl border-ens-light-border bg-ens-light-background-primary px-2 dark:border-ens-dark-border dark:bg-ens-dark-background-primary"

@@ -244,6 +244,7 @@ const NavItem = ({ item, index }: { item: routeElement; index: number }) => {
                 active={item.href === pathname}
                 onClick={() => setTimeout(close, 100)}
                 className="!text-base"
+                target={item.external ? '_blank' : undefined}
             >
                 <span>{item.title ?? 'Untitled'}</span>
                 {item.external && <FiExternalLink />}
