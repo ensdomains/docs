@@ -401,7 +401,7 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
-                        title: '[EP 5.15] [Social] ENS Governor Improvement Proposal: ProposalBond',
+                        title: '5.15 - [Social] ENS Governor Improvement Proposal: ProposalBond',
                         href: '/dao/proposals/5.15',
                     },
                     {
