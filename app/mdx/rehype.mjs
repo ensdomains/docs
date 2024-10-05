@@ -82,6 +82,8 @@ const rehypeShikiFromHighlighter = function (highlighter, options) {
 
             const code = toString(textNode);
 
+            node.properties.code = textNode.value;
+
             const cachedValue = cache?.get(code);
 
             if (cachedValue) {
