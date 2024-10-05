@@ -79,7 +79,7 @@ export const Header = forwardRef<HTMLDivElement, { className?: string }>(
                         </div>
 
                         {/* @ts-ignore */}
-                        <thorin-tag>Docs</thorin-tag>
+                        {/* <thorin-tag>Docs</thorin-tag> */}
                     </div>
                     <div
                         className={clsx(

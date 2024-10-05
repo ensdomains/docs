@@ -46,7 +46,7 @@ export const Layout: FC<{
                 <RouteCheck slug={programmedSlug} />
                 <Header />
                 <Sidebar />
-                <div className="relative mt-16 lg:mt-24">
+                <div className="relative mt-16 lg:mt-16">
                     {isHome ? (
                         <>
                             <main className="relative min-h-[74vh] space-y-4 pb-4">

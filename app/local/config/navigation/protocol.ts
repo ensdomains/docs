@@ -75,9 +75,19 @@ export const navigation: SectionData[] = [
                 title: '',
                 links: [
                     {
+                        title: 'Quickstart',
+                        href: '/web/quickstart',
+                        icon: '⚡',
+                    },
+                    {
                         title: 'Getting Started',
                         href: '/web',
                         icon: '👋',
+                    },
+                    {
+                        title: 'Tools and Libraries',
+                        href: '/web/libraries',
+                        icon: '🛠️',
                     },
                 ],
             },
@@ -86,17 +96,7 @@ export const navigation: SectionData[] = [
                 icon: '🌐',
                 links: [
                     {
-                        title: 'Tools and Libraries',
-                        href: '/web/libraries',
-                        icon: '🛠️',
-                    },
-                    {
-                        title: 'Quickstart',
-                        href: '/web/quickstart',
-                        icon: '⚡',
-                    },
-                    {
-                        title: 'Address Lookup',
+                        title: 'Addresses',
                         href: '/web/resolution',
                         icon: '🔍',
                     },
@@ -112,7 +112,7 @@ export const navigation: SectionData[] = [
                         icon: '🔍',
                     },
                     {
-                        title: 'List Names',
+                        title: 'Listing Names',
                         href: '/web/enumerate',
                         icon: '🔍',
                     },
@@ -123,26 +123,26 @@ export const navigation: SectionData[] = [
                 icon: '⚙️',
                 links: [
                     {
-                        title: 'Naming Smart-contracts',
-                        href: '/web/naming-contracts',
+                        title: 'Decentralized Web',
+                        href: '/dweb/intro',
                     },
                     {
                         title: 'Issuing Subdomains',
                         href: '/web/subdomains',
                     },
                     {
-                        title: 'Multichain',
+                        title: 'Naming Smart-contracts',
+                        href: '/web/naming-contracts',
+                    },
+                    {
+                        // eslint-disable-next-line quotes
+                        title: "Layer 2's & Multichain",
                         href: '/web/multichain',
                         icon: '⛓️',
                     },
                     {
                         title: 'Subgraph',
                         href: '/web/subgraph',
-                    },
-                    {
-                        title: 'Decentralized Web',
-                        href: '/dweb/intro',
-                        wip: true,
                     },
                     // {
                     //     title: 'Sign In With Ethereum (SIWE)',
@@ -166,8 +166,8 @@ export const navigation: SectionData[] = [
                         external: true,
                     },
                     {
-                        title: 'Media kit',
-                        href: 'https://github.com/ensdomains/media-kit',
+                        title: 'Brand',
+                        href: 'https://ens.domains/brand',
                         external: true,
                     },
                 ],
@@ -185,7 +185,7 @@ export const navigation: SectionData[] = [
                 title: '',
                 links: [
                     {
-                        title: 'Welcome',
+                        title: 'Overview',
                         href: '/contracts',
                         icon: '👋',
                     },
@@ -224,16 +224,16 @@ export const navigation: SectionData[] = [
                         icon: '🏛️',
                     },
                     {
-                        title: 'Writing your own resolver',
-                        href: '/resolvers/writing',
-                        wip: 45,
-                        icon: '✍️',
-                    },
-                    {
                         title: 'Interacting with a resolver',
                         href: '/resolvers/interacting',
                         wip: 55,
                         icon: '👉',
+                    },
+                    {
+                        title: 'Writing your own resolver',
+                        href: '/resolvers/writing',
+                        wip: 45,
+                        icon: '✍️',
                     },
                     {
                         title: 'Cross Chain Resolvers',
@@ -241,14 +241,14 @@ export const navigation: SectionData[] = [
                         icon: '⛓️',
                     },
                     {
-                        title: 'Interface Reference',
-                        href: '/resolvers/interfaces',
+                        title: 'Universal Resolver',
+                        href: '/resolvers/universal',
                         wip: 70,
                         icon: '✍️',
                     },
                     {
-                        title: 'Universal Resolver',
-                        href: '/resolvers/universalresolver',
+                        title: 'Interface Reference',
+                        href: '/resolvers/interfaces',
                         wip: 70,
                         icon: '✍️',
                     },
