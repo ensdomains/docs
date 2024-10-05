@@ -407,6 +407,11 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
+                        title: '5.16 - [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation',
+                        href: '/dao/proposals/5.16',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
                         title: '5.15 - [Social] ENS Governor Improvement Proposal: ProposalBond',
                         href: '/dao/proposals/5.15',
                     },
