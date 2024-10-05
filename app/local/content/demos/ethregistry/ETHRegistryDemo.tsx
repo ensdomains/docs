@@ -81,7 +81,7 @@ const Demo = () => {
                     <FiClock className="text-lg" />
                     Wait 60 seconds.
                 </div>
-                <DemoSection name="Commit">
+                <DemoSection name="Register">
                     <RentPriceCheck
                         name={label}
                         duration={duration}
