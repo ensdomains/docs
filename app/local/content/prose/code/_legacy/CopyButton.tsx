@@ -8,55 +8,9 @@ import { FiPaperclip } from 'react-icons/fi';
 
 import { ClipboardIcon } from '@/components/icons/ClipboardIcon';
 
-const getCopiedLabel = (copyCount) => {
-    // if (copyCount > 200) {
-    //     return 'Buy a new mouse!';
-    // }
-
-    if (copyCount > 200) {
-        return 'Yes, its copied!';
-    }
-
-    if (copyCount > 120) {
-        return 'Copied!';
-    }
-
-    if (copyCount > 100) {
-        // Written by co-pilot
-        return 'Determination... I like it';
-    }
-
-    if (copyCount > 60) {
-        // Written by co-pilot
-        return 'Sigh.... you are still copying?';
-    }
-
-    if (copyCount > 50) {
-        // Written by co-pilot
-        return 'You are a mad lad';
-    }
-
-    if (copyCount > 45) {
-        // Written by co-pilot
-        return 'Ok... you are just showing off now';
-    }
-
-    if (copyCount > 35) {
-        // Written by co-pilot
-        return 'I hope you actually know what code youre copying 🤔';
-    }
-
-    if (copyCount > 30) {
-        // Written by co-pilot
-        return 'BUILD BUILD BUILD BUILD BUILD BUILD!!!!';
-    }
-
+const getCopiedLabel = (copyCount: number) => {
     if (copyCount > 25) {
-        return 'Coding Powers Unlocked 😎🚀';
-    }
-
-    if (copyCount > 20) {
-        return 'Seriously? You have got to be kidding right?!';
+        return 'Yes, its copied!';
     }
 
     if (copyCount > 15) {
@@ -93,10 +47,10 @@ export const CopyButton = ({ code }) => {
             <motion.button
                 type="button"
                 className={clsx(
-                    'group/button absolute right-4 top-3.5 h-7 w-auto overflow-hidden whitespace-nowrap rounded-full py-1 pl-2 pr-3 text-2xs font-medium opacity-0 backdrop-blur transition focus:opacity-100 group-hover:opacity-100',
+                    'group/button text-2xs absolute right-4 top-3.5 h-7 w-auto overflow-hidden whitespace-nowrap rounded-full py-1 pl-2 pr-3 font-medium opacity-0 backdrop-blur transition focus:opacity-100 group-hover:opacity-100',
                     copied
                         ? 'ring-ens-400/20 bg-ens-light-blue-400/10 ring-1 ring-inset'
-                        : 'bg-white/5 hover:bg-white/7.5 dark:bg-white/2.5 dark:hover:bg-white/5'
+                        : 'hover:bg-white/7.5 dark:bg-white/2.5 bg-white/5 dark:hover:bg-white/5'
                 )}
                 onClick={() => {
                     window.navigator.clipboard.writeText(code).then(() => {
@@ -124,7 +78,7 @@ export const CopyButton = ({ code }) => {
                     <motion.span
                         aria-hidden={!copied}
                         className={clsx(
-                            'pointer-events-none flex w-full items-center justify-end gap-1 whitespace-nowrap text-ens-light-blue-400 transition duration-300',
+                            'text-ens-light-blue-400 pointer-events-none flex w-full items-center justify-end gap-1 whitespace-nowrap transition duration-300',
                             !copied && 'opacity-0'
                         )}
                         initial={{ y: 0 }}

@@ -45,7 +45,7 @@ const ChainDeployment: FC<{
 }> = async ({ identifier, preset, chain }) => {
     return (
         <div
-            className="hidable-code not-prose group overflow-hidden rounded-b-xl border border-ens-light-border dark:border-ens-dark-border"
+            className="hidable-code not-prose border-ens-light-border dark:border-ens-dark-border group overflow-hidden rounded-b-xl border"
             data-code-variant={preset}
             data-code-group={identifier}
         >
@@ -53,13 +53,13 @@ const ChainDeployment: FC<{
                 withDeploymentData(chain.slug, (deployment, data) => (
                     <div
                         key={deployment.name}
-                        className="group flex flex-col justify-between gap-2 border-b border-b-ens-light-border p-4 last:border-b-0 dark:border-b-ens-dark-border md:flex-row md:items-center"
+                        className="border-b-ens-light-border dark:border-b-ens-dark-border group flex flex-col justify-between gap-2 border-b p-4 last:border-b-0 md:flex-row md:items-center"
                     >
                         <div className="">
                             <div className="text-base font-bold leading-5">
                                 {deployment.name}
                             </div>
-                            <div className="flex flex-wrap gap-x-2 text-sm font-bold text-ens-light-blue-primary">
+                            <div className="text-ens-light-blue-primary flex flex-wrap gap-x-2 text-sm font-bold">
                                 {deployment.path && (
                                     <Link
                                         href={`https://github.com/ensdomains/ens-contracts/blob/${
@@ -111,7 +111,7 @@ const ChainDeployment: FC<{
                         </div>
                         <div
                             className={
-                                'flex items-center justify-between gap-2 overflow-x-auto rounded-lg border border-ens-light-border bg-ens-light-background-secondary px-3 py-[10px] text-base md:w-[480px]'
+                                'flex items-center justify-between gap-2 overflow-x-auto rounded-lg border px-3 py-[10px] text-base md:w-[480px]'
                             }
                         >
                             <pre className="text-wrap break-all p-0 text-base">

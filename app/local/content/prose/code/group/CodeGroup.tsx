@@ -50,7 +50,7 @@ export const CodeGroup: FC<PropsWithChildren<CodeGroupProperties>> = ({
     const hasTabs = Children.count(children) > 1;
 
     return (
-        <div className="my-6 bg-[--var(--shiki-color-background)] text-ens-light-text-primary dark:text-ens-dark-text-primary ">
+        <div className="text-ens-light-text-primary dark:text-ens-dark-text-primary my-6 bg-[--var(--shiki-color-background)] ">
             <CodeGroupHeader
                 snippets={codeSnippets}
                 title={title}
