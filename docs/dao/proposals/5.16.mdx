@@ -1,0 +1,51 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This executable proposal seeks to implement the reimbursement payment to ENS Labs for the legal fees incurred while pursuing litigation to protect the eth.link domain.',
+    emoji: '📖',
+    contributors: [
+        'nick.eth'
+    ],
+    proposal: {
+        tally: '33657496545373741813637578444724485346468737982573562831880427564621945332995',
+        type: 'executable'
+    }
+};
+
+# [EP 5.16] [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation
+
+## Summary
+
+This executable proposal seeks to implement the reimbursement payment to ENS Labs for the legal fees incurred while pursuing litigation to protect the eth.link domain. The reimbursement was approved in the previously passed social proposal [EP 5.3](./5.3).
+
+## Background
+
+The lawsuit that ENS filed in federal district court in Arizona to maintain ownership and control over eth.link has been resolved, and on 26 August 2024, the Court officially closed this case.
+
+ENS Labs has maintained full ownership and control over the eth.link domain and, therefore, ENS Labs has achieved the initial objective they had when first filing the complaint and obtaining injunctive relief. To reach this outcome, ENS Labs has spent in total 1,218,669.76 USD. This legal action was necessary to defend the ENS ecosystem and maintain control of the eth.link domain, a critical infrastructure component since 2017.
+
+### Links
+
+- [EP 5.3 Snapshot Vote](https://snapshot.org/#/ens.eth/proposal/0x456ccb438eed5d189cbe51e5e36a88d2bb4dc0c61f12f6d9e310a7ba4798d5fc)
+- [Forum Discussion on EP 5.3](https://discuss.ens.domains/t/ep5-2-social-determine-ens-labs-next-steps-in-eth-link-litigation/18756)
+
+## Specification
+
+This executable proposal will initiate a transfer of 1,218,669.76 USDC from the ENS DAO treasury to ENS Labs. This amount represents the final total of all legal expenses related to the eth.link litigation.
+
+### Transaction Details
+
+- **From:** ENS DAO Treasury (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
+- **To:** USDC Token Contract (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
+- **Recipient:** ENS Labs (0x690F0581eCecCf8389c223170778cD9D029606F2)
+- **Amount:** 1,218,669.76 USDC (1218669760000 considering USDC's 6 decimal places)
+- **Purpose:** Reimbursement for legal fees in eth.link litigation
+
+This transaction calls the `transfer` function of the USDC contract, transferring 1,218,669.76 USDC to ENS Labs' address.
+
+## Rationale
+
+The ENS community, through the passage of EP 5.3, has demonstrated its support for reimbursing ENS Labs for the legal expenses incurred in protecting the eth.link domain. This reimbursement acknowledges the efforts made by ENS Labs to safeguard a critical asset of the ENS ecosystem. It ensures that the financial burden of this legal action does not fall solely on ENS Labs, particularly given that their actions were taken to benefit the entire ENS community.
+
+---
+
+_Note - When the orignal snapshot for the social vote was posted it was numbered as 5.2, but it should have been 5.3. It has been renumbered in the official ENS documentation. Some links point to forum discussions and Snapshots that show the original duplicitive label of 5.2_
