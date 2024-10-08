@@ -8,7 +8,7 @@ export const meta = {
     ensip: {
         status: 'draft',
         created: '2023-04-03',
-        updated: '2023-09-18',
+        updated: '2024-09-14',
     }
 };
 
@@ -16,11 +16,11 @@ export const meta = {
 
 ## Abstract
 
-This ENSIP standardizes Ethereum Name Service (ENS) name normalization process outlined in [ENSIP-1 § Name Syntax](./ensip-1-ens.md#name-syntax).
+This ENSIP standardizes Ethereum Name Service (ENS) name normalization process outlined in [ENSIP-1 § Name Syntax](./1#name-syntax).
 
 ## Motivation
 
-* Since [ENSIP-1](./ensip-1-ens.md) (originally [EIP-137](https://eips.ethereum.org/EIPS/eip-137)) was finalized in 2016, Unicode has [evolved](https://unicode.org/history/publicationdates.html) from version 8.0.0 to 15.0.0 and incorporated many new characters, including complex emoji sequences. 
+* Since [ENSIP-1](./1) (originally [EIP-137](https://eips.ethereum.org/EIPS/eip-137)) was finalized in 2016, Unicode has [evolved](https://unicode.org/history/publicationdates.html) from version 8.0.0 to 15.0.0 and incorporated many new characters, including complex emoji sequences. 
 * ENSIP-1 does not state the version of Unicode.
 * ENSIP-1 implies but does not state an explicit flavor of IDNA processing. 
 * [UTS-46](https://unicode.org/reports/tr46/) is insufficient to normalize emoji sequences. Correct emoji processing is only possible with [UTS-51](https://www.unicode.org/reports/tr51/).
@@ -34,10 +34,10 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 
 ## Specification
 
-* Unicode version `15.1.0`
+* Unicode version `16.0.0`
 	* Normalization is a living specification and should use the latest stable version of Unicode.
-* [`spec.json`](./ensip-15/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
-* [`nf.json`](./ensip-15/nf.json) contains all [necessary data](#description-of-nfjson) for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
+* [`spec.json`](https://github.com/adraffy/ens-normalize.js/blob/main/derive/output/spec.json) contains all [necessary data](#description-of-specjson) for normalization.
+* [`nf.json`](https://github.com/adraffy/ens-normalize.js/blob/main/derive/output/nf.json) contains all [necessary data](#description-of-nfjson) for [Unicode Normalization Forms](https://unicode.org/reports/tr15/) NFC and NFD.
 
 ### Definitions
 
@@ -67,18 +67,18 @@ This ENSIP standardizes Ethereum Name Service (ENS) name normalization process o
 	* All **Emoji Sequence** have explicit emoji-presentation.
 	* The convention of ignoring presentation is difficult to change because:
 		* Presentation characters (`FE0F` and `FE0E`) are **Ignored**
-	 	* [ENSIP-1](./ensip-1-ens.md) did not treat emoji differently from text
+	 	* [ENSIP-1](./1) did not treat emoji differently from text
 		* Registration hashes are immutable
 	* [Beautification](#annex-beautification) can be used to restore emoji-presentation in normalized names.
 	
 ### Algorithm
 
-* Normalization is the process of canonicalizing a name before for [hashing](./ensip-1-ens.md#namehash-algorithm).
+* Normalization is the process of canonicalizing a name before for [hashing](./1#namehash-algorithm).
 * It is idempotent: applying normalization multiple times produces the same result.
 * For user convenience, leading and trailing whitespace should be trimmed before normalization, as all whitespace codepoints are disallowed.  Inner characters should remain unmodified.
 * No string transformations (like case-folding) should be applied.
 
-1. [Split](#split) the name into [labels](./ensip-1-ens.md#name-syntax).
+1. [Split](#split) the name into [labels](./1#name-syntax).
 1. [Normalize](#normalize) each label.
 1. [Join](#join) the labels together into a name again.
 
@@ -103,7 +103,7 @@ Examples:
 
 ### Tokenize
 
-Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) can be found in [`spec.json`](#description-of-specjson).  
+Convert a label into a list of `Text` and `Emoji` tokens, each with a payload of codepoints.  The complete list of character types and [emoji sequences](#appendix-additional-resources) can be found in [`spec.json`](#description-of-specjson).  
 
 1. Allocate an empty codepoint buffer.
 1. Find the longest **Emoji Sequence** that matches the remaining input.
@@ -258,7 +258,7 @@ A label composed of confusable characters isn't necessarily confusable.
 
 ## Description of `spec.json`
 
-* **Groups** (`"groups"`) — [groups](./ensip-15/groups.md) of characters that can constitute a label
+* **Groups** (`"groups"`) — [groups](#appendix-additional-resources) of characters that can constitute a label
 	* `"name"` — ASCII name of the group (or abbreviation if **Restricted**)
 		* Examples: *Latin*, *Japanese*, *Egyp*
 	* **Restricted** (`"restricted"`) — **`true`** if [Excluded](https://www.unicode.org/reports/tr31#Table_Candidate_Characters_for_Exclusion_from_Identifiers) or [Limited-Use](https://www.unicode.org/reports/tr31/#Table_Limited_Use_Scripts) script
@@ -272,7 +272,7 @@ A label composed of confusable characters isn't necessarily confusable.
 			* Example: `à̀̀` → `E0 300 300`
 		* Currently, every group that is **CM Whitelist** has zero compound sequences.
 		* **CM Whitelisted** is effectively **`true`** if `[]` otherwise **`false`**
-* **Ignored** (`"ignored"`) — [characters](./ensip-15/ignored.csv) that are ignored during normalization
+* **Ignored** (`"ignored"`) — [characters](#appendix-additional-resources) that are ignored during normalization
 	* Example: `34F (�) COMBINING GRAPHEME JOINER`
 * **Mapped** (`"mapped"`) — characters that are mapped to a sequence of **valid** characters
 	* Example: `41 (A) LATIN CAPITAL LETTER A` → `[61 (a) LATIN SMALL LETTER A]`
@@ -282,15 +282,15 @@ A label composed of confusable characters isn't necessarily confusable.
 		* Example: `34 (4) DIGIT FOUR`
 	* **Confused** (`"confused"`) — subset of confusable characters that confuse
 		* Example: `13CE (Ꮞ) CHEROKEE LETTER SE`
-* **Fenced** (`"fenced"`) — [characters](./ensip-15/fenced.csv) that cannot be first, last, or contiguous
+* **Fenced** (`"fenced"`) — [characters](#appendix-additional-resources) that cannot be first, last, or contiguous
 	* Example: `2044 (⁄) FRACTION SLASH`
-* **Emoji Sequence(s)** (`"emoji"`) — valid [emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences)
+* **Emoji Sequence(s)** (`"emoji"`) — valid [emoji sequences](#appendix-additional-resources)
 	* Example: `👨‍💻 [1F468 200D 1F4BB] man technologist`
-* **Combining Marks / CM** (`"cm"`) — [characters](./ensip-15/cm.csv) that are [Combining Marks](https://unicode.org/faq/char_combmark.html)
-* **Non-spacing Marks / NSM** (`"nsm"`) — valid [subset](./ensip-15/nsm.csv) of **CM** with general category (`"Mn"` or `"Me"`)
+* **Combining Marks / CM** (`"cm"`) — [characters](#appendix-additional-resources) that are [Combining Marks](https://unicode.org/faq/char_combmark.html)
+* **Non-spacing Marks / NSM** (`"nsm"`) — valid [subset](#appendix-additional-resources) of **CM** with general category (`"Mn"` or `"Me"`)
 * **Maximum NSM** (`"nsm_max"`) — maximum sequence length of unique **NSM**
-* **Should Escape** (`"escape"`) — [characters](./ensip-15/escape.csv) that shouldn't be printed
-* **NFC Check** (`"nfc_check"`) — valid [subset](./ensip-15/nfc_check.csv) of characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
+* **Should Escape** (`"escape"`) — [characters](#appendix-additional-resources) that shouldn't be printed
+* **NFC Check** (`"nfc_check"`) — valid [subset](#appendix-additional-resources) of characters that [may require NFC](https://unicode.org/reports/tr15/#NFC_QC_Optimization)
 
 ## Description of `nf.json`
 
@@ -343,7 +343,7 @@ A label composed of confusable characters isn't necessarily confusable.
 		* `3002 (。) IDEOGRAPHIC FULL STOP`
 		* `FF0E (．) FULLWIDTH FULL STOP`
 		* `FF61 (｡) HALFWIDTH IDEOGRAPHIC FULL STOP`
-* [Many characters](./ensip-15/disallowed.csv) are **disallowed** for various reasons:
+* [Many characters](#appendix-additional-resources) are **disallowed** for various reasons:
 	* Nearly all punctuation are **disallowed**.
 		* Example: `589 (։) ARMENIAN FULL STOP`
 	* All parentheses and brackets are **disallowed**.
@@ -379,7 +379,7 @@ A label composed of confusable characters isn't necessarily confusable.
 	* `2E3A (⸺) TWO-EM DASH` → `"--"`
 	* `2E3B (⸻) THREE-EM DASH` → `"---"`
 * Characters are assigned to **Groups** according to [Unicode Script_Extensions](https://www.unicode.org/reports/tr24/#Script_Extensions_Def).
-* **Groups** may contain [multiple scripts](./ensip-15/groups.md):
+* **Groups** may contain [multiple scripts](#appendix-additional-resources):
 	* Only *Latin*, *Greek*, *Cyrillic*, *Han*, *Japanese*, and *Korean* have access to *Common* characters.
 	* *Latin*, *Greek*, *Cyrillic*, *Han*, *Japanese*, *Korean*, and *Bopomofo* only permit specific **Combining Mark** sequences.
 	* *Han*, *Japanese*, and *Korean*  have access to `a-z`.
@@ -390,9 +390,9 @@ A label composed of confusable characters isn't necessarily confusable.
 * Ethereum symbol (`39E (Ξ) GREEK CAPITAL LETTER XI`) is case-folded and *Common*.
 * Emoji:
 	* All emoji are [fully-qualified](https://www.unicode.org/reports/tr51/#def_fully_qualified_emoji).
-	* Digits (`0-9`) are [not emoji](./ensip-15/emoji.md#demoted-unchanged).
-	* Emoji [mapped to non-emoji by IDNA](./ensip-15/emoji.md#demoted-mapped) cannot be used as emoji.
-	* Emoji [disallowed by IDNA](./ensip-15/emoji.md#disabled-emoji-characters) with default text-presentation are **disabled**:
+	* Digits (`0-9`) are [not emoji](#appendix-additional-resources).
+	* Emoji [mapped to non-emoji by IDNA](#appendix-additional-resources) cannot be used as emoji.
+	* Emoji [disallowed by IDNA](#appendix-additional-resources) with default text-presentation are **disabled**:
 		* `203C (‼️) double exclamation mark`
 		* `2049 (⁉️) exclamation question mark `
 	* Remaining emoji characters are marked as **disallowed** (for text processing).
@@ -418,7 +418,7 @@ A label composed of confusable characters isn't necessarily confusable.
 
 * 99% of names are still valid.
 * Preserves as much [Unicode IDNA](https://unicode.org/reports/tr46/) and [WHATWG URL](https://url.spec.whatwg.org/#idna) compatibility as possible.
-* Only [valid emoji sequences](./ensip-15/emoji.md#valid-emoji-sequences) are permitted.
+* Only [valid emoji sequences](#appendix-additional-resources) are permitted.
 
 ## Security Considerations
 
@@ -454,7 +454,7 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 ## Appendix: Reference Specifications
 
 * [EIP-137: Ethereum Domain Name Service](https://eips.ethereum.org/EIPS/eip-137)
-* [ENSIP-1: ENS](./ensip-1-ens.md)
+* [ENSIP-1: ENS](./1)
 * [UAX-15: Normalization Forms](https://unicode.org/reports/tr15/)
 * [UAX-24: Script Property](https://www.unicode.org/reports/tr24/)
 * [UAX-29: Text Segmentation](https://unicode.org/reports/tr29/)
@@ -471,15 +471,19 @@ Copyright and related rights waived via [CC0](https://creativecommons.org/public
 
 ## Appendix: Additional Resources
 
-* [Supported Groups](./ensip-15/groups.md)
-* [Supported Emoji](./ensip-15/emoji.md)
-* [Additional Disallowed Characters](./ensip-15/disallowed.csv)
-* [**Ignored** Characters](./ensip-15/ignored.csv)
-* [**Should Escape** Characters ](./ensip-15/ignored.csv)
+* [Supported Groups](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/groups.md)
+* [Supported Emoji](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/emoji.md)
+* [Additional Disallowed Characters](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/disallowed.csv)
+* [Ignored Characters](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/ignored.csv)
+* [Should Escape Characters ](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/escape.csv)
+* [Combining Marks](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/cm.csv)
+* [Non-spacing Marks](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/nsm.csv)
+* [Fenced Characters](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/fenced.csv)
+* [NFC Quick Check](https://github.com/adraffy/ens-normalize.js/blob/main/tools/ensip/nfc_check.csv)
 
 ## Appendix: Validation Tests
 
-A list of [validation tests](./ensip-15/tests.json) are provided with the following interpretation:
+A list of [validation tests](https://github.com/adraffy/ens-normalize.js/blob/main/validate/tests.json) are provided with the following interpretation:
 
 * Already Normalized: `{name: "a"}` → `normalize("a")` is `"a"`
 * Need Normalization: `{name: "A", norm: "a"}` → `normalize("A")` is `"a"`
