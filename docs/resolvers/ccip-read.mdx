@@ -92,14 +92,15 @@ The URL for this gateway is determined by the `OffchainLookup` error, and is pas
 
 ### Implement Gateway Endpoint {{ navtitle: 'Implement Gateway', id: 'endpoint' }}
 
-There are two methods (GET and POST) you can choose to implement when writing a gateway. When your smart-contract reverts with the `OffchainLookup` error you can decide the url it returns.
-If `{data}` can be successfully substituted out of the URL a GET request will be made, if no `{data}` is present a POST request will be made instead, with the data instead submitted as the post body.
+There are two methods (GET and POST) you can choose to implement when writing a gateway. When your smart-contract reverts with the `OffchainLookup` error, you can decide the url it returns.
+If `{data}` can be successfully substituted out of the URL, a GET request will be made. If no `{data}` is present, a POST request will be made with the data submitted as the post body.
 
 <CodeGroup title="Request" presets="method">
 
 ```yaml {{ title: 'POST', variant: 'post' }}
 // POST if URL does not include '{data}' parameter
-URL: https://example.com/gateway/{sender}.json
+// Note: '{sender}' is not required but may be present
+URL: https://example.com/gateway/{sender}
 Method: POST
 Body: data
 ```
