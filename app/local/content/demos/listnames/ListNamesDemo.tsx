@@ -11,8 +11,7 @@ import { ProfileAvatar } from '#/content/prose/profile/ProfileAvatar';
 
 import { OwnerField } from '../ethregistry/inputs/OwnerField';
 
-// source: https://github.com/ensdomains/ens-app-v3/blob/0c417ccb717432b7344b8dcd64c7a7d4d7eea405/src/constants/chains.ts#L18
-const ENS_SUBGRAPH_API_KEY = '9ad5cff64d93ed2c33d1a57b3ec03ea9';
+const ENS_SUBGRAPH_API_KEY = '13ef776c0372f7c14eb7c019a0f80272';
 
 const GRAPH_QL_URL = {
     [mainnet.id]: `https://gateway.thegraph.com/api/${ENS_SUBGRAPH_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`,
