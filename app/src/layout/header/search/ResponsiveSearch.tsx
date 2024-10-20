@@ -227,8 +227,8 @@ export const ResponsiveSearch = () => {
                             setSelect(-2);
                         }}
                     />
-                    <div className="absolute inset-y-0 left-3 flex h-full items-center text-neutral-300">
-                        <MagnifyingGlassSVG />
+                    <div className="absolute inset-y-0 left-4 flex h-full items-center text-neutral-300">
+                        <MagnifyingGlassSVG className="size-4" />
                     </div>
                     <div className="absolute inset-y-0 right-3 flex h-full items-center text-neutral-300">
                         {isLoading && <FiLoader />}
