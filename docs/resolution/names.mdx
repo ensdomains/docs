@@ -27,32 +27,17 @@ ENS names are validated and normalized using the [ENSIP-15](/ensip/15) normaliza
 
 Previously, [UTS-46](https://www.unicode.org/reports/tr46/) was used, but that is insufficient for emoji sequences. Correct emoji processing is only possible with [UTS-51](https://www.unicode.org/reports/tr51/). The [ENSIP-15](/ensip/15) normalization algorithm draws from those older Unicode standards, but also adds many other validation rules to prevent common spoofing techniques like inserting zero-width characters, or using confusable (look-alike) characters. See here for additional discussion on this: [Homogylphs](https://support.ens.domains/en/articles/7901658-homoglyphs)
 
-A standard implementation of the algorithm is available here: https://github.com/adraffy/ens-normalize.js. This library is also [included in ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L27).
-
-To normalize a name, simply call `ens_normalize`:
+A standard implementation of the algorithm is available at [@adraffy/ens-normalize](https://github.com/adraffy/ens-normalize.js). This library is used under the hood in [viem](https://viem.sh/docs/ens/utilities/normalize), [ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L27), and others.
 
 ```js
-import {ens_normalize} from '@adraffy/ens-normalize'; // or require()
-// npm i @adraffy/ens-normalize
-// browser: https://cdn.jsdelivr.net/npm/@adraffy/ens-normalize@latest/dist/index.min.mjs (or .cjs)
+import { normalize } from 'viem/ens';
+// Uses @adraffy/ens-normalize under the hood
 
-// *** ALL errors thrown by this library are safe to print ***
-// - characters are shown as {HEX} if should_escape()
-// - potentially different bidi directions inside "quotes"
-// - 200E is used near "quotes" to prevent spillover
-// - an "error type" can be extracted by slicing up to the first (:)
-// - labels are middle-truncated with ellipsis (…) at 63 cps
-
-// string -> string
-// throws on invalid names
-// output ready for namehash
-let normalized = ens_normalize('RaFFY🚴‍♂️.eTh');
+const normalized = normalize('RaFFY🚴‍♂️.eTh');
 // => "raffy🚴‍♂.eth"
-
-// note: does not enforce .eth registrar 3-character minimum
 ```
 
-If the name was not able to be normalized, then that method will throw a descriptive error. A name is valid if it is able to be normalized.
+If the name was not able to be normalized, then that method will throw an error. A name is valid if it is able to be normalized.
 
 ## Namehash {{ title: "Namehash", id: "namehash" }}
 
@@ -69,25 +54,19 @@ ENS stores names in a uint256 encoded format we call a "namehash". This is done 
 
 <CodeGroup>
 
-```jsx {{ title: "ensjs" }}
-// https://github.com/ensdomains/ensjs
-
+```jsx {{ title: "ensjs", link: "https://github.com/ensdomains/ensjs" }}
 import { namehash } from '@ensdomains/ensjs/utils';
 
 const node = namehash('name.eth');
 ```
 
-```jsx {{ title: "ens-namehash-py" }}
-// https://github.com/ConsenSysMesh/ens-namehash-py
-
+```python {{ title: "ens-namehash-py", link: "https://github.com/ConsenSysMesh/ens-namehash-py" }}
 from namehash import namehash
 
 node = namehash('name.eth')
 ```
 
-```rust {{ title: "namehash-rust" }}
-// https://github.com/InstateDev/namehash-rust
-
+```rust {{ title: "namehash-rust", link: "https://github.com/InstateDev/namehash-rust" }}
 fn main() {
   let node = &namehash("name.eth");
   let s = hex::encode(&node);
@@ -96,13 +75,9 @@ fn main() {
 
 </CodeGroup>
 
-[ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L29)
-https://github.com/ConsenSysMesh/ens-namehash-py
-https://github.com/InstateDev/namehash-rust
-
 ### Algorithm
 
-The specification for the namehash algorithm is here: https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm
+The specification for the namehash algorithm was originally defined in [EIP-137](https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm).
 
 It's a recursive algorithm that works its way down until you hit the root domain. For `ens.eth`, the algorithm works like so:
 
