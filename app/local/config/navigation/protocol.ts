@@ -407,6 +407,21 @@ export const navigation: SectionData[] = [
                 links: [
                     {
                         // eslint-disable-next-line prettier/prettier
+                        title: '5.17.3 - [Social] Funding Request: ENS Public Goods Working Group',
+                        href: '/dao/proposals/5.17.3',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.17.2 - [Social] Funding Request: ENS Ecosystem Working Group',
+                        href: '/dao/proposals/5.17.2',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.17.1 - [Social] Funding Request: ENS Meta-Governance Working Group',
+                        href: '/dao/proposals/5.17.1',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
                         title: '5.16 - [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation',
                         href: '/dao/proposals/5.16',
                     },
