@@ -85,10 +85,10 @@ importers:
         version: 0.1.4
       mdx-mermaid:
         specifier: ^2.0.0
-        version: 2.0.0(bufferutil@4.0.8)(encoding@0.1.13)(mermaid@10.8.0)(react@18.2.0)(unist-util-visit@5.0.0)
+        version: 2.0.0(bufferutil@4.0.8)(encoding@0.1.13)(mermaid@10.9.3)(react@18.2.0)(unist-util-visit@5.0.0)
       mermaid:
-        specifier: ^10.8.0
-        version: 10.8.0
+        specifier: ^10.9.3
+        version: 10.9.3
       next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@14.2.10(@babel/core@7.23.9)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -2741,6 +2741,10 @@ packages:
     resolution: {integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==}
     engines: {node: '>= 10'}
 
+  commander@8.3.0:
+    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
+    engines: {node: '>= 12'}
+
   commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
@@ -3154,8 +3158,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  dompurify@3.1.7:
-    resolution: {integrity: sha512-VaTstWtsneJY8xzy7DekmYWEOZcmzIe3Qb3zPd4STve1OBTa+e+WmS1ITQec1fZYXI3HCsOZZiSMpG6oxoWMWQ==}
+  dompurify@3.1.6:
+    resolution: {integrity: sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==}
 
   duplexify@4.1.2:
     resolution: {integrity: sha512-fz3OjcNCHmRP12MJoZMPglx8m4rrFP8rovnk4vT8Fs+aonZoCwGg10dSsQsfP/E62eZcPTMSMP6686fu9Qlqtw==}
@@ -3165,6 +3169,7 @@ packages:
 
   eciesjs@0.3.18:
     resolution: {integrity: sha512-RQhegEtLSyIiGJmFTZfvCTHER/fymipXFVx6OwSRYD6hOuy+6Kjpk0dGvIfP9kxn/smBpxQy71uxpGO406ITCw==}
+    deprecated: Please upgrade to v0.4+
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -3459,6 +3464,7 @@ packages:
   eslint@8.56.0:
     resolution: {integrity: sha512-Go19xM6T9puCOWntie1/P997aXxFsOi37JIHRWI514Hc6ZnaHGKY9xFhrU65RT6CcBEzZoGG1e6Nq+DT04ZtZQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -4414,6 +4420,10 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
+  katex@0.16.11:
+    resolution: {integrity: sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==}
+    hasBin: true
+
   keccak@3.0.4:
     resolution: {integrity: sha512-3vKuW0jV8J3XNTzvfyicFR5qvxrSAGl7KIhvgOu5cmWwM7tZRj3fMbj/pfIf4be7aznbc+prBWGjywox/g2Y6Q==}
     engines: {node: '>=10.0.0'}
@@ -4691,8 +4701,8 @@ packages:
   mermaid-isomorphic@2.1.1:
     resolution: {integrity: sha512-iShQaYYfGYakKs6fbwVjaTAaTVYm02aIvq8QZJFZMEJ18it2YMhW7QF23jLc1SgXHfVLbeWVoQ27jar2X8KP9g==}
 
-  mermaid@10.8.0:
-    resolution: {integrity: sha512-9CzfSreRjdDJxX796+jW4zjEq0DVw5xVF0nWsqff8OTbrt+ml0TZ5PyYUjjUZJa2NYxYJZZXewEquxGiM8qZEA==}
+  mermaid@10.9.3:
+    resolution: {integrity: sha512-V80X1isSEvAewIL3xhmz/rVmc27CVljcsbWxkxlWJWY/1kQa4XOABqpDl2qQLGKzpKm6WbTfUEKImBlUfFYArw==}
 
   metro-babel-transformer@0.80.5:
     resolution: {integrity: sha512-sxH6hcWCorhTbk4kaShCWsadzu99WBL4Nvq4m/sDTbp32//iGuxtAnUK+ZV+6IEygr2u9Z0/4XoZ8Sbcl71MpA==}
@@ -10546,6 +10556,8 @@ snapshots:
 
   commander@7.2.0: {}
 
+  commander@8.3.0: {}
+
   commander@9.5.0: {}
 
   commondir@1.0.1: {}
@@ -10974,7 +10986,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  dompurify@3.1.7: {}
+  dompurify@3.1.6: {}
 
   duplexify@4.1.2:
     dependencies:
@@ -12602,6 +12614,10 @@ snapshots:
       object.assign: 4.1.5
       object.values: 1.1.7
 
+  katex@0.16.11:
+    dependencies:
+      commander: 8.3.0
+
   keccak@3.0.4:
     dependencies:
       node-addon-api: 2.0.2
@@ -13045,9 +13061,9 @@ snapshots:
       estree-util-visit: 1.2.1
       unist-util-visit: 4.1.2
 
-  mdx-mermaid@2.0.0(bufferutil@4.0.8)(encoding@0.1.13)(mermaid@10.8.0)(react@18.2.0)(unist-util-visit@5.0.0):
+  mdx-mermaid@2.0.0(bufferutil@4.0.8)(encoding@0.1.13)(mermaid@10.9.3)(react@18.2.0)(unist-util-visit@5.0.0):
     dependencies:
-      mermaid: 10.8.0
+      mermaid: 10.9.3
       react: 18.2.0
       unist-util-visit: 5.0.0
     optionalDependencies:
@@ -13082,12 +13098,12 @@ snapshots:
   mermaid-isomorphic@2.1.1:
     dependencies:
       '@fortawesome/fontawesome-free': 6.5.1
-      mermaid: 10.8.0
+      mermaid: 10.9.3
       playwright-core: 1.41.2
     transitivePeerDependencies:
       - supports-color
 
-  mermaid@10.8.0:
+  mermaid@10.9.3:
     dependencies:
       '@braintree/sanitize-url': 6.0.4
       '@types/d3-scale': 4.0.8
@@ -13098,8 +13114,9 @@ snapshots:
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.10
       dayjs: 1.11.10
-      dompurify: 3.1.7
+      dompurify: 3.1.6
       elkjs: 0.9.1
+      katex: 0.16.11
       khroma: 2.1.0
       lodash-es: 4.17.21
       mdast-util-from-markdown: 1.3.1

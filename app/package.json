@@ -37,7 +37,7 @@
         "mdast-util-to-string": "^4.0.0",
         "mdx-annotations": "^0.1.4",
         "mdx-mermaid": "^2.0.0",
-        "mermaid": "^10.8.0",
+        "mermaid": "^10.9.3",
         "next-themes": "^0.2.1",
         "pino-pretty": "^10.3.1",
         "playwright": "^1.41.2",
