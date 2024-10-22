@@ -52,15 +52,17 @@ Namehash is a recursive algorithm that hashes each part of the name, then hashes
 
 <CodeGroup title="Calculating Namehash">
 ```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/namehash' }}
-import { namehash } from "viem/ens";
+import { namehash, normalize } from "viem/ens";
 
-const node = namehash("name.eth");
+const normalizedName = normalize("name.eth");
+const node = namehash(normalizedName);
 ```
 
 ```ts {{ title: 'Ethers.js (TS)', language: 'ts', variant: 'ethers-v6', link: 'https://docs.ethers.org/v6/api/hashing/#namehash' }}
-import { namehash } from 'ethers/lib/utils';
+import { ensNormalize, namehash } from "ethers/hash";
 
-const node = namehash('name.eth');
+const normalizedName = ensNormalize('name.eth')
+const node = namehash(normalizedName)
 ```
 
 ```python {{ title: "ens-namehash-py", variant: 'python', link: 'https://github.com/ConsenSysMesh/ens-namehash-py' }}
@@ -156,19 +158,23 @@ One example of where labelhash is used is in the [BaseRegistar](/registry/eth), 
 
 <CodeGroup title="Calculating Labelhash">
 ```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/labelhash' }}
-import { labelhash } from "viem/ens";
+import { labelhash, normalize } from "viem/ens";
 
-const hash = labelhash("name");
+const normalizedLabel = normalize("label");
+const hash = labelhash(normalizedLabel);
 ```
 
 ```tsx {{ title: 'Ethers (TS)', language: 'ts', variant: 'ethers-v6', link: 'https://docs.ethers.org/v6/api/crypto/#keccak256' }}
-import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
+import { keccak256 } from "ethers/crypto";
+import { ensNormalize } from "ethers/hash";
+import { toUtf8Bytes } from "ethers/utils";
 
-const hash = keccak256(toUtf8Bytes('name'));
+const normalizedLabel = ensNormalize('label')
+const labelhash = keccak256(toUtf8Bytes(normalizedLabel))
 ```
 
 ```ts {{ title: 'Solidity', variant: 'solidity' }}
-string constant label = "name";
+string constant label = "label";
 bytes32 constant labelhash = keccak256(bytes(label));
 ```
 </CodeGroup>
