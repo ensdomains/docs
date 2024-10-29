@@ -4,7 +4,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useEffect } from 'react';
 import { holesky, mainnet, sepolia } from 'viem/chains';
-import { createConfig, http, useConfig, WagmiProvider } from 'wagmi';
+import {
+    createConfig,
+    http,
+    useAccount,
+    useConfig,
+    WagmiProvider,
+} from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
 
 const config = createConfig({
@@ -54,6 +60,7 @@ export const Theme = ({ children }) => {
 
 export const WagmiChild = () => {
     const state = useConfig();
+    const { address, connector } = useAccount();
 
     useEffect(() => {
         (async () => {
@@ -61,7 +68,7 @@ export const WagmiChild = () => {
 
             setupConfig(() => state || config);
         })();
-    }, [state]);
+    }, [state, address, connector]);
 
     return <></>;
 };
