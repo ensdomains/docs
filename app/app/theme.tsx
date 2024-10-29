@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useEffect } from 'react';
 import { holesky, mainnet, sepolia } from 'viem/chains';
-import { createConfig, http, WagmiProvider } from 'wagmi';
+import { createConfig, http, useConfig, WagmiProvider } from 'wagmi';
 import { injected, walletConnect } from 'wagmi/connectors';
 
 const config = createConfig({
@@ -30,6 +30,8 @@ const config = createConfig({
 });
 
 declare module 'wagmi' {
+    // @ts-ignore
+    // eslint-disable-next-line unused-imports/no-unused-vars
     interface Register {
         config: typeof config;
     }
@@ -38,19 +40,28 @@ declare module 'wagmi' {
 const queryClient = new QueryClient();
 
 export const Theme = ({ children }) => {
+    return (
+        <ThemeProvider attribute="class">
+            <QueryClientProvider client={queryClient}>
+                <WagmiProvider config={config}>
+                    {children}
+                    <WagmiChild />
+                </WagmiProvider>
+            </QueryClientProvider>
+        </ThemeProvider>
+    );
+};
+
+export const WagmiChild = () => {
+    const state = useConfig();
+
     useEffect(() => {
         (async () => {
             const { setupConfig } = await import('@ens-tools/thorin-core');
 
-            setupConfig(() => config as any);
+            setupConfig(() => state || config);
         })();
-    }, []);
+    }, [state]);
 
-    return (
-        <ThemeProvider attribute="class">
-            <QueryClientProvider client={queryClient}>
-                <WagmiProvider config={config}>{children}</WagmiProvider>
-            </QueryClientProvider>
-        </ThemeProvider>
-    );
+    return <></>;
 };
