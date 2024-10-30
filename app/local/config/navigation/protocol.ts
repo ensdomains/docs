@@ -406,6 +406,22 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
+                        title: '5.21 - [Social] Governance Security Bounty',
+                        href: '/dao/proposals/5.21',
+                    },
+                    {
+                        title: '5.20 - [Social] ENS Endowment Investment Policy Statement ',
+                        href: '/dao/proposals/5.20',
+                    },
+                    {
+                        title: '5.19 - [Social] Governance Distribution Pilot Program',
+                        href: '/dao/proposals/5.19',
+                    },
+                    {
+                        title: '5.18 - [Social] ENS DAO Steward Compensation Structure - Term 6',
+                        href: '/dao/proposals/5.18',
+                    },
+                    {
                         // eslint-disable-next-line prettier/prettier
                         title: '5.17.3 - [Social] Funding Request: ENS Public Goods Working Group',
                         href: '/dao/proposals/5.17.3',
@@ -689,6 +705,7 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/0.3',
                     },
                     {
+                        // eslint-disable-next-line prettier/prettier
                         title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
                         href: '/dao/proposals/0.2',
                     },

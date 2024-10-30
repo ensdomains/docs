@@ -1,0 +1,72 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal seeks to compensate the blockful team with 100k USDC and 15k vested ENS tokens for their extensive efforts in identifying and mitigating a critical vulnerability in ENS DAO’s governance structure, which included developing the Security Council and enhancing long-term DAO security.',
+    emoji: '📖',
+    contributors: [
+        'netto.eth'
+    ],
+    proposal: {
+        snapshot: '0x5067725bef9cde0de0024adedb653a7a1752aefa726adf628b77048d85821a6d',
+        discourse: 'https://discuss.ens.domains/t/temp-check-governance-security-compensating-blockful-for-preventing-a-potential-attack-on-the-ens-dao/19710',
+        type: 'social'
+    }
+};
+
+# [EP 5.21] [Social] Governance Security Bounty
+
+## Summary
+
+This proposal aims to compensate the blockful team for their work in identifying, analyzing, reporting and mitigating a severe vulnerability in ENS DAO's governance structure.
+
+## Background
+
+In March 2024, blockful uncovered a critical vulnerability that could have led to a [~$150M](https://dune.com/steakhouse/ens-steakhouse) theft and protocol capture. Their subsequent work led to the implementation of the Security Council, significantly enhancing ENS DAO's resilience against attacks.
+
+## Contribution Details
+
+The team involved is a [different](https://discuss.ens.domains/t/blockful-service-provider-reports/19553#p-54163-other-contributions-not-related-to-service-provider-scope-14) squad than the one working on the scope of the [ENS service provider](https://discuss.ens.domains/t/blockful-service-provider-reports/19553). It was developed by 2 researchers, 1 smart contract engineer and 4 different auditors the team has worked with previously. Summing up to ~600 hours, the scope includes:
+
+- Comprehensive vulnerability assessment and risk analysis: **[Here](https://mirror.xyz/research.blockful.eth/-PfMduhpxdypPrutofr6099T4ROpsAmX0fPNbvDgR_k)** is our detailed security report.
+- Data analysis of ENS governance metrics and study of past DAO attacker's behaviors.
+- Design, development and deployment of the Security Council contract and multisig.
+- The Security Council was thought with several key features to balance security and decentralization.
+- Smart contract implementation and testing ([GitHub](https://github.com/blockful-io/security-council-ens))
+- Governance proposal drafting and support [[1](https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54), [2](https://snapshot.org/#/ens.eth/proposal/0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a), [3](https://www.tally.xyz/gov/ens/proposal/42329103797433777309488042029679811802172320979541414683300183273376839219133)]
+
+More details can be found on the links above for past proposals and the [report](https://mirror.xyz/research.blockful.eth/-PfMduhpxdypPrutofr6099T4ROpsAmX0fPNbvDgR_k).
+
+## Compensation Rationale
+
+As a team that is totally bootstrapped and never received any investment, this support us to keep it sustainable with the resources invested towards this initiative. The requested amount represents fair compensation for:
+
+- The potential loss prevention of ~$150M, capture of the DAO and protocol. The attack is anything but theoretical and there are actually many groups of investors who specialize in "risk free value raiders". They have exerted the attack on other DAOs before. Currently there are [unknown whales](https://etherscan.io/address/0x245445940b317e509002eb682e03f4429184059d#tokentxns) buying ENS for +450 days and have ~2M ENS, showing how feasible the scenario is, more than the average quorum, in one wallet.
+- A critical code bug bounty in [ENS is $250k USDC](https://immunefi.com/bug-bounty/ens/scope/#assets). Our work was much beyond identifying and disclosing.
+- Significantly lower cost compared to standard rates charged by other security service providers in the DAO space, which typically demand liquid compensation. An example is that Open Zeppelin (one of the most reputable players in security) [charges $4M/year at Compound](https://compound.finance/governance/proposals/76), which recently [suffered](https://mirror.xyz/research.blockful.eth/v0GEP49oXP1gzMDlyP91-S4XIa8PIOd0vKq-6R8f54I) this type of attack.
+- Months of dedicated work by the team involved (researchers, devs and auditors).
+- The long-term value added to ENS through enhanced security.
+- Our commitment to ENS's long-term success and continued contribution, as evidenced by the 2-year vesting schedule.
+
+## Compensation Structure
+
+- Total amount: 100k USDC + 15k vested ENS tokens
+- Vesting period: 2 years
+- Vesting start date: April 8, 2024 (date of initial research disclosure)
+- Vesting schedule: Linear vesting
+
+## Benefits to ENS DAO
+
+- Sets a positive precedent that **responsible vulnerability disclosure and correction are rewarded**, encouraging future security contributions
+- Preserves DAO treasury liquidity by using part of the bounty in ENS tokens instead of USDC or ETH
+- Enhances governance security by increasing the number of engaged, security-focused token holders
+
+## Conclusion
+
+By approving this compensation, ENS DAO acknowledges the critical importance of security research and proactive governance improvements. The vesting structure ensures ongoing commitment and aligns incentives for continued contribution to ENS's security and stability.
+
+## Success Criteria
+
+For this social proposal to pass, the following quorum and voting requirements must be met:
+
+Quorum: The proposal must receive a minimum of 1% of the total supply of $ENS (1 million votes) in the form of "For" and "Abstain" votes combined. "Against" votes do not count towards quorum.
+
+Approval: Once the quorum is reached, the proposal requires a simple majority (>50%) of "For" votes among the "For" and "Against" votes to pass. "Abstain" votes do not count towards the approval calculation.
