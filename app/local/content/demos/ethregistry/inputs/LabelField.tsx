@@ -10,7 +10,7 @@ export const LabelField: FC<{
         <div>
             <label
                 htmlFor={id + 'label'}
-                className="px-2 font-bold text-ens-light-text-secondary"
+                className="text-ens-light-text-secondary px-2 font-bold"
             >
                 Label (name without ".eth"):
             </label>
@@ -20,6 +20,7 @@ export const LabelField: FC<{
                     onChange={(event) => setLabel(event.target.value)}
                     className="input"
                     placeholder="test123"
+                    id={id + 'label'}
                     name="label"
                 />
                 <div>.eth</div>

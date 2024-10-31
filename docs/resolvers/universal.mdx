@@ -1,0 +1,60 @@
+import { WIP } from "@/components/wip/WIP";
+import { interfaceDetails } from "#/data/interfaces";
+import { universalresolver_methods } from "#/data/universalresolver";
+import { h2, h3, h4 } from '@/components/mdx/heading/h2';
+
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'A swiss army knife for resolution.',
+    emoji: '👉',
+    contributors: [
+        'luc.eth',
+        'serenae.eth'
+    ]
+};
+
+# Universal Resolver
+
+## Overview
+
+The Universal Resolver is a contract that handles the work of resolving a name entirely onchain, making it possible to make a single smart contract call to resolve an ENS name.
+
+Note that this contract is already built into libraries like [viem](https://viem.sh) and [ENSjs](https://github.com/ensdomains/ensjs), so most developers don't typically need to use it directly.
+
+### Forward Resolution
+
+To resolve one or more records for a name, use one of the `resolve` methods, such as `resolve(bytes name, bytes data)`.
+
+The `name` argument for these methods will be the [DNS-encoded](/resolution/names#dns) version of the name. Make sure to [normalize](/resolution/names#normalize) the name first, as well! For example, given the name `My.Name.eth`:
+
+1. Normalize:
+   - `My.Name.eth` -> `my.name.eth`
+2. DNS Encode:
+   - `my.name.eth` -> `0x026d79046e616d650365746800`
+
+The `data` argument for these methods will be an ABI-encoded call to the resolver for that name.
+
+For example, if you want to resolve the ETH address for `my.name.eth`, using the `addr(bytes32 node)` method, then the corresponding ABI-encoded call would be:
+
+```
+0x3b3b57def61adbd8ee36cf930560efc644af752731733dc6421afe47608f8e2cfeaabe2b
+```
+
+See here for standard resolver methods: [Resolver Interface Standards](/resolvers/interfaces)
+
+### Reverse Resolution
+
+To reverse-resolve an address to an ENS name, call one of the `reverse` methods, such as `reverse(bytes reverseName)`.
+
+The `reverseName` argument for these methods will be the [DNS-encoded](/resolution/names#dns) version of the reverse name. The "reverse name" is `[addr].addr.reverse`, where `[addr]` is the Ethereum public address (without the "0x"). Make sure to [normalize](/resolution/names#normalize) the name as well! For example, given the address `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63`:
+
+1. Construct Reverse Name:
+   - `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63` -> `231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse`
+2. Normalize:
+   - `231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse` -> `231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse`
+3. DNS Encode:
+   - `231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse` -> `0x28323331623065653134303438653964636364316432343737343464313134613465623565386536330461646472077265766572736500`
+
+## Interface Standards
+
+{interfaceDetails(universalresolver_methods)}

@@ -2,7 +2,7 @@ import { WIP } from '@/components/wip/WIP';
 
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: '',
+    description: 'Normalization and recommendations for how to handle names',
     emoji: '⚙️',
     contributors: [
         'luc.eth',
@@ -27,7 +27,7 @@ ENS names are validated and normalized using the [ENSIP-15](/ensip/15) normaliza
 
 Previously, [UTS-46](https://www.unicode.org/reports/tr46/) was used, but that is insufficient for emoji sequences. Correct emoji processing is only possible with [UTS-51](https://www.unicode.org/reports/tr51/). The [ENSIP-15](/ensip/15) normalization algorithm draws from those older Unicode standards, but also adds many other validation rules to prevent common spoofing techniques like inserting zero-width characters, or using confusable (look-alike) characters. See here for additional discussion on this: [Homogylphs](https://support.ens.domains/en/articles/7901658-homoglyphs)
 
-A standard implementation of the algorithm is available here: https://github.com/adraffy/ens-normalize.js. This library is also [included in ENSjs](https://github.com/ensdomains/ensjs-v3/blob/main/packages/ensjs/src/utils/normalise.ts#L27).
+A standard implementation of the algorithm is available here: https://github.com/adraffy/ens-normalize.js. This library is also [included in ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L27).
 
 To normalize a name, simply call `ens_normalize`:
 
@@ -59,7 +59,7 @@ If the name was not able to be normalized, then that method will throw a descrip
 <Note>
     You **MUST** [normalize](#normalize) a name before you attempt to create a namehash! If you don't, then the hash you get may be incorrect.
 
-    Some libraries like [ensjs](https://github.com/ensdomains/ensjs-v3) will automatically do this for you.
+    Some libraries like [ensjs](https://github.com/ensdomains/ensjs) will automatically do this for you.
 </Note>
 
 In order for us to interface with our nice readable names there needs to be a way we communicate them to smart-contracts.
@@ -69,8 +69,8 @@ ENS stores names in a uint256 encoded format we call a "namehash". This is done 
 
 <CodeGroup>
 
-```jsx {{ title: "ensjs-v3" }}
-// https://github.com/ensdomains/ensjs-v3
+```jsx {{ title: "ensjs" }}
+// https://github.com/ensdomains/ensjs
 
 import { namehash } from '@ensdomains/ensjs/utils';
 
@@ -96,7 +96,7 @@ fn main() {
 
 </CodeGroup>
 
-[ENSjs](https://github.com/ensdomains/ensjs-v3/blob/main/packages/ensjs/src/utils/normalise.ts#L29)
+[ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L29)
 https://github.com/ConsenSysMesh/ens-namehash-py
 https://github.com/InstateDev/namehash-rust
 

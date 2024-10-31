@@ -54,7 +54,7 @@ const SearchResultEntry: FC<{
                             // hit._formatted.content ??
                             // hit._formatted.description,
                         }}
-                        className={clsx('block h-[2em] w-full truncate pl-8')}
+                        className={clsx('block h-[2em] w-full truncate')}
                     />
                 </span>
                 <span className="flex gap-2">

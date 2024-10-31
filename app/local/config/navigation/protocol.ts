@@ -75,9 +75,19 @@ export const navigation: SectionData[] = [
                 title: '',
                 links: [
                     {
+                        title: 'Quickstart',
+                        href: '/web/quickstart',
+                        icon: '⚡',
+                    },
+                    {
                         title: 'Getting Started',
                         href: '/web',
                         icon: '👋',
+                    },
+                    {
+                        title: 'Tools and Libraries',
+                        href: '/web/libraries',
+                        icon: '🛠️',
                     },
                 ],
             },
@@ -86,17 +96,7 @@ export const navigation: SectionData[] = [
                 icon: '🌐',
                 links: [
                     {
-                        title: 'Tools and Libraries',
-                        href: '/web/libraries',
-                        icon: '🛠️',
-                    },
-                    {
-                        title: 'Quickstart',
-                        href: '/web/quickstart',
-                        icon: '⚡',
-                    },
-                    {
-                        title: 'Address Lookup',
+                        title: 'Addresses',
                         href: '/web/resolution',
                         icon: '🔍',
                     },
@@ -112,7 +112,7 @@ export const navigation: SectionData[] = [
                         icon: '🔍',
                     },
                     {
-                        title: 'List Names',
+                        title: 'Listing Names',
                         href: '/web/enumerate',
                         icon: '🔍',
                     },
@@ -123,26 +123,26 @@ export const navigation: SectionData[] = [
                 icon: '⚙️',
                 links: [
                     {
-                        title: 'Naming Smart-contracts',
-                        href: '/web/naming-contracts',
+                        title: 'Decentralized Web',
+                        href: '/dweb/intro',
                     },
                     {
                         title: 'Issuing Subdomains',
                         href: '/web/subdomains',
                     },
                     {
-                        title: 'Multichain',
+                        title: 'Naming Smart-contracts',
+                        href: '/web/naming-contracts',
+                    },
+                    {
+                        // eslint-disable-next-line quotes
+                        title: "Layer 2's & Multichain",
                         href: '/web/multichain',
                         icon: '⛓️',
                     },
                     {
                         title: 'Subgraph',
                         href: '/web/subgraph',
-                    },
-                    {
-                        title: 'Decentralized Web',
-                        href: '/dweb/intro',
-                        wip: true,
                     },
                     // {
                     //     title: 'Sign In With Ethereum (SIWE)',
@@ -166,8 +166,8 @@ export const navigation: SectionData[] = [
                         external: true,
                     },
                     {
-                        title: 'Media kit',
-                        href: 'https://github.com/ensdomains/media-kit',
+                        title: 'Brand',
+                        href: 'https://ens.domains/brand',
                         external: true,
                     },
                 ],
@@ -185,7 +185,7 @@ export const navigation: SectionData[] = [
                 title: '',
                 links: [
                     {
-                        title: 'Welcome',
+                        title: 'Overview',
                         href: '/contracts',
                         icon: '👋',
                     },
@@ -224,21 +224,27 @@ export const navigation: SectionData[] = [
                         icon: '🏛️',
                     },
                     {
-                        title: 'Writing your own resolver',
-                        href: '/resolvers/writing',
-                        wip: 45,
-                        icon: '✍️',
-                    },
-                    {
                         title: 'Interacting with a resolver',
                         href: '/resolvers/interacting',
                         wip: 55,
                         icon: '👉',
                     },
                     {
+                        title: 'Writing your own resolver',
+                        href: '/resolvers/writing',
+                        wip: 45,
+                        icon: '✍️',
+                    },
+                    {
                         title: 'Cross Chain Resolvers',
                         href: '/resolvers/ccip-read',
                         icon: '⛓️',
+                    },
+                    {
+                        title: 'Universal Resolver',
+                        href: '/resolvers/universal',
+                        wip: 70,
+                        icon: '✍️',
                     },
                     {
                         title: 'Interface Reference',
@@ -399,6 +405,47 @@ export const navigation: SectionData[] = [
             {
                 title: 'Proposals Term 5',
                 links: [
+                    {
+                        title: '5.21 - [Social] Governance Security Bounty',
+                        href: '/dao/proposals/5.21',
+                    },
+                    {
+                        title: '5.20 - [Social] ENS Endowment Investment Policy Statement ',
+                        href: '/dao/proposals/5.20',
+                    },
+                    {
+                        title: '5.19 - [Social] Governance Distribution Pilot Program',
+                        href: '/dao/proposals/5.19',
+                    },
+                    {
+                        title: '5.18 - [Social] ENS DAO Steward Compensation Structure - Term 6',
+                        href: '/dao/proposals/5.18',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.17.3 - [Social] Funding Request: ENS Public Goods Working Group',
+                        href: '/dao/proposals/5.17.3',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.17.2 - [Social] Funding Request: ENS Ecosystem Working Group',
+                        href: '/dao/proposals/5.17.2',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.17.1 - [Social] Funding Request: ENS Meta-Governance Working Group',
+                        href: '/dao/proposals/5.17.1',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.16 - [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation',
+                        href: '/dao/proposals/5.16',
+                    },
+                    {
+                        // eslint-disable-next-line prettier/prettier
+                        title: '5.15 - [Social] ENS Governor Improvement Proposal: ProposalBond',
+                        href: '/dao/proposals/5.15',
+                    },
                     {
                         // eslint-disable-next-line prettier/prettier
                         title: '5.14 - [Executable] Endowment permissions to karpatkey - Update #4',
@@ -658,6 +705,7 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/0.3',
                     },
                     {
+                        // eslint-disable-next-line prettier/prettier
                         title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
                         href: '/dao/proposals/0.2',
                     },

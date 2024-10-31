@@ -2,19 +2,22 @@ import { WIP } from "@/components/wip/WIP";
 
 {/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-description: '',
+description: 'A general purpose resolver that suits most user needs.',
 emoji: '🏛️',
-contributors: []
+contributors: [
+    'luc.eth'
+]
 };
 
 # Public Resolver
 
-{/* <WIP /> */}
-
-The public resolver is a general-purpose ENS resolver that is suitable for most user needs. It permits the owner of a name to update their records, includes permissions, and stores its data on layer-1 ethereum.
+The public resolver is a general-purpose ENS resolver that is suitable for most user needs.
+It permits the owner of a name to update their records, includes permissions, and stores its data on layer-1 ethereum.
 
 Most ENS names registered through the ENS Manager will use the latest version of the public resolver by default.
 Names that resolve to a supported public resolver are editable from within the ENS Manager.
+
+If you'd like to take a peek under the hood you can view the [public resolver source code](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/resolvers/PublicResolver.sol) on GitHub.
 
 ## Features
 

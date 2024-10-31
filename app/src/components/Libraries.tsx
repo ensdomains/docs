@@ -48,7 +48,7 @@ export const ensLibraries: Language[] = [
                 logo: '/icons/legacy/logos/ethers.svg',
             },
             {
-                href: 'https://github.com/ensdomains/ensjs-v3',
+                href: 'https://github.com/ensdomains/ensjs',
                 name: 'ENSjs',
                 description: '',
                 logo: '/icons/legacy/logos/ensjs.svg',

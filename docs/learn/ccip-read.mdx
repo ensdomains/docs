@@ -1,33 +1,38 @@
-import { WIP } from '@/components/wip/WIP';
-
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
     description: 'Using CCIP Read to take ENS resolution cross-chain, off-chain, and more.',
     emoji: '🔗',
-    contributors: []
+    contributors: [
+        'gregskril.eth',
+        'luc.eth'
+    ]
 };
 
 # Layer 2 & Offchain Resolution
 
 All ENS resolution starts on Ethereum Mainnet (or testnet).
-However, by leveraging the [CCIP Read](/resolvers/ccip-read), name resolution can be taken cross-chain, off-chain, and more.
+However, by leveraging [CCIP Read](/resolvers/ccip-read) and [Wildcard Resolution](/ensip/10), name resolution can be taken cross-chain, off-chain, and more.
 This allows for a lot of flexibility in how you can use your ENS and for storage of your ENS records on your favourite Layer 2, or even off-chain.
 
-<div className="card1 p-4">
-    
-</div>
+## ENS on Layer 2
 
-## Resolvers on Layer 2
+In the resolution process, clients first fetch the resolver associated with the name in the ENS registry on L1. That resolver is responsible for telling the client where to find the data associated with the name such as the addresses, text records, etc.
 
-It's already possible to deploy a resolver to a Layer 2. This is done by verifying data returned from a gateway against, for example, mainnet storage proofs or other mechanisms, depending on the chain.
+If you want to register and resolve (sub)names from L2, you would write a resolver smart contract that defers resolution to the L2 and ideally verifies that data against the L2's storage proofs posted to L1. This process can be done with the [Unruggable Gateway](https://gateway-docs.unruggable.com/).
 
-ENS Labs has created a toolkit called the [EVMGateway](https://github.com/ensdomains/evmgateway), which helps with trustless cross-chain data retrieval: this allows you to have, for example, your name controlled by a Resolver on Optimism or Arbitrum, with more EVM compatible chains coming soon.
+An example implementation of Layer 2 resolving is:
 
-{/* ## Primary Names on Layer 2
+### linea.eth
 
-The process of storing primary names on Layer 2 is still under active development and more updates will be posted here as they become available.
+Linea was the first L2 team to build a trust-minimized ENS subname system. Names are stored on Linea, verified with [storage proofs](https://docs.linea.build/developers/tooling/cross-chain/ccip-read-gateway) on L1, and function as ENS subnames such as [greg.linea.eth](https://app.ens.domains/greg.linea.eth). You can try it out [here](https://names.linea.build/).
 
-<WIP /> */}
+### clv.eth
+
+Clave is focused on enhancing user experience and security through a mobile wallet that leverages account abstraction and device hardware. Clave accounts come with usernames that are now stored onchain in ZKsync Era, verified with [storage proofs](https://github.com/getclave/zksync-storage-proofs) in L1, and issued as ENS subnames such as [ulas.clv.eth](https://enstate.rs/n/ulas.clv.eth). You can read more about the implementation [here](https://blog.getclave.io/introducing-onchain-clave-usernames-with-ens).
+
+## Primary Names on Layer 2
+
+The process of setting primary names from L2 is under active development. This doc will be updated as more information becomes available.
 
 ## Offchain Resolution
 
