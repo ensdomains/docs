@@ -135,8 +135,7 @@ export const navigation: SectionData[] = [
                         href: '/web/naming-contracts',
                     },
                     {
-                        // eslint-disable-next-line quotes
-                        title: "Layer 2's & Multichain",
+                        title: 'Layer 2\'s & Multichain',
                         href: '/web/multichain',
                         icon: '⛓️',
                     },
@@ -144,22 +143,12 @@ export const navigation: SectionData[] = [
                         title: 'Subgraph',
                         href: '/web/subgraph',
                     },
-                    // {
-                    //     title: 'Sign In With Ethereum (SIWE)',
-                    //     href: '/web/siwe',
-                    //     wip: 80,
-                    //     icon: '✍️',
-                    // },
                 ],
             },
             {
                 title: 'Design',
                 icon: '🖼️',
                 links: [
-                    // {
-                    //     title: 'Guidelines',
-                    //     href: '/web/design',
-                    // },
                     {
                         title: 'Thorin',
                         href: 'https://thorin.ens.domains/',
@@ -277,23 +266,11 @@ export const navigation: SectionData[] = [
                         title: 'TLDs List',
                         href: '/dns/tlds',
                     },
-                    // {
-                    //     title: 'Test Registrar',
-                    //     href: '/registry/test',
-                    //     wip: true,
-                    //     icon: '🗒️',
-                    // },
                     {
                         title: 'Reverse Registrar',
                         href: '/registry/reverse',
                         icon: '🗒️',
                     },
-                    // {
-                    //     title: 'Authoring a registry',
-                    //     wip: true,
-                    //     href: '/registry/writing',
-                    //     icon: '✍️',
-                    // },
                 ],
             },
             {
@@ -410,7 +387,7 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.21',
                     },
                     {
-                        title: '5.20 - [Social] ENS Endowment Investment Policy Statement ',
+                        title: '5.20 - [Social] ENS Endowment Investment Policy Statement',
                         href: '/dao/proposals/5.20',
                     },
                     {
@@ -422,92 +399,74 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.18',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.17.3 - [Social] Funding Request: ENS Public Goods Working Group',
                         href: '/dao/proposals/5.17.3',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.17.2 - [Social] Funding Request: ENS Ecosystem Working Group',
                         href: '/dao/proposals/5.17.2',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.17.1 - [Social] Funding Request: ENS Meta-Governance Working Group',
                         href: '/dao/proposals/5.17.1',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
-                        title: '5.16 - [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation',
+                        title: '5.16 - [Executable] Reimbursement of ENS Labs\' legal fees in eth.link litigation',
                         href: '/dao/proposals/5.16',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.15 - [Social] ENS Governor Improvement Proposal: ProposalBond',
                         href: '/dao/proposals/5.15',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.14 - [Executable] Endowment permissions to karpatkey - Update #4',
                         href: '/dao/proposals/5.14',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.13 - [Executable] Security Council',
                         href: '/dao/proposals/5.13',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.12 - [Executable] Roles Modifier V2 Migration & Updates to Endowment Permissions',
                         href: '/dao/proposals/5.12',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.11 - [Executable] Fund the Meta-Governance Working Group (Term 5)',
                         href: '/dao/proposals/5.11',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.10 - [Social] Confirming the ENS DAO Security Council Members',
                         href: '/dao/proposals/5.10',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.9 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
                         href: '/dao/proposals/5.9',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.8 - [Social] ENS Steward Vesting Proposal',
                         href: '/dao/proposals/5.8',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.7 - [Social] Security Council',
                         href: '/dao/proposals/5.7',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.6 - [Executable] Enable Self-Funding for the Endowment',
                         href: '/dao/proposals/5.6',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.5 - [Executable] Funding Request: ENS Public Goods Working Group Term 5 (Q1/Q2)',
                         href: '/dao/proposals/5.5',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.4.2 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
                         href: '/dao/proposals/5.4.2',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.4.1 - [Social] Funding Request: ENS Meta-Governance Working Group Term 5 (Q1/Q2)',
                         href: '/dao/proposals/5.4.1',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '5.3 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
                         href: '/dao/proposals/5.3',
                     },
@@ -705,7 +664,6 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/0.3',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
                         title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
                         href: '/dao/proposals/0.2',
                     },
@@ -788,19 +746,11 @@ export const navigation: SectionData[] = [
                         href: '/ensip/18',
                     },
                     {
-                        title: '19 - EVM-chain Reverse Resolution', // '19 - Multichain Primary Names',
+                        title: '19 - EVM-chain Reverse Resolution',
                         href: '/ensip/19',
                     },
                 ],
             },
         ],
     },
-    // TODO: Uncomment this
-    // {
-    //     name: 'Learn',
-    //     href: '/learn/protocol',
-    //     icon: '🎓',
-    //     activePattern: /^\/learn(\/.*)?/,
-    //     links: [],
-    // },
 ];
