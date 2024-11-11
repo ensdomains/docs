@@ -52,6 +52,11 @@ export const DEPLOYMENTS: Deployment[] = [
                 path: 'PublicResolver',
                 srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
+            {
+                name: 'Universal Resolver',
+                path: 'UniversalResolver',
+                srcPath: 'contracts/utils/UniversalResolver.sol',
+            },
         ],
     },
     {
@@ -95,6 +100,11 @@ export const DEPLOYMENTS: Deployment[] = [
                 path: 'PublicResolver',
                 srcPath: 'contracts/resolvers/PublicResolver.sol',
             },
+            {
+                name: 'Universal Resolver',
+                path: 'UniversalResolver',
+                srcPath: 'contracts/utils/UniversalResolver.sol',
+            },
         ],
     },
     {
@@ -137,6 +147,11 @@ export const DEPLOYMENTS: Deployment[] = [
                 name: 'Public Resolver',
                 path: 'PublicResolver',
                 srcPath: 'contracts/resolvers/PublicResolver.sol',
+            },
+            {
+                name: 'Universal Resolver',
+                path: 'UniversalResolver',
+                srcPath: 'contracts/utils/UniversalResolver.sol',
             },
         ],
     },
