@@ -82,3 +82,50 @@ You can do so by hitting the `setNameForAddr` function on the [Reverse Registrar
 From your contract you can execute `setName` function on the [Reverse Registrar](/registry/reverse)
 
 <LiveDemo id="reversesetnamefordemo" />
+
+## L2 Contracts
+
+If you want to set a primary name for a contract you are deploying on an L2 chain, you need to make sure your contract implements the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, and has an account you own set as the owner.
+
+You will also need to locate the canonical Reverse Resolver for that L2 chain. We currently do not have a way to discover those contracts, but for now, selected deployments are listed here:
+
+<table>
+    <thead>
+        <tr>
+            <th>Network</th>
+            <th>L2ReverseResolver deployment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Base</td>
+            <td>`0x0D3b4af7f0f89C67163e5A301Ba1b37A16C968f1`</td>
+        </tr>
+        <tr>
+            <td>Base Sepolia</td>
+            <td>`0xa12159e5131b1eEf6B4857EEE3e1954744b5033A`</td>
+        </tr>
+        <tr>
+            <td>Arbitrum Sepolia</td>
+            <td>`0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376`</td>
+        </tr>
+        <tr>
+            <td>Linea Sepolia</td>
+            <td>`0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376`</td>
+        </tr>
+        <tr>
+            <td>Optimism Sepolia</td>
+            <td>`0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376`</td>
+        </tr>
+        <tr>
+            <td>Scroll</td>
+            <td>`0x0d3b4af7f0f89c67163e5a301ba1b37a16c968f1`</td>
+        </tr>
+        <tr>
+            <td>Scroll Sepolia</td>
+            <td>`0xc0497E381f536Be9ce14B0dD3817cBcAe57d2F62`</td>
+        </tr>
+    </tbody>
+</table>
+
+Then, after you've deployed your contract, call `setNameForAddr(address addr, string name)` on the L2 Reverse Resolver from your authorized owner account. The `addr` is the address of your contract, and `name` is the ENS name to set it to. 
