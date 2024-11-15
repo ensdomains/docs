@@ -6,7 +6,8 @@ export const meta = {
     emoji: '⚙️',
     contributors: [
         'luc.eth',
-        'serenae.eth'
+        'serenae.eth',
+        'gregskril.eth',
     ]
 };
 
@@ -27,82 +28,74 @@ ENS names are validated and normalized using the [ENSIP-15](/ensip/15) normaliza
 
 Previously, [UTS-46](https://www.unicode.org/reports/tr46/) was used, but that is insufficient for emoji sequences. Correct emoji processing is only possible with [UTS-51](https://www.unicode.org/reports/tr51/). The [ENSIP-15](/ensip/15) normalization algorithm draws from those older Unicode standards, but also adds many other validation rules to prevent common spoofing techniques like inserting zero-width characters, or using confusable (look-alike) characters. See here for additional discussion on this: [Homogylphs](https://support.ens.domains/en/articles/7901658-homoglyphs)
 
-A standard implementation of the algorithm is available here: https://github.com/adraffy/ens-normalize.js. This library is also [included in ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L27).
-
-To normalize a name, simply call `ens_normalize`:
+A standard implementation of the algorithm is available at [@adraffy/ens-normalize](https://github.com/adraffy/ens-normalize.js). This library is used under the hood in [viem](https://viem.sh/docs/ens/utilities/normalize), [ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L27), and others.
 
 ```js
-import {ens_normalize} from '@adraffy/ens-normalize'; // or require()
-// npm i @adraffy/ens-normalize
-// browser: https://cdn.jsdelivr.net/npm/@adraffy/ens-normalize@latest/dist/index.min.mjs (or .cjs)
+import { normalize } from 'viem/ens';
+// Uses @adraffy/ens-normalize under the hood
 
-// *** ALL errors thrown by this library are safe to print ***
-// - characters are shown as {HEX} if should_escape()
-// - potentially different bidi directions inside "quotes"
-// - 200E is used near "quotes" to prevent spillover
-// - an "error type" can be extracted by slicing up to the first (:)
-// - labels are middle-truncated with ellipsis (…) at 63 cps
-
-// string -> string
-// throws on invalid names
-// output ready for namehash
-let normalized = ens_normalize('RaFFY🚴‍♂️.eTh');
+const normalized = normalize('RaFFY🚴‍♂️.eTh');
 // => "raffy🚴‍♂.eth"
-
-// note: does not enforce .eth registrar 3-character minimum
 ```
 
-If the name was not able to be normalized, then that method will throw a descriptive error. A name is valid if it is able to be normalized.
+If the name was not able to be normalized, then that method will throw an error. A name is valid if it is able to be normalized.
 
 ## Namehash {{ title: "Namehash", id: "namehash" }}
 
 <Note>
-    You **MUST** [normalize](#normalize) a name before you attempt to create a namehash! If you don't, then the hash you get may be incorrect.
-
-    Some libraries like [ensjs](https://github.com/ensdomains/ensjs) will automatically do this for you.
+    You **MUST** [normalize](#normalize) a name before you attempt to create a namehash! If you don't, then the hash you get may be incorrect. Some libraries like [ensjs](https://github.com/ensdomains/ensjs) will automatically do this for you.
 </Note>
 
-In order for us to interface with our nice readable names there needs to be a way we communicate them to smart-contracts.
-ENS stores names in a uint256 encoded format we call a "namehash". This is done to optimize for gas, performance, and more.
+In the core ENS registry, names are stored as a hash instead of the raw string to optimize for gas, performance, and more. This hashed value is typically referred to as a `node`. The node is a hex-encoded 32-byte value that is derived from the name using the `namehash` algorithm defined in [ENSIP-1](/ensip/1).
 
-### Code Examples
+Namehash is a recursive algorithm that hashes each part of the name, then hashes the results together. Beacuse recursive functions aren't very efficient in Solidity, it's usually best to derive the namehash offchain and pass to it a contract. Luckily, there are libraries that do this for us.
 
-<CodeGroup>
+<CodeGroup title="Calculating Namehash">
+```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/namehash' }}
+import { namehash, normalize } from "viem/ens";
 
-```jsx {{ title: "ensjs" }}
-// https://github.com/ensdomains/ensjs
-
-import { namehash } from '@ensdomains/ensjs/utils';
-
-const node = namehash('name.eth');
+const normalizedName = normalize("name.eth");
+const node = namehash(normalizedName);
 ```
 
-```jsx {{ title: "ens-namehash-py" }}
-// https://github.com/ConsenSysMesh/ens-namehash-py
+```ts {{ title: 'Ethers.js (TS)', language: 'ts', variant: 'ethers-v6', link: 'https://docs.ethers.org/v6/api/hashing/#namehash' }}
+import { ensNormalize, namehash } from "ethers/hash";
 
+const normalizedName = ensNormalize('name.eth')
+const node = namehash(normalizedName)
+```
+
+```python {{ title: "ens-namehash-py", variant: 'python', link: 'https://github.com/ConsenSysMesh/ens-namehash-py' }}
 from namehash import namehash
 
 node = namehash('name.eth')
 ```
 
-```rust {{ title: "namehash-rust" }}
-// https://github.com/InstateDev/namehash-rust
-
+```rust {{ title: "namehash-rust", link: "https://github.com/InstateDev/namehash-rust" }}
 fn main() {
   let node = &namehash("name.eth");
   let s = hex::encode(&node);
 }
 ```
 
-</CodeGroup>
+```solidity {{ title: 'Solidity', variant: 'solidity' }}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-[ENSjs](https://github.com/ensdomains/ensjs/blob/main/packages/ensjs/src/utils/normalise.ts#L29)
-https://github.com/ConsenSysMesh/ens-namehash-py
-https://github.com/InstateDev/namehash-rust
+import "@ensdomains/ens-contracts/contracts/utils/NameEncoder.sol";
+
+contract MyContract {
+    function namehash(string calldata name) public pure returns (bytes32) {
+        (, bytes32 node) = NameEncoder.dnsEncodeName(name);
+        return node;
+    }
+}
+```
+</CodeGroup>
 
 ### Algorithm
 
-The specification for the namehash algorithm is here: https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm
+The specification for the namehash algorithm was originally defined in [EIP-137](https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm) (same as [ENSIP-1](/ensip/1)).
 
 It's a recursive algorithm that works its way down until you hit the root domain. For `ens.eth`, the algorithm works like so:
 
@@ -159,14 +152,32 @@ And the resulting namehash for the reverse node is:
     You **MUST** [normalize](#normalize) a name before you attempt to create a labelhash! If you don't, then the hash you get may be incorrect.
 </Note>
 
-The labelhash is just the [Keccak-256](https://en.wikipedia.org/wiki/SHA-3) output for a particular label.
+Labelhash is the Keccak-256 hash of a single label (e.g. `name` in `name.eth`), used in places that don't require the full name.
 
-Labelhashes are used to construct [namehashes](#namehash), and often times a labelhash (rather than the raw label) will be the required input for various contract methods.
+One example of where labelhash is used is in the [BaseRegistar](/registry/eth), since it only supports registering 2LDs (second-level domains, like `name.eth`) and not 3LDs+ (e.g. `sub.name.eth`). The token ID of a second-level .eth name in the BaseRegistar is the uint256 of the labelhash.
 
-```js
-// https://www.npmjs.com/package/js-sha3
-const labelhash = '0x' + require('js-sha3').keccak_256('name')
+<CodeGroup title="Calculating Labelhash">
+```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/labelhash' }}
+import { labelhash, normalize } from "viem/ens";
+
+const normalizedLabel = normalize("label");
+const hash = labelhash(normalizedLabel);
 ```
+
+```tsx {{ title: 'Ethers (TS)', language: 'ts', variant: 'ethers-v6', link: 'https://docs.ethers.org/v6/api/crypto/#keccak256' }}
+import { keccak256 } from "ethers/crypto";
+import { ensNormalize } from "ethers/hash";
+import { toUtf8Bytes } from "ethers/utils";
+
+const normalizedLabel = ensNormalize('label')
+const labelhash = keccak256(toUtf8Bytes(normalizedLabel))
+```
+
+```ts {{ title: 'Solidity', variant: 'solidity' }}
+string constant label = "label";
+bytes32 constant labelhash = keccak256(bytes(label));
+```
+</CodeGroup>
 
 ## DNS Encoding {{ title: "DNS Encoding", id: "dns" }}
 
@@ -174,7 +185,39 @@ const labelhash = '0x' + require('js-sha3').keccak_256('name')
     You **MUST** [normalize](#normalize) a name before you DNS-encode it! If you don't, then when you pass those DNS-encoded bytes into a contract method, incorrect namehashes/labelhashes may be derived.
 </Note>
 
-This is a binary format for domain names, which encodes the length of each label along with the label itself. It is used by some of the ENS contracts, such as when wrapping a subname or DNS name using the Name Wrapper.
+This is a binary format for domain names, which encodes the length of each label along with the label itself. It is used by some of the ENS contracts, such as when wrapping names in the [Name Wrapper](/wrapper/overview) or resolving data with [ENSIP-10](/ensip/10).
+
+<CodeGroup title="DNS Encoding">
+```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/labelhash' }}
+import { toHex } from 'viem/utils'
+import { packetToBytes } from 'viem/ens'
+
+const name = 'name.eth'
+const dnsEncodedName = toHex(packetToBytes(name))
+```
+
+```tsx {{ title: 'Ethers (TS)', language: 'ts', variant: 'ethers-v6', link: 'https://docs.ethers.org/v6/api/hashing/#dnsEncode' }}
+import { dnsEncode } from 'ethers/lib/utils'
+
+const dnsEncodedName = dnsEncode('name.eth')
+```
+
+```ts {{ title: 'Solidity', variant: 'solidity' }}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@ensdomains/ens-contracts/contracts/utils/NameEncoder.sol";
+
+contract MyContract {
+    function dnsEncode(string calldata name) public pure returns (bytes memory) {
+        (bytes memory dnsEncodedName,) = NameEncoder.dnsEncodeName(name);
+        return dnsEncodedName;
+    }
+}
+```
+</CodeGroup>
+
+### Algorithm
 
 To DNS-encode a name, first split the name into labels (delimited by `.`). Then for each label from left-to-right:
 
@@ -193,13 +236,6 @@ For example, to DNS-encode `my.name.eth`:
 * `0x00` (end of name marker)
 
 Final result: `0x026d79046e616d650365746800`
-
-```js
-// https://npmjs.com/package/dns-packet
-const dnsEncodedBytes = require('dns-packet').name.encode('name.eth');
-const dnsEncodedHexStr = '0x' + require('dns-packet').name.encode('name.eth').toString('hex');
-// => 0x046e616d650365746800
-```
 
 <Note>
     Since the length of each label is stored in a single byte, that means that with this DNS-encoding scheme, each label is limited to being 255 UTF-8 encoded bytes in length. Because of this, names with longer labels cannot be wrapped in the [Name Wrapper](/wrapper/overview), as that contract uses the DNS-encoded name.

@@ -58,25 +58,6 @@ ENSjs makes it easy to run common queries on the subgraph with strong type safet
 }
 ```
 
-## Airstack {{ title: "Airstack" }}
-
-Airstack is an API provider that includes a GraphQL endpoint to query all ENS names owned by a given address.
-
-```graphql {{ title: 'GraphQL', language: 'gql', variant: 'gql', link: "https://app.airstack.xyz/api-studio" }}
-{
-  Domains(
-    input: {
-      filter: { owner: { _eq: "0x179A862703a4adfb29896552DF9e307980D19285" } }
-      blockchain: ethereum
-    }
-  ) {
-    Domain {
-      name
-    }
-  }
-}
-```
-
 ## Alchemy {{ title: "Alchemy" }}
 
 Alchemy has several API endpoints for fetching NFTs, which we can use to query a list of names owned by a given address.
