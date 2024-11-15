@@ -8,7 +8,13 @@ import { SearchModal } from './SearchModal';
 
 function SearchIcon(properties) {
     return (
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" {...properties}>
+        <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+            className={clsx('size-5', properties.className)}
+            {...properties}
+        >
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -59,7 +65,7 @@ export function Search() {
             <button
                 type="button"
                 className={clsx(
-                    'outline-ens-500 h-8 w-full items-center gap-2 rounded-lg bg-white pl-2 text-sm text-zinc-500 ring-1 ring-zinc-900/10 hover:ring-zinc-900/20 dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20 lg:flex',
+                    'outline-ens-500 h-8 w-full items-center gap-2 rounded-lg bg-white pl-2 text-sm text-zinc-500 ring-1 ring-zinc-900/10 hover:ring-zinc-900/20 lg:flex dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20',
                     isOpen ? 'opacity-0' : 'opacity-100'
                 )}
                 onClick={() => setOpen(true)}
@@ -68,7 +74,7 @@ export function Search() {
                 Search Content...
                 <span className="ml-auto inline-flex p-1">
                     {modifierKey && (
-                        <kbd className="my-1 flex h-full items-center rounded-md border border-ens-light-border px-1 text-2xs dark:border-ens-dark-border">
+                        <kbd className="border-ens-light-border text-2xs dark:border-ens-dark-border my-1 flex h-full items-center rounded-md border px-1">
                             <kbd className="font-sans">{modifierKey}</kbd>+
                             <kbd className="font-sans">k</kbd>
                         </kbd>
@@ -87,7 +93,7 @@ export function MobileSearch() {
         <div className="contents lg:hidden">
             <button
                 type="button"
-                className="flex size-6 items-center justify-center rounded-md transition-all hover:bg-zinc-900/5 dark:hover:bg-white/5 lg:hidden"
+                className="flex size-6 items-center justify-center rounded-md transition-all hover:bg-zinc-900/5 lg:hidden dark:hover:bg-white/5"
                 aria-label="Search Content..."
                 onClick={() => setOpen(true)}
             >

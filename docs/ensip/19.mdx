@@ -29,15 +29,15 @@ Reverse resolution has been in use since ENS's inception, however at the time Et
   This is to allow a consistent storage slot that can be checked on L1.
 * User can now claim their reverse on this chain and set it to their ENS name
 * Their ENS name will need to set their record for the same EVM-cointype as the network, which is specified in [ENSIP-11](https://docs.ens.domains/ensip/11).
-* A dapp can then detect the chainID that a user is on, convert that into coinType in hexadecimal and resolve their primary ens name by resolving the name record at [userAddress].[coinTypeAsHex].reverse. This will be resolved via a CCIP-read gateway and look up the reverse record on the corresponding EVM-chain. Depending on if the chain is an L2 that has state roots on L1 or sidechain, verification can be done with trusted signatures or trustlessly on Ethereum mainnet.
+* A dapp can then detect the chainID that a user is on, convert that into coinType in hexadecimal and resolve their primary ens name by resolving the name record at `[userAddress].[coinTypeAsHex].reverse`. This will be resolved via a CCIP-read gateway and look up the reverse record on the corresponding EVM-chain. Depending on if the chain is an L2 that has state roots on L1 or sidechain, verification can be done with trusted signatures or trustlessly on Ethereum mainnet.
 * Dapps will then resolve this name via ENS on L1 to check if the forward resolution matches. This forward resolution can be on L1, or the user can set up a CCIP-read resolver and records for each network and put those addresses wherever they want (such as on another L2)
 * Once matched, the dapp can then also resolve any text records on the primary ENS name, such as avatar.
-* Discovery of the reverse registrar on each chain will be done by looking up the `addr()` of [coinTypeAsHex].reverse.
+* Discovery of the reverse registrar on each chain will be done by looking up the `addr()` of `[coinTypeAsHex].reverse`.
 * coinType in all instances will be the hex representation to reduce the length of the name
 
 ### Deployment and discovery of EVM Reverse registrars
 
-When a new EVM reverse registrar is deployed, it will need to be setup by the owner of the `reverse` node, to setup a subdomain [coinTypeAsHex].reverse. It must then be setup with an Offchain resolver that has an onchain L1 address record that return the contract address of the reverse registrar for that chain. The Offchain resolver will also support wildcard of all the address subdomains with the format [address].[coinTypeAsHex].reverse. Additionally there must be a new EVM gateway setup to handle the CCIP-read revert errors that will go to the corresponding network to gather the chain-specific reverse record and verify this data on L1.
+When a new EVM reverse registrar is deployed, it will need to be setup by the owner of the `reverse` node, to setup a subdomain [coinTypeAsHex].reverse. It must then be setup with an Offchain resolver that has an onchain L1 address record that return the contract address of the reverse registrar for that chain. The Offchain resolver will also support wildcard of all the address subdomains with the format `[address].[coinTypeAsHex].reverse`. Additionally there must be a new EVM gateway setup to handle the CCIP-read revert errors that will go to the corresponding network to gather the chain-specific reverse record and verify this data on L1.
 
 ### Resolving Primary ENS Names by a dapp
 
@@ -60,7 +60,7 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 #### Primary Name Resolution process
 
 1) Let `chainId` be the chain ID of the DApp's currently connected chain.
-2) If `chainId` is 1, set `reverseName = "[address].addr.reverse" and `coinType = 60` and go to step 5.
+2) If `chainId` is 1, set `reverseName = "[address].addr.reverse"` and `coinType = 60` and go to step 5.
 3) Otherwise, set `coinType` using ENSIP-11: `coinType = 0x80000000 | chainId`.
 4) Set `reverseName = '[address].[coinTypeAsHex].reverse'`
 5) Set `node = namehash(reverseName)`.
@@ -73,7 +73,7 @@ Below is a step-by-step resolution process of ENS reverse resolution. A dapp mus
 12) If `resolvedAddress == address`, the dapp considers the Primary Name valid, and can now show this instead of the address within the application.
 13) If `resolvedAddress != address` the dapp considers the Primary Name invalid and MUST show the address instead.
     
-Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet ([address].addr.reverse) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
+Note: The dapp MUST NOT use the reverse record set for Ethereum mainnet (`[address].addr.reverse`) even if the Primary ENS name has not been set on the target chain, and must treat this identically to an address with no primary name set. 
 
 ### Resolving an avatar by a dapp on another EVM chain
 
@@ -87,12 +87,11 @@ To determine the avatar URI for a specific EVM chain address, the client can fol
 
 ### Examples of valid L2 reverse resolution
 
-* Arbitrum: 0f32b753afc8abad9ca6fe589f707755f4df2353.8000A4B1.reverse
-* Optimism:
-0f32b753afc8abad9ca6fe589f707755f4df2353.8000000A.reverse
-* Base: 0f32b753afc8abad9ca6fe589f707755f4df2353.80002105.reverse
-* Polygon ZKEVM: 0f32b753afc8abad9ca6fe589f707755f4df2353.8000044D.reverse
-* ZKSync Era: 0f32b753afc8abad9ca6fe589f707755f4df2353.80000144.reverse
+* Arbitrum: `0f32b753afc8abad9ca6fe589f707755f4df2353.8000A4B1.reverse`
+* Optimism: `0f32b753afc8abad9ca6fe589f707755f4df2353.8000000A.reverse`
+* Base: `0f32b753afc8abad9ca6fe589f707755f4df2353.80002105.reverse`
+* Polygon ZKEVM: `0f32b753afc8abad9ca6fe589f707755f4df2353.8000044D.reverse`
+* ZKSync Era: `0f32b753afc8abad9ca6fe589f707755f4df2353.80000144.reverse`
 
 ### Deprecating use of mainnet primary ENS name on other chains
 
