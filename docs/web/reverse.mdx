@@ -32,10 +32,12 @@ This allows us to turn any address into a human-readable name.
 
 ```tsx {{ meta: 'focus=4:8', variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsName', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-name' }}
 import { useEnsName } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
 
 export const Name = () => {
     const { data: name } = useEnsName({
         address: '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+        chainId: mainnet.id, // resolution always starts from L1
     });
 
     return <div>Name: {name}</div>;
@@ -114,16 +116,29 @@ func main() {
 
 In some cases you might want to encourage users to set their primary name.
 This might be in the event you are issuing names, or want people to be part of a community.
-Most users are expected to do this through the ENS Manager, however it is totally doable from 3rd-party platforms as well.
 
-<CodeGroup title="Setting Primary Name">
+Currently, primary names are only support on L1 mainnet. Soon, primary names are also coming to L2s and are already available on testnets. The examples below use the testnet deployments, for which the (latest code can be found here)[https://github.com/ensdomains/ens-contracts/pull/379].
+
+Deployments for the latest L2 reverse registrars, the contracts that power L2 primary names, 
+
+| L2 Testnet Chain | Address                                    |
+|------------------|------------------------------------------- |
+| Base Sepolia     | 0xa12159e5131b1eEf6B4857EEE3e1954744b5033A |
+| OP Sepolia       | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
+| Arbitrum Sepolia | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
+| Scroll Sepolia   | 0xc0497E381f536Be9ce14B0dD3817cBcAe57d2F62 |
+| Linea Sepolia    | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
+
+On these chains, you can set a primary name for the sender via `setName()` most simply, or via signature. 
+
+`setNameForAddrWithSignature()` can be used for EOAs or smart contracts with an ERC-1271 signature, while `setNameForAddrWithSignatureAndOwnable()` can be used when a smart contract has an explicit `owner()`.
+
+{/* <CodeGroup title="Setting Primary Name">
 
 ```tsx {{ meta: 'focus=4:9', variant: 'wagmi' }}
-// TODO: Write Code Snippet
 ```
 
 ```ts {{ variant: 'ethers-v5' }}
-
 ```
 
 ```ts {{ variant: 'ensjs' }}
@@ -150,7 +165,7 @@ from ens.auto import ns
 ns.setup_name('myname.eth', my_address)
 ```
 
-</CodeGroup>
+</CodeGroup> */}
 
 ### Do's and Dont's
 
