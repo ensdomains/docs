@@ -406,7 +406,7 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
-                        title: 'EP 5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
+                        title: '5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
                         href: '/dao/proposals/5.24',
                     },
                     {
