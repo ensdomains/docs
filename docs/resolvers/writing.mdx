@@ -12,11 +12,11 @@ export const meta = {
 Every ENS name has a resolver, which is responsible for resolving information about a name.
 By writing your own resolver contract you can extend the functionality of your name, subnames, and more.
 
-Resolvers are a core part of the ENS protocolm, they give the power to a name "node" to control the resolution process from itself onwards (its subdomains etc). Resolvers were originally standardized in EIP 137, but have since received a few updates such as [EIP 181](https://eips.ethereum.org/EIPS/eip-181), [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-10](/ensip/10).
+Resolvers are a core part of the ENS protocol, they give the power to a name "node" to control the resolution process from itself onwards (its subdomains etc). Resolvers were originally standardized in EIP 137, but have since received a few updates such as [EIP 181](https://eips.ethereum.org/EIPS/eip-181), [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-10](/ensip/10).
 
 ## Resolver Interface
 
-the idea of a resolver is pretty straight forward. "any contract that implements the resolver interface". There have been a few extensions to the original interface, however a summarized interface is defined as follows:
+The idea of a resolver is pretty straight forward. There have been a few extensions to the original interface, however a summarized interface is defined as follows:
 
 ```solidity
 contract MyResolver {
