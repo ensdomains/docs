@@ -2,24 +2,6 @@
 import { CodeGroup } from '../content/prose/code/group/CodeGroup';
 import { ContractMethod } from './interfaces';
 
-export const PUBLIC_RESOLVER_SUPPORTS = [
-    //     'addr',
-    //     'addr.reverse',
-    //     'contenthash',
-    //     'contenthash.set',
-    //     'multicoin',
-    //     'multicoin.set',
-    //     'text',
-    //     'text.set',
-    //     'ABI',
-    //     'ABI.set',
-    //     'pubkey',
-    //     'pubkey.set',
-    //     'name',
-    //     'name.set',
-    //     'multicall',
-];
-
 export const resolver_methods: ContractMethod[] = [
     {
         name: 'supportsInterface(bytes4 interfaceID) external pure returns (bool)',
@@ -162,7 +144,7 @@ export const resolver_methods: ContractMethod[] = [
         name: 'pubkey(bytes32 node) view returns (bytes32 x, bytes32 y)',
         interface: '0xc8690233',
         usage: 'Read Public Key',
-        seeMore: 'ENSIP- / EIP-619',
+        seeMore: '',
         input: [
             {
                 name: 'node',
@@ -194,6 +176,21 @@ export const resolver_methods: ContractMethod[] = [
             {
                 type: 'string',
                 description: 'The associated name.',
+            },
+        ],
+    },
+    {
+        name: 'resolve(bytes memory name, bytes memory data) view returns (bytes memory)',
+        interface: '0x9061b923',
+        usage: 'Wildcard Resolution',
+        seeMore: 'ENSIP-10',
+        input: [
+            { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+            {
+                name: 'data',
+                type: 'bytes',
+                description:
+                    'Encoded function data for other resolver calls like addr(), text(), etc.',
             },
         ],
     },
