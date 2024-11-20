@@ -1,12 +1,12 @@
-import { WIP } from '@/components/wip/WIP';
+import { WIP } from '@/components/wip/WIP'
 
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.',
-    emoji: '⚙️',
-    contributors: [
-        'luc.eth'
-    ]
+description: 'Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.',
+emoji: '⚙️',
+contributors: [
+'luc.eth'
+]
 };
 
 # Subdomains
@@ -15,14 +15,18 @@ Names come in handy in many situations. We believe that any place an address is 
 The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
 
 <div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
-    <div className="text-right font-bold">
-        {
-            ["vault", "domico", "subname", "nick", "cold"].map((subname, i) => (
-                <div className={["opacity-20", "opacity-50", "", "opacity-50", "opacity-20"][i]}>{subname}</div>
-            ))
+  <div className="text-right font-bold">
+    {['vault', 'domico', 'subname', 'nick', 'cold'].map((subname, i) => (
+      <div
+        className={
+          ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
         }
-    </div>
-    <div className="font-bold">.nick.eth</div>
+      >
+        {subname}
+      </div>
+    ))}
+  </div>
+  <div className="font-bold">.nick.eth</div>
 </div>
 
 Luckily, the ENS Protocol has so much to offer for you to play with. There are a variety of ways you can give out subdomains to your apps users, set them up for yourself, or more.
@@ -31,20 +35,24 @@ If you are interested in naming smart-contracts specifically, check out the [Nam
 
 ## Pre-built Tooling
 
+### Durin (new!)
+
+[Durin](https://durin.dev/) is an opinionated approach to issuing ENS subnames on L2. It takes care of the L1 Resolver and offchain gateway parts of the [CCIP Read stack](/resolvers/ccip-read) for you, so you can focus on the business logic of your L2 smart contracts.
+
 ### NameWrapper
 
 The [NameWrapper](/wrapper/overview) is a smart contract that allows you to issue trustless on-chain subdomains.
-NameWrapper subdomains come in the form of [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) NFTs, which can be transferred, sold, or traded.
+NameWrapper subdomains come in the form of [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) NFTs, which can be transferred, sold, or traded. Read our guide to [creating an onchain subname registrar](/wrapper/creating-subname-registrar) to learn more.
 
-In addition NameWrapper subnames have fuzes which allow you to limit permissions, or even emancipate a subname entirely.
-You can interact directly with the namewrapper from the [ENS Manager App](https://ens.app/).
-
-<EmbedLink title="NameWrapper Overview" href="/wrapper/overview" description="" />
+<EmbedLink
+  title="NameWrapper Overview"
+  href="/wrapper/overview"
+  description=""
+/>
 
 ### Legacy Subdomains
 
-In the previous version of the ETHRegistrar you could register subdomains for a name. These subdomains are always owner-controlled, and can be transferred.
-They are also stored on-chain, but are not in the form of an ERC1155.
+In the previous version of the ETHRegistrar, you could register subdomains for a name. These subdomains are always owner-controlled, and can be transferred. They are also stored on-chain, but are not in the form of a standard NFT.
 
 You can register a legacy subdomain by calling the `setSubnodeRecord` function on the [ENS Registry](/registry/ens) contract.
 
@@ -60,10 +68,9 @@ A resolver can leverage [CCIP Read](/resolvers/ccip-read) to load data from an o
 
 Tooling has been built to allow you to easily deploy a template resolver, or leverage a library to load data from offchain.
 
-#### EVM Gateway
+#### Unruggable Gateway
 
-The [EVM Gateway](https://github.com/ensdomains/evmgateway) is a set of solidity tooling that allows you to write a resolver that can trustlessly load storage slots from an EVM-compatible chain.
-It currently supports *Optimism* and *Arbitrum*.
+The [Unruggable Gateway](https://gateway-docs.unruggable.com/) is a set of solidity tooling that allows you to write a resolver that can trustlessly load storage slots from an EVM-compatible chain.
 
 #### CCIP Tools
 
