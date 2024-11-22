@@ -1,0 +1,117 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'This proposal outlines a pilot program to distribute ENS governance tokens to eligible contributors receiving grants, bounties, or payments from the DAO, aiming to engage them in governance by issuing tokens according to a quadratic distribution model, with the program’s budget to be determined by a ranked choice vote.',
+    emoji: '📖',
+    contributors: [
+        'avsa.eth'
+    ],
+    proposal: {
+        snapshot: '0xfa54ff2b55f0495c96ec2d8645241bcff48ca6afe1f4925fb51f29c4667252df',
+        discourse: 'https://discuss.ens.domains/t/ep-5-19-social-governance-distribution-pilot-program/19759',
+        type: 'social'
+    }
+};
+
+# [EP 5.19] [Social] Governance Distribution Pilot Program
+
+## Objective:
+
+This proposal establishes a pilot program to distribute ENS governance to eligible DAO contributors who have been selected by the DAO to receive a grant, bounty, or other payment for services. The program would also serve as a pilot, and if successful, could become a long-term initiative, aiming to cover all DAO USDC and ETH recipients, while setting a policy for future governance distribution.
+
+The intent is to engage contributors in governance. We believe governance distribution increases access to DAO governance, enhances the utility of the token, decreases the amount of tokens purely used in markets, increases delegation and the safety of the DAO, and helps align developers and other contributors who bring value to the DAO.
+
+## Context:
+
+- **Previous Distributions**:
+
+  - [90k ENS tokens to stewards](https://discuss.ens.domains/t/5-8-social-ens-steward-vesting-proposal/19059)
+  - [80k ENS tokens to service providers and security council members](https://discuss.ens.domains/t/distribution-of-80k-ens-tokens-to-service-providers-and-security-council-members/19541)
+
+- **Proposed Distribution**:
+  - This vote is to determine if the program is approved and to select its budget within a range between 0 and 90k ENS.
+
+## Matching Program:
+
+The distributions are calculated using a progressive ratio, meaning that the more you receive in dollar value from the DAO, the more you will receive in absolute values in ENS, but less relatively to the amount, following a quadratic formula. The process is as follows:
+
+1. **Calculate all eligible transfers**: First, we list all transfers from the various DAO wallets into external wallets from January to September 2024. Data is collected from the [ENS Ledger app](https://ens-ledger.app).
+2. **Exclude ineligible transactions**: Transactions to Stewards, ENS Labs, Service Providers, and other transactions that are considered refunds or payments for goods are not counted.
+3. **Calculate the square root of the total value received**: The total weights are calculated to determine the percentage of the budget each recipient will receive. That calculation and further details can be seen in [this spreadsheet](https://docs.google.com/spreadsheets/d/1hnrBSPy5efi2W0b4hd4y2BnAmRIfI0M5y4NgYGjEPms/edit?usp=sharing).
+4. **Decide the program's total budget**: The total budget will be determined by this vote.
+
+## Voting Method:
+
+The vote will use a ranked choice voting system with options of 0, 30k, 60k, and 90k ENS.
+
+An Instant Run-Off will be calculated, and if the budget option of 0 wins, or if the total votes are less than 1 million, then the proposal will be considered rejected.
+
+## Distribution Table:
+
+The table below is from the [ENS ledger](https://ens-ledger.app), excluding Stewards, Service Providers, ENS Labs, refunds, and internal wallets. ETHGlobal Hackers are bounties given by ETHGlobal to hackathon winners. The final number of hackers is still being calculated, but here it is presented as a maximum of 100. If the final number is less than this, then more ENS will be distributed to other recipients, and if it is greater, it will be capped at 100. This proposal covers transactions from January 2024 to September 2024, and the final table may be subject to change upon legal or technical review.
+
+|                                          | $ Received jan-sep 2024 | 30k ENS | %    | 60k ENS | %    | 90k ENS | %    |
+| ---------------------------------------- | ----------------------- | ------- | ---- | ------- | ---- | ------- | ---- |
+| ETHGlobal                                | $ 190,000.00            | 1,441   | 13%  | 2,883   | 26%  | 4,324   | 39%  |
+| Karpatkey                                | $ 187,149.13            | 1,430   | 13%  | 2,861   | 26%  | 4,291   | 39%  |
+| @UGWST_COM                               | $ 75,000.00             | 906     | 21%  | 1,811   | 41%  | 2,717   | 62%  |
+| Rotki                                    | $ 53,973.38             | 768     | 24%  | 1,536   | 48%  | 2,305   | 73%  |
+| wslyvh.eth                               | $ 50,004.00             | 739     | 25%  | 1,479   | 50%  | 2,218   | 75%  |
+| gashawk.eth                              | $ 40,000.00             | 661     | 28%  | 1,323   | 56%  | 1,984   | 84%  |
+| buidlguidl.eth                           | $ 35,000.00             | 619     | 30%  | 1,237   | 60%  | 1,856   | 90%  |
+| borderlessafrica.eth                     | $ 30,000.00             | 573     | 32%  | 1,145   | 65%  | 1,718   | 97%  |
+| daemon.eth                               | $ 27,000.00             | 543     | 34%  | 1,087   | 68%  | 1,630   | 103% |
+| Revoke.Cash                              | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| Onthis                                   | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| ipns.eth                                 | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| Fluidkey                                 | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| Blockscout                               | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| beaconchain.eth                          | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| 1w3.eth                                  | $ 25,000.00             | 523     | 36%  | 1,046   | 71%  | 1,568   | 107% |
+| Firefly                                  | $ 20,000.00             | 468     | 40%  | 935     | 79%  | 1,403   | 119% |
+| EIP-7212                                 | $ 20,000.00             | 468     | 40%  | 935     | 79%  | 1,403   | 119% |
+| Urbe Campus                              | $ 19,680.00             | 464     | 40%  | 928     | 80%  | 1,392   | 120% |
+| ethdaily.eth                             | $ 14,797.60             | 402     | 46%  | 804     | 92%  | 1,207   | 139% |
+| Discord Support                          | $ 13,000.00             | 377     | 49%  | 754     | 99%  | 1,131   | 148% |
+| Dappnode                                 | $ 12,500.00             | 370     | 50%  | 739     | 101% | 1,109   | 151% |
+| generalmagic.eth                         | $ 11,563.43             | 356     | 52%  | 711     | 105% | 1,067   | 157% |
+| Immunefi                                 | $ 10,200.00             | 334     | 56%  | 668     | 111% | 1,002   | 167% |
+| Pugson                                   | $ 10,000.00             | 331     | 56%  | 661     | 112% | 992     | 169% |
+| Juicebox                                 | $ 10,000.00             | 331     | 56%  | 661     | 112% | 992     | 169% |
+| frolic.eth                               | $ 10,000.00             | 331     | 56%  | 661     | 112% | 992     | 169% |
+| ETHDenver                                | $ 10,000.00             | 331     | 56%  | 661     | 112% | 992     | 169% |
+| Drips                                    | $ 10,000.00             | 331     | 56%  | 661     | 112% | 992     | 169% |
+| Lemma                                    | $ 9,998.67              | 331     | 56%  | 661     | 112% | 992     | 169% |
+| Tally                                    | $ 8,999.54              | 314     | 59%  | 627     | 119% | 941     | 178% |
+| pairwise.eth                             | $ 8,402.18              | 303     | 61%  | 606     | 123% | 909     | 184% |
+| @navad                                   | $ 7,500.00              | 286     | 65%  | 573     | 130% | 859     | 195% |
+| apoorv.eth                               | $ 7,021.88              | 277     | 67%  | 554     | 134% | 831     | 201% |
+| leticiaferraz.eth                        | $ 6,949.32              | 276     | 67%  | 551     | 135% | 827     | 202% |
+| @Sagamore                                | $ 6,000.00              | 256     | 73%  | 512     | 145% | 768     | 218% |
+| Socket                                   | $ 5,000.00              | 234     | 79%  | 468     | 159% | 701     | 238% |
+| Latin Hackathon                          | $ 5,000.00              | 234     | 79%  | 468     | 159% | 701     | 238% |
+| eth-mexico.eth                           | $ 5,000.00              | 234     | 79%  | 468     | 159% | 701     | 238% |
+| aynieducativo.eth                        | $ 5,000.00              | 234     | 79%  | 468     | 159% | 701     | 238% |
+| @adhd                                    | $ 5,000.00              | 234     | 79%  | 468     | 159% | 701     | 238% |
+| ENS Fairy                                | $ 4,781.34              | 229     | 81%  | 457     | 163% | 686     | 244% |
+| glodollar.eth                            | $ 3,762.22              | 203     | 92%  | 406     | 183% | 608     | 275% |
+| weird3.eth                               | $ 3,000.00              | 181     | 103% | 362     | 205% | 543     | 308% |
+| Event Support                            | $ 3,000.00              | 181     | 103% | 362     | 205% | 543     | 308% |
+| daveytea.eth                             | $ 2,818.29              | 176     | 106% | 351     | 212% | 527     | 318% |
+| @solidityhaxor                           | $ 2,500.00              | 165     | 112% | 331     | 225% | 496     | 337% |
+| @haoce505                                | $ 2,500.00              | 165     | 112% | 331     | 225% | 496     | 337% |
+| @h4nt3rx                                 | $ 2,500.00              | 165     | 112% | 331     | 225% | 496     | 337% |
+| stephancill.eth                          | $ 2,367.89              | 161     | 116% | 322     | 231% | 483     | 347% |
+| Scope.sh                                 | $ 2,367.89              | 161     | 116% | 322     | 231% | 483     | 347% |
+| Kiwi News                                | $ 2,367.89              | 161     | 116% | 322     | 231% | 483     | 347% |
+| bloomnetwork.eth                         | $ 1,881.11              | 143     | 130% | 287     | 259% | 430     | 389% |
+| modularcrypto.eth                        | $ 1,818.29              | 141     | 132% | 282     | 264% | 423     | 395% |
+| aexek.eth                                | $ 1,750.00              | 138     | 134% | 277     | 269% | 415     | 403% |
+| @austinoa012                             | $ 1,000.00              | 105     | 178% | 209     | 356% | 314     | 533% |
+| illuminated.eth                          | $ 940.56                | 101     | 183% | 203     | 367% | 304     | 550% |
+| dhive.eth                                | $ 940.56                | 101     | 183% | 203     | 367% | 304     | 550% |
+| pabl0cks.eth                             | $ 877.74                | 98      | 190% | 196     | 379% | 294     | 569% |
+| iviangita.eth                            | $ 877.74                | 98      | 190% | 196     | 379% | 294     | 569% |
+| easlabs.eth                              | $ 877.74                | 98      | 190% | 196     | 379% | 294     | 569% |
+| 2118.eth                                 | $ 877.74                | 98      | 190% | 196     | 379% | 294     | 569% |
+| andrewpage.eth                           | $ 780.00                | 92      | 201% | 185     | 403% | 277     | 604% |
+| ETHGlobal Hackers (max 100 participants) | $ 500.00                | 72      | 245% | 144     | 491% | 216     | 736% |
