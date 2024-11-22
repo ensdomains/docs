@@ -9,6 +9,8 @@ import {
     WithContext,
 } from 'schema-dts';
 
+import AskCookbook from '@/components/AskCookbook';
+
 import { Theme } from './theme';
 
 export const metadata = {
@@ -63,6 +65,7 @@ export default function RootLayout(properties) {
                     data-domain="docs.ens.domains"
                     src="https://plausible.io/js/script.js"
                 ></script>
+                <AskCookbook />
             </body>
         </html>
     );
