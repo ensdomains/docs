@@ -78,12 +78,12 @@ If a [data URL](https://datatracker.ietf.org/doc/html/rfc2397) is provided, it M
 
 A reference to an NFT may be used as an avatar URI, following the standards defined in [CAIP-22](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-22.md) and [CAIP-29](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-29.md).
 
-Clients MUST support at least ERC721 and ERC1155 type NFTs, and MAY support additional types of NFT.
+Clients MUST support at least ERC-721 and ERC-1155 type NFTs, and MAY support additional types of NFT.
 
 To resolve an NFT URI, a client follows this process:
 
 1. Retrieve the metadata URI for the token specified in the `avatar` field URI.
-2. Resolve the metadata URI, fetching the ERC721 or ERC1155 metadata.
+2. Resolve the metadata URI, fetching the ERC-721 or ERC-1155 metadata.
 3. Extract the image URL specified in the NFT metadata.
 4. Resolve the image URL and use it as the avatar.
 
