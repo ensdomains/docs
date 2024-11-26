@@ -25,7 +25,9 @@
         "start": "vite",
         "dev": "vite",
         "build": "vite build",
-        "lint": "eslint -c .eslintrc.json --ext .tsx,.ts ./src"
+        "lint": "eslint -c .eslintrc.json --ext .tsx,.ts ./src",
+        "build:example": "vite build --base=/examples/vite_react_thorin/",
+        "copy:next": "cp -r ./dist ../../app/out/examples/vite_react_thorin"
     },
     "devDependencies": {
         "@types/tailwindcss": "^3.1.0",
