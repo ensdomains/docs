@@ -16,19 +16,17 @@ This section walks you through how to leverage the ENS open standards to improve
             <span>0x225...c3B5</span>
             <span>0x179...9285</span>
             <span>0xd8d...6045</span>
-            <span>0x225...c3B5</span>
-            <span>0x225...c3B5</span>
+            <span>0x849...8bf1</span>
         </div>
-        <span className="pt-3 flex flex-col">
+        <span className="pt-3 flex flex-col gap-3">
             <span>➡️</span>
-            <span className="opacity-90">➡️</span>
-            <span className="opacity-75">➡️</span>
-            <span className="opacity-50">➡️</span>
-            <span className="opacity-25">➡️</span>
+            <span>➡️</span>
+            <span>➡️</span>
+            <span>➡️</span>
         </span>
         <div className="border not-prose px-3 p-2 gap-2 flex flex-col rounded-md">
             {[
-                'luc.eth', 'gregskril.eth', 'vitalik.eth', 'luc.cash', 'puma.eth'].map((name) => (
+                'luc.eth', 'gregskril.eth', 'vitalik.eth', 'jesse.xyz'].map((name) => (
                 <div className="flex items-center gap-2">
                     <div className="w-8 aspect-square">
                         <object data={"https://enstate.rs/i/" + name} type="image/jpeg" className="bg-blue-500 w-full h-full">
@@ -123,8 +121,8 @@ If you just want to see some code in action we have a variety of codesnippet & t
     </div>
 </div>
 
-Information about a name can be fetched from its resolver, this can be done using pre-built features included in your tooling, or manually by calling the resolver contract directly.
-If you're interested in interacting with the resolver contract directly, you might find the [Resolver Reference](/resolvers/interfaces) section helpful.
+Information about a name is fetched from its resolver. This can be done using pre-built features included in popular [web3 libraries](/web/libraries) (recommended), or by calling a resolver contract directly.
+If you're interested in interacting with ENS resolvers, you might find the [Resolver Reference](/resolvers/interfaces) section helpful.
 
 <EmbedLink
     href="/web/resolution"
@@ -148,7 +146,7 @@ If you're interested in interacting with the resolver contract directly, you mig
 <EmbedLink
     href="/web/subdomains"
     title="Issuing Subnames"
-    description="To an overview of subdomains and the NameWrapper smart contract"
+    description="To an overview of the difference ways to issue subnames."
 />
 
 ## Registration

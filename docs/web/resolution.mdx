@@ -37,7 +37,7 @@ import { useAccount, useEnsName, useEnsAvatar } from "wagmi";
 export const Name = () => {
     const { data: ensName } = useEnsAddress({
         address: "luc.eth", // The name to lookup
-        chainId: 1, // The chainId to lookup on
+        chainId: 1, // The chain to start resolution on (Ethereum mainnet or testnet)
     });
 
     return <div>{ensName || address}</div>;
@@ -150,27 +150,40 @@ For EVM Chains besides Mainnet Ethereum, always use its [ENSIP-11](/ensip/11) co
 
 The standardization of multichain addresses was first introduced in [ENSIP-9](/ensip/9), and also [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304).
 
+<Note>
+    Regardless of the chain you're resolving an address for, ENS resolution always starts from Ethereum L1.
+</Note>
+
 <CodeGroup title="Multichain Address Lookup">
 
-```tsx {{ variant: 'wagmi', link: 'https://wagmi.sh/react/api/hooks/useEnsAddress', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-address' }}
-import { useAccount, useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi';
-import { formatAddress } from '@ens-tools/format';
+```tsx {{ variant: 'wagmi', link: 'https://wagmi.sh/react/api/hooks/useEnsAddress' }}
+import { useEnsAddress } from "wagmi";
+import { arbitrum, base } from "wagmi/chains";
+
+const name = "gregskril.eth";
+
+const evmChainIdToCoinType = (chainId: number) => {
+  return (0x80000000 | chainId) >>> 0;
+};
 
 export const MyAddresses = () => {
-    const { data: name } = useEnsName({ address: "0x225f137127d9067788314bc7fcc1f36746a3c3B5" });
+  // SLIP-0044 Coin Types (see ENSIP-9)
+  const { data: bitcoinAddr } = useEnsAddress({ name, coinType: 0, chainId: 1 });
+  const { data: solanaAddr } = useEnsAddress({ name, coinType: 501, chainId: 1 });
 
-    // SLIP-0044 Coin Types
-    const { data: bitcoin } = useEnsAddress({ name, coinType: 0 });
-    const { data: litecoin } = useEnsAddress({ name, coinType: 2 });
-    const { data: solana } = useEnsAddress({ name, coinType: 501 });
+  // EVM Chain IDs (see ENSIP-11)
+  const { data: baseAddr } = useEnsAddress({
+    name,
+    coinType: evmChainIdToCoinType(base.id),
+    chainId: 1,
+  });
+  const { data: arbitrumAddr } = useEnsAddress({
+    name,
+    coinType: evmChainIdToCoinType(arbitrum.id),
+    chainId: 1,
+  });
 
-    // EVM Chain IDs (see ENSIP-9)
-    const { data: optimism } = useEnsAddress({ name, coinType: 2147483658 });
-    const { data: base } = useEnsAddress({ name, coinType: 2147492101 });
-    const { data: polygon } = useEnsAddress({ name, coinType: 2147483658 });
-    const { data: arbitrum } = useEnsAddress({ name, coinType: 2147525809 });
-
-    return <div>{JSON.stringify({ name, bitcoin, litecoin, solana, optimism, base, polygon, arbitrum })}</div>;
+  return <div>{JSON.stringify({ bitcoinAddr, solanaAddr, baseAddr, arbitrumAddr })}</div>;
 };
 ```
 
