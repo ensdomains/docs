@@ -71,6 +71,11 @@ from namehash import namehash
 node = namehash('name.eth')
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+byte[] nameHash = NameHash.nameHashAsBytes('luc.eth');
+String nameHashString = Numeric.toHexString(nameHash)
+```
+
 ```rust {{ title: "namehash-rust", link: "https://github.com/InstateDev/namehash-rust" }}
 fn main() {
   let node = &namehash("name.eth");
@@ -177,6 +182,12 @@ const labelhash = keccak256(toUtf8Bytes(normalizedLabel))
 string constant label = "label";
 bytes32 constant labelhash = keccak256(bytes(label));
 ```
+
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+byte[] labelHash = NameHash.nameHashAsBytes('label');
+String labelHashString = Numeric.toHexString(labelHash)
+```
+
 </CodeGroup>
 
 ## DNS Encoding {{ title: "DNS Encoding", id: "dns" }}
@@ -215,6 +226,11 @@ contract MyContract {
     }
 }
 ```
+
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+String dnsEncodedName = NameHash.dnsEncode('name.eth')
+```
+
 </CodeGroup>
 
 ### Algorithm

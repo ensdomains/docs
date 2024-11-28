@@ -64,6 +64,13 @@ from ens.auto import ns
 resolver = ns.resolver('alice.eth')
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+
+String resolver = ensResolver.getResolverAddress('luc.eth');
+```
+
 </CodeGroup>
 
 To verify which specifications are implemented by a resolver you can call the `supportsInterface(bytes4 interfaceID)` on the resolver with the interfaceID you would like to test for.

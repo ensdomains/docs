@@ -70,6 +70,14 @@ from ens.auto import ns
 avatar = ns.get_text('alice.eth', 'avatar')
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+
+// Get ENS text
+String avatar = ensResolver.getEnsText('nick.eth', 'avatar');
+```
+
 ```go {{ title: "Go", variant: "go" }}
 package main
 

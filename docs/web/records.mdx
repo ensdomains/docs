@@ -103,6 +103,18 @@ url = ns.get_text('alice.eth', 'url')
 assert url == 'https://example.com'
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+
+// Get ENS text
+String url = ensResolver.getEnsText('nick.eth', 'url');
+
+// Set ENS text
+Credentials credentials = Credentials.create(<private_key>)
+TransactionReceipt receiptResult = ensResolver.setEnsText('nick.eth', 'url', 'http://example.com', credentials);
+```
+
 ```tsx {{ title: "Ethers.rs", variant: "rust" }}
 // TODO: Not Implemented
 ```

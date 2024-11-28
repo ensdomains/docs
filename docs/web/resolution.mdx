@@ -63,6 +63,14 @@ from ens.auto import ns
 address = ns.address('alice.eth')
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+
+String ensName =  ENSNormalize.ENSIP15.normalize("nick.eth");
+System.out.println("ENS address = " + ensResolver.resolve(ensName));
+```
+
 ```rust {{ variant: 'ethers-rs' }}
 let provider = Provider::<Http>::try_from("https://mainnet.infura.io/v3/...")?;
 
