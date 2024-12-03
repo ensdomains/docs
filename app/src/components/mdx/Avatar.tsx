@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEnsAvatar } from 'wagmi';
 
 type Properties = {
     name: string;
@@ -10,18 +10,17 @@ type Properties = {
 };
 
 export function Avatar({ name, width, rounded }: Properties) {
-    const [url, setUrl] = useState(`https://enstate.rs/i/${name}`);
+    const { data: ensAvatar } = useEnsAvatar({ name, chainId: 1 });
 
     return (
         <img
-            src={url}
+            src={ensAvatar ?? '/fallback-avatar.svg'}
             alt={name}
             width={width}
             className={clsx(
                 'aspect-square object-cover',
                 rounded && 'rounded-full'
             )}
-            onError={() => setUrl('/fallback-avatar.svg')}
         />
     );
 }
