@@ -1,6 +1,6 @@
 {/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Introduces coinType for EVM compatible chains (amending ENSIP9).',
+    description: 'Introduces coinType for EVM-compatible chains (amending ENSIP9).',
     contributors: [
         // Makoto Inoue
         'makoto'
@@ -11,19 +11,19 @@ export const meta = {
     }
 };
 
-# ENSIP-11: EVM compatible Chain Address Resolution
+# ENSIP-11: EVM-compatible Chain Address Resolution
 
-Introduces coinType for EVM compatible chains (amending [ENSIP-9](./9)).
+Introduces coinType for EVM-compatible chains (amending [ENSIP-9](./9)).
 
 ## Abstract
 
-This ENSIP extends [ENSIP 9 (multichain address resolution)](./9), dedicates a range of coin types for EVM compatible chains, and specifies a way to derive EVM chain IDs to the designated coin types.
+This ENSIP extends [ENSIP 9 (multichain address resolution)](./9), dedicates a range of coin types for EVM-compatible chains, and specifies a way to derive EVM chain IDs to the designated coin types.
 
-The dedicated range uses over 0x80000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ids will be deprecated.
+The dedicated range uses over 0x80000000 (2147483648) which is reserved under ENSIP 9 so there will be no possibility of coin type collision with other non-EVM coin types to be added in future. However, some of coin types previously allocated to EVM chain ids will be deprecated.
 
 ## Motivation
 
-The existing ENSIP 9 relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM compatible chains into SLIP 44. This specification standardises a way to derive coinType based on [Chain ID](https://chainlist.org).
+The existing ENSIP 9 relies on the existence of coin types on [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) which was designed to define address encoding type for deterministic wallets. As the majority of EVM-compatible chains inherit the same encoding type as Ethereum, it is redundant to keep requesting the addition of EVM-compatible chains into SLIP 44. This specification standardises a way to derive coinType based on [Chain ID](https://chainlist.org).
 
 ## Specification
 
@@ -84,14 +84,14 @@ You can also use existing functions formatsByName and formatsByCoinType to deriv
 
 The following EVM chains are the exception to this standard.
 
-* AVAX = AVAX has multiple chain address formats, and only c chain is EVM compatible
+* AVAX = AVAX has multiple chain address formats, and only c chain is EVM-compatible
 * RSK = RSK has its own additional validation
 
 They will continue using coinType defined at SLIP44
 
 ### Backwards Compatibility
 
-The following EVM compatible cointypes existed before introducing this new standard.
+The following EVM-compatible cointypes existed before introducing this new standard.
 
 * NRG
 * POA
