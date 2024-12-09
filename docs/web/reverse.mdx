@@ -67,6 +67,14 @@ from ens.auto import ns
 name = ns.name('0x225f137127d9067788314bc7fcc1f36746a3c3B5')
 ```
 
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+
+# 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
+String ensPrimaryName = ensResolver.reverseResolve('0x225f137127d9067788314bc7fcc1f36746a3c3B5');
+```
+
 
 ```go {{ variant: 'go', title: 'Go' }}
 package main
@@ -133,9 +141,9 @@ On these chains, you can set a primary name for the sender via `setName()` most 
 
 `setNameForAddrWithSignature()` can be used for EOAs or smart contracts with an ERC-1271 signature, while `setNameForAddrWithSignatureAndOwnable()` can be used when a smart contract has an explicit `owner()`.
 
-{/* <CodeGroup title="Setting Primary Name">
+<CodeGroup title="Setting Primary Name">
 
-```tsx {{ meta: 'focus=4:9', variant: 'wagmi' }}
+{/*```tsx {{ meta: 'focus=4:9', variant: 'wagmi' }}
 ```
 
 ```ts {{ variant: 'ethers-v5' }}
@@ -163,9 +171,26 @@ const hash = await setPrimaryName(wallet, {
 from ens.auto import ns
 
 ns.setup_name('myname.eth', my_address)
+```*/}
+
+```java {{ title: 'Web3j (Java)', variant: 'web3j', link: 'https://docs.web3j.io/4.11.0/advanced/ethereum_name_service/' }}
+Web3j web3j = Web3j.build(new HttpService(<rpc_endpoint_url>));
+EnsResolver ensResolver = new EnsResolver(web3j);
+Credentials credentials = Credentials.create(<private_key>)
+
+// Set Primary Name
+TransactionReceipt receiptResult = ensResolver.setReverseName('nick.eth', credentials);
+
+// Set Primary Name for Contract (or Address)
+// for address = 0x225f137127d9067788314bc7fcc1f36746a3c3B5
+// owner address (function caller) = credentials.getAddress()
+// resolver address = 0x9010A27463717360cAD99CEA8bD39b8705CCA238
+TransactionReceipt receiptResult = ensResolver.setReverseName('0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+                                                credentials.getAddress(), '0x9010A27463717360cAD99CEA8bD39b8705CCA238',
+                                                'nick.eth', credentials);
 ```
 
-</CodeGroup> */}
+</CodeGroup>
 
 ### Do's and Dont's
 
