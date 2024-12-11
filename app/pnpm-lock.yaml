@@ -12,8 +12,8 @@ importers:
         specifier: ^0.0.2
         version: 0.0.2
       '@ens-tools/thorin-core':
-        specifier: 0.0.5
-        version: 0.0.5(xqiju3h3eq44wukvwi6pqup5mi)
+        specifier: 0.1.4-1
+        version: 0.1.4-1(fg6tno6dxbhiiz7flp6ucdbniu)
       '@ensdomains/thorin':
         specifier: 1.0.0-beta.9
         version: 1.0.0-beta.9(@vanilla-extract/css@1.15.5(babel-plugin-macros@3.1.0))(@vanilla-extract/dynamic@2.1.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1012,12 +1012,13 @@ packages:
   '@ens-tools/format@0.0.3':
     resolution: {integrity: sha512-uq9XsSPp1hFeHuWF+Hn1GlMU9dXl+3gsgnoJf9JaPZucg53Qn5e9FgysN/zCFh8JV5xRbjTcSzr65ajd8sywYg==}
 
-  '@ens-tools/thorin-core@0.0.5':
-    resolution: {integrity: sha512-qkgJsgIOf7PyvCejOpSGS6z3M3a4tHc6GuTN2y+NZoCNi/h8AFMMfEbAU0+pJDcyzW01yW1fB1Leeh8n1z6PsQ==}
+  '@ens-tools/thorin-core@0.1.4-1':
+    resolution: {integrity: sha512-29wcAXJKUv5xdOjrfSj+MvUiOvwNUPiynLSvDCvn/rA4JRVlBnlT3RZJCMP8XzYtG+WPbDylUeKTiMa5wuJJdw==}
     peerDependencies:
       '@wagmi/connectors': ^4.1.14
       '@wagmi/core': ^2.6.5
       viem: 2.x
+      wagmi: ^2.12.25
 
   '@ensdomains/thorin@1.0.0-beta.9':
     resolution: {integrity: sha512-n+4tZvTt5GtpG3GOZ4RyKpmoHKp1L3TYgOPVUKmDJKWxsqcAPzp54S23klYePadTlP9E+tGGyGRSpC3DOVI4PQ==}
@@ -5911,6 +5912,9 @@ packages:
   rw@1.3.3:
     resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
 
+  rxjs@7.8.1:
+    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
+
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
@@ -6406,6 +6410,9 @@ packages:
 
   ts-pattern@4.3.0:
     resolution: {integrity: sha512-pefrkcd4lmIVR0LA49Imjf9DYLK8vtWhqBPA3Ya1ir8xCW0O2yjL9dsCVvI7pCodLC5q7smNpEtDR2yVulQxOg==}
+
+  ts-pattern@5.5.0:
+    resolution: {integrity: sha512-jqbIpTsa/KKTJYWgPNsFNbLVpwCgzXfFJ1ukNn4I8hMwyQzHMJnk/BqWzggB0xpkILuKzaO/aMYhS0SkaJyKXg==}
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -7958,7 +7965,7 @@ snapshots:
 
   '@ens-tools/format@0.0.3': {}
 
-  '@ens-tools/thorin-core@0.0.5(xqiju3h3eq44wukvwi6pqup5mi)':
+  '@ens-tools/thorin-core@0.1.4-1(fg6tno6dxbhiiz7flp6ucdbniu)':
     dependencies:
       '@ens-tools/format': 0.0.3
       '@rollup/plugin-commonjs': 25.0.7(rollup@4.11.0)
@@ -7967,7 +7974,10 @@ snapshots:
       '@wagmi/core': 2.6.4(@tanstack/query-core@5.18.1)(@types/react@18.2.55)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(viem@2.7.8(bufferutil@4.0.8)(typescript@5.3.3)(zod@3.22.4))(zod@3.22.4)
       lit: 3.1.2
       rollup-plugin-peer-deps-external: 2.2.4(rollup@4.11.0)
+      rxjs: 7.8.1
+      ts-pattern: 5.5.0
       viem: 2.7.8(bufferutil@4.0.8)(typescript@5.3.3)(zod@3.22.4)
+      wagmi: 2.5.6(@react-native-async-storage/async-storage@1.21.0(react-native@0.73.4(@babel/core@7.23.9)(@babel/preset-env@7.23.9(@babel/core@7.23.9))(bufferutil@4.0.8)(encoding@0.1.13)(react@18.2.0)))(@tanstack/query-core@5.18.1)(@tanstack/react-query@5.18.1(react@18.2.0))(@types/react@18.2.55)(bufferutil@4.0.8)(encoding@0.1.13)(react-dom@18.2.0(react@18.2.0))(react-native@0.73.4(@babel/core@7.23.9)(@babel/preset-env@7.23.9(@babel/core@7.23.9))(bufferutil@4.0.8)(encoding@0.1.13)(react@18.2.0))(react@18.2.0)(rollup@4.11.0)(typescript@5.3.3)(viem@2.7.8(bufferutil@4.0.8)(typescript@5.3.3)(zod@3.22.4))(zod@3.22.4)
       webcomponent-qr-code: 1.2.0
     transitivePeerDependencies:
       - rollup
@@ -14854,6 +14864,10 @@ snapshots:
 
   rw@1.3.3: {}
 
+  rxjs@7.8.1:
+    dependencies:
+      tslib: 2.6.2
+
   sade@1.8.1:
     dependencies:
       mri: 1.2.0
@@ -15399,6 +15413,8 @@ snapshots:
   ts-interface-checker@0.1.13: {}
 
   ts-pattern@4.3.0: {}
+
+  ts-pattern@5.5.0: {}
 
   tsconfig-paths@3.15.0:
     dependencies:
