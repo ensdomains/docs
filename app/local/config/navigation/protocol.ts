@@ -406,6 +406,10 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
+                        title: '5.27 - [Executable] Revoke the DAO’s ability to upgrade the name wrapper',
+                        href: '/dao/proposals/5.27',
+                    },
+                    {
                         title: '5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
                         href: '/dao/proposals/5.24',
                     },
