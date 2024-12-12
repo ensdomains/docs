@@ -30,7 +30,7 @@ const Demo = () => {
         '0x225f137127d9067788314bc7fcc1f36746a3c3B5'
     );
     const [resolver, setResolver] = useState(
-        '0x225f137127d9067788314bc7fcc1f36746a3c3B5'
+        '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63'
     );
     const [duration, setDuration] = useState(60 * 60 * 24 * 365);
     const [secret, setSecret] = useState(
