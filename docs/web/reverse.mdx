@@ -1,12 +1,10 @@
 import { WIP } from '@/components/wip/WIP';
 
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'To lookup the name of an address we use a reverse resolution. This allows users to indicate a primary name.',
+    description:
+        'To lookup the name of an address we use a reverse resolution. This allows users to indicate a primary name.',
     emoji: '🔍',
-    contributors: [
-        'luc.eth'
-    ]
+    contributors: ['luc.eth'],
 };
 
 # Primary Names
@@ -23,10 +21,15 @@ Fortunately, it is super easy to retrieve a user's preferred name, and this page
 In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
 The reverse registrar is a smart contract that allows users to register their preferred name, referred to as their "primary name" for simplicity purposes.
 
+This functionality exists on Mainnet Ethereum today, and is coming soon to L2s as well ([see ENSIP-19](/ensip/19)).
+
 ## Getting a Primary Name {{ navtitle: 'Getting Primary Name', id: 'get' }}
 
-To get a users preferred primary name is very simple. In most libraries you will find a function to do a lookup by address as shown below.
-This allows us to turn any address into a human-readable name.
+Looking up a users primary name is very simple. In most web3 libraries (wagmi, viem, ethers, web3py, etc.), you will find a built-in function to do a lookup by address as shown below.
+
+While it's easy to implement on the surface, there are a few underlying details that you should be aware of:
+
+-   In order for
 
 <CodeGroup title="Reverse Lookup">
 
@@ -66,7 +69,6 @@ from ens.auto import ns
 # 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
 name = ns.name('0x225f137127d9067788314bc7fcc1f36746a3c3B5')
 ```
-
 
 ```go {{ variant: 'go', title: 'Go' }}
 package main
@@ -108,10 +110,6 @@ func main() {
     </div>
 </div>
 
-{/* ### Do's and Dont's
-
-<WIP /> */}
-
 ## Setting Primary Names {{ navtitle: 'Setting your Name', id: 'set' }}
 
 In some cases you might want to encourage users to set their primary name.
@@ -119,26 +117,29 @@ This might be in the event you are issuing names, or want people to be part of a
 
 Currently, primary names are only support on L1 mainnet. Soon, primary names are also coming to L2s and are already available on testnets. The examples below use the testnet deployments, for which the [latest code can be found here](https://github.com/ensdomains/ens-contracts/pull/379).
 
-Deployments for the latest L2 reverse registrars, the contracts that power L2 primary names, 
+Deployments for the latest L2 reverse registrars, the contracts that power L2 primary names,
 
 | L2 Testnet Chain | Address                                    |
-|------------------|------------------------------------------- |
+| ---------------- | ------------------------------------------ |
 | Base Sepolia     | 0xa12159e5131b1eEf6B4857EEE3e1954744b5033A |
 | OP Sepolia       | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
 | Arbitrum Sepolia | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
 | Scroll Sepolia   | 0xc0497E381f536Be9ce14B0dD3817cBcAe57d2F62 |
 | Linea Sepolia    | 0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376 |
 
-On these chains, you can set a primary name for the sender via `setName()` most simply, or via signature. 
+On these chains, you can set a primary name for the sender via `setName()` most simply, or via signature.
 
 `setNameForAddrWithSignature()` can be used for EOAs or smart contracts with an ERC-1271 signature, while `setNameForAddrWithSignatureAndOwnable()` can be used when a smart contract has an explicit `owner()`.
 
+{/* prettier-ignore */}
 {/* <CodeGroup title="Setting Primary Name">
 
 ```tsx {{ meta: 'focus=4:9', variant: 'wagmi' }}
+
 ```
 
 ```ts {{ variant: 'ethers-v5' }}
+
 ```
 
 ```ts {{ variant: 'ensjs' }}
