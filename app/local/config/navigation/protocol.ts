@@ -414,6 +414,10 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.24',
                     },
                     {
+                        title: '5.22 - [Executable] ENSv2 Development Funding',
+                        href: '/dao/proposals/5.22',
+                    },
+                    {
                         title: '5.21 - [Social] Governance Security Bounty',
                         href: '/dao/proposals/5.21',
                     },
