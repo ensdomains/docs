@@ -7,7 +7,7 @@ export const meta = {
 # Resolvers Quickstart
 
 At the heart of every ENS name is its resolver. A resolver is a smart contract that implements a specific set of Resolver features (see [Resolver Interface](/resolver/interfaces)).
-The resolvers smart contract functions have control over the resolution process of a "node" (a name or subdomain) and onwards (subdomains of itself).
+The resolvers smart contract functions have control over the resolution process of a ["node"](/resolution/names#namehash) (a name or subdomain) and onwards (subdomains of itself).
 
 ## Basic Resolver
 
@@ -15,8 +15,16 @@ A naive but very plausible example of a resolver is the following.
 
 ```solidity
 contract MyResolver {
-    function addr(bytes32 node) public view returns (address) {
+    function addr(bytes32 node) external pure returns (address) {
         return 0x225f137127d9067788314bc7fcc1f36746a3c3B5;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceID
+    ) external pure returns (bool) {
+        return
+            interfaceID == this.addr.selector ||
+            interfaceID == this.supportsInterface.selector;
     }
 }
 ```
@@ -40,4 +48,4 @@ Are you writing a dApp and want to build this? Checkout the [Interacting with a 
 ## Offchain Resolution
 
 Although by default ENS resolution is done on-chain. You can leverage the power of CCIP Read to redirect resolution to an off-chain gateway.
-More about writing a ccip-enabled resolver [here](/resolvers/ccip-read).
+More about writing a CCIP Read-enabled resolver [here](/resolvers/ccip-read).

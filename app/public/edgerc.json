@@ -5,6 +5,10 @@
         },
         "redirects": [
             {
+                "pattern": "^/web/namehash$",
+                "destination": "/resolution/names#namehash"
+            },
+            {
                 "pattern": "^/dao/airdrop$",
                 "destination": "/dao/token"
             },

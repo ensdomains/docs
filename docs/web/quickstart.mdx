@@ -91,8 +91,8 @@ import { formatAddress } from 'ens-tools';
 
 export const YourApp: FC = () => {
     const { address } = useAccount();
-    const { data: name } = useEnsName({ address });
-    const { data: avatar } = useEnsAvatar({ name });
+    const { data: name } = useEnsName({ address, chainId: 1 });
+    const { data: avatar } = useEnsAvatar({ name, chainId: 1 });
 
     return (
         <div className="flex items-center gap-2">
@@ -134,6 +134,11 @@ func main() {
 
 </CodeGroup>
 
+<Note>
+	ENS resolution always starts from L1 regardless of the chain the user is connected to. 
+	This is why we specify `chainId: 1` for Ethereum Mainnet in the wagmi hooks above.
+</Note>
+
 ### Name Lookups
 
 <LiveDemo id="name_lookup" />
@@ -147,8 +152,8 @@ import { formatAddress } from '@ens-tools/format';
 
 export const NameLookup = () => {
     const name = normalize("luc.eth");
-    const { data: avatar } = useEnsAvatar({ name })
-    const { data: ethereum } = useEnsAddress({ name, coinType: 60 });
+    const { data: avatar } = useEnsAvatar({ name, chainId: 1 });
+    const { data: ethereum } = useEnsAddress({ name, coinType: 60, chainId: 1 });
 
     return (
         <div>
