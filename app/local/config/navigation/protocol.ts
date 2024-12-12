@@ -422,6 +422,11 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.24',
                     },
                     {
+                        // eslint-disable-next-line quotes
+                        title: "5.23 - [Executable] blockful's governance security bounty",
+                        href: '/dao/proposals/5.23',
+                    },
+                    {
                         title: '5.22 - [Executable] ENSv2 Development Funding',
                         href: '/dao/proposals/5.22',
                     },
