@@ -410,6 +410,10 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.27',
                     },
                     {
+                        title: '5.25 - [Executable] Collective Working Group Funding Request (Oct 2024) - Resubmission',
+                        href: '/dao/proposals/5.25',
+                    },
+                    {
                         title: '5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
                         href: '/dao/proposals/5.24',
                     },
