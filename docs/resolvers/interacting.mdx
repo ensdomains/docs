@@ -31,12 +31,12 @@ Interface IDs are calculated according to solidity ABI and stored in a four-byte
 If you want to help a user set their avatar, specify a preferred color scheme, or set any other record on their ENS name you can do so in specific cases.
 
 First we need to <b>check if the user's resolver supports the interface</b> we want to use (see [setText](/resolvers/interfaces#0x10f13a8c)).
-Afterwhich you can call the `setRecord` function on the user's resolver contract.
+Afterwhich you can call the `setText()` function on the user's resolver contract.
 
 <CodeGroup title="Setting a text record">
 
 ```solidity
-interface ENS {
+interface Resolver {
     function setText(bytes32 node, string calldata key, string calldata value) external;
 }
 ```

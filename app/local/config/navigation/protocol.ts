@@ -406,8 +406,29 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
+                        title: '5.27 - [Executable] Revoke the DAO’s ability to upgrade the name wrapper',
+                        href: '/dao/proposals/5.27',
+                    },
+                    {
+                        title: '5.26 - [Executable] Implementation of [EP 5.19]’s ENS Governance Distribution Pilot Program',
+                        href: '/dao/proposals/5.26',
+                    },
+                    {
+                        title: '5.25 - [Executable] Collective Working Group Funding Request (Oct 2024) - Resubmission',
+                        href: '/dao/proposals/5.25',
+                    },
+                    {
                         title: '5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
                         href: '/dao/proposals/5.24',
+                    },
+                    {
+                        // eslint-disable-next-line quotes
+                        title: "5.23 - [Executable] blockful's governance security bounty",
+                        href: '/dao/proposals/5.23',
+                    },
+                    {
+                        title: '5.22 - [Executable] ENSv2 Development Funding',
+                        href: '/dao/proposals/5.22',
                     },
                     {
                         title: '5.21 - [Social] Governance Security Bounty',

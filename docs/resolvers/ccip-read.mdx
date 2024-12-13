@@ -12,9 +12,9 @@ export const meta = {
 
 The source of truth for a name and its subdomains does not always have to be on-chain or on Ethereum L1 at all.
 By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), the Cross Chain Interoperability Protocol (or CCIP Read for short), we can load information by hitting a so called "Gateway".
-Within the context of ENS, this enables us, to read names, addresses, records, and more from other chains, or even off-chain.
+Within the context of ENS, this enables us to read names, addresses, text records and more from other chains, or even off-chain.
 
-<div className="card1 p-4 flex justify-center items-center gap-4">
+<div className="card1 p-4 justify-center items-center gap-4 hidden sm:flex">
     <Usertag name="lucemans.cb.id" image="https://enstate.rs/i/luc.eth" />
     <div>➡️</div>
     <div className="text-center leading-4">
@@ -27,7 +27,7 @@ Within the context of ENS, this enables us, to read names, addresses, records, a
         <div>api.example.com</div>
     </div>
     <div>➡️</div>
-    <div className="text-center leading-4 card p-2 no-margin !bg-lime-50">
+    <div className="text-center leading-4 card p-2 no-margin">
         <div className="font-bold">Address:</div>
         <div>0x225...c3b5</div>
     </div>
