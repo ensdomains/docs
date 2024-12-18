@@ -406,6 +406,10 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
+                        title: '5.29 - [Executable] Funding request for Unruggable to build and operate a network of gateways',
+                        href: '/dao/proposals/5.29',
+                    },
+                    {
                         // eslint-disable-next-line quotes
                         title: "5.28 - [Executable] Reimbursement of eth.limo's ongoing legal fees",
                         href: '/dao/proposals/5.28',
@@ -538,7 +542,7 @@ export const navigation: SectionData[] = [
                     },
                     {
                         // eslint-disable-next-line prettier/prettier
-                        title: '5.3 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
+                        title: "5.3 - [Social] Determine ENS Labs' next steps in eth.link litigation",
                         href: '/dao/proposals/5.3',
                     },
                     {
@@ -736,7 +740,7 @@ export const navigation: SectionData[] = [
                     },
                     {
                         // eslint-disable-next-line prettier/prettier
-                        title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
+                        title: "0.2 - [Executable] Retrospective airdrop for accounts that owned another account's primary ENS 1",
                         href: '/dao/proposals/0.2',
                     },
                     {
