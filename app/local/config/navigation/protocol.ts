@@ -406,6 +406,11 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 5',
                 links: [
                     {
+                        // eslint-disable-next-line quotes
+                        title: "5.28 - [Executable] Reimbursement of eth.limo's ongoing legal fees",
+                        href: '/dao/proposals/5.28',
+                    },
+                    {
                         title: '5.27 - [Executable] Revoke the DAO’s ability to upgrade the name wrapper',
                         href: '/dao/proposals/5.27',
                     },
