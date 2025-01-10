@@ -1,6 +1,4 @@
-docs/ @lucemans @gskril
-.github/ @lucemans
-app/ @lucemans @svemat01 @gskril
-
+.github/ @gskril
+app/ @gskril
+docs/ @gskril
 docs/ensip/ @arachnid
-docs/ensip/index @lucemans
