@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@types/react": "latest",
+    "clsx": "^2.1.1",
     "react": "latest",
     "react-dom": "latest",
+    "tailwind-merge": "^2.6.0",
     "typescript": "latest",
     "vocs": "latest"
   }

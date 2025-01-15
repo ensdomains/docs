@@ -6,3 +6,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+vocs.config.ts.timestamp-*
+src/dist
