@@ -179,11 +179,11 @@ export const ConnectKits = () => {
               <div className="grow text-left text-sm">
                 <ul>
                   {library.templates?.map((template) => (
-                    <li className="px-2">
+                    <li className="px-2" key={template.url}>
                       <a
                         href={template.url}
                         target="_blank"
-                        className="inline-flex items-center gap-1 text-blue-500 hover:underline"
+                        className="text-blue-500 inline-flex items-center gap-1 hover:underline"
                       >
                         {template.icon && (
                           <span className="h-fit">{template.icon}</span>

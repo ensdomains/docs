@@ -1,22 +1,51 @@
-import { truncateAddress } from '../lib/utils'
+import { Address, zeroAddress } from 'viem'
+import { useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi'
 
-type Props = {
-  name: string
-  address: `0x${string}`
+import { cn, truncateAddress } from '../lib/utils'
+
+type EnsProfileProps =
+  | { name: string; address: undefined }
+  | { address: Address; name: undefined }
+
+export function EnsProfile({ name, address }: EnsProfileProps) {
+  return name
+    ? EnsProfileFromName({ name })
+    : address
+      ? EnsProfileFromAddress({ address })
+      : null
 }
 
-export function EnsProfile({ name, address }: Props) {
+function EnsProfileFromName({ name }: { name: string }) {
+  const { data: address } = useEnsAddress({ name, chainId: 1 })
+  return <Profile name={name} address={address} />
+}
+
+function EnsProfileFromAddress({ address }: { address: Address }) {
+  const { data: name } = useEnsName({ address, chainId: 1 })
+  return <Profile name={name} address={address} />
+}
+
+function Profile({
+  name,
+  address,
+}: {
+  name?: string | null
+  address?: Address | null
+}) {
+  const { data: avatar } = useEnsAvatar({ name: name || undefined, chainId: 1 })
+
   return (
-    <div className="w-fit bg-white rounded-full shadow-sm p-1 pr-6 border border-grey-light flex items-center justify-center">
+    <div className="flex w-fit items-center justify-center rounded-full border border-grey-light bg-white p-1 pr-6 shadow-sm">
       <div className="flex items-center gap-2">
         <img
-          src={`https://metadata.ens.domains/mainnet/avatar/${name}`}
-          className="w-10 h-10 rounded-full border border-grey-light"
+          src={avatar || '/img/fallback-avatar.svg'}
+          className="h-10 w-10 rounded-full border border-grey-light"
         />
-        <div className="flex flex-col leading-none">
-          <span className="font-semibold">{name}</span>
-          <span className="text-sm font-medium text-grey">
-            {truncateAddress(address)}
+        <div className="flex flex-col gap-0.5 leading-none">
+          <span className="font-semibold">{name || 'No name'}</span>
+
+          <span className={cn('text-xs text-grey')}>
+            {truncateAddress(address || zeroAddress)}
           </span>
         </div>
       </div>
