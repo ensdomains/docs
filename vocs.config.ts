@@ -1,8 +1,26 @@
 import { defineConfig } from 'vocs'
 
 export default defineConfig({
-  title: 'ENS',
+  title: 'ENS Documentation',
+  titleTemplate: '%s | ENS Docs',
   rootDir: 'src',
+  iconUrl: '/img/icon.svg',
+  logoUrl: '/img/logo-mark.svg',
+  baseUrl: 'https://docs.ens.domains',
+  editLink: {
+    pattern: 'https://github.com/ensdomains/docs/edit/vocs/src/pages/:path',
+    text: 'Edit on Github',
+  },
+  socials: [
+    {
+      icon: 'github',
+      link: 'https://github.com/ensdomains/docs',
+    },
+    {
+      icon: 'telegram',
+      link: 'https://t.me/+aLmF83si62ZhOGNh',
+    },
+  ],
   font: {
     google: 'Inter',
   },
