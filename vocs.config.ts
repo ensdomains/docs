@@ -102,7 +102,7 @@ export default defineConfig({
         },
         {
           text: 'Tools and Libraries',
-          link: '',
+          link: '/web/libraries',
         },
         {
           text: 'Web & Querying',
