@@ -167,7 +167,7 @@ export const ConnectKits = () => {
                       by{' '}
                       <a
                         href={library.creator_url}
-                        className="text-zinc-700 dark:text-zinc-100"
+                        className="text-zinc-700"
                         target="_blank"
                       >
                         {library.creator}

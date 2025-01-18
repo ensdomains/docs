@@ -98,7 +98,7 @@ export default defineConfig({
         },
         {
           text: 'Getting Started',
-          link: '',
+          link: '/web',
         },
         {
           text: 'Tools and Libraries',
