@@ -317,7 +317,7 @@ export default defineConfig({
             },
             {
               text: 'DAO Stewards',
-              link: '',
+              link: '/dao/stewards',
             },
             {
               text: 'Working Group Rules',
