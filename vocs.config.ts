@@ -289,22 +289,22 @@ export default defineConfig({
       items: [
         {
           text: 'Welcome',
-          link: '',
+          link: '/dao',
         },
         {
           text: 'The interesting bits',
           items: [
             {
               text: 'Constitution',
-              link: '',
+              link: '/dao/constitution',
             },
             {
               text: 'Foundation',
-              link: '',
+              link: '/dao/foundation',
             },
             {
               text: 'Token & Airdrop',
-              link: '',
+              link: '/dao/token',
             },
           ],
         },
@@ -313,7 +313,7 @@ export default defineConfig({
           items: [
             {
               text: 'Submit Proposal',
-              link: '',
+              link: '/dao/proposals/submit',
             },
             {
               text: 'DAO Stewards',
@@ -321,7 +321,7 @@ export default defineConfig({
             },
             {
               text: 'Working Group Rules',
-              link: '',
+              link: '/dao/wg/rules',
             },
           ],
         },
