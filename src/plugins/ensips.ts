@@ -1,4 +1,5 @@
 import fs from 'fs/promises'
+import matter from 'gray-matter'
 import { Tokens, marked } from 'marked'
 import path from 'path'
 import { Plugin } from 'vite'
@@ -21,7 +22,7 @@ export async function ensips(): Promise<Plugin> {
     },
     async buildStart() {
       const alreadyExists = await fs
-        .access('src/pages/ensip/1.md')
+        .access('src/pages/ensip/1.mdx')
         .then(() => true)
         .catch(() => false)
 
@@ -35,27 +36,51 @@ export async function ensips(): Promise<Plugin> {
         'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
       )
       const files = (await res.json()) as DirectoryContents
-
-      // Format files for the sidebar
       const sidebar = new Array<SidebarItem & { number: number }>()
 
       await Promise.all(
         files.map(async (file) => {
           const res = await fetch(file.download_url)
-          const content = await res.text()
-          const ensipNumber = file.name.split('.')[0]
+          const mdFile = await res.text()
+          const parsedMd = matter(mdFile)
+          const rawBody = parsedMd.content
+          const rawFrontmatter = parsedMd.matter
+          const ensipNumber = Number(file.name.split('.')[0])
+          const titleLength = getFirstHeadingToken(mdFile)!.raw.length
 
-          // Add to sidebar array
           sidebar.push({
-            text: getTitle(content, ensipNumber),
+            text: getFirstHeadingToken(mdFile)!.text,
             link: `/ensip/${ensipNumber}`,
-            number: Number(ensipNumber),
+            number: ensipNumber,
           })
+
+          const parsedFrontMatter = parsedMd.data as {
+            contributors: string[]
+            ensip: {
+              status: 'draft' | 'final' | 'obsolete'
+              created: Date
+            }
+          }
+
+          const authors = parsedFrontMatter.contributors.map((c) => `"${c}"`)
+          const created = parseDate(parsedFrontMatter.ensip.created)
+          const injectedMarkdown = `<EnsipHeader authors={[${authors}]} created="${created}" status="${parsedFrontMatter.ensip.status}" />`
+
+          // Reconstruct markdown file
+          const modifiedMarkdown =
+            '---' +
+            rawFrontmatter +
+            '\n---\n\n' +
+            'import { EnsipHeader } from "../../components/EnsipHeader";\n' +
+            rawBody.slice(0, titleLength) +
+            injectedMarkdown +
+            '\n' +
+            rawBody.slice(titleLength)
 
           // Save markdown file
           await fs.writeFile(
-            path.join('src/pages/ensip', file.name),
-            content,
+            path.join('src/pages/ensip', `${ensipNumber}.mdx`),
+            modifiedMarkdown,
             'utf-8'
           )
         })
@@ -70,17 +95,21 @@ export async function ensips(): Promise<Plugin> {
           2
         )
       )
-
-      console.log('Fetched ENSIPs and generated markdown files')
     },
   }
 }
 
-function getTitle(markdown: string, ensipNumber: string) {
-  const tokens = marked.lexer(markdown)
-  const firstHeading = tokens.find(
+function getFirstHeadingToken(description: string) {
+  const tokens = marked.lexer(description)
+  return tokens.find(
     (token) => token.type === 'heading' && token.depth === 1
   ) as Tokens.Heading | undefined
+}
 
-  return firstHeading?.text ?? ensipNumber
+function parseDate(date: Date | string) {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(date))
 }
