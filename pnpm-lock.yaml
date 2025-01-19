@@ -17,6 +17,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      marked:
+        specifier: ^15.0.6
+        version: 15.0.6
       react:
         specifier: latest
         version: 19.0.0
@@ -35,6 +38,9 @@ importers:
       viem:
         specifier: ^2.22.8
         version: 2.22.8(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@22.10.5)
       vocs:
         specifier: latest
         version: 1.0.0-alpha.62(@types/node@22.10.5)(@types/react@19.0.6)(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.30.1)(typescript@5.7.3)
@@ -2428,6 +2434,11 @@ packages:
 
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
+
+  marked@15.0.6:
+    resolution: {integrity: sha512-Y07CUOE+HQXbVDCGl3LXggqJDbXDP2pArc2C1N1RRMN0ONiShoSsIInMd5Gsxupe7fKLpgimTV+HOJ9r7bA+pg==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -6704,6 +6715,8 @@ snapshots:
   markdown-extensions@2.0.0: {}
 
   markdown-table@3.0.4: {}
+
+  marked@15.0.6: {}
 
   math-intrinsics@1.1.0: {}
 

@@ -8,3 +8,7 @@ yarn-error.log*
 .pnpm-debug.log*
 vocs.config.ts.timestamp-*
 src/dist
+
+# Generated markdown files
+src/pages/deployments.md
+src/pages/ensip/*.md

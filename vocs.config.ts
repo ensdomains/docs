@@ -1,5 +1,8 @@
 import { defineConfig } from 'vocs'
 
+import ensipSidebarItems from './src/pages/ensip/sidebar.json'
+import { ensips } from './src/plugins/ensips'
+
 export default defineConfig({
   title: 'ENS Documentation',
   titleTemplate: '%s | ENS Docs',
@@ -34,6 +37,9 @@ export default defineConfig({
         backgroundAccentHover: 'var(--ens-blue-bright)',
       },
     },
+  },
+  vite: {
+    plugins: [ensips()],
   },
   sidebar: [
     {
@@ -354,11 +360,11 @@ export default defineConfig({
       items: [
         {
           text: 'What is an ENSIP?',
-          link: '',
+          link: '/ensip',
         },
         {
           text: 'Proposals',
-          link: '',
+          items: ensipSidebarItems,
         },
       ],
     },
