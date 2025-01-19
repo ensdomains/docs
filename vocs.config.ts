@@ -1,7 +1,11 @@
 import { defineConfig } from 'vocs'
 
-import ensipSidebarItems from './src/pages/ensip/sidebar.json'
 import { ensips } from './src/plugins/ensips'
+
+const ensipSidebarItems = new Array()
+try {
+  ensipSidebarItems.push(...require('./src/pages/ensip/sidebar.json'))
+} catch {}
 
 export default defineConfig({
   title: 'ENS Documentation',
