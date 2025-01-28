@@ -3,14 +3,17 @@
 export const meta = {
   description: 'Expand the Endowment by funding a third tranche of 5,000 ETH.',
   emoji: '📖',
-  contributors: ['nick.eth'],
+  contributors: ['5pence.eth'],
   proposal: {
-    tally: '',
+    tally:
+      '31309365093913580207991288430108338667724061355449265288906484597789511363394',
     type: 'executable',
   },
 }
 
 # [EP6.2] Endowment expansion (3rd tranche)
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-endowment-expansion-3rd-tranche/19851)
 
 ## Summary
 
@@ -61,13 +64,13 @@ Monthly reports on the Endowment can be found on karpatkey’s website ([here](h
 
 ## Specification
 
-1. Fund Transfer
+1. Fund Transfer  
    Executed by the ENS DAO Multisig (payload available [here](https://gist.github.com/JeronimoHoulin/8195478708e88830de9aabfb67bc8710)).
    Transfer 5,000 ETH to the Endowment (0x4F2083f5fBede34C2714aFfb3105539775f7FE64)
    Value: 5000000000000000000000
 
 2. Update the [Allowance Module](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134)
-   Executed by the ENS Endowment.
+   Executed by the ENS Endowment.  
    Currently, the parameters of Allowance Module are as follows: allowance = 30 ETH, resetTimeMin = 43200 seconds (30 days). Due to payment delays in the past, we would like to propose a change in [resetTimeMin](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134#writeContract#F6) parameter, i.e. Change the [resetTimeMin](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134#writeContract#F6) for [main.mg.wg.ens.eth](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b) in the Allowance Module from 30 days to 25 days (i.e. 43200 minutes to 36000).
 
 ```
