@@ -1,0 +1,85 @@
+export const meta = {
+  description: 'Expand the Endowment by funding a third tranche of 5,000 ETH.',
+  emoji: '📖',
+  contributors: ['5pence.eth'],
+  proposal: {
+    tally:
+      '31309365093913580207991288430108338667724061355449265288906484597789511363394',
+    type: 'executable',
+  },
+}
+
+# [EP6.2] Endowment expansion (3rd tranche)
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-endowment-expansion-3rd-tranche/19851)
+
+## Summary
+
+This proposal aims to expand the Endowment by funding a third tranche, comprising 5,000 ETH, from the ENS DAO to the ENS Endowment.
+
+Alongside the third tranche transfer, an update to the Allowance Module on the ENS Endowment is proposed; _resetTime_ for ETH allowance (for fee payment) is to be changed from the current parameter of 43,200 seconds (30 days) to 36,000 seconds (25 days). The motivation for this is that there has been an accumulation of payment delays, such that current fee payments are delayed.
+
+## Motivation
+
+Since the establishment of the Endowment on March 7th, 2023, ENS has been setting the gold standard for DAO treasury management:
+
+- **Asset allocation:** ENS has the 6th-largest stablecoin holding and 5th-largest majors (BTC, ETH) holdings of any Protocols ([source](https://defillama.com/treasuries)).
+- **Income generation:** Since its inception, the Endowment has generated $2.92M in DeFi results (net of fees) for ENS. In 2024, DeFi results represented 12% of total revenue for ENS according to [ENS Revenue Report: Q3 2024](https://discuss.ens.domains/t/ens-revenue-report-q3-2024/19718). This is on track towards the core goal of self-sufficiency.
+- **Asset location:** As of October 31, 2024, 71% of the funds were held in the Endowment, while the remaining 25% were held idle across DAO wallet and Registrar Controllers ([source](https://dune.com/karpatkey/ens-dao-fundflow)).
+
+The original Request for Proposal in [[EP2.2.4]](https://docs.ens.domains/dao/proposals/2.2.4) sets out that the Endowment should be established gradually over time, in response to changing conditions and needs, and to achieve the eventual goal of self-sufficiency. To deliver on this vision for self-sufficiency, a further increase in the Endowment’s returns is needed. As the Endowment is fully utilised within the bounds of the existing mandate, it is clear that those additional returns must come from additional funds.. We think **now** is the right time to implement these increases, given the following developments:
+
+- **Proven track record**: the Endowment has been operating for 1 year and 7 months, with _no funds lost._ During that time, the ENS community has gained familiarity with the Endowment in terms of both operations and infrastructure.
+- **Investment Policy Statement as guardrails**: the [newly-adopted IPS](https://snapshot.org/#/ens.eth/proposal/0x085a1e40c264ffd44567b6dce889f5943e72cfa8442eaeb81819261a38f0bd0a) provides an additional layer of checks and balances, so that the DAO and its Metagov Working Group can hold the Endowment Manager accountable.
+- **Vulnerability fix by @Blockful**: risk of governance takeover by “risk-free value raiders”, who could have taken over the control of the DAO and the Endowment, has been mitigated. The vulnerability has been fixed by the introduction of the [Security Council](https://www.tally.xyz/gov/ens/proposal/42329103797433777309488042029679811802172320979541414683300183273376839219133) and veto.ensdao.eth.
+
+The proposed third tranche would be sized at 5,000 ETH, representing 42.4% of assets held in the Controller and the DAO Wallets (_per_ the pie chart above) It would raise the capital utilisation rate by 10.5 percentage points from the current 70.8% to 81.3%.
+
+## Endowment Updates
+
+### Updates
+
+Karpatkey’s updates for the Endowment can be seen here: [2023 Review](https://discuss.ens.domains/t/karpatkey-2023-review-for-the-ens-endowment/18656), [1H 2024 Review](https://discuss.ens.domains/t/karpatkey-h1-2024-review-for-the-ens-endowment/19394).
+
+Monthly reports on the Endowment can be found on karpatkey’s website ([here](https://reports.karpatkey.com/ens?month=9&year=2024&currency=USD)).
+
+### What’s been done
+
+- **Investment Policy Statement**: karpatkey has created and [formally introduced](https://snapshot.org/#/ens.eth/proposal/0x085a1e40c264ffd44567b6dce889f5943e72cfa8442eaeb81819261a38f0bd0a) an [Investment Policy Statement](https://drive.google.com/file/d/1zsV0k3J7s2QAJUoWxPnBpF6XAGW1HuD6/view) which defines the key roles, responsibilities and limitations of the Endowment and its Manager.
+- **Risk Management Development**: karpatkey has designed and implemented a robust risk management stack, leveraging on dedicated risk data service providers, including [Hypernative](https://www.hypernative.io/) and [Redefine](https://redefine.net/). Through weekly meetings with Hypernative, karpatkey is continuously fine-tuning risk alerts and management, especially to cover protocol risks. Automatic, real-time risk alerts help mitigate potential risks. Detailed plans for the Endowment’s emergency protocol and war room are in place to assess and react to urgent situations.
+- **Infrastructure Development**: karpatkey has worked very closely with Gnosis Guild to develop [and implement](https://discuss.ens.domains/t/ep-5-12-roles-modifier-v2-migration-updates-to-endowment-permissions/19173), Zodiac Roles Modifier v2. As a design partner, karpatkey provided feedback allowing Zodiac Roles Modifier to become more user-friendly and flexible. One notable improvement is permissions updates user interface, enhancing transparency and simplifying audits for the ENS community. A code review was also conducted for permissions update.
+- **Permissions Updates**: the Endowment has been undergoing continuous permissions updates, allowing it to stay up-to-date with changing market landscape and protocols ([[EP 4.1](https://discuss.ens.domains/t/ep-4-1-executable-approve-further-actions-and-strategies-for-the-endowment/17406)], [[EP 4.2](https://discuss.ens.domains/t/4-2-executable-fund-the-endowment-second-tranche/17743)], [[EP 4.5](https://discuss.ens.domains/t/ep-4-5-executable-endowment-permissions-to-karpatkey-update-3/18036)], [[EP 5.12](https://discuss.ens.domains/t/ep-5-12-roles-modifier-v2-migration-updates-to-endowment-permissions/19173)], [[EP 5.14](https://discuss.ens.domains/t/ep-5-14-executable-endowment-permissions-to-karpatkey-update-4/19503)]). Independent, thirdparty security review of our Permissions Updates has also been conducted by [Third Guard](https://thirdguard.com/), with the cost covered by karpatkey.
+- **Dune Dashboards Development:** a variety of different Dune dashboards have been created to give public visibility over the DAO and the Endowment, and their respective operations. These include: the [DAO governance dashboard](https://dune.com/karpatkey/ens-dao-governance) (by karpatkey), the [fund flow dashboard](https://dune.com/karpatkey/ens-dao-fundflow) (by karpatkey) and the [financial reporting dashboard](https://dune.com/steakhouse/ens-steakhouse) (by Steakhouse)
+- **Reporting:** weekly Endowment updates and monthly financial updates are provided during the DAO’s Metagov meetings. Monthly Endowment updates are also available on the karpatkey [website](https://reports.karpatkey.com/ens?month=9&year=2024&currency=USD). Biannual Endowment updates are provided on ENS forum.
+- **Partnerships:** karpatkey has negotiated and put in place a protocol fees rebate agreement with Stader Labs.
+
+### Future plans
+
+- **Risk Management**: to further protect the Endowment against potential hacks and exploits in protocols that the Endowment deploys funds in, karpatkey has been developing Guardians and ‘Agile Execution App’, which automatically detect potential exploit events and exit at-risk positions.
+- **Permissions Updates**: The Endowment will undergo continuous permissions updates. Immediate priorities include introducing other stablecoins and RWAs, onboarding new liquid staking protocols and keeping the permissions updated with protocol/contract upgrades.
+- **Partnerships**: reinforce yields without taking additional risk by formulating partnership deals leveraging karpatkey’s DeFi network.
+- **Analysis on Governance Attack:** karpatkey, together with the ENS community, will conduct further research into potential governance attack vectors that could put the Endowment at risk, and present potential solutions to the DAO.
+
+## Specification
+
+1. Fund Transfer  
+   Executed by the ENS DAO Multisig (payload available [here](https://gist.github.com/JeronimoHoulin/8195478708e88830de9aabfb67bc8710)).
+   Transfer 5,000 ETH to the Endowment (0x4F2083f5fBede34C2714aFfb3105539775f7FE64)
+   Value: 5000000000000000000000
+
+2. Update the [Allowance Module](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134)
+   Executed by the ENS Endowment.  
+   Currently, the parameters of Allowance Module are as follows: allowance = 30 ETH, resetTimeMin = 43200 seconds (30 days). Due to payment delays in the past, we would like to propose a change in [resetTimeMin](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134#writeContract#F6) parameter, i.e. Change the [resetTimeMin](https://etherscan.io/address/0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134#writeContract#F6) for [main.mg.wg.ens.eth](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b) in the Allowance Module from 30 days to 25 days (i.e. 43200 minutes to 36000).
+
+```
+"delegate": "0x91c32893216dE3eA0a55ABb9851f581d4503d39b",
+"token": "0x0000000000000000000000000000000000000000",
+"allowanceAmount": "30000000000000000000",
+"resetTimeMin": "43200" →  "36000",
+"resetBaseMin": "28825613"
+```
+
+Payload available [here](https://gist.github.com/JeronimoHoulin/3e10411ac6d40b6e4087fc59df2719d5).
+(Can be downloaded, unzipped, and dropped into [Safe’s transaction builder](https://app.safe.global/apps/open?safe=eth:0x4F2083f5fBede34C2714aFfb3105539775f7FE64&appUrl=https%3A%2F%2Fapps-portal.safe.global%2Ftx-builder)).
+
+Tenderly simulation available [here](https://dashboard.tenderly.co/public/safe/safe-apps/simulator/02add7c9-0ffc-49dc-b372-30fce90ccf9d).
