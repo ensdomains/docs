@@ -403,6 +403,15 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
+                title: 'Proposals Term 6',
+                links: [
+                    {
+                        title: '6.1 - [Executable] Convert 6,000 ETH to USDC for DAO Operating Expenses',
+                        href: '/dao/proposals/6.1',
+                    },
+                ],
+            },
+            {
                 title: 'Proposals Term 5',
                 links: [
                     {
