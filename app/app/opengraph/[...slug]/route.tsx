@@ -200,7 +200,7 @@ export async function GET(request: NextRequest) {
                                 }}
                             >
                                 <img
-                                    src={getProfilePicture(key, 'jpg')}
+                                    src={getProfilePicture(key)}
                                     height={42}
                                     width={42}
                                     alt=""
