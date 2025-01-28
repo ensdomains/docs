@@ -1,17 +1,21 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'This proposal aims to establish a Security Council for the ENS DAO with the authority to veto malicious proposals, with a built-in expiration mechanism to prevent centralized control and ensure greater delegation and governance distribution over time.',
-    emoji: '📖',
-    contributors: [
-        'alextnetto.eth'
-    ],
-    proposal: {
-        tally: '42329103797433777309488042029679811802172320979541414683300183273376839219133',
-        type: 'executable'
-    }
-};
+  description:
+    'This proposal aims to establish a Security Council for the ENS DAO with the authority to veto malicious proposals, with a built-in expiration mechanism to prevent centralized control and ensure greater delegation and governance distribution over time.',
+  emoji: '📖',
+  contributors: ['alextnetto.eth'],
+  proposal: {
+    tally:
+      '42329103797433777309488042029679811802172320979541414683300183273376839219133',
+    type: 'executable',
+  },
+}
 
 # [EP 5.13] [Executable] Security Council
+
+| **Status**            | Passed                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep5-13-executable-security-council/19412)                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/42329103797433777309488042029679811802172320979541414683300183273376839219133) |
 
 ## Abstract
 
@@ -19,7 +23,7 @@ The primary mission of ENS DAO is to govern the protocol and allocate resources 
 
 To safeguard the DAO's integrity and longevity, a Security Council with the authority to cancel malicious proposals is needed. To avoid perpetuating centralized power, the Security Council's authority will have a built-in expiration date. After two years, anyone will be able to call a [function](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol#L59) that revokes the council's power to veto proposals, ensuring a time-limited mechanism to counter malicious attacks while promoting more delegation and governance distribution.
 
-![security-council-diagram](https://hackmd.io/\_uploads/BJb0bHP\_A.png)
+![security-council-diagram](https://hackmd.io/_uploads/BJb0bHP_A.png)
 
 ## Motivation
 
@@ -33,7 +37,7 @@ The short-term solution was delegating 3.8M $ENS to a contract that can only vot
 
 ## Specification
 
-To enhance security, the [SecurityCouncil contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol) will be deployed, receiving the PROPOSER_ROLE in the timelock, granting it the ability to cancel proposals (callable only by the [Security Council multisig](https://etherscan.io/address/0xaa5cd05f6b62c3af58ae9c4f3f7a2acc2cdc2cc7)) without the power to initiate or modify other DAO actions. **The scope of this proposal is to assign the PROPOSER_ROLE to the SecurityCouncil contract ([Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))\*\*.
+To enhance security, the [SecurityCouncil contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol) will be deployed, receiving the PROPOSER_ROLE in the timelock, granting it the ability to cancel proposals (callable only by the [Security Council multisig](https://etherscan.io/address/0xaa5cd05f6b62c3af58ae9c4f3f7a2acc2cdc2cc7)) without the power to initiate or modify other DAO actions. \*\*The scope of this proposal is to assign the PROPOSER_ROLE to the SecurityCouncil contract ([Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))\*\*.
 
 To ensure decentralization, the contract will also feature a time-based expiration mechanism that allows anyone to revoke the PROPOSER_ROLE after two years. This window provides time to strengthen delegation and address current vulnerabilities, facilitating the DAO's transition to a more secure governance scenario.
 
@@ -49,13 +53,13 @@ It is in the best interest of everyone to make clear the expectations and respon
 
 The security council is expected to act only in emergency, in the given following situations or similar cases:
 
-* If a proposal goes against the ENS constitution
+- If a proposal goes against the ENS constitution
 
-* If a proposal is approved with malicious intent against the DAO longevity/sustainability
+- If a proposal is approved with malicious intent against the DAO longevity/sustainability
 
-* If such proposal is approved by any group of voters, but directly financially incentivised to vote against the DAOs interests to preserve their own financial stake.
+- If such proposal is approved by any group of voters, but directly financially incentivised to vote against the DAOs interests to preserve their own financial stake.
 
-* If any approved proposal goes directly against the DAO for the sole benefit of an attacker.
+- If any approved proposal goes directly against the DAO for the sole benefit of an attacker.
 
 ## Relevant links
 

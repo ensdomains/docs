@@ -4,7 +4,6 @@ import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import { readFile } from 'node:fs/promises';
 
-import { getProfilePicture } from '@/utils/contributorHelper';
 import { navigation } from '#/config/navigation';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -60,17 +59,6 @@ export async function GET(request: NextRequest) {
     )?.name;
 
     const page = await getPageBySlug(slug);
-
-    const [avatars, moreAvatars] = (() => {
-        if (!page.pageProperties.meta?.contributors) return [[], 0];
-
-        const v = [...page.pageProperties.meta.contributors].reverse();
-
-        const s1 = v.slice(0, 5).reverse();
-
-        // grab first 5 contributors
-        return [s1, v.length - s1.length];
-    })();
 
     return new ImageResponse(
         (
@@ -175,59 +163,6 @@ export async function GET(request: NextRequest) {
                                 }}
                             >
                                 {section}
-                            </div>
-                        )}
-                    </div>
-                    <div
-                        style={{
-                            position: 'absolute',
-                            bottom: '16px',
-                            right: '16px',
-                            display: 'flex',
-                        }}
-                    >
-                        {avatars.map((key, index) => (
-                            <div
-                                key={key}
-                                style={{
-                                    display: 'flex',
-                                    width: '42px',
-                                    height: '42px',
-                                    borderRadius: '50%',
-                                    background: 'lightblue',
-                                    marginLeft: index > 0 ? '-16px' : '0',
-                                    border: '1px solid #E8E8E8',
-                                }}
-                            >
-                                <img
-                                    src={getProfilePicture(key, 'jpg')}
-                                    height={42}
-                                    width={42}
-                                    alt=""
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        borderRadius: '50%',
-                                    }}
-                                />
-                            </div>
-                        ))}
-                        {moreAvatars > 0 && (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: '42px',
-                                    height: '42px',
-                                    borderRadius: '50%',
-                                    background: '#EEF5FF',
-                                    color: '#3889FF',
-                                    marginLeft: '-16px',
-                                    fontWeight: 700,
-                                }}
-                            >
-                                + {moreAvatars}
                             </div>
                         )}
                     </div>

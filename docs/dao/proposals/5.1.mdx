@@ -1,34 +1,38 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Deploy a new version of the DNSSEC oracle and DNS registrar that enables \'gasless DNSSEC\' functionality.',
-    emoji: '📖',
-    contributors: [
-        'arachnid'
-    ],
-    proposal: {
-        discourse: '18535',
-        // snapshot: '0x8e3c8812bd52d1760eb2bbf8dc603d68860741f80d489dc051017e863151a242',
-        type: 'executable'
-    }
-};
+  description:
+    "Deploy a new version of the DNSSEC oracle and DNS registrar that enables 'gasless DNSSEC' functionality.",
+  emoji: '📖',
+  contributors: ['arachnid'],
+  proposal: {
+    discourse: '18535',
+    type: 'executable',
+    tally:
+      '4208408830555077285685632645423534041634535116286721240943655761928631543220',
+  },
+}
 
 # [EP5.1] [Executable] Upgrade DNSSEC support
 
-## Abstract 
+| **Status**            | Passed                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep5-1-executable-upgrade-dnssec-support/18535)                                     |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/4208408830555077285685632645423534041634535116286721240943655761928631543220) |
+
+## Abstract
 
 The ENS labs team has been working on a new version of the DNSSEC oracle and the DNS registrar that, combined with wildcard resolution (ENSIP 10) and CCIP-Read, allow for 'gasless DNSSEC' - enabling the use of DNS names inside ENS with no onchain transactions required. This proposal replaces the existing DNSSEC registrar with the new one.
 
-Existing DNS names will continue to function as before, and names can still be imported using the 'legacy' method. The new registrar also allows configuring a name by setting a TXT record on _ens.name.tld, containing the address of a special resolver contract to use, followed by any resolver-specific data. Resolvers designed for the purpose can be configured to parse this extra data, making configuration entirely offchain a possibility.
+Existing DNS names will continue to function as before, and names can still be imported using the 'legacy' method. The new registrar also allows configuring a name by setting a TXT record on \_ens.name.tld, containing the address of a special resolver contract to use, followed by any resolver-specific data. Resolvers designed for the purpose can be configured to parse this extra data, making configuration entirely offchain a possibility.
 
 Alongside the new registrar and oracle contracts, a simple resolver is provided that reads the Ethereum address to resolve a name to from the extra data.
 
 Post-execution, ENS Labs will run a process to upgrade all current DNS TLDs to use the new registrar. TLDs will only function with the new registrar once this (permissionless) transaction is sent for the TLD.
 
-## Specification 
+## Specification
 
 Call `setController` on the Root contract at `root.ens.eth`, passing in the address of the new DNS registrar (`0xb32cb5677a7c971689228ec835800432b339ba2b`).
 
-## Transactions 
+## Transactions
 
 | Address                                    | Value | Function      | Argument | Value                                      |
 | ------------------------------------------ | ----- | ------------- | -------- | ------------------------------------------ |

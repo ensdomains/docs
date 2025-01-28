@@ -1,14 +1,20 @@
 export const meta = {
-    description: "Reimburse eth.limo for ongoing legal fees.",
-    emoji: "📖",
-    contributors: ["brantly.eth"],
-    proposal: {
-        tally: "15212507956777005315602309329914215169878587763966450377165643673108805753590",
-        type: "executable",
-    },
-};
+  description: 'Reimburse eth.limo for ongoing legal fees.',
+  emoji: '📖',
+  contributors: ['brantly.eth'],
+  proposal: {
+    tally:
+      '15212507956777005315602309329914215169878587763966450377165643673108805753590',
+    type: 'executable',
+  },
+}
 
 # [EP 5.28] [Executable] Reimbursement of eth.limo's ongoing legal fees
+
+| **Status**            | Passed                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-5-28-executable-reimbursement-of-eth-limo-s-ongoing-legal-fees/20004)            |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/15212507956777005315602309329914215169878587763966450377165643673108805753590) |
 
 ## Description
 
@@ -48,11 +54,11 @@ This executable proposal will initiate a transfer of 240,632.38 USDC from the EN
 
 ### Transaction Details
 
--   **From**: ENS DAO Treasury (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
--   **To**: USDC Token Contract (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
--   **Recipient**: ethdotlimo.eth (0xB352bB4E2A4f27683435f153A259f1B207218b1b)
--   **Amount**: 240,632.38 USDC (240632380000 considering USDC's 6 decimal places)
--   **Purpose**: The reimbursement of eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+- **From**: ENS DAO Treasury (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
+- **To**: USDC Token Contract (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
+- **Recipient**: ethdotlimo.eth (0xB352bB4E2A4f27683435f153A259f1B207218b1b)
+- **Amount**: 240,632.38 USDC (240632380000 considering USDC's 6 decimal places)
+- **Purpose**: The reimbursement of eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
 
 This transaction calls the `transfer` function of the USDC contract, transferring 240,632.38 USDC to eth.limo's address.
 
@@ -60,9 +66,9 @@ This transaction calls the `transfer` function of the USDC contract, transferrin
 
 ```json
 {
-    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    "value": 0,
-    "calldata": "0xa9059cbb000000000000000000000000b352bb4e2a4f27683435f153a259f1b207218b1b0000000000000000000000000000000000000000000000000000003806ceba60"
+  "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "value": 0,
+  "calldata": "0xa9059cbb000000000000000000000000b352bb4e2a4f27683435f153a259f1b207218b1b0000000000000000000000000000000000000000000000000000003806ceba60"
 }
 ```
 
