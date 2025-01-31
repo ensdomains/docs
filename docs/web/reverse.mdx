@@ -25,6 +25,8 @@ The reverse registrar is a smart contract that allows users to register their pr
 
 ## Getting a Primary Name {{ navtitle: 'Getting Primary Name', id: 'get' }}
 
+> **Important**: After retrieving a name from reverse resolution, you **must** verify it by performing a forward resolution on that name to confirm it still resolves to the original address. This prevents spoofing or misconfiguration. If the addresses don't match, display the original address instead of the name.
+
 To get a users preferred primary name is very simple. In most libraries you will find a function to do a lookup by address as shown below.
 This allows us to turn any address into a human-readable name.
 
@@ -46,9 +48,17 @@ export const Name = () => {
 
 ```ts {{ variant: 'ethers-v5' }}
 // 0x225f137127d9067788314bc7fcc1f36746a3c3B5 -> luc.eth
-const name = await provider.lookupAddress(
-    '0x225f137127d9067788314bc7fcc1f36746a3c3B5'
-);
+const address = '0x225f137127d9067788314bc7fcc1f36746a3c3B5';
+const name = await provider.lookupAddress(address);
+
+// Always verify the forward resolution
+if (name) {
+    const resolvedAddress = await provider.resolveName(name);
+    if (resolvedAddress !== address) {
+        // If verification fails, use the original address
+        return address;
+    }
+}
 ```
 
 ```ts {{ variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsName.html', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-name' }}
