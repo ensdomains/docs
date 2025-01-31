@@ -1,20 +1,31 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: "Send 213,049 ENS tokens to a new airdrop contract for users who did not receive the 2x multiplier despite owning a name that was used as a primary ENS name. As amended by EP3.",
-    emoji: '📘',
-    contributors: [
-        // TODO: Add contributors
-    ],
-    proposal: {
-        discourse: '6755',
-        snapshot: '0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f',
-        type: 'executable'
-    }
-};
+  description:
+    'Send 213,049 ENS tokens to a new airdrop contract for users who did not receive the 2x multiplier despite owning a name that was used as a primary ENS name. As amended by EP3.',
+  emoji: '📘',
+  contributors: ['arachnid'],
+  proposal: {
+    discourse: '6755',
+    snapshot:
+      '0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f',
+    tally:
+      '90476529665364161211265365238121921179703522228680648046371476645353679539653',
+    type: 'executable',
+  },
+}
 
-# [EP0.2] [Executable] Retrospective airdrop for accounts that owned another account's primary ENS 1
+# [EP0.2] [Executable] Retrospective airdrop for accounts that owned another account's primary ENS name
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/6755)                                                                                   |
+| **Social Votes**      | [Snapshot](https://snapshot.org/#/ens.eth/proposal/0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f)        |
+| **Onchain Votes**     | [Tally](https://www.tally.xyz/gov/ens/proposal/90476529665364161211265365238121921179703522228680648046371476645353679539653) |
 
 _Note: This was previously numbered EP2._
+
+## Summary
+
+Send 213,049 ENS tokens to a new airdrop contract for users who did not receive the 2x multiplier despite owning a name that was used as a primary ENS name.
 
 ## Abstract
 
@@ -46,3 +57,22 @@ Further, a number of users have accidentally transferred their ENS tokens to the
 3. Authorise the contract deployed in (1) to spend 219295650978169915391391 base ENS tokens from the ENS DAO account.
 
 ## Code
+
+```javascript
+const ethers = require('ethers')
+const abi = [
+  'function approve(address _spender, uint256 _value) public returns (bool success)',
+]
+const token = new ethers.Contract(
+  '0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72',
+  abi
+)
+const airdropAddress = 'TBD'
+const tx = await token.populateTransaction.approve(
+  airdropAddress,
+  '213049736662531485206636'
+)
+console.log([token.address])
+console.log([0])
+console.log([tx.data])
+```
