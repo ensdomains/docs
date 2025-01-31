@@ -596,8 +596,16 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/4.5',
                     },
                     {
-                        title: '4.4 - [Executable] ENS Working Group Budget Proposals',
-                        href: '/dao/proposals/4.4',
+                        title: '4.4.3 - [Social] Funding Request: Public Goods Working Group',
+                        href: '/dao/proposals/4.4.3',
+                    },
+                    {
+                        title: '4.4.2 - [Social] Funding Request: ENS Meta-Goverance Working Group',
+                        href: '/dao/proposals/4.4.2',
+                    },
+                    {
+                        title: '4.4.1 - [Social] Funding Request: ENS Ecosystem Working Group',
+                        href: '/dao/proposals/4.4.1',
                     },
                     {
                         title: '4.3 - [Executable] Refund Invalid .eth Names',
