@@ -94,6 +94,6 @@ Resolver("0x225f137127d9067788314bc7fcc1f36746a3c3B5.addr.reverse").name() -> "l
 ```
 
 To look up the primary name of a given address you must do a resolver lookup for `addr.reverse` and then query the `name()` field on the resolver.
-This name field returns the "preferred" name for the address. Note that the implementing client MUST perform a forward resolution on this name to verify the address matches the one you are looking up.
+This name field returns the "preferred" name for the address. You should always follow up a reverse lookup with a forward lookup to verify that the resulting name points back to the original address. If the address doesn't match, display the address rather than the reversed name.
 
 Please note that many libraries already have functionality to do this, you can read more about it in the [Getting a Primary Name](/web/reverse#get) section.
