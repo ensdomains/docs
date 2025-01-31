@@ -1,17 +1,21 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'This proposal aims to roll out an updated version of the Zodiac Roles Modifier module. The new version improves usability and transparency of treasury management operations. Upon approval, the Roles Modifier v2 module will be activated. Furthermore, this proposal requests authorization from the DAO to revise the permissions policy.',
-    emoji: '📖',
-    contributors: [
-        'avsa.eth'
-    ],
-    proposal: {
-        tally: '107992041043258996427224563090014372885335179099580585497266204203463156791290',
-        type: 'executable'
-    }
-};
+  description:
+    'This proposal aims to roll out an updated version of the Zodiac Roles Modifier module. The new version improves usability and transparency of treasury management operations. Upon approval, the Roles Modifier v2 module will be activated. Furthermore, this proposal requests authorization from the DAO to revise the permissions policy.',
+  emoji: '📖',
+  contributors: ['avsa.eth'],
+  proposal: {
+    tally:
+      '107992041043258996427224563090014372885335179099580585497266204203463156791290',
+    type: 'executable',
+  },
+}
 
 # [EP 5.12] [Executable] Roles Modifier V2 Migration & Updates to Endowment Permissions
+
+| **Status**            | Passed                                                                                                                     |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-5-12-roles-modifier-v2-migration-updates-to-endowment-permissions/19173)          |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/107992041043258996427224563090014372885335179099580585497266204203463156791290) |
 
 ## Abstract
 
@@ -51,25 +55,25 @@ This proposal outlines the following modifications to the permissions policy:
 - **Token OUT Allowlist**: \\[DAI, USDT, USDC, rETH, wstETH, WETH, stETH].
 - 4. The above arrays are to be utilised for swapping on CoW Swap, with equivalent lists replicated for Uniswap v3 and Balancer.
 
-2. **Introduction of CoW Swap** ([diff 4](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x23da9ade38e4477b23770ded512fd37b12381fab)): 
+2. **Introduction of CoW Swap** ([diff 4](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x23da9ade38e4477b23770ded512fd37b12381fab)):
 
-- Addition of a **CoW Swap Order signer** to enable gas-minimised and MEV-protected swaps. This includes an extensive set of aggregated exchange routes, improving the efficiency and effectiveness of required swaps. 
+- Addition of a **CoW Swap Order signer** to enable gas-minimised and MEV-protected swaps. This includes an extensive set of aggregated exchange routes, improving the efficiency and effectiveness of required swaps.
 - Tokens will be swapped on CoW Swap according to the token IN/OUT allowlists mentioned above.
 
-3. **Deprecations and Removals**: 
+3. **Deprecations and Removals**:
 
-- **Uniswap v2 Swaps** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x472b43f3)): Removed due to insufficient liquidity in V2 pools. 
-- **Stakewise v2**: Deprecated functions related to deposit ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc874b064f465bdd6411d45734b56fac750cda29a)) and claim ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xa3f21010e8b9a3930996c8849df38f9ca3647c20)) functions in light of the recent launch of Stakewise v3. Consequently, permitted actions related to Stakewise v2’s sETH2-ETH Uniswap pool are also removed ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc36442b4a4522e871399cd717abdd847ab11fe88)). 
-- **Compound v2** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x39aa39c021dfbae8fac545936693ac917d5e7563)): Discontinued all actions targeting v2 contracts and v2 cTokens (cUSDC and cDAI) due to the ongoing transition of the protocol to its v3. 
+- **Uniswap v2 Swaps** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x472b43f3)): Removed due to insufficient liquidity in V2 pools.
+- **Stakewise v2**: Deprecated functions related to deposit ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc874b064f465bdd6411d45734b56fac750cda29a)) and claim ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xa3f21010e8b9a3930996c8849df38f9ca3647c20)) functions in light of the recent launch of Stakewise v3. Consequently, permitted actions related to Stakewise v2’s sETH2-ETH Uniswap pool are also removed ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0xc36442b4a4522e871399cd717abdd847ab11fe88)).
+- **Compound v2** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#left-0x39aa39c021dfbae8fac545936693ac917d5e7563)): Discontinued all actions targeting v2 contracts and v2 cTokens (cUSDC and cDAI) due to the ongoing transition of the protocol to its v3.
 - **Revocation of Existing/Obsolete Allowances:** All existing and outdated allowances previously set by the Endowment are revoked (set to zero). The ability to call the corresponding approve functions is included in the newly proposed policy. Accordingly, the payload contains a bundle of transactions to revoke these allowances.
 
-4. **Updates**: 
+4. **Updates**:
 
-- **Uniswap v3** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x04e45aaf)) **and Balancer** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0xba12222222228d8ba445958a75a0704d566bf2c8)): Adjusted to allow the mentioned token IN/OUT allowlists. 
-- **Curve Pools**: Addition of stETH-ng (factory) pool ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x21e27a5e5513d6e65c4f830167390997aa84843a)) and removal of cUSDC + cDAI pool ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#left-0xa2b47e3d5c44877cca798226b7b8118f9bfb7a56); Compound v2 tokens). 
-- **Curve ZAP Deposit Contract** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x56c526b0159a258887e0d79ec3a80dfb940d0cd7)): Introduced to allow depositing and staking of LP tokens in a single step. 
-- **Convex Staking** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x6b27d7bc63f1999d14ff9ba900069ee516669ee8)): Added the CVX/stETH Rewards contract. 
-- **Lido Withdrawals** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x889edc2edab5f40e902b864ad4d7ade8e412f9b1)): Enhanced to include new withdrawal methods using permits for both wstETH and stETH; methods include `requestWithdrawalsWstETHWithPermit` and `requestWithdrawalsWithPermit`. 
+- **Uniswap v3** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45-0x04e45aaf)) **and Balancer** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0xba12222222228d8ba445958a75a0704d566bf2c8)): Adjusted to allow the mentioned token IN/OUT allowlists.
+- **Curve Pools**: Addition of stETH-ng (factory) pool ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x21e27a5e5513d6e65c4f830167390997aa84843a)) and removal of cUSDC + cDAI pool ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#left-0xa2b47e3d5c44877cca798226b7b8118f9bfb7a56); Compound v2 tokens).
+- **Curve ZAP Deposit Contract** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false#right-0x56c526b0159a258887e0d79ec3a80dfb940d0cd7)): Introduced to allow depositing and staking of LP tokens in a single step.
+- **Convex Staking** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x6b27d7bc63f1999d14ff9ba900069ee516669ee8)): Added the CVX/stETH Rewards contract.
+- **Lido Withdrawals** ([diff](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x889edc2edab5f40e902b864ad4d7ade8e412f9b1)): Enhanced to include new withdrawal methods using permits for both wstETH and stETH; methods include `requestWithdrawalsWstETHWithPermit` and `requestWithdrawalsWithPermit`.
 - **Spark Rewards Claim** ([diff 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/C0zUV4NtNErufEpbpNc2S55F2oiAGw8aKE2jYwWjLg?annotations=false#right-0x4370d3b6c9588e02ce9d22e684387859c7ff5b34)): Added functionality to claim wstETH rewards in Spark.
 
 # Audit Considerations
@@ -85,4 +89,3 @@ The existing Roles Modifier v1 module will remain active to ensure a smooth tran
 ## Policy Visualisation in Terms of DeFi Kit Actions
 
 The “show annotations” button, located at the top-right [here 1](https://roles.gnosisguild.org/eth:0xBd1099dFD3c11b65FB4BB19A350da2f5B61Efb0d/roles/ENS-MANAGER-V1/diff/rMNui3Yp9LlBScVLFjY9cWkk4QGYoIVkkYxURs16ys?annotations=false), provides a visualisation of the proposed permissions policy expressed through the DeFi Kit Protocol Actions. This feature offers a more abstract and simplified description of the policy, enhancing understanding and accessibility.
-

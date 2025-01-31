@@ -19,7 +19,7 @@ export const ContributorsSection: FC<{
                     className="flex w-fit items-center gap-2 transition-all hover:scale-105"
                 >
                     <img
-                        src={getProfilePicture(contributors[0], 'webp')}
+                        src={getProfilePicture(contributors[0])}
                         className="my-0 aspect-square size-6 rounded-full shadow-md"
                         alt={contributors[0]}
                     />
@@ -39,7 +39,7 @@ export const ContributorsSection: FC<{
                         className="group relative transition-all hover:scale-105"
                     >
                         <img
-                            src={getProfilePicture(contributor, 'webp')}
+                            src={getProfilePicture(contributor)}
                             className="my-0 aspect-square w-6 rounded-full shadow-md"
                             alt={contributor}
                         />

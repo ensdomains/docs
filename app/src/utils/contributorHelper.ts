@@ -15,11 +15,11 @@ export const getUsernameType = (
     return 'unknown';
 };
 
-export const getProfilePicture = (username: string, format: 'webp' | 'jpg') => {
+export const getProfilePicture = (username: string) => {
     const type = getUsernameType(username);
 
     if (type === 'ens') {
-        return `https://avatarservice.xyz/64/${username}.${format}`;
+        return `https://ens-api.gregskril.com/avatar/${username}?width=64`;
     }
 
     if (type === 'github') {

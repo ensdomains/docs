@@ -403,15 +403,50 @@ export const navigation: SectionData[] = [
                 ],
             },
             {
+                title: 'Proposals Term 6',
+                links: [
+                    {
+                        title: '6.2 - [Executable] Endowment expansion (3rd tranche)',
+                        href: '/dao/proposals/6.2',
+                    },
+                    {
+                        title: '6.1 - [Executable] Convert 6,000 ETH to USDC for DAO Operating Expenses',
+                        href: '/dao/proposals/6.1',
+                    },
+                ],
+            },
+            {
                 title: 'Proposals Term 5',
                 links: [
+                    {
+                        title: '5.29 - [Executable] Funding request for Unruggable to build and operate a network of gateways',
+                        href: '/dao/proposals/5.29',
+                    },
+                    {
+                        // eslint-disable-next-line quotes
+                        title: "5.28 - [Executable] Reimbursement of eth.limo's ongoing legal fees",
+                        href: '/dao/proposals/5.28',
+                    },
                     {
                         title: '5.27 - [Executable] Revoke the DAO’s ability to upgrade the name wrapper',
                         href: '/dao/proposals/5.27',
                     },
                     {
+                        title: '5.26 - [Executable] Implementation of [EP 5.19]’s ENS Governance Distribution Pilot Program',
+                        href: '/dao/proposals/5.26',
+                    },
+                    {
+                        title: '5.25 - [Executable] Collective Working Group Funding Request (Oct 2024) - Resubmission',
+                        href: '/dao/proposals/5.25',
+                    },
+                    {
                         title: '5.24 - [Executable] Term 5 Q4, Collective Working Group Funding Proposal',
                         href: '/dao/proposals/5.24',
+                    },
+                    {
+                        // eslint-disable-next-line quotes
+                        title: "5.23 - [Executable] blockful's governance security bounty",
+                        href: '/dao/proposals/5.23',
                     },
                     {
                         title: '5.22 - [Executable] ENSv2 Development Funding',
@@ -519,8 +554,8 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/5.4.1',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
-                        title: '5.3 - [Social] Determine ENS Labs\' next steps in eth.link litigation',
+                        // eslint-disable-next-line quotes
+                        title: "5.3 - [Social] Determine ENS Labs' next steps in eth.link litigation",
                         href: '/dao/proposals/5.3',
                     },
                     {
@@ -561,8 +596,16 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/4.5',
                     },
                     {
-                        title: '4.4 - [Executable] ENS Working Group Budget Proposals',
-                        href: '/dao/proposals/4.4',
+                        title: '4.4.3 - [Social] Funding Request: Public Goods Working Group',
+                        href: '/dao/proposals/4.4.3',
+                    },
+                    {
+                        title: '4.4.2 - [Social] Funding Request: ENS Meta-Goverance Working Group',
+                        href: '/dao/proposals/4.4.2',
+                    },
+                    {
+                        title: '4.4.1 - [Social] Funding Request: ENS Ecosystem Working Group',
+                        href: '/dao/proposals/4.4.1',
                     },
                     {
                         title: '4.3 - [Executable] Refund Invalid .eth Names',
@@ -717,8 +760,8 @@ export const navigation: SectionData[] = [
                         href: '/dao/proposals/0.3',
                     },
                     {
-                        // eslint-disable-next-line prettier/prettier
-                        title: '0.2 - [Executable] Retrospective airdrop for accounts that owned another account\'s primary ENS 1',
+                        // eslint-disable-next-line quotes
+                        title: "0.2 - [Executable] Retrospective airdrop for accounts that owned another account's primary ENS 1",
                         href: '/dao/proposals/0.2',
                     },
                     {

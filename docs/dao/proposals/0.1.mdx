@@ -1,45 +1,58 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: "Transfer ENS treasury and contract ownership from the ENS Multisig to ENS DAO.",
-    emoji: '📘',
-    contributors: [
-        'fireeyesdao'
-    ],
-    proposal: {
-        discourse: '6307',
-        snapshot: '0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0',
-        type: 'social'
-    }
-};
+  description:
+    'Transfer ENS treasury and contract ownership from the ENS Multisig to ENS DAO.',
+  emoji: '📘',
+  contributors: ['fireeyesdao'],
+  proposal: {
+    discourse: '6307',
+    snapshot:
+      '0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0',
+    type: 'social',
+  },
+}
 
 # [EP0.1] [Social] Proposal: Transfer ENS Treasury and Contract Ownership
 
+| **Status**            | Passed                                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/6307)                                                                            |
+| **Votes**             | [Snapshot](https://snapshot.org/#/ens.eth/proposal/0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0) |
+
 _Note: This was previously numbered EP1._
+
+## Summary
+
+Transfer ENS treasury and contract ownership from the ENS Multisig to ENS DAO.
 
 ## Abstract
 
 With the recent launch of the ENS DAO and $ENS token, it is now time for key governance powers of ENS to be transferred from the ENS root multisig to the ENS DAO.
 
-🔥\_🔥 ([Fire Eyes DAO](https://fireeyes.xyz)) has taken a [central role in the planning and execution](https://mirror.xyz/james.eth/XkOIGh8xu\_bF2cQV4QZkKxoN0o1OuNoEb3o-Nzjdo3I) of ENS’s decentralization journey and is excited to present this first proposal to the community.
+🔥_🔥 ([Fire Eyes DAO](https://fireeyes.xyz)) has taken a [central role in the planning and execution](https://mirror.xyz/james.eth/XkOIGh8xu_bF2cQV4QZkKxoN0o1OuNoEb3o-Nzjdo3I) of ENS’s decentralization journey and is excited to present this first proposal to the community.
 
 This proposal will take a different form than normal as it proposes making a request to the ENS multisig root keyholders, rather than executing an action on the DAO.
 
 **This proposal looks to execute a transfer of ownership of several aspects of the protocol which are currently controlled by the ENS root multisig:**
 
 1. We propose that control over the existing ENS treasury is transferred to the DAO.
-2.  We propose that ownership of the ENS Registrar Controller and the pricing oracle is transferred to the DAO. Ownership of the price oracle gives the DAO the ability to:
+2. We propose that ownership of the ENS Registrar Controller and the pricing oracle is transferred to the DAO.
 
-    1. Set the contract used to get the USD-ETH price.\*
-    2. Change the price per year of each length of domain name.
+   Ownership of the price oracle gives the DAO the ability to:
 
-    Ownership of the registrar controller gives the DAO the ability to:
+   1. Set the contract used to get the USD-ETH price.\*
+   2. Change the price per year of each length of domain name.
 
-    1. Replace the price oracle contract.
-    2. Withdraw accumulated funds to the DAO treasury.
-    3. Set the minimum and maximum period between the first and second transactions of the registration process.
+   Ownership of the registrar controller gives the DAO the ability to:
+
+   1. Replace the price oracle contract.
+   2. Withdraw accumulated funds to the DAO treasury.
+   3. Set the minimum and maximum period between the first and second transactions of the registration process.
+
 3. We propose that ownership of the ENS Registrar is transferred to the DAO. Ownership of the .eth registrar gives the DAO the ability to:
+
    1. Add and remove controller contracts.
    2. Set the resolver contract for .eth
+
 4. We propose that ownership of the ‘.reverse’ namespace, which governs assignment of primary ENS records, be transferred to the DAO. Ownership of the .reverse TLD gives the DAO the ability to:
    1. Replace the reverse registrar for Ethereum addresses.
    2. Create new types of reverse resolution (For example, bitcoin addresses) and update them.
@@ -65,12 +78,10 @@ The ENS DAO agrees to use these funds and powers in accordance with the ENS Cons
 
 This proposal looks to set precedent as the first action taken by ENS delegates & token holders. Upon successful execution, the ENS DAO will hold control over two significant aspects of the protocol, and will be able to dispense funds effectively towards community initiatives.
 
-* Discuss this proposal on the ENS forum and discord.
-* Implement a vote on this proposal on Snapshot.
-* If passed:
-  * Transfer existing assets from the ENS Community multisig to the ENS DAO.
-  * Transfer control over the Registrar Controller to the ENS DAO.
+- Discuss this proposal on the ENS forum and discord.
+- Implement a vote on this proposal on Snapshot.
+- If passed:
+  - Transfer existing assets from the ENS Community multisig to the ENS DAO.
+  - Transfer control over the Registrar Controller to the ENS DAO.
 
-**Proposal Live:** https://snapshot.org/#/ens.eth/proposal/0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0
-
-https://snapshot.org/#/ens.eth/proposal/0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0
+This vote is being conducted via approval voting; select each option you wish to see pass. Those options that have at least 50% support and 1% quorum when voting ends will pass
