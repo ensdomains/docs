@@ -135,7 +135,7 @@ export default defineConfig({
           items: [
             {
               text: 'Addresses',
-              link: '',
+              link: '/web/resolution',
             },
             {
               text: 'Text Records',
