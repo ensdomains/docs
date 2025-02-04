@@ -1,11 +1,8 @@
-import { WIP } from "@/components/wip/WIP";
-
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Registrar responsible for the ".eth" TLD.',
-    emoji: '🗒️',
-    contributors: ['luc.eth']
-};
+  description: 'Registrar responsible for the ".eth" TLD.',
+  emoji: '🗒️',
+  contributors: ['luc.eth'],
+}
 
 # ETH Registrar
 
@@ -58,20 +55,11 @@ The Auction is a 21 day dutch auction, meaning that the price starts high (~100 
 This is done to prevent sniping of names, and ensures the name goes to the highest bidder fairly.
 
 <div className="card1 p-4">
-    <div className="aspect-video h-32 mx-auto border border-ens-light-border dark:border-ens-dark-border rounded-xl">
-        <svg
-            className="w-full h-full"
-            width="160"
-            height="90"
-            viewBox="0 0 160 90"
-        >
-            <path
-                d="M 10 10 Q 10 80 150 80"
-                stroke="#3889FF"
-                fill="transparent"
-            />
-        </svg>
-    </div>
+  <div className="aspect-video h-32 mx-auto border border-ens-light-border dark:border-ens-dark-border rounded-xl">
+    <svg className="w-full h-full" width="160" height="90" viewBox="0 0 160 90">
+      <path d="M 10 10 Q 10 80 150 80" stroke="#3889FF" fill="transparent" />
+    </svg>
+  </div>
 </div>
 
 You can read more about the temporary premium in [this article](https://support.ens.domains/en/articles/7900612-temporary-premium).
@@ -87,96 +75,109 @@ Read more about our spending in [Article III of the Constitution](/dao/constitut
 
 In the early days of ENS, the ERC721 standard did not exist.
 The original ETH Registrar formed the pre-cursor to the ERC721 standard.
-As we witnessed the ERC721 being standardized support for it was added to the ETH Registrar.
+As we witnessed the ERC721 being standardized, support for it was added to the ETH Registrar.
 
 Today, users can interact with the ETH Registrar to transfer their name just like with any other ERC721 token.
 
 ## Registering a Name
 
-To register a name you can use the [ENS Manager App](https://ens.app/), [ENS Fairy](https://ensfairy.xyz/), your favourite mobile wallet (if supported), or any other frontend you like.
-If you would like to register a name through a smart contract, or your own interface, you can use the following functions.
+Registering a name is a trustless process that takes place onchain (more on this below). Some open source frontends for registering names are the [ENS Manager App](https://app.ens.domains/), [ENS Fairy](https://ensfairy.xyz/), Rainbow Wallet.
 
-For the process of `.eth` name registration the ETH Registrar uses a two transaction commit reveal process.
+The process of registering a `.eth` name uses a commit-reveal process.
 
 <div className="card1 p-4 flex items-center justify-center gap-8">
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiHash className="text-2xl" />
-        <span>Commit</span>
-    </div> 
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiClock className="text-2xl" />
-        <span>Wait</span>
-    </div>
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiBookOpen className="text-2xl" />
-        <span>Reveal</span>
-    </div>
+  <div className="text-center flex flex-col items-center">
+    <Icons.FiHash className="text-2xl" />
+    <span>Commit</span>
+  </div>
+  <div className="text-center flex flex-col items-center">
+    <Icons.FiClock className="text-2xl" />
+    <span>Wait</span>
+  </div>
+  <div className="text-center flex flex-col items-center">
+    <Icons.FiBookOpen className="text-2xl" />
+    <span>Reveal</span>
+  </div>
 </div>
 
-### Commit Reveal
+### Commit-Reveal
 
-The ETHRegistrarController implements a commit reveal scheme to prevent frontrunning.
-The way it works is that during the registration process we first call the `commit` function with an opaque bit of data (the `commitmenthash`).
-Wait a few blocks and then call the `register` function.
+The ETHRegistrarController, the highest level contract that users register names through, implements a commit reveal scheme to prevent frontrunning registrations.
 
-The `commit` function takes a commitment hash, which can be generated using the `makeCommitment` function. The commitment hash is opaque and revealed during the `register` function.
+We first call the `commit` function with an opaque bit of data (the `commitmenthash`), wait 60 seconds, and then call the `register` function. The `commit` function takes a commitment hash, which can be generated using the `makeCommitment` function. The commitment hash is opaque and revealed during the `register` function.
 
-The commit reveal process ensures no eavesdropping third-party is able to register your name before you can.
+The commit-reveal process is to prevent a malicious actor from seeing your `register` transaction in the public mempool and frontrunning it.
 
 ```solidity
-ETHRegistrarController.makeCommitment(name string, owner address, duration uint256, secret bytes32, resolver address, data bytes[], reverseRecord bool, ownerControlledFuses uint16)
+ETHRegistrarController.makeCommitment(
+    name string,
+    owner address,
+    duration uint256,
+    secret bytes32,
+    resolver address,
+    data bytes[],
+    reverseRecord bool,
+    ownerControlledFuses uint16
+)
 
 // For example
 makeCommitment(
     "myname", // "myname.eth" but only the label
     0x1234..., // The address you want to own the name
     31536000, // 1 year (in seconds)
-    0x1234..., // A secret that you have generated (32 bytes)
+    0x1234..., // A randomly generated 32 byte secret you create
     0x1234..., // The address of the resolver you want to use
-    [],
-    false, // Set as primary name?
-    0
+    [0x8b95dd71...], // Encoded function calls you want to pass to the resolver, like `setAddr()`
+    false, // Whether or not to set the new name as your primary name
+    0 // The NameWrapper fuses you want to set
 );
 ```
 
-Once you have calculated the commitment hash you can call the `commit` function.
-
+Once you have calculated the commitment hash, submit the `commit` transaction.
 
 ```solidity
 ETHRegistrarController.commit(commitment bytes32)
 ```
 
-Note this does require an on-chain transaction.
-After having committed it is required to wait at least the `MIN_COMMITMENT_AGE` (60 seconds) before registering.
+After having committed, it is required to wait at least the `MIN_COMMITMENT_AGE` (60 seconds) before making the subsequent `register` transaction.
 
 ### Registering
 
-Once you have committed you can register your name.
-Registration takes in the same parameters as the `makeCommitment` function, but this time is in the form of a transaction.
+Once you have made the onchain commitment and waited 60 seconds, you can register your name.
+Registration takes in the same parameters as the `makeCommitment` function above.
 
-Before initiating registration ensure that:
+Before initiating registration, ensure that:
 
--   `available(name)` == true
--   `duration` >= `MIN_REGISTRATION_DURATION`
--   `commitments[commitment]` is between 1 min and 24 hrs old
--   `msg.value` >= `rentPrice(name, duration)` + `5-10% (slippage)`
+- `available(label)` == `true`, where `label` is "name" in "name.eth"
+- `duration` >= `MIN_REGISTRATION_DURATION`
+- `commitments[commitment]` is between 1 min and 24 hrs old
+- `msg.value` >= `rentPrice(name, duration)` + `5-10% (slippage)`
 
-Because the rent price may vary over time, callers are recommended to send slightly more than the value returned by `rentPrice`, a premium of 5-10% will likely be sufficient.
+Because the rent price is paid in ETH but denominated in USD, callers are recommended to send slightly more than the value returned by `rentPrice` to avoid issues with fast price changes. A premium of 3-5% will likely be sufficient.
 Any excess funds sent during registration are automatically returned to the caller.
 
 ```solidity
-ETHRegistrarController.register(name string, owner address, duration uint256, secret bytes32, resolver address, data bytes[], reverseRecord bool, ownerControlledFuses uint16)
+ETHRegistrarController.register(
+    name string,
+    owner address,
+    duration uint256,
+    secret bytes32,
+    resolver address,
+    data bytes[],
+    reverseRecord bool,
+    ownerControlledFuses uint16
+)
 
 // For example
 register(
     "myname", // "myname.eth" but only the label
     0x1234..., // The address you want to own the name
     31536000, // 1 year (in seconds)
-    0x1234..., // A secret that you have generated (32 bytes)
+    0x1234..., // The same secret you used in the `commit` transaction
     0x1234..., // The address of the resolver you want to use
-    [],
-    false, // Set as primary name?
-    0
+    [0x8b95dd71...], // Encoded function calls you want to pass to the resolver, like `setAddr()`
+    false, // Whether or not to set the new name as your primary name
+    0 // The NameWrapper fuses you want to set
 );
 ```
 
