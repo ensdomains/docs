@@ -143,7 +143,7 @@ export default defineConfig({
             },
             {
               text: 'Avatars',
-              link: '',
+              link: '/web/avatars',
             },
             {
               text: 'Primary Names',

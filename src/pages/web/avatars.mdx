@@ -1,76 +1,69 @@
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-  description: 'The \'Avatar\' record is a special record that allows for user profile pictures to be stored on ENS.',
-  emoji: '🔍',
-  contributors: [
-    'luc.eth'
-  ]
-};
+---
+description: The Avatar record is a special record that allows for user profile pictures to be stored on ENS.
+---
+
+import { EnsProfile } from '../../components/EnsProfile'
+import { Card } from '../../components/ui/Card'
 
 # Avatars
 
 Personalization of profiles is what makes identity great.
 This page covers the very special **avatar** record that enables users to take their avatar with them across the web.
 
-<div>
-  <div className="card1 px-8 py-4 flex justify-center items-center gap-3 not-prose">
-    <span>luc.eth</span>
-    <span>➡️</span>
-    <div className="w-8 h-8 rounded-full overflow-hidden border">
-      <img
-        src="https://enstate.rs/i/luc.eth"
-        alt="luc.eth"
-        className="w-8 h-8 rounded-full"
-      />
-    </div>
-  </div>
-</div>
+<Card className="flex justify-center">
+  <EnsProfile name="nick.eth" />
+</Card>
 
-## Getting the user's Avatar {{ navtitle: 'Getting an Avatar', id: 'avatars', tag: 'Avatar' }}
+## Getting the user's Avatar
 
 Avatars are an awesome way for users to express themselves. To get the user's avatar, all you need is their **name**. If you only have their address, see [primary names](/web/reverse#get).
 The following code snippets let you get the avatar for a user.
 
-<CodeGroup title="Request">
+:::code-group
 
-```tsx {{ variant: 'wagmi', link: 'https://wagmi.sh/react/hooks/useEnsAvatar', stackblitz: 'https://stackblitz.com/edit/ens-wagmi-use-ens-avatar' }}
-import { useEnsAvatar } from "wagmi";
+```tsx [Wagmi]
+// https://wagmi.sh/react/hooks/useEnsAvatar
+import { useEnsAvatar } from 'wagmi'
 
 function App() {
   const { data: ensAvatar } = useEnsAvatar({
-    address: "luc.eth",
+    address: 'nick.eth',
     chainId: 1, // (1 = Ethereum Mainnet, 11155111 = Sepolia)
-  });
+  })
 
   return (
     <img
-      src={ensAvatar || "https://avatars.jakerunzer.com/luc.eth"}
-      alt="luc.eth"
+      src={ensAvatar || 'https://avatars.jakerunzer.com/nick.eth'}
+      alt="nick.eth"
     />
-  );
+  )
 }
 ```
 
-```ts {{ variant: 'ethers-v5' }}
-const ensAvatar = await provider.getAvatar("luc.eth");
+```ts [Ethers]
+// https://docs.ethers.org/v5/api/providers/provider/#Provider-getAvatar
+const ensAvatar = await provider.getAvatar('nick.eth')
 ```
 
-```ts {{ variant: 'viem', link: 'https://viem.sh/docs/ens/actions/getEnsAvatar.html', stackblitz: 'https://stackblitz.com/edit/ens-viem-get-ens-avatar' }}
-import { normalize } from "viem/ens";
-import { publicClient } from "./client";
+```ts [Viem]
+// https://viem.sh/docs/ens/actions/getEnsAvatar.html
+import { normalize } from 'viem/ens'
+
+import { publicClient } from './client'
 
 const ensAvatar = await publicClient.getEnsAvatar({
-  name: normalize("luc.eth"),
-});
+  name: normalize('nick.eth'),
+})
 ```
 
-```py {{ variant: 'web3py', link: 'https://web3py.readthedocs.io/en/latest/ens_overview.html#read-text-metadata-for-an-ens-record' }}
+```py [Web3.py]
+# https://web3py.readthedocs.io/en/latest/ens_overview.html#read-text-metadata-for-an-ens-record
 from ens.auto import ns
 
 avatar = ns.get_text('alice.eth', 'avatar')
 ```
 
-```go {{ title: "Go", variant: "go" }}
+```go [Go]
 package main
 
 import (
@@ -83,7 +76,7 @@ import (
 func main() {
 	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
 
-	domain, _ := ens.Normalize("luc.eth")
+	domain, _ := ens.Normalize("nick.eth")
 	resolver, _ := ens.NewResolver(client, domain)
 	avatar, _ := resolver.Text("avatar")
 
@@ -91,7 +84,7 @@ func main() {
 }
 ```
 
-</CodeGroup>
+:::
 
 ### The Metadata Service
 
@@ -99,12 +92,12 @@ The [metadata service](https://metadata.ens.domains/docs) is run by ENS Labs. It
 avatar of an ENS name via a web request, as opposed to adding extra logic to your application and interacting
 with an ethereum node. This is of course centralised and should be used if absolutely necessary.
 
-## What exactly is an Avatar Record? {{ navtitle: 'What is it exactly?', id: 'avatar-record', tag: 'Avatar' }}
+## What exactly is an Avatar Record?
 
 An avatar record is simply a [text record](/web/records) that has "avatar" as its key and a URI as its value,
 with some rules about what URI schemes are supported and how to process them. For more info, see [ENSIP-11](/ensip/12).
 
-## Supported URI schemes {{ navtitle: 'Supported URI schemas', id: 'uri-schemas', tag: 'URI' }}
+## Supported URI schemes
 
 Clients are expected to support a number of URI schemas, which aren't always web URIs, so the final result you see in your application
 will vary depending on how the library you are using has decided to handle avatar records.
@@ -116,18 +109,18 @@ will vary depending on how the library you are using has decided to handle avata
 - `eip155:` - The URI scheme for EIP-155 identifiers for linking to NFTs on Ethereum based chains. A little complicated
   to resolve manually, most libraries should resolve this for you and return the underlying resource.
 
-<Note>
-  For EIP-155 NFT Avatars the nft must be owned by the wallet address the ENS
-  name resolves to. This is done by checking the `ownerOf` method on the NFT
-  contract.
-</Note>
+:::note
+For EIP-155 NFT Avatars the nft must be owned by the wallet address the ENS
+name resolves to. This is done by checking the `ownerOf` method on the NFT
+contract.
+:::
 
-## Common schemes that aren't officially supported {{ navtitle: 'Common schemas', id: 'common-schemas', tag: 'URI' }}
+## Common schemes that aren't officially supported
 
 - `ethereum:` - The URI scheme for Ethereum addresses
 - `bzz:` - The URI scheme for Swarm hashes
 
-## File Information {{ navtitle: 'File Information', id: 'files', tag: 'Metadata' }}
+## File Information
 
 Avatars come in many different shapes and sizes. Not just the above URI schemas, but also in different file formats, sizes, and more.
 Although standards exist for some of these, files are **not required** to follow these standards.
