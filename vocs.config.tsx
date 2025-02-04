@@ -139,7 +139,7 @@ export default defineConfig({
             },
             {
               text: 'Text Records',
-              link: '',
+              link: '/web/records',
             },
             {
               text: 'Avatars',
