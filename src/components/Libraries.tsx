@@ -166,48 +166,42 @@ const ensLibraries: Language[] = [
   },
 ]
 
+// TODO: Make this a masonry grid
 export function Libraries() {
   return (
-    <div className="mt-4">
-      <div className="not-prose grid gap-x-4 sm:grid-cols-2 xl:grid-cols-3">
-        {ensLibraries.map((language) => (
-          <div
-            className="h-fit space-y-1"
-            style={{
-              gridRow: 'span ' + Math.round(language.libraries.length * 2) + 1,
-            }}
-          >
-            <div>
-              <div className="text-base font-bold">{language.name}</div>
-            </div>
-            <div className="space-y-2 pb-2">
-              {language.libraries.map((library) => (
-                <a
-                  href={library.href}
-                  className="card1 block rounded-xl p-3"
-                  target="_blank"
-                  key={library.name}
-                >
-                  <div className="flex items-center gap-2 px-2 text-lg">
-                    {library.logo ? (
-                      <div className="flex size-5 items-center justify-center">
-                        <img
-                          src={library.logo}
-                          alt={library.name}
-                          className="size-5 object-contain"
-                        />
-                      </div>
-                    ) : (
-                      language.logo
-                    )}
-                    {library.name}
-                  </div>
-                </a>
-              ))}
-            </div>
+    <div className="grid gap-x-4 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+      {ensLibraries.map((language) => (
+        <div key={language.name} className="h-fit">
+          <span className="mb-1 block text-base font-bold">
+            {language.name}
+          </span>
+          <div className="space-y-2">
+            {language.libraries.map((library) => (
+              <a
+                href={library.href}
+                className="block rounded-lg border border-grey-bright p-2"
+                target="_blank"
+                key={library.name}
+              >
+                <div className="flex items-center gap-2 px-2 text-lg">
+                  {library.logo ? (
+                    <div className="flex size-5 items-center justify-center">
+                      <img
+                        src={library.logo}
+                        alt={library.name}
+                        className="size-5 object-contain"
+                      />
+                    </div>
+                  ) : (
+                    language.logo
+                  )}
+                  {library.name}
+                </div>
+              </a>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }

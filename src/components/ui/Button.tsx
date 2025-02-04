@@ -1,9 +1,8 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { FC, PropsWithChildren } from 'react'
+import { ComponentProps, FC, PropsWithChildren } from 'react'
 
 import { cn } from '../../lib/utils'
 
-const ArrowIcon: FC<React.SVGProps<SVGSVGElement>> = (properties) => {
+const ArrowIcon: FC<ComponentProps<'svg'>> = (properties) => {
   return (
     <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" {...properties}>
       <path
