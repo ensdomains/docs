@@ -79,15 +79,15 @@ export default defineConfig({
             },
             {
               text: 'Resolution',
-              link: '',
+              link: '/learn/resolution',
             },
             {
               text: 'DNS Names',
-              link: '',
+              link: '/learn/dns',
             },
             {
               text: 'Layer 2 & Offchain',
-              link: '',
+              link: '/learn/ccip-read',
             },
           ],
         },
@@ -96,19 +96,19 @@ export default defineConfig({
           items: [
             {
               text: 'Frequently Asked Questions',
-              link: '',
+              link: '/faq',
             },
             {
               text: 'Terminology',
-              link: '',
+              link: '/terminology',
             },
             {
               text: 'Bug Bounties',
-              link: '',
+              link: '/bugs',
             },
             {
               text: 'Changelog',
-              link: '',
+              link: '/changelog',
             },
           ],
         },
