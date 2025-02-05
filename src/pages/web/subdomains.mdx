@@ -1,33 +1,32 @@
-import { WIP } from '@/components/wip/WIP'
+---
+description: Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.
+---
 
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-description: 'Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.',
-emoji: '⚙️',
-contributors: [
-'luc.eth'
-]
-};
+import { EmbedLink } from '../../components/EmbedLink'
+import { Card } from '../../components/ui/Card'
 
 # Subdomains
 
 Names come in handy in many situations. We believe that any place an address is used, a name should be able to be used instead.
 The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
 
-<div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
+<Card className="flex items-center justify-center text-xl">
   <div className="text-right font-bold">
-    {['vault', 'domico', 'subname', 'nick', 'cold'].map((subname, i) => (
-      <div
-        className={
-          ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
-        }
-      >
-        {subname}
-      </div>
-    ))}
+    {['root', 'registrar', 'controller', 'resolver', 'registry'].map(
+      (subname, i) => (
+        <div
+          className={
+            ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+          }
+          key={subname}
+        >
+          {subname}
+        </div>
+      )
+    )}
   </div>
-  <div className="font-bold">.nick.eth</div>
-</div>
+  <div className="font-bold text-blue">.ens.eth</div>
+</Card>
 
 Luckily, the ENS Protocol has so much to offer for you to play with. There are a variety of ways you can give out subdomains to your apps users, set them up for yourself, or more.
 
@@ -35,7 +34,7 @@ If you are interested in naming smart-contracts specifically, check out the [Nam
 
 ## Pre-built Tooling
 
-### Durin (new!)
+### Durin
 
 [Durin](https://durin.dev/) is an opinionated approach to issuing ENS subnames on L2. It takes care of the L1 Resolver and offchain gateway parts of the [CCIP Read stack](/resolvers/ccip-read) for you, so you can focus on the business logic of your L2 smart contracts.
 

@@ -164,7 +164,7 @@ export default defineConfig({
             },
             {
               text: 'Issuing Subdomains',
-              link: '',
+              link: '/web/subdomains',
             },
             {
               text: 'Naming Smart-contracts',
