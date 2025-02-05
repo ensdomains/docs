@@ -4,33 +4,47 @@ import { useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi'
 import { cn, truncateAddress } from '../lib/utils'
 
 type EnsProfileProps =
-  | { name: string; address: undefined }
-  | { address: Address; name: undefined }
+  | { name: string; address: undefined; hideAddress?: boolean }
+  | { address: Address; name: undefined; hideAddress?: boolean }
 
-export function EnsProfile({ name, address }: EnsProfileProps) {
+export function EnsProfile({ name, address, hideAddress }: EnsProfileProps) {
   return name
-    ? EnsProfileFromName({ name })
+    ? EnsProfileFromName({ name, hideAddress })
     : address
-      ? EnsProfileFromAddress({ address })
+      ? EnsProfileFromAddress({ address, hideAddress })
       : null
 }
 
-function EnsProfileFromName({ name }: { name: string }) {
+function EnsProfileFromName({
+  name,
+  hideAddress,
+}: {
+  name: string
+  hideAddress?: boolean
+}) {
   const { data: address } = useEnsAddress({ name, chainId: 1 })
-  return <Profile name={name} address={address} />
+  return <Profile name={name} address={address} hideAddress={hideAddress} />
 }
 
-function EnsProfileFromAddress({ address }: { address: Address }) {
+function EnsProfileFromAddress({
+  address,
+  hideAddress,
+}: {
+  address: Address
+  hideAddress?: boolean
+}) {
   const { data: name } = useEnsName({ address, chainId: 1 })
-  return <Profile name={name} address={address} />
+  return <Profile name={name} address={address} hideAddress={hideAddress} />
 }
 
 function Profile({
   name,
   address,
+  hideAddress,
 }: {
   name?: string | null
   address?: Address | null
+  hideAddress?: boolean
 }) {
   const { data: avatar } = useEnsAvatar({ name: name || undefined, chainId: 1 })
 
@@ -44,9 +58,11 @@ function Profile({
         <div className="flex flex-col gap-0.5 leading-none">
           <span className="font-semibold">{name || 'No name'}</span>
 
-          <span className={cn('text-xs text-grey')}>
-            {truncateAddress(address || zeroAddress)}
-          </span>
+          {!hideAddress && (
+            <span className={cn('text-xs text-grey')}>
+              {truncateAddress(address || zeroAddress)}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -147,7 +147,7 @@ export default defineConfig({
             },
             {
               text: 'Primary Names',
-              link: '',
+              link: '/web/reverse',
             },
             {
               text: 'Listing Names',
