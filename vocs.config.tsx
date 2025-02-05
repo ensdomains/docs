@@ -151,7 +151,7 @@ export default defineConfig({
             },
             {
               text: 'Listing Names',
-              link: '',
+              link: '/web/enumerate',
             },
           ],
         },
