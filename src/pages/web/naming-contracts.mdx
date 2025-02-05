@@ -1,20 +1,6 @@
-import { WIP } from '@/components/wip/WIP';
+# Naming Contracts [Learn how to name your smart contracts with ENS]
 
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: 'Learn how to name a contract',
-    emoji: '⚙️',
-    contributors: []
-};
-
-# Naming Contracts
-
-For most regular wallets you can set your primary name from within the [Manager App](https://ens.domains).
-However also smart contracts can have names, and even better they can have primary names.
-
-```
-governance.uniswap.eth
-```
+For most regular wallets you can set your primary name from within the [Manager App](https://ens.domains). However also smart contracts can have names, and even better they can have primary names.
 
 In order for you to manage the primary name of your smart contract, you need to own the [reverse node](/terminology#reverse-node) for the contract address.
 There are several ways of doing this, depending on if you are actively developing your contract or if it is already deployed.
@@ -37,7 +23,7 @@ contract MyContract is ReverseClaimer {
 
 When you deploy your contract it will automatically claim the reverse node for that contract address.
 
-### Ownable (OpenZeppelin) {{ id: 'ownable' }}
+### Ownable (OpenZeppelin)
 
 You can can also choose to have your smart-contract implement [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) from OpenZeppelin.
 The ReverseRegistrar supports the Ownable interface and will let the `Owner` set a Primary name.
@@ -98,8 +84,6 @@ You can do so by hitting the `setNameForAddr` function on the [Reverse Registrar
 
 From your contract you can execute `setName` function on the [Reverse Registrar](/registry/reverse)
 
-<LiveDemo id="reversesetnamefordemo" />
-
 ## L2 Contracts
 
 Primary Names are not yet supported on L2s. In the meantime, the following sections only apply to testnet ENS deployments. Mainnet support should be coming by the end of January 2025.
@@ -110,14 +94,14 @@ If you want to set a primary name for a contract you are deploying on an L2 chai
 
 You will also need to locate the canonical Reverse Registry for that L2 chain. We currently do not have a way to discover those contracts, but for now, selected deployments are listed here: [Primary Names](/web/reverse#set)
 
-Then, after you've deployed your contract, call `setNameForAddr(address addr, string name)` on the L2 Reverse Resolver from your authorized owner account. The `addr` is the address of your contract, and `name` is the ENS name to set it to. 
+Then, after you've deployed your contract, call `setNameForAddr(address addr, string name)` on the L2 Reverse Resolver from your authorized owner account. The `addr` is the address of your contract, and `name` is the ENS name to set it to.
 
 ### L2 - Manually
 
 Another option is to call the L2ReverseRegistry's `setName(string name)` function directly, in the constructor of your contract. However note that if you do this, you will not be able to change the primary name for that contract ever again.
 
-<Note>
-    Make sure that the ENS name also resolves to your contract address for the appropriate cointype.
+:::note
+Make sure that the ENS name also resolves to your contract address for the appropriate cointype.
 
-    For example, if you are deploying a contract on Base, make sure you set the Base address on your ENS name to your contract address.
-</Note>
+For example, if you are deploying a contract on Base, make sure you set the Base address on your ENS name to your contract address.
+:::

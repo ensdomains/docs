@@ -1,19 +1,12 @@
-import { WIP } from '@/components/wip/WIP'
-import { Note } from '@/components/mdx/Note'
-
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: 'The ENS subgraph',
-    emoji: '⚙️',
-    contributors: [
-        'luc.eth'
-    ]
-};
+---
+description: The ENS subgraph
+---
 
 # Subgraph
 
 This is a page covering the graph's ENS subgraph. The ENS subgraph indexes on-chain events of second-level .eth names, and DNS imported names.
 It allows us to build a reasonable approximation of the ENS names an address owns.
+
 To read more about why not all names (such as Offchain & Gasless Names) show up in the subgraph read the [listing names](/web/enumerate) page.
 
 ## The Graph
@@ -21,11 +14,11 @@ To read more about why not all names (such as Offchain & Gasless Names) show up 
 The Graph is a protocol for indexing and querying data from blockchains. There are multiple subgraphs that you can use to query information about ENS names.
 These subgraphs are available for [mainnet](https://api.thegraph.com/subgraphs/name/ensdomains/ens), [sepolia](https://api.studio.thegraph.com/query/49574/enssepolia/version/latest) and [holesky](https://api.studio.thegraph.com/query/49574/ensholesky/version/latest).
 
-<Note>
-  Developers are welcome to use our rate limited API endpoints above for
-  testing, but it is highly encouraged to [sign up for a free account with
-  TheGraph](https://thegraph.com/studio/apikeys/) to get your own API key.
-</Note>
+:::note
+Developers are welcome to use our rate limited API endpoints above for
+testing, but it is highly encouraged to [sign up for a free account with
+TheGraph](https://thegraph.com/studio/apikeys/) to get your own API key.
+:::
 
 ## GraphQL Schema
 
@@ -51,8 +44,6 @@ query getDomainsForAccount {
   }
 }
 ```
-
-<LiveDemo id="listnamesdemo" />
 
 ### Getting the top domain for an account based on the longest registry
 

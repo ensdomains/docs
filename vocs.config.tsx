@@ -168,15 +168,15 @@ export default defineConfig({
             },
             {
               text: 'Naming Smart-contracts',
-              link: '',
+              link: '/web/naming-contracts',
             },
             {
               text: "Layer 2's & Multichain",
-              link: '',
+              link: '/web/multichain',
             },
             {
               text: 'Subgraph',
-              link: '',
+              link: '/web/subgraph',
             },
           ],
         },
