@@ -160,7 +160,7 @@ export default defineConfig({
           items: [
             {
               text: 'Decentralized Web',
-              link: '',
+              link: '/dweb/intro',
             },
             {
               text: 'Issuing Subdomains',
