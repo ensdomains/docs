@@ -1,5 +1,6 @@
 import { defineConfig } from 'vocs'
 
+import { deployments } from './src/plugins/deployments'
 import { ensips } from './src/plugins/ensips'
 
 const ensipSidebarItems = new Array()
@@ -43,7 +44,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [ensips()],
+    plugins: [ensips(), deployments()],
   },
   head: {
     // TODO: Ideally this should get injected into <header> for semantics via a remark plugin.
@@ -71,11 +72,11 @@ export default defineConfig({
           items: [
             {
               text: 'The Protocol',
-              link: '',
+              link: '/learn/protocol',
             },
             {
               text: 'Deployments',
-              link: '',
+              link: '/learn/deployments',
             },
             {
               text: 'Resolution',

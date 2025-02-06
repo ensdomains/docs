@@ -9,7 +9,8 @@ yarn-error.log*
 vocs.config.ts.timestamp-*
 src/dist
 
-# Generated markdown files
+# Generated plugin files
 src/pages/deployments.md
 src/pages/ensip/*
 !src/pages/ensip/index.mdx
+src/lib/deployments.json
