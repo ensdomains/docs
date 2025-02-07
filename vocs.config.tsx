@@ -222,23 +222,23 @@ export default defineConfig({
           items: [
             {
               text: 'Start Here',
-              link: '',
+              link: '/resolvers/quickstart',
             },
             {
               text: 'Public Resolver',
-              link: '',
+              link: '/resolvers/public',
             },
             {
               text: 'Interacting with a resolver',
-              link: '',
+              link: '/resolvers/interacting',
             },
             {
               text: 'Writing your own resolver',
-              link: '',
+              link: '/resolvers/writing',
             },
             {
               text: 'Cross Chain Resolvers',
-              link: '',
+              link: '/resolvers/ccip-read',
             },
             {
               text: 'Universal Resolver',

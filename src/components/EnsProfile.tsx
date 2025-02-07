@@ -49,7 +49,7 @@ function Profile({
   const { data: avatar } = useEnsAvatar({ name: name || undefined, chainId: 1 })
 
   return (
-    <div className="flex w-fit items-center justify-center rounded-full border border-grey-light bg-white p-1 pr-6 shadow-sm">
+    <div className="flex w-fit min-w-fit items-center justify-center rounded-full border border-grey-light bg-white p-1 pr-6 shadow-sm">
       <div className="flex items-center gap-2">
         <img
           src={avatar || '/img/fallback-avatar.svg'}

@@ -1,10 +1,3 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: 'How to write your own resolver.',
-    emoji: '✍️',
-    contributors: []
-};
-
 # Writing a Resolver
 
 Every ENS name has a resolver, which is responsible for resolving information about a name.
@@ -24,7 +17,7 @@ interface IMyResolver {
     function addr(bytes32 node, uint256 coinType) external view returns (bytes memory);
     function contenthash(bytes32 node) external view returns (bytes memory);
     function text(bytes32 node, string calldata key) external view returns (string memory);
-    
+
     function setAddr(bytes32 node, address addr) external;
     function setAddr(bytes32 node, uint256 coinType, bytes calldata a) external;
     function setContenthash(bytes32 node, bytes calldata hash) external;
@@ -37,7 +30,7 @@ interface IMyResolver {
 In [ENSIP-10](/ensip/10) a new `resolve()` method was added to the resolver interface to allow for wildcard resolution.
 
 ```solidity
-interface IExtendedResolver {    
+interface IExtendedResolver {
     /**
      * @dev Performs ENS name resolution for the supplied name and resolution data.
      * @param name The name to resolve, in normalised and DNS-encoded form.
@@ -51,9 +44,9 @@ interface IExtendedResolver {
 }
 ```
 
-<Note>
+:::note
 Don't forget to add `0x9061b923` to your [EIP-165](https://eips.ethereum.org/) `supportsInterface()` implementation.
-</Note>
+:::
 
 ## Offchain Resolution
 
