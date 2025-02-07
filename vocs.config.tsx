@@ -209,11 +209,11 @@ export default defineConfig({
           items: [
             {
               text: 'Resolution Process',
-              link: '',
+              link: '/resolution',
             },
             {
               text: 'Name Processing',
-              link: '',
+              link: '/resolution/names',
             },
           ],
         },
