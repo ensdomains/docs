@@ -202,7 +202,7 @@ export default defineConfig({
       items: [
         {
           text: 'Overview',
-          link: '',
+          link: '/contracts',
         },
         {
           text: 'Resolution',
