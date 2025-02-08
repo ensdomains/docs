@@ -1,26 +1,15 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: '',
-    emoji: '🎁',
-    contributors: [
-        'serenae-fansubs'
-    ]
-};
-
 # Name Wrapper Contract Details
 
 The Name Wrapper contract is deployed on these chains:
 
-<ul>
-    <li key="ct1">Mainnet: <a href="https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401#code">wrapper.ens.eth ( `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401` )</a></li>
-    <li key="ct3">Sepolia: <a href="https://sepolia.etherscan.io/address/0x0635513f179D50A207757E05759CbD106d7dFcE8#code">`0x0635513f179D50A207757E05759CbD106d7dFcE8`</a></li>
-</ul>
+- Mainnet: [wrapper.ens.eth](https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401#code) ( `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401` )
+- Sepolia: [wrapper.ens.eth](https://sepolia.etherscan.io/address/0x0635513f179D50A207757E05759CbD106d7dFcE8#code) ( `0x0635513f179D50A207757E05759CbD106d7dFcE8` )
 
 ## Wrapping and Unwrapping
 
 When wrapping a .eth 2LD, you transfer the Owner (Registrant) of the ERC-721 NFT to the Name Wrapper contract.
 
-The contract will then automatically take over the Manager (Controller) for the name as well. 
+The contract will then automatically take over the Manager (Controller) for the name as well.
 
 You can do this by calling the <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrapeth2ld">wrapETH2LD</a> method. Or, you can directly transfer the ERC-721 NFT to the Name Wrapper contract. In return, the contract issues you an ERC-1155 NFT.
 
@@ -155,7 +144,7 @@ The "Renewal Manager" does not have full control over your wrapped name, it can 
 
 Further, if you burn the **`CANNOT_APPROVE`** fuse on your name, then the approved renewal manager can no longer be changed. You can use this to "lock in" that contract, so that you can guarantee to all subname owners that renewals/extensions can always be done.
 
-This approved renewal manager will be reset if the wrapped NFT is burned or re-minted, which happens if you unwrap the name, or if an expired name gets re-registered. It will also be reset if the wrapped NFT is transferred, **unless** the **`CANNOT_APPROVE`** fuse is burned. 
+This approved renewal manager will be reset if the wrapped NFT is burned or re-minted, which happens if you unwrap the name, or if an expired name gets re-registered. It will also be reset if the wrapped NFT is transferred, **unless** the **`CANNOT_APPROVE`** fuse is burned.
 
 ### Example - Subname Registrar Contract
 

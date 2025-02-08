@@ -1,31 +1,22 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: '',
-    emoji: '🕹️',
-    contributors: [
-        'serenae-fansubs'
-    ]
-};
-
 # Creating a Subname Registrar
 
-In the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do. It's recommended to first read the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section to get an overview of the decisions you'll need to make.
+In the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do. It's recommended to first read the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section to get an overview of the decisions you'll need to make.
 
 ## Prerequisites
 
 This guide assumes that your parent name (such as `myname.eth`) is already wrapped. If you're not sure whether your name is wrapped, look at the More tab on the Manager app. If the name is unwrapped, it will say so, and it will show you a "Wrap Name" button.
 
-If you want to issue <a href="/wrapper/states#emancipated">Emancipated</a> subnames, or subnames with <a href="/wrapper/fuses">any other fuses</a> burned, then your parent name must first be <a href="/wrapper/states#locked">Locked</a>. You can do this on the Permissions tab in the ENS manager app.
+If you want to issue [Emancipated](/wrapper/states#emancipated) subnames, or subnames with [any other fuses](/wrapper/fuses) burned, then your parent name must first be [Locked](/wrapper/states#locked). You can do this on the Permissions tab in the ENS manager app.
 
-<Note>
-  Locking your name (in other words revoking the permission to unwrap) is an **irreversible** change. After you lock the name, you will no longer be able to unwrap it. This is a security guarantee for the holders of all subnames. It ensures that the owner of the parent name cannot get around the security guarantees of the Name Wrapper.
+:::note
+Locking your name (in other words revoking the permission to unwrap) is an **irreversible** change. After you lock the name, you will no longer be able to unwrap it. This is a security guarantee for the holders of all subnames. It ensures that the owner of the parent name cannot get around the security guarantees of the Name Wrapper.
 
-  Best to do this on a testnet (Sepolia/Holesky) name first, for development or testing purposes.
-</Note>
+Best to do this on a testnet (Sepolia/Holesky) name first, for development or testing purposes.
+:::
 
 ## Creating and Deploying your Registrar Contract
 
-In order to create a new subname, your contract should call call either `setSubnodeOwner` or `setSubnodeRecord` on the <a href="/learn/deployments#deployments">NameWrapper contract</a>. Also pass in the fuses and expiry at the same time, as needed.
+In order to create a new subname, your contract should call call either `setSubnodeOwner` or `setSubnodeRecord` on the [NameWrapper contract](/learn/deployments#deployments). Also pass in the fuses and expiry at the same time, as needed.
 
 ```solidity
 NameWrapper.setSubnodeOwner(bytes32 parentNode, string label, address owner, uint32 fuses, uint64 expiry)
@@ -60,11 +51,12 @@ register(bytes32 parentNode, string calldata label)
 ```
 
 Then under the hood, your contract will call `setSubnodeRecord` and fill in the rest of the parameters on behalf of the user:
-* owner: Typically the caller account, `msg.sender`
-* resolver: Typically the default public resolver, `resolver.eth`
-* ttl: 0
-* fuses: Up to you and your goals. See the <a href="/wrapper/usecases#sell-or-rent-subnames">Use Cases</a> section for a discussion on this. Typically 65536 for an enamcipated rental subname, or 327680 for an emancipated "forever" name.
-* expiry: Up to you and your goals. If you are renting subnames for a particular length of time, this expiry would reflect that. If you are allowing registration of "forever" names, then you can just set the expiry equal to the parent name's current expiry.
+
+- owner: Typically the caller account, `msg.sender`
+- resolver: Typically the default public resolver, `resolver.eth`
+- ttl: 0
+- fuses: Up to you and your goals. See the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section for a discussion on this. Typically 65536 for an enamcipated rental subname, or 327680 for an emancipated "forever" name.
+- expiry: Up to you and your goals. If you are renting subnames for a particular length of time, this expiry would reflect that. If you are allowing registration of "forever" names, then you can just set the expiry equal to the parent name's current expiry.
 
 Of course, if you want to give the registrant more power/convenience, you could allow some of those parameters to be passed in to your public register function as well.
 
@@ -72,11 +64,11 @@ Of course, if you want to give the registrant more power/convenience, you could 
 
 If you want your subname registrar to set records on a subname in the same registration transaction, then the flow will be slightly different. In that case, perform these steps:
 
-* Call `setSubnodeOwner`, setting the _contract itself_ (`address(this)`) as the owner of the subname, temporarily. This first step is needed for the default Public Resolver so that the contract has the authority to set records for the subname.
-* Call whatever <a href="/resolvers/interacting">resolver methods</a> you need to. Perhaps these are records that you want to be pre-set on your subnames (such as an ETH address that the subname points to). Or perhaps these are records that you allow the registrant to pass in, so that they can register their subname and set whatever records they want all in one transaction.
-* Call `setSubnodeRecord`, but this time set the owner to the actual intended owner of the subname. This is the point at which you should set the appropriate fuses and expiry you want to, as well.
+- Call `setSubnodeOwner`, setting the _contract itself_ (`address(this)`) as the owner of the subname, temporarily. This first step is needed for the default Public Resolver so that the contract has the authority to set records for the subname.
+- Call whatever [resolver methods](/resolvers/interacting) you need to. Perhaps these are records that you want to be pre-set on your subnames (such as an ETH address that the subname points to). Or perhaps these are records that you allow the registrant to pass in, so that they can register their subname and set whatever records they want all in one transaction.
+- Call `setSubnodeRecord`, but this time set the owner to the actual intended owner of the subname. This is the point at which you should set the appropriate fuses and expiry you want to, as well.
 
-In addition, you will need to make sure your contract follows the <a href="https://eips.ethereum.org/EIPS/eip-1155#erc-1155-token-receiver">ERC-1155 Token Receiver rules</a>. This means implementing the `onERC1155Received` and `onERC1155BatchReceived` methods, and signaling support for them in your ERC-165 `supportsInterface` method. OpenZeppelin has an easy abstract contract you can include for all this: <a href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/utils/ERC1155Holder.sol">ERC1155Holder.sol</a>
+In addition, you will need to make sure your contract follows the [ERC-1155 Token Receiver rules](https://eips.ethereum.org/EIPS/eip-1155#erc-1155-token-receiver). This means implementing the `onERC1155Received` and `onERC1155BatchReceived` methods, and signaling support for them in your ERC-165 `supportsInterface` method. OpenZeppelin has an easy abstract contract you can include for all this: [ERC1155Holder.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/utils/ERC1155Holder.sol)
 
 ### Taking fees
 
@@ -106,7 +98,7 @@ Once you have a parent name ready and a subname registrar contract deployed, the
 
 ### (If needed) Call setupDomain on your contract
 
-This will only apply to you if you have a specific `setupDomain` method or something similar on your contract, such as the <a href="#reference-implementation">reference implementation contracts</a> do.
+This will only apply to you if you have a specific `setupDomain` method or something similar on your contract, such as the [reference implementation](/wrapper/creating-subname-registrar#reference-implementation) contracts do.
 
 Calling this method will "enable" a specific parent name in your subname registrar. It can also allow you to set or update the pricing terms or beneficiary account, if needed.
 

@@ -1,11 +1,4 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: '',
-    emoji: '🎁',
-    contributors: [
-        'serenae-fansubs'
-    ]
-};
+import { Card } from '../../components/ui/Card'
 
 # Name Wrapper Expiry
 
@@ -21,9 +14,9 @@ For example, say a name expires in 5 years. The owner of the name can then set t
 
 Then in turn, the owner of the subname can set the expiry of its own subnames up to a maximum of 2 years, but it could also set it to something less, like 1 year.
 
-<div className="card1 p-4">
-    <img src="/content/namewrapper/namewrapper-expiry-subnames.jpg" alt="Expiry Diagram" />
-</div>
+<Card>
+  <img src="/img/namewrapper-expiry-subnames.jpg" alt="Expiry Diagram" />
+</Card>
 
 The parent can set a different expiry for different subnames too, just as it can burn different fuses for different subnames.
 
@@ -47,11 +40,11 @@ So, if you are running a subname registrar and you want to enable "unruggable re
 
 For .eth second-level names, the end of the name's grace period (from the .eth Registrar) is used for the expiry inside of the Name Wrapper.
 
-So if the name's expiration date in the Registrar is January 1st, then the expiry in the Name Wrapper will reflect that date *plus* the grace period (currently 90 days, so approximately April 1st, depending on the year).
+So if the name's expiration date in the Registrar is January 1st, then the expiry in the Name Wrapper will reflect that date _plus_ the grace period (currently 90 days, so approximately April 1st, depending on the year).
 
-When the name's expiration date (from the .eth Registrar) has been reached, and the name is now in the grace period, all Name Wrapper operations on the name will be restricted. 
+When the name's expiration date (from the .eth Registrar) has been reached, and the name is now in the grace period, all Name Wrapper operations on the name will be restricted.
 
-The owner will *not* yet lose ownership of the name, but they will also not be able to unwrap or update the name until it has been renewed.
+The owner will _not_ yet lose ownership of the name, but they will also not be able to unwrap or update the name until it has been renewed.
 
 ## Expiry Implications
 

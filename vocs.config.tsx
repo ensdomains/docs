@@ -255,15 +255,15 @@ export default defineConfig({
           items: [
             {
               text: 'The Registry',
-              link: '',
+              link: '/registry/ens',
             },
             {
               text: 'ETH Registrar',
-              link: '',
+              link: '/registry/eth',
             },
             {
               text: 'DNS Registrar',
-              link: '',
+              link: '/registry/dns',
             },
             {
               text: 'TLDs List',
@@ -271,7 +271,7 @@ export default defineConfig({
             },
             {
               text: 'Reverse Registrar',
-              link: '',
+              link: '/registry/reverse',
             },
           ],
         },
@@ -280,31 +280,31 @@ export default defineConfig({
           items: [
             {
               text: 'Overview',
-              link: '',
+              link: '/wrapper/overview',
             },
             {
               text: 'Wrapped States',
-              link: '',
+              link: '/wrapper/states',
             },
             {
               text: 'Fuses',
-              link: '',
+              link: '/wrapper/fuses',
             },
             {
               text: 'Expiry',
-              link: '',
+              link: '/wrapper/expiry',
             },
             {
               text: 'Contract Details',
-              link: '',
+              link: '/wrapper/contracts',
             },
             {
               text: 'Use-Cases',
-              link: '',
+              link: '/wrapper/usecases',
             },
             {
               text: 'Creating a Subname Registrar',
-              link: '',
+              link: '/wrapper/creating-subname-registrar',
             },
           ],
         },

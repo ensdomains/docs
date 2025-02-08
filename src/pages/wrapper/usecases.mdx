@@ -1,12 +1,3 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: '',
-    emoji: '🎁',
-    contributors: [
-        'serenae-fansubs'
-    ]
-};
-
 # Name Wrapper Use-Cases
 
 ## Lock the resolved records for a name
@@ -17,24 +8,21 @@ However, in some cases perhaps you want to make sure that a name resolves to spe
 
 Say you own `mycoolcontract.eth` representing a smart contract. You can use ENS subnames to refer to specific versions of that contract, like `1.mycoolcontract.eth`. And perhaps you want those versioned subnames to always point to:
 
-<ul>
-    <li key="uc1-1">The ETH address of that immutable contract</li>
-    <li key="uc1-2">The ABI for that contract</li>
-    <li key="uc1-3">The contenthash for some versioned documentation page</li>
-    <li key="uc1-4">etc.</li>
-</ul>
+- The ETH address of that immutable contract
+- The ABI for that contract
+- The contenthash for some versioned documentation page
+- etc.
 
 One way to do this is just to make sure the name is **Locked**, all the records are set correctly, and then transfer the owner to some burn address so it can never be updated again.
 
-But of course this isn't ideal, because maybe there are some records that you *do* want to update in the future. Or maybe you still want to keep ownership of that subname for other reasons.
+But of course this isn't ideal, because maybe there are some records that you _do_ want to update in the future. Or maybe you still want to keep ownership of that subname for other reasons.
 
 Instead of essentially burning the name, you could create a custom resolver that locks in certain records forever. Then:
 
-<ol>
-    <li key="uc1-5">Set the resolver of that name to your custom contract</li>
-    <li key="uc1-6">Set the records however you want and lock them into the resolver</li>
-    <li key="uc1-7">Burn these fuses on the name:<ul><li key="uc1-8">`PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_SET_RESOLVER`</li></ul></li>
-</ol>
+1. Set the resolver of that name to your custom contract
+2. Set the records however you want and lock them into the resolver
+3. Burn these fuses on the name:
+   - `PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_SET_RESOLVER`
 
 Now you can still keep ownership and even some limited management power over the name, while still guaranteeing that the ETH address, ABI, and whatever other records are completely immutable, as long as the expiry is set appropriately.
 
@@ -44,10 +32,10 @@ Maybe you have `mycoolevent.eth` and you want to issue tickets like `1.ticket.20
 
 If you want, you can choose to not Emancipate those subnames, but still burn some custom parent-controlled fuses. Those fuses might:
 
-<ul>
-    <li key="uc2-1">Indicate what "tier" their event ticket is<ul><li key="uc2-2">Maybe they can upgrade their ticket to a higher tier, which would burn some additional fuses</li></ul></li>
-    <li key="uc2-3">Allow them access to the express line or some VIP room<ul><li key="uc2-4">Maybe even automatically via some smart door</li></ul></li>
-</ul>
+- Indicate what "tier" their event ticket is
+  - Maybe they can upgrade their ticket to a higher tier, which would burn some additional fuses
+- Allow them access to the express line or some VIP room
+  - Maybe even automatically via some smart door
 
 When you burn those fuses, perhaps you also set the expiry to the day after the event ends.
 
@@ -55,15 +43,11 @@ Or, maybe you want your attendees to be able to keep their subnames as a souveni
 
 If so, then instead of letting the names expire at the end of the event, you could extend the expiry and burn some additional fuses to allow the attendees to keep them forever! In that case you might want to burn these fuses:
 
-<ul>
-    <li key="uc2-5">`CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL`</li>
-</ul>
+- `CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL`
 
 If you want those tickets to be non-transferrable (soulbound to the address that attended), then burn these fuses:
 
-<ul>
-    <li key="uc2-6">`CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_TRANSFER`</li>
-</ul>
+- `CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_TRANSFER`
 
 ## Sell or rent subnames
 
@@ -83,9 +67,9 @@ First, note that if you want to burn any fuses on subnames, then your name must 
 
 Assuming that you want your subnames to be "unruggable", such that you cannot replace / revoke them, then you will want to burn **`PARENT_CANNOT_CONTROL`** on the subnames. This will place them in the **Emancipated** state upon registration.
 
-If you want to sell "forever" subnames, where users register once and can then keep them for as long as they wish, then you can consider burning the **`CAN_EXTEND_EXPIRY`** fuse. 
+If you want to sell "forever" subnames, where users register once and can then keep them for as long as they wish, then you can consider burning the **`CAN_EXTEND_EXPIRY`** fuse.
 
-This will allow the subname owner to extend their own expiry whenever they want. The max expiry is the expiry of the parent name, but the .eth Registrar allows *anyone* to renew/extend a .eth 2LD as well.
+This will allow the subname owner to extend their own expiry whenever they want. The max expiry is the expiry of the parent name, but the .eth Registrar allows _anyone_ to renew/extend a .eth 2LD as well.
 
 If you just want to **rent** subnames, then do not burn **`CAN_EXTEND_EXPIRY`**. Instead, you could include a `renew` method on your contract that users can call for another fee.
 
@@ -99,12 +83,14 @@ For example, if you want to prevent owners of your subnames (like `my.verypopula
 
 To recap on fuses...
 
-<ul>
-    <li key="uc2-7">Sell permanent names:<ul><li key="uc2-8">`CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL`</li></ul></li>
-    <li key="uc2-9">Sell permanent names, but prevent them from creating their own subnames:<ul><li key="uc2-10">`CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_CREATE_SUBDOMAIN`</li></ul></li>
-    <li key="uc2-11">Rent out names:<ul><li key="uc2-12">`PARENT_CANNOT_CONTROL`</li></ul></li>
-    <li key="uc2-13">Rent out names, but prevent them from transferring or reselling them:<ul><li key="uc2-14">`PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_TRANSFER`</li></ul></li>
-</ul>
+- Sell permanent names:
+  - `CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL`
+- Sell permanent names, but prevent them from creating their own subnames:
+  - `CAN_EXTEND_EXPIRY | PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_CREATE_SUBDOMAIN`
+- Rent out names:
+  - `PARENT_CANNOT_CONTROL`
+- Rent out names, but prevent them from transferring or reselling them:
+  - `PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_TRANSFER`
 
 And so on, it's up to you. You can also burn whatever custom parent-controlled or owner-controlled fuses you want to.
 
@@ -116,14 +102,15 @@ For example, the .eth Registrar imposes a 3-character minimum on all names, as w
 
 By default there is no character limit on subnames, but your contract could have its own rules and fee structure or whatever you want. For example, you can:
 
-<ul>
-    <li key="uc2-15">Allow or disallow specific addresses from registering / renewing</li>
-    <li key="uc2-16">Only allow registration based on some custom criteria like holding a specific NFT</li>
-    <li key="uc2-17">Custom length restrictions like only 3+ characters or < 100 characters</li>
-    <li key="uc2-18">Only allow names with characters `[a-z0-9]` and nothing else</li>
-    <li key="uc2-19">Use a custom fee structure based on:<ul><li key="uc2-20">The length of the name</li><li key="uc2-21">The specific characters that are in the name, like emojis</li><li key="uc2-22">A pre-curated list of "good" names like people's first names</li></ul></li>
-    <li key="uc2-23">And whatever other rules you want.</li>
-</ul>
+- Allow or disallow specific addresses from registering / renewing
+- Only allow registration based on some custom criteria like holding a specific NFT
+- Custom length restrictions like only 3+ characters or < 100 characters
+- Only allow names with characters `[a-z0-9]` and nothing else
+- Use a custom fee structure based on:
+  - The length of the name
+  - The specific characters that are in the name, like emojis
+  - A pre-curated list of "good" names like people's first names
+- And whatever other rules you want.
 
 ### More information
 
@@ -157,11 +144,13 @@ To make it easy for anyone to claim/reclaim a subname after your initial drop, y
 
 The claim method of your contract could:
 
-<ol>
-    <li key="uc3-1">Call `ownerOf` or `balanceOf` on your NFT contract to get or verify the current owner of the NFT</li>
-    <li key="uc3-2">Call `ownerOf` or `balanceOf` on the ENS Name Wrapper contract to get or verify the current owner of the wrapped subname<ul><li key="uc3-3">If both owner addresses are the same, just return, nothing to do</li></ul></li>
-    <li key="uc3-4">Call `setSubnodeOwner` or `setSubnodeRecord` on the ENS Name Wrapper:<ul><li key="uc3-5">**owner:** The current owner of the NFT</li><li key="uc3-6">**fuses:** What fuses you want to burn (if any) on that subname. If you burn any fuses, you must also set an expiry.</li><li key="uc3-7">**expiry:** When the subname will expire.</li></ul></li>
-</ol>
+1. Call `ownerOf` or `balanceOf` on your NFT contract to get or verify the current owner of the NFT
+2. Call `ownerOf` or `balanceOf` on the ENS Name Wrapper contract to get or verify the current owner of the wrapped subname
+   - If both owner addresses are the same, just return, nothing to do
+3. Call `setSubnodeOwner` or `setSubnodeRecord` on the ENS Name Wrapper:
+   - **owner:** The current owner of the NFT
+   - **fuses:** What fuses you want to burn (if any) on that subname. If you burn any fuses, you must also set an expiry.
+   - **expiry:** When the subname will expire.
 
 Then, to give that contract access to create subnames on your behalf, you would call `setApprovalForAll` on the Name Wrapper to approve your contract as an operator.
 
@@ -173,7 +162,7 @@ If you are creating a new NFT contract, you could even bake this functionality *
 
 ### Giving your subname owners perks
 
-If you decide to not Emancipate the subnames that you issue, you *will* still be able to burn any Parent-Controlled Fuses. There are 13 unreserved parent-controlled fuses that you can use however you wish!
+If you decide to not Emancipate the subnames that you issue, you _will_ still be able to burn any Parent-Controlled Fuses. There are 13 unreserved parent-controlled fuses that you can use however you wish!
 
 For example, perhaps you want to grant on-chain "perks" or "roles" to certain holders. You would call [setChildFuses](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#setchildfuses) on the Name Wrapper and pass in the fuses you want to burn, and the expiry.
 

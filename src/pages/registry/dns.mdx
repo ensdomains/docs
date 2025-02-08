@@ -1,20 +1,17 @@
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-  description: 'Registrar responsible for all DNSSEC enabled names',
-  emoji: '🗒️',
-  contributors: ['luc.eth', 'gregskril.eth']
-};
+---
+description: Registrar responsible for all DNSSEC enabled names
+---
 
 # DNS Registrar
 
 In [DNS on ENS](/learn/dns) we learned how ENS aims to extend the functionality of the DNS.
 On this page we will explore the implementation of DNSSEC, the DNSRegistrar, and the building blocks for gasless DNSSEC.
 
-<Note>
-  Not all top level domains support DNSSEC, and some might have custom ENS
-  implementations. Please refer to the [TLD List](/dns/tlds) for TLD-specific
-  information.
-</Note>
+:::note
+Not all top level domains support DNSSEC, and some might have custom ENS
+implementations. Please refer to the [TLD List](/dns/tlds) for TLD-specific
+information.
+:::
 
 ## DNSSEC
 
@@ -43,7 +40,7 @@ EP5.1 introduced a new DNSSECOracle and DNSRegistrar which makes it possible to 
 
 It works by enabling [wildcard resolution](/ensip/10) at the DNS TLD level. During the [name resolution process](/resolution), if a name doesn't already exist onchain but has been configured for usage in ENS, the DNSSEC proof will be fetched offchain via [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668) and then verified onchain with the same DNSSECOracle mentioned above.
 
-### Import a DNS name gaslessly {{ id: 'gasless-import' }}
+### Import a DNS name gaslessly
 
 To configure a DNS name for usage in ENS, simply add a `TXT` record with the following format:
 
@@ -77,10 +74,10 @@ To help you interact with DNSSEC data and the DNSRegistrar, we provide a few lib
 #### Retrieving a proof
 
 ```ts
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { addEnsContracts } from '@ensdomains/ensjs'
 import { getDnsImportData } from '@ensdomains/ensjs/dns'
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
 
 const client = createPublicClient({
   chain: addEnsContracts(mainnet),
@@ -95,10 +92,10 @@ const dnsImportData = await getDnsImportData(client, {
 #### Submitting the proof to the DNSRegistrar
 
 ```ts
-import { createPublicClient, createWalletClient, http, custom } from 'viem'
-import { mainnet } from 'viem/chains'
 import { addEnsContracts } from '@ensdomains/ensjs'
 import { getDnsImportData, importDnsName } from '@ensdomains/ensjs/dns'
+import { createPublicClient, createWalletClient, custom, http } from 'viem'
+import { mainnet } from 'viem/chains'
 
 const mainnetWithEns = addEnsContracts(mainnet)
 

@@ -1,17 +1,10 @@
-import { WIP } from "@/components/wip/WIP";
+import { FiBookOpen, FiClock, FiHash } from 'react-icons/fi'
 
-{/* * @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
-export const meta = {
-    description: 'Registrar responsible for the ".eth" TLD.',
-    emoji: '🗒️',
-    contributors: ['luc.eth']
-};
+import { Card } from '../../components/ui/Card'
 
-# ETH Registrar
+# ETH Registrar [Smart contracts responsible for the ".eth" TLD]
 
 The ETH Registrar is a special registrar. It allows for trustless on-chain name registration and is in charge of the ".eth" TLD.
-
-<DNSGrid />
 
 ## BaseRegistrar vs Controller
 
@@ -57,22 +50,13 @@ The Auction is a 21 day dutch auction, meaning that the price starts high (~100 
 
 This is done to prevent sniping of names, and ensures the name goes to the highest bidder fairly.
 
-<div className="card1 p-4">
-    <div className="aspect-video h-32 mx-auto border border-ens-light-border dark:border-ens-dark-border rounded-xl">
-        <svg
-            className="w-full h-full"
-            width="160"
-            height="90"
-            viewBox="0 0 160 90"
-        >
-            <path
-                d="M 10 10 Q 10 80 150 80"
-                stroke="#3889FF"
-                fill="transparent"
-            />
-        </svg>
-    </div>
-</div>
+<Card>
+  <div className="mx-auto h-32">
+    <svg className="h-full w-full" width="160" height="90" viewBox="0 0 160 90">
+      <path d="M 10 10 Q 10 80 150 80" stroke="#3889FF" fill="transparent" />
+    </svg>
+  </div>
+</Card>
 
 You can read more about the temporary premium in [this article](https://support.ens.domains/en/articles/7900612-temporary-premium).
 
@@ -98,20 +82,20 @@ If you would like to register a name through a smart contract, or your own inter
 
 For the process of `.eth` name registration the ETH Registrar uses a two transaction commit reveal process.
 
-<div className="card1 p-4 flex items-center justify-center gap-8">
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiHash className="text-2xl" />
-        <span>Commit</span>
-    </div> 
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiClock className="text-2xl" />
-        <span>Wait</span>
-    </div>
-    <div className="text-center flex flex-col items-center">
-        <Icons.FiBookOpen className="text-2xl" />
-        <span>Reveal</span>
-    </div>
-</div>
+<Card className="flex items-center justify-center gap-8">
+  <div className="flex flex-col items-center text-center">
+    <FiHash className="text-2xl" />
+    <span>Commit</span>
+  </div>
+  <div className="flex flex-col items-center text-center">
+    <FiClock className="text-2xl" />
+    <span>Wait</span>
+  </div>
+  <div className="flex flex-col items-center text-center">
+    <FiBookOpen className="text-2xl" />
+    <span>Reveal</span>
+  </div>
+</Card>
 
 ### Commit Reveal
 
@@ -141,7 +125,6 @@ makeCommitment(
 
 Once you have calculated the commitment hash you can call the `commit` function.
 
-
 ```solidity
 ETHRegistrarController.commit(commitment bytes32)
 ```
@@ -156,10 +139,10 @@ Registration takes in the same parameters as the `makeCommitment` function, but 
 
 Before initiating registration ensure that:
 
--   `available(name)` == true
--   `duration` >= `MIN_REGISTRATION_DURATION`
--   `commitments[commitment]` is between 1 min and 24 hrs old
--   `msg.value` >= `rentPrice(name, duration)` + `5-10% (slippage)`
+- `available(name)` == true
+- `duration` >= `MIN_REGISTRATION_DURATION`
+- `commitments[commitment]` is between 1 min and 24 hrs old
+- `msg.value` >= `rentPrice(name, duration)` + `5-10% (slippage)`
 
 Because the rent price may vary over time, callers are recommended to send slightly more than the value returned by `rentPrice`, a premium of 5-10% will likely be sufficient.
 Any excess funds sent during registration are automatically returned to the caller.
@@ -180,10 +163,6 @@ register(
 );
 ```
 
-If you would like to try registering a name live on a testnet you can use the live demo below.
-
-<LiveDemo id="ethregistry" />
-
 ## Renewing a Name
 
 ```solidity
@@ -194,8 +173,6 @@ Any user can renew a domain, not just the owner. This means that if you want to 
 
 By allowing renewal for any arbitrary amount of time users can ensure their name will not expire.
 As per the separation between registry and controller, even with upgraded controller your name will still be yours.
-
-<LiveDemo id="ethregistry_renew" />
 
 ## Other features
 
