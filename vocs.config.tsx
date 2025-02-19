@@ -242,11 +242,11 @@ export default defineConfig({
             },
             {
               text: 'Universal Resolver',
-              link: '',
+              link: '/resolvers/universal',
             },
             {
               text: 'Interface Reference',
-              link: '',
+              link: '/resolvers/interfaces',
             },
           ],
         },

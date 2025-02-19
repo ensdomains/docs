@@ -1,6 +1,6 @@
 type Props = {
   columns: string[]
-  rows: (string | number | null)[][]
+  rows: (string | number | JSX.Element)[][]
 }
 
 export function Table({ columns, rows }: Props) {
@@ -19,8 +19,8 @@ export function Table({ columns, rows }: Props) {
             key={row.join('-')}
             className="border border-grey-light *:px-4 *:py-2.5"
           >
-            {row.map((cell) => (
-              <td key={cell}>{cell}</td>
+            {row.map((cell, index) => (
+              <td key={index}>{cell}</td>
             ))}
           </tr>
         ))}

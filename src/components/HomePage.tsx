@@ -85,9 +85,11 @@ export function HomePage() {
   return (
     <>
       <div className="space-y-4 py-16">
-        <H1>ENS Documentation</H1>
+        <h1 className="text-3xl font-semibold sm:text-4xl">
+          ENS Documentation
+        </h1>
         <p>Build applications with decentralized self-sovereign identity.</p>
-        <div className="flex gap-3 flex-col sm:flex-row">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button href="/web/quickstart">Get Started</Button>
           <Button variant="outline" href="/learn/protocol">
             Learn about ENS
@@ -95,7 +97,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-y-10 pt-6">
+      <div className="grid grid-cols-2 gap-6 pt-6 lg:grid-cols-4 lg:gap-y-10">
         {navigation.map((column) => (
           <div key={column.title}>
             <div className="font-bold">{column.title}</div>
