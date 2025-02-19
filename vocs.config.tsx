@@ -267,7 +267,7 @@ export default defineConfig({
             },
             {
               text: 'TLDs List',
-              link: '',
+              link: '/dns/tlds',
             },
             {
               text: 'Reverse Registrar',
