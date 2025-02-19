@@ -27,6 +27,7 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
+    staticPageGenerationTimeout: 120,
 };
 
 const withMDX = nextMDX(mdxOptions);
