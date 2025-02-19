@@ -1,19 +1,24 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'Proposes to deploy Exponential Price Oracle Contract to replace the current Linear Price Oracle Contract',
-    emoji: '📗',
-    contributors: [
-        // Jeff Lau
-        'jefflau'
-    ],
-    proposal: {
-        snapshot: '0xe040bdae812af4bd5b3b6e3f46ed1ff4701986c338b827ac8f05807c2b9b9d73',
-        tally: '107166664722174233740232174220463354481004128961821575530758100250899337476509',
-        type: 'executable'
-    }
-};
+  description:
+    'Proposes to deploy Exponential Price Oracle Contract to replace the current Linear Price Oracle Contract',
+  emoji: '📗',
+  contributors: ['jefflau'],
+  proposal: {
+    discourse: '11320',
+    snapshot:
+      '0xe040bdae812af4bd5b3b6e3f46ed1ff4701986c338b827ac8f05807c2b9b9d73',
+    tally:
+      '107166664722174233740232174220463354481004128961821575530758100250899337476509',
+    type: 'executable',
+  },
+}
 
 # [EP1.5] [Executable] Change to Exponential Premium Price Oracle
+
+| **Status**            | Passed                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/11320)                                                                                   |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/107166664722174233740232174220463354481004128961821575530758100250899337476509) |
 
 _Note: This was previously numbered EP9._
 
@@ -28,18 +33,18 @@ There are a couple reasons for this:
 
 We can see from the data below, even with the new 100k premium, we have already had a 5-7 domains go for maximum, or close to maximum premium. If a domain sells for the actual premium, it means the dutch auction is not doing its job and so we need to deploy a long-term solution for dealing with premium pricing.
 
-| Row | Label | Event Timestamp | Premium |
-| --- | ----- | --------------- | ------- |
+| Row | Label | Event Timestamp         | Premium            |
+| --- | ----- | ----------------------- | ------------------ |
 | 1   | bbc   | 2022-01-30 17:46:03 UTC | 100230.75321837279 |
 | 2   | mets  | 2022-02-04 17:16:22 UTC | 100082.49847319399 |
-| 3   | fbi   | 2022-02-05 06:02:31 UTC | 99894.00632472485 |
-| 4   | fly   | 2022-02-04 18:49:00 UTC | 99747.22640247621 |
-| 5   | ups   | 2022-02-05 07:46:24 UTC | 98822.14747808539 |
-| 6   | dog   | 2022-02-06 16:19:05 UTC | 92950.09208752771 |
-| 7   | ubs   | 2022-02-01 15:31:35 UTC | 89633.15081063367 |
-| 8   | ubi   | 2022-02-19 17:06:17 UTC | 72161.56328771653 |
-| 9   | punks | 2022-02-16 00:15:44 UTC | 59153.166146336 |
-| 10  | omg   | 2022-02-24 16:05:57 UTC | 33214.42499419019 |
+| 3   | fbi   | 2022-02-05 06:02:31 UTC | 99894.00632472485  |
+| 4   | fly   | 2022-02-04 18:49:00 UTC | 99747.22640247621  |
+| 5   | ups   | 2022-02-05 07:46:24 UTC | 98822.14747808539  |
+| 6   | dog   | 2022-02-06 16:19:05 UTC | 92950.09208752771  |
+| 7   | ubs   | 2022-02-01 15:31:35 UTC | 89633.15081063367  |
+| 8   | ubi   | 2022-02-19 17:06:17 UTC | 72161.56328771653  |
+| 9   | punks | 2022-02-16 00:15:44 UTC | 59153.166146336    |
+| 10  | omg   | 2022-02-24 16:05:57 UTC | 33214.42499419019  |
 
 The long-term solution would be to change the actual curve to something that could start at a very high price, would decrease rapidly at the beginning and slow down at the end so you have better UX for users. And therefore this proposal is to deploy an exponential price curve, that does exactly this. This would allow fairer bidding on both high and low priced names.
 

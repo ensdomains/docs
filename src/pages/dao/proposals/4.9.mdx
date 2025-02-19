@@ -1,18 +1,22 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'This proposal aims to select service providers following the approval of EP4.7, with a budget of $3,600,000 USDC annually to support providers that can enhance the ENS system.',
-    emoji: '📖',
-    contributors: [
-        'nick.eth',
-    ],
-    proposal: {
-        discourse: '18309',
-        snapshot: '0x6ba81cd2997288cc49ae1b95921ec8f107e8ffb9733321d53d488e2b30710b86',
-        type: 'social'
-    }
-};
+  description:
+    'This proposal aims to select service providers following the approval of EP4.7, with a budget of $3,600,000 USDC annually to support providers that can enhance the ENS system.',
+  emoji: '📖',
+  contributors: ['nick.eth'],
+  proposal: {
+    discourse: '18309',
+    snapshot:
+      '0x6ba81cd2997288cc49ae1b95921ec8f107e8ffb9733321d53d488e2b30710b86',
+    type: 'social',
+  },
+}
 
 # [EP4.9] [Social] Select providers for EP4.7 streams
+
+| **Status**            | Passed                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/18309)                                                                             |
+| **Votes**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0x6ba81cd2997288cc49ae1b95921ec8f107e8ffb9733321d53d488e2b30710b86) |
 
 ## Abstract
 
@@ -25,20 +29,20 @@ EP4.7 provides for a budget of $3,600,000 USDC to be provided annually to qualif
 The purpose of this vote is to select service providers to receive streaming funding from the DAO. Per the [draft rules](https://github.com/alexvansande/governance-docs/blob/Streams-rules/service-provider-rules.md), selection of winning proposals uses the following process:
 
 1. **Order Proposals**
-   * Arrange all proposals in descending order based on the number of votes received.
+   - Arrange all proposals in descending order based on the number of votes received.
 2. **Evaluate Proposals Sequentially**
-   * **Vote Threshold Check**
-     * If a proposal has received fewer than 1 million votes, stop the evaluation process immediately.
-   * **Comparison with 'None of the Above'**
-     * If a proposal has fewer votes than the 'None of the Above' option, stop the evaluation process.
-   * **Budget Check**
-     * If a proposal's requested budget exceeds the remaining budget, skip it and move to the next proposal.
-   * **Selection**
-     * If a proposal passes the above checks, add it to the set of selected proposals. Deduct its requested budget from the remaining budget.
+   - **Vote Threshold Check**
+     - If a proposal has received fewer than 1 million votes, stop the evaluation process immediately.
+   - **Comparison with 'None of the Above'**
+     - If a proposal has fewer votes than the 'None of the Above' option, stop the evaluation process.
+   - **Budget Check**
+     - If a proposal's requested budget exceeds the remaining budget, skip it and move to the next proposal.
+   - **Selection**
+     - If a proposal passes the above checks, add it to the set of selected proposals. Deduct its requested budget from the remaining budget.
 
 ### Post-Selection Procedure
 
-* If at least one service provider is chosen, the Meta-Governance working group will post an executable vote to implement the funding streams by January 10 at the latest.
+- If at least one service provider is chosen, the Meta-Governance working group will post an executable vote to implement the funding streams by January 10 at the latest.
 
 ## Instructions
 

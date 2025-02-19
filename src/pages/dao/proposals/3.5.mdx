@@ -1,21 +1,27 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: 'This proposal will activate the new .eth controller and reverse registrar',
-    emoji: '📖',
-    contributors: [
-        // Jeff Lau
-        'jefflau',
-        // Nick Johnson
-        'arachnid'
-    ],
-    proposal: {
-        discourse: '16776',
-        tally: '90786656233306599444783442367171420493182391933134906270328139870999449830964',
-        type: 'executable'
-    }
-};
+  description:
+    'This proposal will activate the new .eth controller and reverse registrar',
+  emoji: '📖',
+  contributors: [
+    // Jeff Lau
+    'jefflau',
+    // Nick Johnson
+    'arachnid',
+  ],
+  proposal: {
+    discourse: '16776',
+    tally:
+      '42973781582803845389836855775840822719678533376883030929209752909248937768242',
+    type: 'executable',
+  },
+}
 
 # [EP3.5] [Executable] Activate new .eth Controller and Reverse Registrar
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/16776)                                                                                  |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/42973781582803845389836855775840822719678533376883030929209752909248937768242) |
 
 ## Abstract
 
@@ -27,10 +33,10 @@ We will also replace the current reverse registrar with a new reverse registrar 
 
 New instances of the Name Wrapper, Reverse Registrar, and .eth registrar controller have been deployed to mainnet at these addresses:
 
-* NameWrapper: `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401`
-* ReverseRegistrar: `0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb`
-* ETHRegistrarController: `0x253553366Da8546fC250F225fe3d25d0C782303b`
-* PublicResolver: `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63`
+- NameWrapper: `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401`
+- ReverseRegistrar: `0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb`
+- ETHRegistrarController: `0x253553366Da8546fC250F225fe3d25d0C782303b`
+- PublicResolver: `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63`
 
 They have been configured, and ownership has been transferred to the DAO.The new Public Resolver is set as the default resolver on the reverse registrar.
 

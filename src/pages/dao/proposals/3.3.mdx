@@ -1,18 +1,22 @@
-{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
 export const meta = {
-    description: "This proposal executes a swap of 10,000 ETH into USDC, to ensure ENS DAO has enough to cover operating expenses for 18 - 24 months.",
-    emoji: '📖',
-    contributors: [
-        'fireeyesdao'
-    ],
-    proposal: {
-        discourse: '15906',
-        tally: '45461903078948131870051132081249892009497709518413744958551889217805827301425',
-        type: 'executable'
-    }
-};
+  description:
+    'This proposal executes a swap of 10,000 ETH into USDC, to ensure ENS DAO has enough to cover operating expenses for 18 - 24 months.',
+  emoji: '📖',
+  contributors: ['fireeyesdao'],
+  proposal: {
+    discourse: '15906',
+    tally:
+      '45461903078948131870051132081249892009497709518413744958551889217805827301425',
+    type: 'executable',
+  },
+}
 
-# [EP3.3] [Executable] Sell ETH to USDC                                                         |
+# [EP3.3] [Executable] Sell ETH to USDC
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/15906)                                                                                  |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/45461903078948131870051132081249892009497709518413744958551889217805827301425) |
 
 ## Abstract
 
@@ -38,40 +42,40 @@ It is hoped that this sale will generate in excess of $13m in USDC. The goal is 
 Price checker data is configured to check the swap against the Uniswap v3 pool and limit to 2% slippage. It is generated using the below code:
 
 ```javascript
-import { ethers } from "https://cdn.ethers.io/lib/ethers-5.2.esm.min.js";
+import { ethers } from 'https://cdn.ethers.io/lib/ethers-5.2.esm.min.js'
 
 function getCheckerData(slippage, path, fees) {
   return ethers.utils.defaultAbiCoder.encode(
-    ["uint256", "bytes"],
+    ['uint256', 'bytes'],
     [
       slippage,
       ethers.utils.defaultAbiCoder.encode(
-        ["address[]", "uint24[]"],
-        [path, fees],
+        ['address[]', 'uint24[]'],
+        [path, fees]
       ),
-    ],
-  );
+    ]
+  )
 }
 
 const checkerData = getCheckerData(
   200,
   [
-    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   ],
-  [5],
-);
-console.log("checkerData:", checkerData);
+  [5]
+)
+console.log('checkerData:', checkerData)
 ```
 
 **Addresses:**
 
-* 0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7 - wallet.ensdao.eth
-* 0x283af0b28c62c092c9727f1ee09c02ca627eb7f5 - controller.ens.eth
-* 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 - WETH9
-* 0x11C76AD590ABDFFCD980afEC9ad951B160F02797 - milkman
-* 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
-* 0x2F965935f93718bB66d53a37a97080785657f0AC - Uniswap v3 slippage checker
+- 0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7 - wallet.ensdao.eth
+- 0x283af0b28c62c092c9727f1ee09c02ca627eb7f5 - controller.ens.eth
+- 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 - WETH9
+- 0x11C76AD590ABDFFCD980afEC9ad951B160F02797 - milkman
+- 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 - USDC
+- 0x2F965935f93718bB66d53a37a97080785657f0AC - Uniswap v3 slippage checker
 
 ## Transactions
 
