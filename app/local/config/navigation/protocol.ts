@@ -406,6 +406,10 @@ export const navigation: SectionData[] = [
                 title: 'Proposals Term 6',
                 links: [
                     {
+                        title: '6.3 - [Social] Renew Service Provider Budget',
+                        href: '/dao/proposals/6.3',
+                    },
+                    {
                         title: '6.2 - [Executable] Endowment expansion (3rd tranche)',
                         href: '/dao/proposals/6.2',
                     },
