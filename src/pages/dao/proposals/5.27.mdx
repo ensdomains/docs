@@ -1,15 +1,12 @@
-export const meta = {
-  description: "Revokes the DAO's ability to upgrade the name wrapper",
-  emoji: '📖',
-  contributors: ['nick.eth'],
-  proposal: {
-    tally:
-      '40272043175867710511047990376059633000673751036364092383567949469124429500507',
-    type: 'executable',
-  },
-}
+---
+description: "Revokes the DAO's ability to upgrade the name wrapper"
+authors: ['nick.eth']
+proposal:
+  tally: '40272043175867710511047990376059633000673751036364092383567949469124429500507'
+  type: 'executable'
+---
 
-# [EP 5.27] [Executable] Revoke the DAO’s ability to upgrade the name wrapper
+# [EP 5.27] [Executable] Revoke the DAO's ability to upgrade the name wrapper
 
 | **Status**            | Passed                                                                                                                    |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -18,9 +15,9 @@ export const meta = {
 
 ## Abstract
 
-The Name Wrapper’s upgrade mechanism contains a vulnerability whereby a malicious DAO could use the upgrade mechanism to seize control of wrapped names without the owner’s consent, documented [here](https://discuss.ens.domains/t/security-advisory-a-malicious-dao-update-could-reduce-the-registration-duration-of-registered-eth-2lds/17576/1).
+The Name Wrapper's upgrade mechanism contains a vulnerability whereby a malicious DAO could use the upgrade mechanism to seize control of wrapped names without the owner's consent, documented [here](https://discuss.ens.domains/t/security-advisory-a-malicious-dao-update-could-reduce-the-registration-duration-of-registered-eth-2lds/17576/1).
 
-Since the v2 migration plan makes the upgrade mechanism obsolete, we now know the mechanism will never be required. This EP proposes to remove the DAO’s ability to upgrade the name wrapper.
+Since the v2 migration plan makes the upgrade mechanism obsolete, we now know the mechanism will never be required. This EP proposes to remove the DAO's ability to upgrade the name wrapper.
 
 ## Specification
 
