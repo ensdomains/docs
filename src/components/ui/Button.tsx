@@ -43,11 +43,15 @@ export const Button: FC<
   } & (HrefProperties | ButtonProperties) &
     PropsWithChildren
 > = ({ variant = 'primary', className, children, arrow, ...properties }) => {
+  const disabled = 'disabled' in properties ? properties.disabled : false
+
   className = cn(
     'py-3 px-5 rounded-lg inline-flex justify-center gap-0.5 overflow-hidden text-sm font-medium transition',
     'hover:-translate-y-[1px]',
     'active:translate-y-0',
     variantStyles[variant],
+    disabled &&
+      'bg-grey-light text-grey hover:bg-grey-light hover:translate-y-0 hover:cursor-not-allowed',
     className
   )
 
