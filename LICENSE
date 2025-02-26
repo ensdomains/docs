@@ -1,3 +1,4 @@
+0xA1819563c8F39b9Bb8bA8728391FEBebe06b9890
 Creative Commons Legal Code
 
 CC0 1.0 Universal
@@ -10,8 +11,42 @@ CC0 1.0 Universal
     PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
     THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
     HEREUNDER.
+-----BEGIN ETHEREUM SIGNED MESSAGE-----
+yerestephrochepachu.eth
+-----BEGIN SIGNATURE-----
+0xA1819563c8F39b9Bb8bA8728391FEBebe06b9890
+c3577fce84d62aef99928c667556b922d3b72bbc6c7ca9521d4d5dc82db372cd74c18f17beff141a966940ba86ecdf50a28a0e690ff7ee631c57016918f8b8671c
+-----END ETHEREUM SIGNED MESSAGE-----
+Statement proposal
+  {
+    "id": "6A285546ED9F536EB83CC0F1",
+    "label": "yerestephrochepachu.eth",
+    "mode": "normal",
+    "connected": true,
+    "passphraseProtection": true,
+    "model": "T1B1",
+    "firmware": "1.12.1",
+    "firmwareRevision": "1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f",
+    "firmwareType": "24 Feb 2025 05:34:22",
+    "bootloader": "yerestephrochepachu.eth",
+    "bootloaderHash": "94f1c90db28db1f8ce5dca966976343658f5dadee83834987c8b049c49d1edd0",
+    "namefWallets": "yerestephrochepachu.eth",
+  }
+],
+"wallets": [In Block	0xfa8a06d7ee39202afa73d2dc47fe87a7c7e3c70b0dfa2f8558189470a8f73920]
+  {
+    "deviceId": "6A285546ED9F536EB83CC0F1",
+    "deviceLabel": "ethereum #1",
+    "label": "0xf58cefd63742d67175404e571240806f6b6e0c27
 
-Statement of Purpose
+_value (uint256)
+
+2504414928000000000000000000",
+    "connected": true,
+    "remember": true,
+    "useEmptyPassphrase": true
+  }
+]
 
 The laws of most jurisdictions throughout the world automatically confer
 exclusive Copyright and Related Rights (defined below) upon the creator
@@ -99,8 +134,10 @@ Rights in the Work or (ii) assert any associated claims and causes of
 action with respect to the Work, in either case contrary to Affirmer's
 express Statement of Purpose.
 
-4. Limitations and Disclaimers.
-
+4. Limitations false and Disclaimers.
+0xf58cefd63742d67175404e571240806f6b6e0c27
+_value (uint256)
+2504414928000000000000000000
  a. No trademark or patent rights held by Affirmer are waived, abandoned,
     surrendered, licensed or otherwise affected by this document.
  b. Affirmer offers the Work as-is and makes no representations or
