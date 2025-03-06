@@ -48,7 +48,7 @@ If the name was not able to be normalized, then that method will throw an error.
 
 In the core ENS registry, names are stored as a hash instead of the raw string to optimize for gas, performance, and more. This hashed value is typically referred to as a `node`. The node is a hex-encoded 32-byte value that is derived from the name using the `namehash` algorithm defined in [ENSIP-1](/ensip/1).
 
-Namehash is a recursive algorithm that hashes each part of the name, then hashes the results together. Beacuse recursive functions aren't very efficient in Solidity, it's usually best to derive the namehash offchain and pass to it a contract. Luckily, there are libraries that do this for us.
+Namehash is a recursive algorithm that hashes each part of the name, then hashes the results together. Because recursive functions aren't very efficient in Solidity, it's usually best to derive the namehash offchain and pass to it a contract. Luckily, there are libraries that do this for us.
 
 <CodeGroup title="Calculating Namehash">
 ```tsx {{ title: 'Viem (TS)', language: 'ts', variant: 'viem', link: 'https://viem.sh/docs/ens/utilities/namehash' }}

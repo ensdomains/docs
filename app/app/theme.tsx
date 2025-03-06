@@ -29,9 +29,9 @@ const config = createConfig({
         }),
     ],
     transports: {
-        [mainnet.id]: http(),
-        [sepolia.id]: http(),
-        [holesky.id]: http(),
+        [mainnet.id]: http('https://eth.drpc.org'),
+        [sepolia.id]: http('https://sepolia.drpc.org'),
+        [holesky.id]: http('https://holesky.drpc.org'),
     },
 });
 
