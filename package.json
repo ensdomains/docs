@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.64.1",
-    "@types/react": "latest",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "marked": "^15.0.6",
@@ -18,16 +17,17 @@
     "react-dom": "latest",
     "react-icons": "^5.4.0",
     "tailwind-merge": "^2.6.0",
-    "typescript": "latest",
     "use-debounce": "^10.0.4",
     "viem": "^2.22.8",
-    "vite": "^5.4.11",
-    "vocs": "latest",
+    "vite": "^6.2.1",
+    "vocs": "1.0.5",
     "wagmi": "^2.14.8"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.1",
+    "@types/react": "^19.0.6",
     "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.10"
+    "prettier-plugin-tailwindcss": "^0.6.10",
+    "typescript": "^5.7.3"
   }
 }
