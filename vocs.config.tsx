@@ -1,11 +1,19 @@
 import { defineConfig } from 'vocs'
 
+import { daoProposalsSidebar } from './src/plugins/dao-proposals'
 import { deployments } from './src/plugins/deployments'
 import { ensips } from './src/plugins/ensips'
 
 const ensipSidebarItems = new Array()
 try {
   ensipSidebarItems.push(...require('./src/pages/ensip/sidebar.json'))
+} catch {}
+
+const daoProposalsSidebarItems = new Array()
+try {
+  daoProposalsSidebarItems.push(
+    ...require('./src/data/dao-proposals-sidebar.json')
+  )
 } catch {}
 
 export default defineConfig({
@@ -44,7 +52,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [ensips(), deployments()],
+    plugins: [ensips(), deployments(), daoProposalsSidebar()],
   },
   head: {
     // TODO: Ideally this should get injected into <header> for semantics via a remark plugin.
@@ -372,6 +380,10 @@ export default defineConfig({
               link: 'https://agora.ensdao.org',
             },
           ],
+        },
+        {
+          text: 'Proposals',
+          items: daoProposalsSidebarItems,
         },
       ],
     },
