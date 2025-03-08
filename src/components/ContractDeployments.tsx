@@ -1,16 +1,12 @@
-import {
-  AnchorHTMLAttributes,
-  DetailedHTMLProps,
-  PropsWithChildren,
-} from 'react'
+import { AnchorHTMLAttributes } from 'react'
 
 import { DeploymentsByChain } from '../plugins/deployments'
 
 let deploymentsByChain = new Array<DeploymentsByChain>()
 
 try {
-  const test = (await import('../lib/deployments.json')) as any
-  deploymentsByChain = test?.default
+  const res = (await import('../data/deployments.json')) as any
+  deploymentsByChain = res?.default
 } catch (error) {
   console.warn('No deployments found, falling back to an empty array')
 }

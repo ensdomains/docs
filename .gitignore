@@ -13,4 +13,4 @@ src/dist
 src/pages/deployments.md
 src/pages/ensip/*
 !src/pages/ensip/index.mdx
-src/lib/deployments.json
+src/data/deployments.json
