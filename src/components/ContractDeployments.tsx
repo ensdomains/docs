@@ -1,15 +1,9 @@
 import { AnchorHTMLAttributes } from 'react'
 
+import deploymentsJson from '../data/deployments.json' with { type: 'any' }
 import { DeploymentsByChain } from '../plugins/deployments'
 
-let deploymentsByChain = new Array<DeploymentsByChain>()
-
-try {
-  const res = (await import('../data/deployments.json')) as any
-  deploymentsByChain = res?.default
-} catch (error) {
-  console.warn('No deployments found, falling back to an empty array')
-}
+const deploymentsByChain = deploymentsJson as DeploymentsByChain[]
 
 export function ContractDeployments({
   chain,
@@ -17,7 +11,7 @@ export function ContractDeployments({
   chain: DeploymentsByChain['slug']
 }) {
   return deploymentsByChain
-    .filter((c) => c.slug === chain)
+    ?.filter((c) => c.slug === chain)
     .map((chain) => (
       <table className="vocs_Table" key={chain.slug}>
         <thead>
