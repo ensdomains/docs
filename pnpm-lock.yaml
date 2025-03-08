@@ -35,6 +35,9 @@ importers:
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
+      tailwindcss:
+        specifier: 4.0.7
+        version: 4.0.7
       use-debounce:
         specifier: ^10.0.4
         version: 10.0.4(react@19.0.0)

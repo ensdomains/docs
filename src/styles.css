@@ -1,8 +1,5 @@
-@layer vocs_preflight {
-  @tailwind base;
-}
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config "../tailwind.config.cjs";
 
 :root {
   --ens-blue-active: #003685;
