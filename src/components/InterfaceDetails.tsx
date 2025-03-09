@@ -37,7 +37,7 @@ export function InterfaceDetails({
 
       {methods.map((method) => {
         return (
-          <div className="vocs_Content">
+          <div className="vocs_Content" key={method.interface}>
             <H2 id={method.interface}>{method.usage}</H2>
             <CodeBlock className="mb-4" title="Function">
               {method.name}
@@ -66,7 +66,7 @@ export function InterfaceDetails({
                 <UL>
                   {method.input.map((input) => {
                     return (
-                      <LI>
+                      <LI key={input.name ?? input.description}>
                         <strong>
                           {input.name
                             ? `${input.name} (${input.type})`
@@ -87,7 +87,7 @@ export function InterfaceDetails({
                 <UL>
                   {method.output.map((output) => {
                     return (
-                      <LI>
+                      <LI key={output.name ?? output.description}>
                         <strong>
                           {output.name
                             ? `${output.name} (${output.type})`
