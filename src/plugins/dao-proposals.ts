@@ -14,31 +14,50 @@ export async function daoProposalsSidebar(): Promise<Plugin> {
       if (id === name) return name
     },
     async buildStart() {
-      const sidebar = new Array<SidebarItem & { number: number }>()
+      const sidebar = new Array<SidebarItem>()
       const files = await fs.readdir(
         path.join(__dirname, '..', 'pages/dao/proposals')
       )
 
+      const terms = new Set<number>()
+      const parsedFiles = new Array<{
+        filename: string
+        term: number
+        proposal: number
+      }>()
+
       for (const file of files) {
-        const filenameParts = file.split('.')
-        const filenameWithoutExtension = filenameParts.slice(0, -1).join('.')
+        const filenameParts = file.split('.').slice(0, -1)
+        const filenameWithoutExtension = filenameParts.join('.')
         const isProposal = filenameWithoutExtension.match(/^[0-9.]+$/)
         if (!isProposal) continue
 
-        sidebar.push({
-          text: `EP ${filenameWithoutExtension}`,
-          link: `/dao/proposals/${filenameWithoutExtension}`,
-          number: Number(filenameWithoutExtension),
-        })
+        // filenameParts is like ['1', '2'] or ['1', '2', '1'] where the first part is the term and the rest is the proposal number
+        const term = Number(filenameParts[0])
+        const proposal = Number(filenameParts.slice(1).join('.'))
+
+        terms.add(term)
+        parsedFiles.push({ filename: filenameWithoutExtension, term, proposal })
       }
 
-      // TODO: Sort proposals. Consider that some proposals like 1.2.1 are not numbers so cannot be sorted numerically.
-      const sortedSidebar = sidebar
+      const reversedTerms = Array.from(terms).reverse()
+      for (const term of reversedTerms) {
+        sidebar.push({
+          text: `Proposals - Term ${term}`,
+          items: parsedFiles
+            .filter(({ term: t }) => t === term)
+            .sort((a, b) => b.proposal - a.proposal)
+            .map(({ filename }) => ({
+              text: `EP ${filename}`,
+              link: `/dao/proposals/${filename}`,
+            })),
+        })
+      }
 
       // Save sidebar file as JSON
       await fs.writeFile(
         'src/data/dao-proposals-sidebar.json',
-        JSON.stringify(sortedSidebar, null, 2)
+        JSON.stringify(sidebar, null, 2)
       )
     },
   }

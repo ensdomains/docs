@@ -381,10 +381,7 @@ export default defineConfig({
             },
           ],
         },
-        {
-          text: 'Proposals',
-          items: daoProposalsSidebarItems,
-        },
+        ...daoProposalsSidebarItems,
       ],
     },
     {
