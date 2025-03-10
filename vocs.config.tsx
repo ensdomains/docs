@@ -6,13 +6,13 @@ import { ensips } from './src/plugins/ensips'
 
 const ensipSidebarItems = new Array()
 try {
-  ensipSidebarItems.push(...require('./src/pages/ensip/sidebar.json'))
+  ensipSidebarItems.push(...require('./src/data/generated/ensips-sidebar.json'))
 } catch {}
 
 const daoProposalsSidebarItems = new Array()
 try {
   daoProposalsSidebarItems.push(
-    ...require('./src/data/dao-proposals-sidebar.json')
+    ...require('./src/data/generated/dao-proposals-sidebar.json')
   )
 } catch {}
 

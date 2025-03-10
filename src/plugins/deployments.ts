@@ -227,7 +227,7 @@ export async function deployments(): Promise<Plugin> {
     },
     async buildStart() {
       const alreadyExists = await fs
-        .access('src/data/deployments.json')
+        .access('src/data/generated/deployments.json')
         .then(() => true)
         .catch(() => false)
 
@@ -254,7 +254,7 @@ export async function deployments(): Promise<Plugin> {
 
       // Save deployments as JSON
       await fs.writeFile(
-        path.join('src/data/deployments.json'),
+        path.join('src/data/generated/deployments.json'),
         JSON.stringify(DEPLOYMENTS, null, 2)
       )
     },

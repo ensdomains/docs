@@ -88,7 +88,7 @@ export async function ensips(): Promise<Plugin> {
 
       // Save sidebar file as JSON
       await fs.writeFile(
-        path.join('src/pages/ensip', 'sidebar.json'),
+        'src/data/generated/ensips-sidebar.json',
         JSON.stringify(
           sidebar.sort((a, b) => a.number - b.number),
           null,

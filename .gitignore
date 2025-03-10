@@ -13,6 +13,6 @@ src/dist
 src/pages/deployments.md
 src/pages/ensip/*
 !src/pages/ensip/index.mdx
-src/data/deployments.json
-src/data/dao-proposals-sidebar.json
+src/data/generated/*
+!src/data/generated/.keep
 

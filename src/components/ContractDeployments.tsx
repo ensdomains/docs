@@ -1,6 +1,6 @@
 import { AnchorHTMLAttributes } from 'react'
 
-import deploymentsJson from '../data/deployments.json' with { type: 'any' }
+import deploymentsJson from '../data/generated/deployments.json' with { type: 'any' }
 import { DeploymentsByChain } from '../plugins/deployments'
 
 const deploymentsByChain = deploymentsJson as DeploymentsByChain[]

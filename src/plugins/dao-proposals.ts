@@ -56,7 +56,7 @@ export async function daoProposalsSidebar(): Promise<Plugin> {
 
       // Save sidebar file as JSON
       await fs.writeFile(
-        'src/data/dao-proposals-sidebar.json',
+        'src/data/generated/dao-proposals-sidebar.json',
         JSON.stringify(sidebar, null, 2)
       )
     },
