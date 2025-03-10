@@ -850,6 +850,10 @@ export const navigation: SectionData[] = [
                         title: '19 - EVM-chain Reverse Resolution', // '19 - Multichain Primary Names',
                         href: '/ensip/19',
                     },
+                    {
+                        title: '20 - Wildcard Writing',
+                        href: '/ensip/20',
+                    },
                 ],
             },
         ],

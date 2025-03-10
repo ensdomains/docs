@@ -1,0 +1,474 @@
+{/** @type {import('@/lib/mdxPageProps').MdxMetaProps} */}
+export const meta = {
+    description: 'A standardized implementation for managing offchain domains using an External Resolver',
+    contributors: [
+        // Alex T. Netto
+        'netto',
+        // Lucas Picollo
+        'pikonha',
+        // Nick Johnson
+        'arachnid'
+    ],
+    ensip: {
+        status: 'draft',
+        created: '2024-08-14'
+    }
+};
+
+# ENSIP-20: Wildcard Writing
+
+## Abstract
+
+This ENSIP proposes a standardized mechanism for managing offchain domains within the Ethereum Name Service (ENS) ecosystem. It addresses the growing trend of storing domains off the Ethereum blockchain to reduce transaction fees while maintaining compatibility with existing ENS components. The proposal outlines methods for domain registration, transferring, and setting records, ensuring a consistent approach to offchain domain management.
+
+## Motivation
+
+With the acceptance of CCIP-Read by the Ethereum community, there has been a notable shift towards storing domains in locations other than the Ethereum blockchain to avoid high transaction fees. This shift has revealed a significant gap: the lack of standardized methods for managing offchain domains. By establishing a standardized offchain resolver implementation and user flow, we can ensure a consistent approach enabling applications that support this ENSIP flow to integrate this feature and enhance user experience seamlessly, increasing scalability, providing cost-effective solutions, and reducing client complexity by providing a common way to interact with all the offchain providers.
+
+## Specification
+
+This ENSIP relies on the following standards:
+
+- [ERC-712](https://eips.ethereum.org/EIPS/eip-712) Typed structured data
+- [EIP-7884](https://ercs.ethereum.org/ERCS/erc-7884) Operation Router
+- [EIP-7528](https://eips.ethereum.org/EIPS/eip-7528) Token Standard for Fungible Gas
+
+### Wildcard Writing interface
+
+The Wildcard Writing standard is defined by multiple interfaces, which, except for the OffchainRegister, are optional according to the provider's needs.
+
+```solidity
+/// @notice The details of a registration request.
+/// @param name The DNS-encoded name being registered (e.g. "alice.eth", "alice.bob.eth")
+/// @param owner The address that will own the registered name
+/// @param duration The length of time in seconds to register the name for
+/// @param secret The secret to be used for the registration based on commit/reveal
+/// @param resolver The address of the resolver used as entrypoint on the L1
+/// @param extraData Additional registration data encoded as bytes
+struct RegisterRequest {
+    bytes name;
+    address owner;
+    uint256 duration;
+    bytes32 secret;
+    address resolver;
+    bytes extraData;
+}
+
+interface OffchainRegister {
+
+    /// @notice Struct containing registration parameters for a name
+    /// @param price The total price in wei required to register the name
+    /// @param available Whether the name is available for registration
+    /// @param token Token address (ERC-7528 ether address or ERC-20 contract)
+    /// @param commitTime The commit duration in seconds
+    /// @param extraData Additional registration data encoded as bytes
+    struct RegisterParams {
+        uint256 price;
+        bool available;
+        address token;
+        uint256 commitTime;
+        bytes extraData;
+    }
+
+    /// @notice Returns the registration parameters for a given name and duration
+    /// @dev This function calculates and returns the registration parameters needed to register a name
+    /// @param name The DNS-encoded name to query for registration parameters (e.g. "alice.eth", "alice.bob.eth")
+    /// @param duration The duration in seconds for which the name should be registered
+    /// @return A struct containing the registration parameters
+    function registerParams(
+        bytes calldata name,
+        uint256 duration
+    )
+        external
+        view
+        returns (RegisterParams memory);
+
+    /// @notice Registers a domain name
+    /// @param request The registration request details
+    /// @dev Forwards the registration request to the L2 contracts for processing
+    function register(RegisterRequest calldata request) external payable;
+
+}
+
+interface OffchainTransferrable {
+
+    /// @notice Transfers ownership of a name to a new address
+    /// @param name The DNS-encoded name to transfer (e.g. "alice.eth", "alice.bob.eth")
+    /// @param owner The current owner of the name
+    /// @param newOwner The address to transfer ownership to
+    function transferFrom(
+        bytes calldata name,
+        address owner,
+        address newOwner
+    )
+        external;
+
+}
+
+interface OffchainCommitable {
+
+    /// @notice Produces the commit hash from the register request
+    /// @param request The registration request details
+    /// @return commitHash The hash that should be committed before registration
+    function makeCommitment(RegisterRequest calldata request)
+        external
+        pure
+        returns (bytes32 commitHash);
+
+    /// @notice Commits a hash of registration data to prevent frontrunning
+    /// @param commitment The hash of the registration request data that will be used in a future register call
+    /// @dev The commitment must be revealed after the minimum commit age and before the maximum commit age
+    function commit(bytes32 commitment) external;
+}
+
+```
+
+### Client flow
+
+It relies on the approach specified by the [EIP-7884](https://ethereum-magicians.org/t/operation-router/22633) to first gather the required data for the subsequent transaction to be made directly to the given entity, a contract or an offchain gateway.
+
+The onchain flow is composite as follows:
+
+```mermaid
+┌───────┐       ┌──────────┐
+│Client │       │L1Resolver│
+└───┬───┘       └────┬─────┘
+    │                │
+    │ getOperationHandler(calldata)
+    ├───────────────►│
+    │                │
+    │ revert OperationHandledOnchain(chainId, address)
+    │◄───────────────┤
+    │                │
+    │ setText(node, key, value)
+    ├───────────────►│
+    │                │
+```
+
+The offchain version of this flow looks like the following:
+
+```mermaid
+┌───────┐       ┌──────────┐      ┌───────┐
+│Client │       │L1 Contract│      │Gateway│
+└───┬───┘       └────┬─────┘      └───┬───┘
+    │                │                │
+    │ getOperationHandler(calldata)   │
+    ├───────────────►│                │
+    │                │                │
+    │ revert OperationHandledOffchain(sender, url, data)
+    │◄───────────────┤                │
+    │                │                │
+    │ EIP-712 signature               │
+    ├─────┐          │                │
+    │     │          │                │
+    │◄────┘          │                │
+    │                │                │
+    │ POST url {sender, data, signature}
+    ├────────────────┼───────────────►│
+    │                │                │
+    │                │                │ Verify EIP-712 signature
+    │                │                ├────┐
+    │                │                │    │
+    │                │                │◄───┘
+    │                │                │
+    │                │                │ Process mutation
+    │                │                ├────┐
+    │                │                │    │
+    │                │                │◄───┘
+    │                │                │
+    │                │                │ response
+    │◄───────────────┼────────────────┤
+    │                │                │
+```
+
+These flows can be optimized by relying on the ENS' Universal Resolver ENSIP-10 `resolve` implementation reducing the number of RPC requests.
+
+### Subdomain registering
+
+As the initial step in registering a subdomain, the `registerParams` function has been implemented to support a variety of use cases. This function plays a crucial role in creating a flexible and extensible offchain subdomain registration system.
+
+The function has the following signature:
+
+```solidity
+struct RegisterParams {
+    uint256 price;
+    bool available;
+    address token;
+    uint256 commitTime;
+    bytes extraData;
+}
+
+function registerParams(
+    bytes memory name,
+    uint256 duration
+)
+    external
+    view
+    returns (RegisterParams memory);
+
+```
+
+Parameters:
+
+- `name`: DNS-encoded name to be registered
+- `duration`: The duration in seconds for the registration
+
+Return:
+
+- `price`: the amount of ETH charged per second
+- `available`: whether the domain is available for registering
+- `token`: ERC-20 token address to be used as payment according to the EIP-7528
+- `commitTime`: the amount of seconds the commit should wait before being revealed. `0` means that the commit/reveal pattern isn't being used
+- `extraData`: any given encoded data
+
+The register function MUST have the following signature:
+
+```solidity
+struct RegisterRequest {
+    bytes name;
+    address owner;
+    uint256 duration;
+    bytes32 secret;
+    address resolver;
+    bytes extraData;
+}
+
+function register(RegisterRequest calldata request) external payable;
+
+```
+
+Parameters:
+
+- `name`: DNS-encoded name to be registered
+- `owner`: subdomain owner's address
+- `duration`: the duration in seconds of the registration
+- `secret`: random seed to be used for commit/reveal
+- `resolver`: the address of the resolver used as entrypoint on the L1
+- `extraData`: any additional data (e.g. signatures from an external source)
+
+**Behavior:**
+
+- **L1 Resolver**: it MUST revert with the respective error specified by the [EIP-7884](https://ethereum-magicians.org/t/operation-router/22633).
+- **L2 contract / Gateway**: it MUST register the subdomain.
+
+Although implementing the `register` on the layer 1 contract is OPTIONAL given that it is already handled by the `getOperationHandler`, it is possible for the contract to implement it directly in order to expose it on its ABI. If so, it MUST revert with the same error it would if called through the `getOperationHandler`.
+
+### Architecture
+
+Onchain subdomain registering:
+
+```mermaid
+┌───────┐       ┌───────────┐      ┌───────────┐
+│Client │       │L1 Resolver│      │L2 Contract│
+└───┬───┘       └────┬──────┘      └─────┬─────┘
+    │                │                   │
+    │ getOperationHandler(encodedFunc)   │
+    ├───────────────►│                   │
+    │                │                   │
+    │ revert OperationHandledOnchain(chainId, address)
+    │◄───────────────┤                   │
+    │                │                   │
+    │ registerParams(name,duration)      │
+    ├───────────────────────────────────►│
+    │                │                   │
+    │ return RegisterParams              │
+    │◄───────────────────────────────────┤
+    │                │                   │
+    │ register{value: RegisterParams.price}(RegisterRequest)
+    ├───────────────────────────────────►│
+    │                │                   │
+```
+
+Offchain subdomain registering:
+
+```mermaid
+┌───────┐       ┌───────────┐      ┌───────┐      ┌────────┐
+│Client │       │L1 Resolver│      │Gateway│      │Database│
+└───┬───┘       └────┬──────┘      └───┬───┘      └───┬────┘
+    │                │                 │              │
+    │ getOperationHandler(encodedFunc) │              │
+    ├───────────────►│                 │              │
+    │                │                 │              │
+    │ revert OperationHandledOffchain(domain, url, message)
+    │◄───────────────┤                 │              │
+    │                │                 │              │
+    │ registerParams(name,duration)    │              │
+    ├─────────────────────────────────►│              │
+    │                │                 │              │
+    │ return RegisterParams            │              │
+    │◄─────────────────────────────────┤              │
+    │                │                 │              │
+    │ sign request with EIP-712        │              │
+    ├─────┐          │                 │              │
+    │     │          │                 │              │
+    │◄────┘          │                 │              │
+    │                │                 │              │
+    │ register(RegisterRequest)        │              │
+    ├─────────────────────────────────►│              │
+    │                │                 │              │
+    │                │ validate signer ownership      │
+    │                │ ┌───────────────│              │
+    │                │ │               │              │
+    │                │ └──────────────►│              │
+    │                │                 │              │
+    │                │                 │ DB Insert    │
+    │                │                 │ ┌────────────│
+    │                │                 │ │            │
+    │                │                 │ └───────────►│
+    │                │                 │              │
+```
+
+### Commit/Reveal Process
+
+The `OffchainCommitable` interface enables a commit-reveal pattern for subdomain registration to prevent front-running attacks. This interface is OPTIONAL and should be implemented by providers who want to add this security measure to their registration process.
+
+The interface has the following functions:
+
+```solidity
+function makeCommitment(RegisterRequest calldata request)
+    external
+    pure
+    returns (bytes32 commitHash);
+
+function commit(bytes32 commitment) external;
+```
+
+Parameters for `makeCommitment`:
+
+- `request`: The complete registration request containing all parameters needed for registration
+
+Parameters for `commit`:
+
+- `commitment`: The hash generated by `makeCommitment` that represents the future registration request
+
+**Behavior:**
+
+- **L1 Resolver**: it MUST revert with the respective error specified by the EIP-5559. the same it would if called through the `getOperationHandler`
+- **L2 contract**: it MUST store the commitment and track when it was made to enforce the commit time specified in `registerParams`.
+
+### Architecture
+
+The onchain flow would look as follows:
+
+```mermaid
+┌───────┐       ┌───────────┐      ┌───────────┐
+│Client │       │L1 Resolver│      │L2 Contract│
+└───┬───┘       └─────┬─────┘      └─────┬─────┘
+    │                │                   │
+    │ getOperationHandler(encodedFunc)   │
+    ├───────────────►│                   │
+    │                │                   │
+    │ revert OperationHandledOnchain(chainId, address)
+    │◄───────────────┤                   │
+    │                │                   │
+    │ registerParams(name,duration)      │
+    ├───────────────────────────────────►│
+    │                │                   │
+    │ return RegisterParams              │
+    │◄───────────────────────────────────┤
+    │                │                   │
+    │ makeCommitment(RegisterRequest)    │
+    ├───────────────────────────────────►│
+    │                │                   │
+    │ return commitment                  │
+    │◄───────────────────────────────────┤
+    │                │                   │
+    │ commit(commitment)                 │
+    ├───────────────────────────────────►│
+    │                │                   │
+    │ wait for the commit time to be ove r
+    ├─────┐          │                   │
+    │     │          │                   │
+    │◄────┘          │                   │
+    │                │                   │
+    │ register{value: registerParams.price}(RegisterRequest)
+    ├───────────────────────────────────►│
+    │                │                   │
+```
+
+### Transfer Subdomain
+
+This interface is responsible for enabling the transfer of the domain's ownership, both the EIP-721 and within the Registry.
+
+The transfer function MUST have the following signature:
+
+```solidity
+function transferFrom(bytes calldata name, address owner, address newOwner) external payable;
+
+```
+
+With the arguments being:
+
+1. `node`: the ENS name DNS-encoded
+2. `owner`: the address of the domain's current owner
+3. `newOwner`: the Ethereum address to receive the domain
+
+The interface for enabling domain transfers MUST be implemented by the one deployed to the given L2. The one deployed to L1 is OPTIONAL for the same reason as the `register` function.
+
+**Behavior:**
+
+1. **L1 Resolver**: it MUST revert with the respective error described by EIP-5559.
+2. **L2 contract**: it MUST handle the actual domain transfer operation.
+
+### Architecture
+
+The flow would look as follows:
+
+```mermaid
+┌───────┐       ┌───────────┐      ┌───────────┐      ┌──────────────┐
+│Client │       │L1 Resolver│      │L2 Contract│      │L2 NameWrapper│
+└───┬───┘       └────┬──────┘      └─────┬─────┘      └──────┬───────┘
+    │                │                   │                   │
+    │ getOperationHandler(encodedFunc)   │                   │
+    ├───────────────►│                   │                   │
+    │                │                   │                   │
+    │  revert OperationHandledOnchain(chainId, address)      │
+    │◄───────────────┤                   │                   │
+    │                │                   │                   │
+    │ address(node)                      │                   │
+    ├───────────────────────────────────►│                   │
+    │                │                   │                   │
+    │ return ETH address                 │                   │
+    │◄───────────────────────────────────┤                   │
+    │                │                   │                   │
+    │ setAddress(node, newOwner)         │                   │
+    ├───────────────────────────────────►│                   │
+    │                │                   │                   │
+    │ transferFrom(name, owner, newOwner)│                   │
+    ├───────────────────────────────────►│                   │
+    │                │                   │                   │
+    │                │                   │ safeTransferFrom  │
+    │                │                   │ ┌────────────────►│
+    │                │                   │ │                 │
+    │                │                   │ └─────────────────│
+    │                │                   │                   │
+```
+
+## Rationale
+
+The proposed interfaces standardize the management of offchain domains within the ENS ecosystem. By leveraging [EIP-7884](https://ethereum-magicians.org/t/operation-router/22633) for offchain writing and maintaining compatibility with existing ENS components, this proposal ensures a seamless integration of offchain domain management into current ENS workflows.
+
+## Backwards Compatibility
+
+This ENSIP introduces new functionality relying on an mechanism similar to what is being used on the CCIP-Read standard making it a fully backward compatible standard.
+
+Setting multiple records should still be handled by the Resolver's `multicallWithNodeCheck` function.
+
+## Security Considerations
+
+All the implementations MUST include appropriate access controls to ensure only authorized parties (e.g., the current owner) can modify the domains, as well as consider emitting events to log write operations for transparency and off-chain tracking.
+
+The data related to domains stored in any place other than Ethereum SHOULD be fetch through the [ENSIP-16: Offchain Metadata](https://docs.ens.domains/ensip/16) to optimize queries and provide features that wouldn't be available otherwise.
+
+### Offchain
+
+1. The authentication logic for domain ownership is shifted entirely to the signing step performed by the Client. Implementations MUST ensure robust signature verification to prevent unauthorized access or modifications.
+2. The Gateway that receives redirected calls is responsible for ownership validation. Proper security measures MUST be implemented in the Gateway to prevent unauthorized actions.
+3. The use of EIP-712 signatures for authentication provides a secure method for verifying domain ownership. However, implementers SHOULD be aware of potential signature replay attacks and implement appropriate mitigations.
+4. The offchain storage of domain information introduces potential risks related to data availability and integrity. Implementers SHOULD consider redundancy and data verification mechanisms to mitigate these risks.
+
+Further security analysis and auditing are RECOMMENDED before deploying this system in a production environment, with special attention given to the unique security considerations of both onchain and offchain implementations.
+
+## Copyright
+
+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
