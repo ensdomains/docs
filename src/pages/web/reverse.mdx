@@ -12,7 +12,7 @@ We can all agree 42-character long machine-optimized addresses (eg. 0x225...c3b5
 Fortunately, it is super easy to retrieve a user's preferred name, and this page will show you how.
 
 <Card className="flex items-center justify-center gap-2">
-  <span className="font-medium">0x225...c3B5</span>
+  <span className="font-medium">0xb8c...67d5</span>
   <span>to</span>
   <EnsProfile name="nick.eth" hideAddress />
 </Card>
@@ -49,10 +49,18 @@ export const Name = () => {
 }
 ```
 
-```ts [Ethers]
-const name = await provider.lookupAddress(
-  '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
-)
+```ts [Ethers v5]
+const address = '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5';
+const name = await provider.lookupAddress(address);
+
+// Always verify the forward resolution
+if (name) {
+    const resolvedAddress = await provider.resolveName(name);
+    if (resolvedAddress !== address) {
+        // If verification fails, use the original address
+        return address;
+    }
+}
 ```
 
 ```ts [Viem]
@@ -101,7 +109,7 @@ func main() {
     <span>send 0.1 ETH to</span>
     <Badge>0xd8dA....6045</Badge>
   </div>
-  <span className="text-sm text-grey">turns into</span>
+  <span className="text-grey text-sm">turns into</span>
   <div className="flex items-center gap-2">
     <Badge>nick.eth</Badge>
     <span>sent 0.1 ETH to</span>
