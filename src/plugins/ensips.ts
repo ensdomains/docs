@@ -75,7 +75,7 @@ export async function ensips(): Promise<Plugin> {
             rawBody.slice(0, titleLength) +
             injectedMarkdown +
             '\n' +
-            rawBody.slice(titleLength)
+            replaceRelativeLinks(rawBody.slice(titleLength))
 
           // Save markdown file
           await fs.writeFile(
@@ -112,4 +112,10 @@ function parseDate(date: Date | string) {
     month: 'long',
     day: 'numeric',
   }).format(new Date(date))
+}
+
+function replaceRelativeLinks(markdown: string) {
+  // Regex for `./{number}.md` with `/ensip/{number}`
+  const relativeEnsipLink = /\.\/(\d+)\.md/g
+  return markdown.replace(relativeEnsipLink, `/ensip/$1`)
 }
