@@ -175,11 +175,11 @@ export function Libraries() {
           <span className="mb-1 block text-base font-bold">
             {language.name}
           </span>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             {language.libraries.map((library) => (
               <a
                 href={library.href}
-                className="block rounded-lg border border-grey-bright p-2"
+                className="border-grey-bright block rounded-lg border p-2"
                 target="_blank"
                 key={library.name}
               >

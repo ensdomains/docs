@@ -84,7 +84,7 @@ const navigation = [
 export function HomePage() {
   return (
     <>
-      <div className="space-y-4 py-16">
+      <div className="flex flex-col gap-4 py-16">
         <h1 className="text-3xl font-semibold sm:text-4xl">
           ENS Documentation
         </h1>
