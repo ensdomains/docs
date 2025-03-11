@@ -35,8 +35,7 @@ There is no ENS protocol fee to import a DNS name, but it requires a large amoun
 
 ## Offchain Verification (Gasless)
 
-{/* TODO: insert link here to EP5.1 once the page is created. Nick's draft is on the forum now https://discuss.ens.domains/t/ep5-1-executable-upgrade-dnssec-support/18535 */}
-EP5.1 introduced a new DNSSECOracle and DNSRegistrar which makes it possible to perform DNSSEC verification at query time, enabling truly free usage of DNS names in ENS. We call this "gasless DNSSEC".
+[EP 5.1](/dao/proposals/5.1) introduced a new DNSSECOracle and DNSRegistrar which makes it possible to perform DNSSEC verification at query time, enabling truly free usage of DNS names in ENS. We call this "gasless DNSSEC".
 
 It works by enabling [wildcard resolution](/ensip/10) at the DNS TLD level. During the [name resolution process](/resolution), if a name doesn't already exist onchain but has been configured for usage in ENS, the DNSSEC proof will be fetched offchain via [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668) and then verified onchain with the same DNSSECOracle mentioned above.
 

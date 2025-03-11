@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 type Props = {
   columns: string[]
   rows: (string | number | JSX.Element | null)[][]
@@ -5,22 +7,23 @@ type Props = {
 
 export function Table({ columns, rows }: Props) {
   return (
-    <table className="table-auto text-sm">
+    <table className="Vocs_Table">
       <thead>
-        <tr className="border-grey-light border text-left *:px-4 *:py-2.5 *:font-semibold">
+        <tr className="vocs_TableRow">
           {columns.map((column) => (
-            <th key={column}>{column}</th>
+            <th className="vocs_TableHeader" key={column}>
+              {column}
+            </th>
           ))}
         </tr>
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr
-            key={row.join('-')}
-            className="border-grey-light border *:px-4 *:py-2.5"
-          >
+          <tr key={row.join('-')} className="vocs_TableRow">
             {row.map((cell, index) => (
-              <td key={index}>{cell}</td>
+              <td className="vocs_TableCell" key={index}>
+                {cell}
+              </td>
             ))}
           </tr>
         ))}

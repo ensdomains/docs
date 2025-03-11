@@ -1,5 +1,4 @@
-'use client'
-
+// This is not currently being used
 import { FC, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { isAddress } from 'viem'
@@ -7,7 +6,6 @@ import { useEnsAddress, useEnsAvatar } from 'wagmi'
 
 import { Button } from './ui/Button'
 
-// TODO: make this look nice, for example https://ens-frontend-template.vercel.app/input
 export const SendTransactionDemo: FC = () => {
   const [input, setInput] = useState('')
 
@@ -38,7 +36,7 @@ export const SendTransactionDemo: FC = () => {
       </label>
       <input
         id="input"
-        className="w-full rounded-md border border-grey px-3 py-2"
+        className="border-grey w-full rounded-md border px-3 py-2"
         placeholder="ens.eth"
         onChange={(event) => setInput(event.target.value)}
       />

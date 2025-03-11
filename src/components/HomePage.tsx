@@ -1,5 +1,4 @@
 import { Button } from './ui/Button'
-import { H1 } from './ui/Typography'
 
 const navigation = [
   {

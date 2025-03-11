@@ -139,78 +139,76 @@ export const kits: Kit[] = [
 
 export const ConnectKits = () => {
   return (
-    <div className="">
-      <div className="not-prose xl:max-w-none">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {kits.map((library) => (
-            <div
-              key={library.name}
-              className="not-prose card1 !m-0 flex w-full min-w-[12rem] flex-col items-stretch justify-center gap-4 p-4"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex aspect-square w-10 items-center">
-                    <img
-                      src={library.logo}
-                      className={cn(
-                        'w-10',
-                        library.name.toLowerCase() == 'rainbowkit'
-                          ? 'rounded-xl'
-                          : ''
-                      )}
-                      alt={library.name}
-                    />
-                  </div>
-                  <div className="block text-left">
-                    <div className="font-bold leading-4">{library.name}</div>
-                    <span className="block text-xs leading-3 text-zinc-500">
-                      by{' '}
-                      <a
-                        href={library.creator_url}
-                        className="text-zinc-700"
-                        target="_blank"
-                      >
-                        {library.creator}
-                      </a>
-                    </span>
-                  </div>
+    <div className="xl:max-w-none">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {kits.map((library) => (
+          <div
+            key={library.name}
+            className="card1 !m-0 flex w-full min-w-[12rem] flex-col items-stretch justify-center gap-4 p-4"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="flex aspect-square w-10 items-center">
+                  <img
+                    src={library.logo}
+                    className={cn(
+                      'w-10',
+                      library.name.toLowerCase() == 'rainbowkit'
+                        ? 'rounded-xl'
+                        : ''
+                    )}
+                    alt={library.name}
+                  />
                 </div>
-              </div>
-              <div className="grow text-left text-sm">
-                <ul>
-                  {library.templates?.map((template) => (
-                    <li className="px-2" key={template.url}>
-                      <a
-                        href={template.url}
-                        target="_blank"
-                        className="text-blue-500 inline-flex items-center gap-1 hover:underline"
-                      >
-                        {template.icon && (
-                          <span className="h-fit">{template.icon}</span>
-                        )}
-                        {template.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <div>
-                  {library.demo && (
-                    <Button
-                      variant="primary"
-                      href={library.demo}
-                      className="w-full"
+                <div className="block text-left">
+                  <div className="leading-4 font-bold">{library.name}</div>
+                  <span className="block text-xs leading-3 text-zinc-500">
+                    by{' '}
+                    <a
+                      href={library.creator_url}
+                      className="text-zinc-700"
                       target="_blank"
                     >
-                      Try it!
-                    </Button>
-                  )}
+                      {library.creator}
+                    </a>
+                  </span>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            <div className="grow text-left text-sm">
+              <ul>
+                {library.templates?.map((template) => (
+                  <li className="px-2" key={template.url}>
+                    <a
+                      href={template.url}
+                      target="_blank"
+                      className="inline-flex items-center gap-1 text-blue-500 hover:underline"
+                    >
+                      {template.icon && (
+                        <span className="h-fit">{template.icon}</span>
+                      )}
+                      {template.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div>
+                {library.demo && (
+                  <Button
+                    variant="primary"
+                    href={library.demo}
+                    className="w-full"
+                    target="_blank"
+                  >
+                    Try it!
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
