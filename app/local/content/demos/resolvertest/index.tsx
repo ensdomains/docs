@@ -68,6 +68,7 @@ const Demo = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
+                        // @ts-ignore
                         connect();
                     }}
                 >
