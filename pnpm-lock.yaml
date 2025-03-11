@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  vocs@1.0.5:
+    hash: ixtswgmua4lz4kmul2m2qjpuke
+    path: patches/vocs@1.0.5.patch
+
 importers:
 
   .:
@@ -49,7 +54,7 @@ importers:
         version: 6.2.1(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.7.0)
       vocs:
         specifier: 1.0.5
-        version: 1.0.5(@types/node@22.10.5)(@types/react@19.0.6)(acorn@8.14.0)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.30.1)(typescript@5.7.3)(yaml@2.7.0)
+        version: 1.0.5(patch_hash=ixtswgmua4lz4kmul2m2qjpuke)(@types/node@22.10.5)(@types/react@19.0.6)(acorn@8.14.0)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.30.1)(typescript@5.7.3)(yaml@2.7.0)
       wagmi:
         specifier: ^2.14.8
         version: 2.14.8(@tanstack/query-core@5.64.1)(@tanstack/react-query@5.64.1(react@19.0.0))(@types/react@19.0.6)(bufferutil@4.0.9)(react@19.0.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.22.8(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
@@ -10440,7 +10445,7 @@ snapshots:
       lightningcss: 1.29.1
       yaml: 2.7.0
 
-  vocs@1.0.5(@types/node@22.10.5)(@types/react@19.0.6)(acorn@8.14.0)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.30.1)(typescript@5.7.3)(yaml@2.7.0):
+  vocs@1.0.5(patch_hash=ixtswgmua4lz4kmul2m2qjpuke)(@types/node@22.10.5)(@types/react@19.0.6)(acorn@8.14.0)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.30.1)(typescript@5.7.3)(yaml@2.7.0):
     dependencies:
       '@floating-ui/react': 0.27.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@hono/node-server': 1.13.8(hono@4.7.4)

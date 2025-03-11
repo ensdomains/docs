@@ -1,0 +1,12 @@
+diff --git a/vite/utils/search.ts b/vite/utils/search.ts
+index f4495463bfe1d0879998116ae3e4b974b2cc9c78..5cf0a04f8ebfe9e9391b8718560d1c366861d43c 100644
+--- a/vite/utils/search.ts
++++ b/vite/utils/search.ts
+@@ -26,6 +26,7 @@ export async function buildIndex({
+   baseDir: string
+ }) {
+   const pagesPaths = await globby(`${resolve(baseDir, 'pages')}/**/*.{md,mdx}`)
++  console.log(pagesPaths)
+ 
+   const documents = await Promise.all(
+     pagesPaths.map((pagePath) =>
