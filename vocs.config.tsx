@@ -22,7 +22,7 @@ export default defineConfig({
   rootDir: 'src',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
-  baseUrl: 'https://docs.ens.domains',
+  baseUrl: process.env.CF_PAGES_URL, // Not required, so ok if it's undefined
   editLink: {
     pattern: 'https://github.com/ensdomains/docs/edit/vocs/src/pages/:path',
     text: 'Edit on Github',
