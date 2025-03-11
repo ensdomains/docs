@@ -26,9 +26,9 @@ export async function ensips(): Promise<Plugin> {
         .then(() => true)
         .catch(() => false)
 
-      if (alreadyExists) {
-        return
-      }
+      // if (alreadyExists) {
+      //   return
+      // }
 
       console.log('Fetching ENSIPs')
 
@@ -36,7 +36,9 @@ export async function ensips(): Promise<Plugin> {
         'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
       )
       const files = (await res.json()) as DirectoryContents
-      const sidebar = new Array<SidebarItem & { number: number }>()
+      const sidebar = new Array<
+        SidebarItem & { number: number; status: string }
+      >()
 
       await Promise.all(
         files.map(async (file) => {
@@ -48,12 +50,6 @@ export async function ensips(): Promise<Plugin> {
           const ensipNumber = Number(file.name.split('.')[0])
           const titleLength = getFirstHeadingToken(mdFile)!.raw.length
 
-          sidebar.push({
-            text: getFirstHeadingToken(mdFile)!.text,
-            link: `/ensip/${ensipNumber}`,
-            number: ensipNumber,
-          })
-
           const parsedFrontMatter = parsedMd.data as {
             contributors: string[]
             ensip: {
@@ -61,6 +57,13 @@ export async function ensips(): Promise<Plugin> {
               created: Date
             }
           }
+
+          sidebar.push({
+            text: getFirstHeadingToken(mdFile)!.text,
+            link: `/ensip/${ensipNumber}`,
+            number: ensipNumber,
+            status: parsedFrontMatter.ensip.status,
+          })
 
           const authors = parsedFrontMatter.contributors.map((c) => `"${c}"`)
           const created = parseDate(parsedFrontMatter.ensip.created)
@@ -86,11 +89,22 @@ export async function ensips(): Promise<Plugin> {
         })
       )
 
+      const sortedSidebar = sidebar.sort((a, b) => a.number - b.number)
+
       // Save sidebar file as JSON
       await fs.writeFile(
         'src/data/generated/ensips-sidebar.json',
+        JSON.stringify(sortedSidebar, null, 2)
+      )
+
+      // Save summary file as JSON
+      await fs.writeFile(
+        'src/data/generated/ensips.json',
         JSON.stringify(
-          sidebar.sort((a, b) => a.number - b.number),
+          sortedSidebar.map((s) => ({
+            title: s.text,
+            status: s.status.charAt(0).toUpperCase() + s.status.slice(1),
+          })),
           null,
           2
         )

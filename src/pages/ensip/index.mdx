@@ -1,3 +1,6 @@
+import { Table } from '../../components/ui/table'
+import ensips from '../../data/generated/ensips.json'
+
 # ENS Improvement Proposals
 
 This page contains a summary of all the ENS Improvement Proposals (ENSIPs) that have been proposed, and their current status.
@@ -5,11 +8,10 @@ Improvement Proposals have included anything from new contract features, to text
 
 ## ENSIPs
 
-{/* TODO: Generate this table in the ensips() plugin */}
-
-| Title | Status |
-| ----- | ------ |
-|       |        |
+<Table
+  columns={['Title', 'Status']}
+  rows={ensips.map((ensip) => [ensip.title, ensip.status])}
+/>
 
 ## Propose an ENSIP
 
