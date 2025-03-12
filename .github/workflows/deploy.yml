@@ -41,14 +41,6 @@ jobs:
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: '3'
 
-      - name: Edgeserver Upload
-        uses: lvkdotsh/edgeserver-action@v0.1.2-pre.4
-        with:
-          app_id: "207908995888658940"
-          server: https://api.edgeserver.io
-          token: ${{ secrets.EDGESERVER_TOKEN }}
-          directory: app/out
-
       - uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
