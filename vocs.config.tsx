@@ -44,13 +44,24 @@ export default defineConfig({
     google: 'Inter',
   },
   theme: {
-    colorScheme: 'light',
     variables: {
       color: {
-        text: 'var(--ens-grey-active)',
-        textAccent: 'var(--ens-blue-dim)',
-        backgroundAccent: 'var(--ens-blue-primary)',
-        backgroundAccentHover: 'var(--ens-blue-bright)',
+        background: {
+          light: 'var(--ens-background)',
+          dark: 'var(--ens-background)',
+        },
+        text: {
+          light: 'var(--ens-text)',
+          dark: 'var(--ens-text)',
+        },
+        textAccent: {
+          light: 'var(--ens-blue-dim)',
+          dark: 'var(--ens-blue-primary)',
+        },
+        borderAccent: {
+          light: 'var(--ens-blue-primary)',
+          dark: 'var(--ens-blue-bright)',
+        },
       },
     },
   },

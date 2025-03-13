@@ -179,7 +179,7 @@ export function Libraries() {
             {language.libraries.map((library) => (
               <a
                 href={library.href}
-                className="border-grey-bright block rounded-lg border p-2"
+                className="border-grey-light block rounded-lg border p-2"
                 target="_blank"
                 key={library.name}
               >

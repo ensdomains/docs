@@ -161,12 +161,12 @@ export const ConnectKits = () => {
                   />
                 </div>
                 <div className="block text-left">
-                  <div className="leading-4 font-bold">{library.name}</div>
-                  <span className="block text-xs leading-3 text-zinc-500">
+                  <div className="space-y-4 font-bold">{library.name}</div>
+                  <span className="text-grey block text-xs leading-3">
                     by{' '}
                     <a
                       href={library.creator_url}
-                      className="text-zinc-700"
+                      className="text-grey"
                       target="_blank"
                     >
                       {library.creator}
