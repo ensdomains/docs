@@ -18,6 +18,7 @@ try {
 
 // Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround
 const isProd = process.env.CF_PAGES_BRANCH === 'master'
+const baseUrl = isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL
 
 export default defineConfig({
   title: 'ENS Documentation',
@@ -25,7 +26,8 @@ export default defineConfig({
   rootDir: 'src',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
-  baseUrl: isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL, // Not required, so ok if it's undefined
+  baseUrl,
+  ogImageUrl: baseUrl ? `${baseUrl}/api/og?title=%title` : undefined,
   editLink: {
     pattern: 'https://github.com/ensdomains/docs/edit/master/src/pages/:path',
     text: 'Edit on Github',
