@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og'
+import { ImageResponse } from '@cloudflare/pages-plugin-vercel-og/api'
 
 export function onRequest({ request }: { request: Request }) {
   const params = new URL(request.url).searchParams
