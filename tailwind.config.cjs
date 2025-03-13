@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{html,md,mdx,tsx,js,jsx}'],
+  darkMode: 'class',
   theme: {
     // Reset Tailwind default colors
     colors: {
