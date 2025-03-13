@@ -27,7 +27,7 @@ export default defineConfig({
   logoUrl: '/img/logo-mark.svg',
   baseUrl: isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL, // Not required, so ok if it's undefined
   editLink: {
-    pattern: 'https://github.com/ensdomains/docs/edit/vocs/src/pages/:path',
+    pattern: 'https://github.com/ensdomains/docs/edit/master/src/pages/:path',
     text: 'Edit on Github',
   },
   socials: [
