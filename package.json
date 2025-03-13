@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.64.1",
+    "@vercel/og": "^0.6.5",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "marked": "^15.0.6",
