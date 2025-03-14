@@ -92,6 +92,16 @@ module.exports = {
         light: 'var(--ens-grey-light)',
         surface: '#F6F6F6',
       },
+      background: {
+        DEFAULT: 'var(--ens-background)',
+        secondary: 'var(--ens-background-secondary)',
+      },
+      border: 'var(--ens-border)',
+      text: {
+        DEFAULT: 'var(--ens-text)',
+        secondary: 'var(--ens-text-secondary)',
+        disabled: 'var(--ens-text-disabled)',
+      },
     },
     extend: {},
   },

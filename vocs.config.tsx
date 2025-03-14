@@ -57,7 +57,7 @@ export default defineConfig({
           dark: 'var(--ens-text)',
         },
         textAccent: {
-          light: 'var(--ens-blue-dim)',
+          light: 'var(--ens-blue-primary)',
           dark: 'var(--ens-blue-primary)',
         },
         borderAccent: {

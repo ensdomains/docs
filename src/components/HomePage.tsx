@@ -1,4 +1,5 @@
 import { Button } from './ui/Button'
+import { H2 } from './ui/Typography'
 
 const navigation = [
   {
@@ -80,33 +81,69 @@ const navigation = [
   },
 ]
 
+const videos = [
+  {
+    title: 'ETHGlobal Brussels Workshop',
+    href: 'https://www.youtube.com/watch?v=TcMUvPPW2oI',
+    thumbnail: '/img/thumbnails/ethglobal-workshop.jpg',
+  },
+  {
+    title: 'ENS Evolution Beyond ETH',
+    href: 'https://www.youtube.com/watch?v=Tp0r5t8BGt8',
+    thumbnail: '/img/thumbnails/frensday-keynote.jpg',
+  },
+]
+
 export function HomePage() {
   return (
     <>
-      <div className="flex flex-col gap-4 py-16">
-        <h1 className="text-3xl font-semibold sm:text-4xl">
-          ENS Documentation
-        </h1>
-        <p>Build applications with decentralized self-sovereign identity.</p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button href="/web/quickstart">Get Started</Button>
-          <Button variant="outline" href="/learn/protocol">
-            Learn about ENS
-          </Button>
+      <div className="bg-background-secondary border-grey-light border-t px-4 py-16">
+        <div className="mx-auto flex max-w-5xl flex-col gap-4">
+          <h1 className="text-3xl font-semibold sm:text-4xl">
+            ENS Documentation
+          </h1>
+          <p>Build applications with decentralized self-sovereign identity.</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button href="/web/quickstart">Get Started</Button>
+            <Button variant="outline" href="/learn/protocol">
+              Learn about ENS
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 pt-6 lg:grid-cols-4 lg:gap-y-10">
+      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 pt-6 lg:grid-cols-4 lg:gap-y-10">
         {navigation.map((column) => (
           <div key={column.title}>
             <div className="font-bold">{column.title}</div>
             {column.links.map(([title, href]) => (
               <div key={title} className="flex items-center gap-3">
-                <a href={href}>{title}</a>
+                <a className="vocs_Anchor !no-underline" href={href}>
+                  {title}
+                </a>
               </div>
             ))}
           </div>
         ))}
+      </div>
+
+      <div className="mx-auto flex max-w-5xl flex-col px-4">
+        <H2>Videos</H2>
+        <div className="grid grid-cols-2 gap-6 lg:gap-y-10">
+          {videos.map((video) => (
+            <a
+              key={video.title}
+              href={video.href}
+              target="_blank"
+              className="border-grey-light overflow-hidden rounded-lg border"
+            >
+              <img src={video.thumbnail} alt={video.title} className="w-full" />
+              <span className="block p-2 leading-6 font-medium">
+                {video.title}
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
     </>
   )
