@@ -1,14 +1,31 @@
-import { Mermaid as MermaidZ } from 'mdx-mermaid/lib/Mermaid'
-import { useEffect, useState } from 'react'
+import mermaid from 'mermaid'
+import { useEffect, useRef } from 'react'
+import { keccak256, toHex } from 'viem'
 
-export const Mermaid = ({ ...props }: Parameters<typeof MermaidZ>[0]) => {
-  const [isMounted, setIsMounted] = useState(false)
+mermaid.initialize({})
+
+export const Mermaid = ({ chart }: { chart: string }) => {
+  const mermaidRef = useRef<HTMLDivElement>(null)
+  const id = keccak256(toHex(chart))
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    const initializeMermaid = async () => {
+      if (mermaidRef.current) {
+        mermaidRef.current.innerHTML = chart
+        const { svg, bindFunctions } = await mermaid.render(
+          `mermaid-diagram-${id}`,
+          chart
+        )
+        mermaidRef.current.innerHTML = svg
+        bindFunctions?.(mermaidRef.current)
+      }
+    }
 
-  if (!isMounted) return null
+    initializeMermaid()
 
-  return <MermaidZ {...props} />
+    // Clean up mermaid instance when unmounting; doing nothing at the momemt
+    return () => {}
+  }, [chart])
+
+  return <div id={id} ref={mermaidRef}></div>
 }
