@@ -26,9 +26,7 @@ export async function ensips(): Promise<Plugin> {
         .then(() => true)
         .catch(() => false)
 
-      // if (alreadyExists) {
-      //   return
-      // }
+      if (alreadyExists) return
 
       console.log('Fetching ENSIPs')
 
