@@ -1,0 +1,40 @@
+import { DNSGrid } from '../../components/DNSGrid'
+import { DNSUsageExamples } from '../../components/DNSUsageExamples'
+import { EmbedLink } from '../../components/EmbedLink'
+
+# DNS on ENS [ENS supports DNS names, allowing users to import DNS names into ENS.]
+
+The Ethereum Name Service is so much more than just `.eth` names. It is a general-purpose naming system that can be used for any kind of name. This includes DNS names.
+DNS functionality was originally introduced in [ENSIP-6](/ensip/6).
+
+## Importing a DNS name
+
+There are currently two ways of importing a DNS name into ENS. Both methods require you enable DNSSEC on your domain, and setup a TXT record.
+This record is then verified using smart-contracts on the Ethereum blockchain.
+
+To import a name, simply visit the [ENS Manager](https://ens.app), type in your name, and click "Import DNS". You will walked through setting up your DNS records.
+Additionally you can read more about the records and specifications here:
+
+<EmbedLink
+  title="Importing a DNS name Gaslessly"
+  href="/registry/dns#gasless-import"
+/>
+
+## Why DNS on ENS?
+
+ENS aims to extend the existing functionality of the DNS system. This also means that existing DNS names (such as `.com`, `.org`, or `.xyz`) should be able to leverage the benefits of the ENS resolution process.
+
+<DNSGrid />
+
+## DNS Names in the wild
+
+DNS names are widely used and many users may already have one without even realizing it. Some major platforms that issue subdomains of their DNS names include:
+
+<DNSUsageExamples />
+
+## Top-Level Domains
+
+In addition to allowing any DNSSEC enabled name to be imported, ENS also allows existing DNS TLDs to take control of their smart-contract resolution process.
+Resulting in even more seamless integration with the DNS system.
+
+A list of all supported TLDs can be found [here](/dns/tlds)

@@ -1,0 +1,57 @@
+---
+description: ENS is multichain, but it all starts with Ethereum Mainnet. This page contains common addresses for ENS contracts.
+---
+
+import { ContractDeployments } from '../../components/ContractDeployments'
+import { EmbedLink } from '../../components/EmbedLink'
+import { Card } from '../../components/ui/Card'
+
+# Deployments
+
+:::note
+This page contains information that is only relevant to developers who would
+like to interact with the contract manually. Most libraries will handle this
+for you.
+:::
+
+ENS is multichain (read more [here](/web/multichain)) and can be used in any application.
+In addition to being able to query many address formats and record types, data can be stored [practically anywhere](/learn/ccip-read).
+However, resolution needs to start somewhere, so the entrypoint for resolution is Ethereum Mainnet, alongside the most popular testnets.
+
+<Card className="flex justify-center gap-4">
+  <span>Ethereum Mainnet</span>
+  <div>→</div>
+  <div className="flex flex-col">
+    <span>Base</span>
+    <span>Arbitrum</span>
+    <span>Offchain</span>
+    <span>...</span>
+  </div>
+</Card>
+
+## Deployments
+
+Listed below you will find a list of latest deployments of registries, resolvers, and more.
+
+### Mainnet
+
+<ContractDeployments chain="mainnet" />
+
+### Sepolia
+
+<ContractDeployments chain="sepolia" />
+
+### Holesky
+
+<ContractDeployments chain="holesky" />
+
+## But what about multichain?
+
+The ENS Protocol can be used on/for any chain! If you are building a dApp and want to use ENS you might have to add a [Mainnet RPC to your Wagmi config](/web/libraries).
+This allows tools like wagmi to access mainnet, and load ENS information!
+
+<EmbedLink
+  title="Layer 2 & Offchain"
+  description="Learn more about ENS on Layer 2 and Offchain solutions"
+  href="/learn/ccip-read"
+/>
