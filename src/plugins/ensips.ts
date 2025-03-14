@@ -32,10 +32,11 @@ export async function ensips(): Promise<Plugin> {
 
       console.log('Fetching ENSIPs')
 
-      const res = await fetch(
+      const ensipsRepoRes = await fetch(
         'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
       )
-      const files = (await res.json()) as DirectoryContents
+      if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
+      const files = (await ensipsRepoRes.json()) as DirectoryContents
       const sidebar = new Array<
         SidebarItem & { number: number; status: string }
       >()
@@ -43,6 +44,7 @@ export async function ensips(): Promise<Plugin> {
       await Promise.all(
         files.map(async (file) => {
           const res = await fetch(file.download_url)
+          if (!res.ok) throw new Error('Failed to fetch ENSIP')
           const mdFile = await res.text()
           const parsedMd = matter(mdFile)
           const rawBody = parsedMd.content
