@@ -1,5 +1,5 @@
 diff --git a/_lib/app/components/SearchDialog.js b/_lib/app/components/SearchDialog.js
-index 78e19970cb3a3d3d902c4d21cbb1b745a3229917..648487376da6ce8e906505818fdd02a338188471 100644
+index 78e19970cb3a3d3d902c4d21cbb1b745a3229917..8fe03f0d02605811c4b6540ea4fe5c74252b4ece 100644
 --- a/_lib/app/components/SearchDialog.js
 +++ b/_lib/app/components/SearchDialog.js
 @@ -1,163 +1,330 @@
@@ -487,11 +487,12 @@ index 78e19970cb3a3d3d902c4d21cbb1b745a3229917..648487376da6ce8e906505818fdd02a3
 +  )
  }
  //# sourceMappingURL=SearchDialog.js.map
+\ No newline at end of file
 diff --git a/_lib/vite/utils/search.js b/_lib/vite/utils/search.js
-index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..8ba56f408ec31b1ef8deb577291fce5db880d29f 100644
+index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..c5a9f33bdd74eaa26429921ffcc4e8d8e76b9e14 100644
 --- a/_lib/vite/utils/search.js
 +++ b/_lib/vite/utils/search.js
-@@ -10,50 +10,96 @@ import pLimit from 'p-limit';
+@@ -10,50 +10,76 @@ import pLimit from 'p-limit';
  import { Fragment } from 'react';
  import { renderToStaticMarkup } from 'react-dom/server';
  import * as runtime from 'react/jsx-runtime';
@@ -517,12 +518,10 @@ index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..8ba56f408ec31b1ef8deb577291fce5d
 -        const html = await processMdx(pagePath, mdx);
 -        const sections = splitPageIntoSections(html);
 -        if (sections.length === 0) {
-+        
-+        // if (pageCache.mdx === mdx) return pageCache.document;
++        if (pageCache.mdx === mdx) return pageCache.document;
 +
 +        const mdxAfterFrontmatter = matter(mdx).content
 +        const mdxWithoutImports = mdxAfterFrontmatter.replace(/import.*?from.*?['"].*?['"]/g, '')
-+
 +        const tokens = marked.lexer(mdxWithoutImports)
 +        
 +        // TODO: Later index more content
@@ -542,14 +541,6 @@ index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..8ba56f408ec31b1ef8deb577291fce5d
 +
 +        const headerTokens = tokenSections.filter((token) => token.type === 'heading')
 +        const paragraphTokens = tokenSections.filter((token) => token.type === 'paragraph')
-+
-+        // const html = await processMdx(pagePath, mdx);
-+        // const sections = splitPageIntoSections(html);
-+
-+        // if (sections.length === 0) {
-+        //     cache.search.set(key, { mdx, document: [] });
-+        //     return [];
-+        // }
 +
 +        if (headerTokens.length === 0) {
              cache.search.set(key, { mdx, document: [] });
@@ -571,16 +562,6 @@ index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..8ba56f408ec31b1ef8deb577291fce5d
 -            title: section.titles.at(-1),
 -            titles: section.titles.slice(0, -1),
 -        }));
-+
-+        // const document = sections.map((section) => ({
-+        //     href: `${href}#${section.anchor}`,
-+        //     html: section.html,
-+        //     id: `${fileId}#${section.anchor}`,
-+        //     isPage: section.isPage,
-+        //     text: section.text,
-+        //     title: section.titles.at(-1),
-+        //     titles: section.titles.slice(0, -1),
-+        // }));
 +
 +        const document = {
 +            href,
