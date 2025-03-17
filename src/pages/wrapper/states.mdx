@@ -1,9 +1,7 @@
-import { Mermaid } from '../../components/ui/Mermaid'
-
 # Wrapped States
 
-<Mermaid
-  chart={`graph LR;
+```mermaid
+graph LR;
   unregistered((Unregistered));
   unwrapped(Unwrapped);
   wrapped(Wrapped);
@@ -17,8 +15,7 @@ import { Mermaid } from '../../components/ui/Mermaid'
   emancipated--->|unwrap|unwrapped;
   emancipated--->|expire|unregistered;
   locked-->|expire|unregistered;
-`}
-/>
+```
 
 Taking the Name Wrapper into account, an ENS name can be in one of these possible states:
 

@@ -75,7 +75,6 @@ export async function ensips(): Promise<Plugin> {
             rawFrontmatter +
             '\n---\n\n' +
             'import { EnsipHeader } from "../../components/EnsipHeader";\n' +
-            'import { Mermaid } from "../../components/ui/Mermaid";\n' +
             rawBody.slice(0, titleLength) +
             '\n' +
             injectedMarkdown +
@@ -131,20 +130,11 @@ function parseDate(date: Date | string) {
 }
 
 function processMarkdown(markdown: string) {
-  return replaceMermaid(replaceRelativeLinks(markdown))
+  return replaceRelativeLinks(markdown)
 }
 
 function replaceRelativeLinks(markdown: string) {
   // Replace `./{number}.md` with `/ensip/{number}`
   const relativeEnsipLink = /\.\/(\d+)\.md/g
   return markdown.replace(relativeEnsipLink, `/ensip/$1`)
-}
-
-function replaceMermaid(markdown: string) {
-  const mermaidBlockRegex = /```mermaid\n([\s\S]*?)```/g
-
-  // Replace each mermaid block with <Mermaid> component
-  return markdown.replace(mermaidBlockRegex, (_, code) => {
-    return `<Mermaid chart={\`\n${code}\n\`} />`
-  })
 }

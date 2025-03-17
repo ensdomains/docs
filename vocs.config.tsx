@@ -1,3 +1,4 @@
+import { remarkMermaid } from '@theguild/remark-mermaid'
 import { defineConfig } from 'vocs'
 
 import { daoProposalsSidebar } from './src/plugins/dao-proposals'
@@ -69,6 +70,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [ensips(), deployments(), daoProposalsSidebar()],
+  },
+  markdown: {
+    remarkPlugins: [remarkMermaid],
   },
   head: {
     // TODO: Ideally this should get injected into <header> for semantics via a remark plugin.

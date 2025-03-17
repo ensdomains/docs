@@ -19,6 +19,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.64.1
         version: 5.64.1(react@19.0.0)
+      '@theguild/remark-mermaid':
+        specifier: ^0.2.0
+        version: 0.2.0(react@19.0.0)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -28,9 +31,6 @@ importers:
       marked:
         specifier: ^15.0.6
         version: 15.0.6
-      mermaid:
-        specifier: ^11.5.0
-        version: 11.5.0
       react:
         specifier: latest
         version: 19.0.0
@@ -1291,6 +1291,11 @@ packages:
     resolution: {integrity: sha512-vW5ggHpIO2Yjj44b4sB+Fd3cdnlMJppXRBJkEHvld6FXh3j5dwWJoQo7mGtKI2RbSFyiyu/PhGAy0+Vv5ev9Eg==}
     peerDependencies:
       react: ^18 || ^19
+
+  '@theguild/remark-mermaid@0.2.0':
+    resolution: {integrity: sha512-o8n57TJy0OI4PCrNw8z6S+vpHtrwoQZzTA5Y3fL0U1NDRIoMg/78duWgEBFsCZcWM1G6zjE91yg1aKCsDwgE2Q==}
+    peerDependencies:
+      react: ^18.2.0
 
   '@trivago/prettier-plugin-sort-imports@5.2.1':
     resolution: {integrity: sha512-NDZndt0fmVThIx/8cExuJHLZagUVzfGCoVrwH9x6aZvwfBdkrDFTYujecek6X2WpG4uUFsVaPg5+aNQPSyjcmw==}
@@ -5532,6 +5537,14 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.64.1
       react: 19.0.0
+
+  '@theguild/remark-mermaid@0.2.0(react@19.0.0)':
+    dependencies:
+      mermaid: 11.5.0
+      react: 19.0.0
+      unist-util-visit: 5.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@trivago/prettier-plugin-sort-imports@5.2.1(prettier@3.4.2)':
     dependencies:
