@@ -358,6 +358,7 @@ export const navigation: SectionData[] = [
                     },
                     { title: 'Foundation', href: '/dao/foundation' },
                     { title: 'Token & Airdrop', href: '/dao/token' },
+                    { title: 'Investment Policy Proposal', href: '/dao/ips' },
                 ],
             },
             {
