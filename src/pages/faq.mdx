@@ -1,0 +1,108 @@
+---
+description: Frequently Asked Questions about the Ethereum Name Service
+---
+
+# FAQ
+
+## Which wallets and dApps support ENS?
+
+ENS is supported by a wide range of wallets and dApps, some notable ones can be found on the [integrations page](https://ens.domains/).
+This page is currently under construction however a link to add yourself will be put here soon.
+
+## Can I hold my name with one address, and point it at the other?
+
+Yes, you can hold your name with one address and point it at another.
+Simply visit the [ENS Manager App](https://ens.app/) and update the appropriate address record (by chain) for your name to point to the address you wish.
+
+## Once I own a name, can I create my own subdomains?
+
+Yes. You can create whatever subdomains you wish and assign ownership of them to other people if you desire. You can even set up your own registrar for your domain.
+
+Some resolvers might provide even more advanced features, read more [about Resolvers](/resolvers/quickstart).
+
+## Can I change the address my name points to after I've bought it?
+
+Yes, you can update the addresses and other resources pointed to by your name at any time.
+
+To update your name checkout the [ENS Manager App](https://ens.app/).
+
+## ETH Registration
+
+### Why are names registered as hashes?
+
+Hashes provide a fixed length identifier that can easily be passed around between contracts with fixed overhead and no issues passing around variable-length strings.
+
+Read more about [labelhash, namehash, and encodings](/resolution/names).
+
+### What characters are supported?
+
+ENS names are generally encoded using UTS-46.
+This means there is partial support for Unicode characters, including emoji.
+
+However technically possible to register any name, names that are not valid UTS-46 will not be resolvable by most resolvers.
+Therefore it is generally recommended for apps that implement registration to limit the characters that can be registered to ensure a smooth experience.
+
+To read more about supported characters [name normalization](/resolution/names).
+
+### What does it cost to register a .eth domain?
+
+Currently, registration costs are set at the following prices:
+
+- 5+ character .eth names: $5 in ETH per year.
+- 4 character .eth names: $160 in ETH per year.
+- 3 character .eth names: $640 in ETH per year.
+
+3 and 4 character names have higher pricing to reflect the small number of these names available.
+
+To read more about the pricing structure of .eth names [read more about pricing](/registry/eth)
+
+### How long can I register a name for?
+
+You can register a name for as long as you would like.
+There is no maximum registration duration.
+
+### What happens if I forget to renew my name?
+
+If you forget to renew your name, it will be released back to the public pool of available names.
+Luckily the expiration process has a 90 day grace period.
+This means that once the name expires the original owner has 90 days to renew the name before it is released.
+After the grace period, the name is released for registration by anyone with a temporary premium which decreases over a 21 days period.
+The released name continues to resolve your ETH address until the new owner overwrites it.
+
+### In what way could I lose access to my name?
+
+The .eth registrar is built to ensure once issued, a name cannot be revoked or taken away from its owner.
+Potential loss can occur if the owner loses access to their private key, or if the owner forgets to renew their name.
+
+## Root Registry
+
+### Who owns the ENS rootnode? What powers does it grant them?
+
+The ENS rootnode is currently owned by the ENS DAO. It used to be owned by the ENS Multi-sig, a group of keyholders from different parts of the ecosystem, however as of [EP4.10](/dao/proposals/4.10) the ownership has been transferred to the ENS DAO.
+
+Ownership of the rootnode grants the ability to do the following:
+
+- Control allocation and replacement of TLDs other than .eth - this is required to implement DNSSEC integration.
+- Enable and disable controllers for the .eth registrar, which affect registration and renewal policies for .eth names.
+- Update the pricing for .eth names.
+- Receive and manage registration revenue.
+
+### Can I register a TLD of my own within ENS?
+
+Yes and No, We consider ENS to be part of the 'global namespace' in co-existence with DNS, and it is our priority to not pollute the namespace.
+ENS-specific TLDs are restricted to only '.eth' on Mainnet Ethereum, or .eth and .test on testnets.
+
+By default ENS allows users to [import their DNS name](/learn/dns) through the use of the [DNS Registrar](/registry/dns).
+Existing DNS TLDs can [reach out to us](mailto:info@ens.domains) to take control of their TLD.
+
+## What are the differences between ENS and other naming services such as Namecoin or Handshake?
+
+ENS complements and extends the usefulness of DNS with decentralised, trustworthy name resolution for web3 resources such as blockchain addresses and distributed content, while Namecoin and Handshake are efforts to replace all or part of DNS with a blockchain-based alternative.
+
+## Governance Token
+
+### Can I recover tokens accidentally sent to the wrong address?
+
+The answer depends on the address the token was sent to. If you accidentally sent the token to the token.ensdao.eth address (0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72) or the wallet.ensdao.eth address (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7) then the tokens might be recoverable. Contact the [Meta-governance working group](/dao/stewards/) at the [ENS Forum](https://discuss.ens.domains) and explain the situation. Tokens can only be sent back to the address they were sent from, so if it was sent from an exchange, contact your exchange support to make sure the address can receive tokens.
+
+If the tokens were sent to the null address (0x000..) or an address with a typo, then the tokens are unrecoverable and there's nothing that anyone can do. If the tokens were sent to an exchange or a third party, then contact that third party for help.
