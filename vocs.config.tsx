@@ -24,6 +24,7 @@ const baseUrl = isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL
 export default defineConfig({
   title: 'ENS Documentation',
   titleTemplate: '%s | ENS Docs',
+  aiCta: false,
   rootDir: 'src',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',

@@ -22,7 +22,7 @@
     "use-debounce": "^10.0.4",
     "viem": "^2.22.8",
     "vite": "^6.2.1",
-    "vocs": "1.0.5",
+    "vocs": "1.0.11",
     "wagmi": "^2.14.8"
   },
   "devDependencies": {
@@ -35,10 +35,5 @@
   "packageManager": "pnpm@9.15.5",
   "engines": {
     "node": ">=20"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "vocs@1.0.5": "patches/vocs@1.0.5.patch"
-    }
   }
 }
