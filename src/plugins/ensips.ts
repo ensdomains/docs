@@ -2,7 +2,6 @@ import fs from 'fs/promises'
 import matter from 'gray-matter'
 import { Tokens, marked } from 'marked'
 import path from 'path'
-import { Plugin } from 'vite'
 import { SidebarItem } from 'vocs'
 
 type DirectoryContents = {
@@ -12,106 +11,97 @@ type DirectoryContents = {
 
 // Generate a markdown file for each ENSIP and add it to the sidebar
 // Only runs once, no need for hot reloading
-export function ensips(): Plugin {
-  const name = 'ensips'
+export async function ensips() {
+  {
+    const alreadyExists = await fs
+      .access('src/pages/ensip/1.mdx')
+      .then(() => true)
+      .catch(() => false)
 
-  return {
-    name,
-    enforce: 'pre',
-    resolveId(id) {
-      if (id === name) return name
-    },
-    async buildStart() {
-      const alreadyExists = await fs
-        .access('src/pages/ensip/1.mdx')
-        .then(() => true)
-        .catch(() => false)
+    if (alreadyExists) return
 
-      if (alreadyExists) return
+    console.log('Fetching ENSIPs')
 
-      console.log('Fetching ENSIPs')
+    const ensipsRepoRes = await fetch(
+      'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
+    )
+    if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
+    const files = (await ensipsRepoRes.json()) as DirectoryContents
+    const sidebar = new Array<
+      SidebarItem & { number: number; status: string }
+    >()
 
-      const ensipsRepoRes = await fetch(
-        'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
-      )
-      if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
-      const files = (await ensipsRepoRes.json()) as DirectoryContents
-      const sidebar = new Array<
-        SidebarItem & { number: number; status: string }
-      >()
+    await Promise.all(
+      files.map(async (file) => {
+        const res = await fetch(file.download_url)
+        if (!res.ok) throw new Error('Failed to fetch ENSIP')
+        const mdFile = await res.text()
+        const parsedMd = matter(mdFile)
+        const rawBody = parsedMd.content
+        const rawFrontmatter = parsedMd.matter
+        const ensipNumber = Number(file.name.split('.')[0])
+        const titleLength = getFirstHeadingToken(mdFile)!.raw.length
 
-      await Promise.all(
-        files.map(async (file) => {
-          const res = await fetch(file.download_url)
-          if (!res.ok) throw new Error('Failed to fetch ENSIP')
-          const mdFile = await res.text()
-          const parsedMd = matter(mdFile)
-          const rawBody = parsedMd.content
-          const rawFrontmatter = parsedMd.matter
-          const ensipNumber = Number(file.name.split('.')[0])
-          const titleLength = getFirstHeadingToken(mdFile)!.raw.length
-
-          const parsedFrontMatter = parsedMd.data as {
-            contributors: string[]
-            ensip: {
-              status: 'draft' | 'final' | 'obsolete'
-              created: Date
-            }
+        const parsedFrontMatter = parsedMd.data as {
+          contributors: string[]
+          ensip: {
+            status: 'draft' | 'final' | 'obsolete'
+            created: Date
           }
+        }
 
-          sidebar.push({
-            text: getFirstHeadingToken(mdFile)!.text,
-            link: `/ensip/${ensipNumber}`,
-            number: ensipNumber,
-            status: parsedFrontMatter.ensip.status,
-          })
-
-          const authors = parsedFrontMatter.contributors.map((c) => `"${c}"`)
-          const created = parseDate(parsedFrontMatter.ensip.created)
-          const injectedMarkdown = `<EnsipHeader authors={[${authors}]} created="${created}" status="${parsedFrontMatter.ensip.status}" />`
-
-          // Reconstruct markdown file
-          const modifiedMarkdown =
-            '---' +
-            rawFrontmatter +
-            '\n---\n\n' +
-            'import { EnsipHeader } from "../../components/EnsipHeader";\n' +
-            rawBody.slice(0, titleLength) +
-            '\n' +
-            injectedMarkdown +
-            '\n' +
-            processMarkdown(rawBody.slice(titleLength))
-
-          // Save markdown file
-          await fs.writeFile(
-            path.join('src/pages/ensip', `${ensipNumber}.mdx`),
-            modifiedMarkdown,
-            'utf-8'
-          )
+        sidebar.push({
+          text: getFirstHeadingToken(mdFile)!.text,
+          link: `/ensip/${ensipNumber}`,
+          number: ensipNumber,
+          status: parsedFrontMatter.ensip.status,
         })
-      )
 
-      const sortedSidebar = sidebar.sort((a, b) => a.number - b.number)
+        const authors = parsedFrontMatter.contributors.map((c) => `"${c}"`)
+        const created = parseDate(parsedFrontMatter.ensip.created)
+        const injectedMarkdown = `<EnsipHeader authors={[${authors}]} created="${created}" status="${parsedFrontMatter.ensip.status}" />`
 
-      // Save sidebar file as JSON
-      await fs.writeFile(
-        'src/data/generated/ensips-sidebar.json',
-        JSON.stringify(sortedSidebar, null, 2)
-      )
+        // Reconstruct markdown file
+        const modifiedMarkdown =
+          '---' +
+          rawFrontmatter +
+          '\n---\n\n' +
+          'import { EnsipHeader } from "../../components/EnsipHeader";\n' +
+          rawBody.slice(0, titleLength) +
+          '\n' +
+          injectedMarkdown +
+          '\n' +
+          processMarkdown(rawBody.slice(titleLength))
 
-      // Save summary file as JSON
-      await fs.writeFile(
-        'src/data/generated/ensips.json',
-        JSON.stringify(
-          sortedSidebar.map((s) => ({
-            title: s.text,
-            status: s.status.charAt(0).toUpperCase() + s.status.slice(1),
-          })),
-          null,
-          2
+        // Save markdown file
+        await fs.writeFile(
+          path.join('src/pages/ensip', `${ensipNumber}.mdx`),
+          modifiedMarkdown,
+          'utf-8'
         )
+      })
+    )
+
+    const sortedSidebar = sidebar.sort((a, b) => a.number - b.number)
+
+    // Save sidebar file as JSON
+    await fs.writeFile(
+      'src/data/generated/ensips-sidebar.json',
+      JSON.stringify(sortedSidebar, null, 2)
+    )
+
+    // Save summary file as JSON
+    await fs.writeFile(
+      'src/data/generated/ensips.json',
+      JSON.stringify(
+        sortedSidebar.map((s) => ({
+          title: s.text,
+          status: s.status.charAt(0).toUpperCase() + s.status.slice(1),
+        })),
+        null,
+        2
       )
-    },
+    )
   }
 }
 

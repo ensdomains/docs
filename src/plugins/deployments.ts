@@ -1,7 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { Abi, Hex, TransactionReceipt } from 'viem'
-import { Plugin } from 'vite'
 
 type Deployment = {
   name: string
@@ -217,47 +216,38 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
 
 // Generate a JSON file with contract deployment info
 // Only runs once, no need for hot reloading
-export function deployments(): Plugin {
-  const name = 'contract-deployments'
+export async function deployments() {
+  {
+    const alreadyExists = await fs
+      .access('src/data/generated/deployments.json')
+      .then(() => true)
+      .catch(() => false)
 
-  return {
-    name,
-    enforce: 'pre',
-    resolveId(id) {
-      if (id === name) return name
-    },
-    async buildStart() {
-      const alreadyExists = await fs
-        .access('src/data/generated/deployments.json')
-        .then(() => true)
-        .catch(() => false)
+    if (alreadyExists) {
+      return
+    }
 
-      if (alreadyExists) {
-        return
-      }
+    console.log('Fetching deployments')
 
-      console.log('Fetching deployments')
+    await Promise.all(
+      DEPLOYMENTS.map(async (chain) => {
+        await Promise.all(
+          chain.contracts.map(async (contract) => {
+            const res = await fetch(
+              `https://raw.githubusercontent.com/ensdomains/ens-contracts/staging/deployments/${chain.slug}/${contract.github.filename}.json`
+            ).then((res) => res.json() as Promise<DeploymentFile>)
 
-      await Promise.all(
-        DEPLOYMENTS.map(async (chain) => {
-          await Promise.all(
-            chain.contracts.map(async (contract) => {
-              const res = await fetch(
-                `https://raw.githubusercontent.com/ensdomains/ens-contracts/staging/deployments/${chain.slug}/${contract.github.filename}.json`
-              ).then((res) => res.json() as Promise<DeploymentFile>)
+            // Add the contract address to the deployment
+            contract.address = res.address
+          })
+        )
+      })
+    )
 
-              // Add the contract address to the deployment
-              contract.address = res.address
-            })
-          )
-        })
-      )
-
-      // Save deployments as JSON
-      await fs.writeFile(
-        path.join('src/data/generated/deployments.json'),
-        JSON.stringify(DEPLOYMENTS, null, 2)
-      )
-    },
+    // Save deployments as JSON
+    await fs.writeFile(
+      path.join('src/data/generated/deployments.json'),
+      JSON.stringify(DEPLOYMENTS, null, 2)
+    )
   }
 }

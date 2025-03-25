@@ -16,3 +16,4 @@ src/pages/ensip/*
 src/data/generated/*
 !src/data/generated/.keep
 
+.wrangler
