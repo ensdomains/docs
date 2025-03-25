@@ -7,7 +7,7 @@ import { SidebarItem } from 'vocs'
 export async function daoProposalsSidebar() {
   const sidebar = new Array<SidebarItem>()
   const files = await fs.readdir(
-    path.join(__dirname, '..', 'pages/dao/proposals')
+    path.join(__dirname, '..', 'src/pages/dao/proposals')
   )
 
   const terms = new Set<number>()
@@ -47,7 +47,7 @@ export async function daoProposalsSidebar() {
 
   // Save sidebar file as JSON
   await fs.writeFile(
-    'src/data/generated/dao-proposals-sidebar.json',
+    path.join(__dirname, '..', 'src/data/generated/dao-proposals-sidebar.json'),
     JSON.stringify(sidebar, null, 2)
   )
 }

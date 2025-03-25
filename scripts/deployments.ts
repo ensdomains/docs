@@ -219,7 +219,7 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
 export async function deployments() {
   {
     const alreadyExists = await fs
-      .access('src/data/generated/deployments.json')
+      .access(path.join(__dirname, '..', 'src/data/generated/deployments.json'))
       .then(() => true)
       .catch(() => false)
 
@@ -246,7 +246,7 @@ export async function deployments() {
 
     // Save deployments as JSON
     await fs.writeFile(
-      path.join('src/data/generated/deployments.json'),
+      path.join(__dirname, '..', 'src/data/generated/deployments.json'),
       JSON.stringify(DEPLOYMENTS, null, 2)
     )
   }

@@ -14,7 +14,7 @@ type DirectoryContents = {
 export async function ensips() {
   {
     const alreadyExists = await fs
-      .access('src/pages/ensip/1.mdx')
+      .access(path.join(__dirname, '..', 'src/pages/ensip/1.mdx'))
       .then(() => true)
       .catch(() => false)
 
@@ -86,13 +86,13 @@ export async function ensips() {
 
     // Save sidebar file as JSON
     await fs.writeFile(
-      'src/data/generated/ensips-sidebar.json',
+      path.join(__dirname, '..', 'src/data/generated/ensips-sidebar.json'),
       JSON.stringify(sortedSidebar, null, 2)
     )
 
     // Save summary file as JSON
     await fs.writeFile(
-      'src/data/generated/ensips.json',
+      path.join(__dirname, '..', 'src/data/generated/ensips.json'),
       JSON.stringify(
         sortedSidebar.map((s) => ({
           title: s.text,

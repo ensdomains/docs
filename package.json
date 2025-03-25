@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vocs dev",
-    "build": "bun scripts/run-plugins.ts && vocs build",
+    "generate": "bun scripts/run-plugins.ts",
+    "dev": "pnpm generate && vocs dev",
+    "build": "pnpm generate && vocs build",
     "preview": "vocs preview"
   },
   "dependencies": {

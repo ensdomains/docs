@@ -1,6 +1,6 @@
-import { daoProposalsSidebar } from '../src/plugins/dao-proposals'
-import { deployments } from '../src/plugins/deployments'
-import { ensips } from '../src/plugins/ensips'
+import { daoProposalsSidebar } from './dao-proposals'
+import { deployments } from './deployments'
+import { ensips } from './ensips'
 
 const plugins = [ensips, deployments, daoProposalsSidebar]
 
