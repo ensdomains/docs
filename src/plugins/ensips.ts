@@ -12,11 +12,12 @@ type DirectoryContents = {
 
 // Generate a markdown file for each ENSIP and add it to the sidebar
 // Only runs once, no need for hot reloading
-export async function ensips(): Promise<Plugin> {
+export function ensips(): Plugin {
   const name = 'ensips'
 
   return {
     name,
+    enforce: 'pre',
     resolveId(id) {
       if (id === name) return name
     },

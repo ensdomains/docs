@@ -217,11 +217,12 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
 
 // Generate a JSON file with contract deployment info
 // Only runs once, no need for hot reloading
-export async function deployments(): Promise<Plugin> {
+export function deployments(): Plugin {
   const name = 'contract-deployments'
 
   return {
     name,
+    enforce: 'pre',
     resolveId(id) {
       if (id === name) return name
     },
