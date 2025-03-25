@@ -586,3 +586,23 @@ index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..c5a9f33bdd74eaa26429921ffcc4e8d8
      await index.addAllAsync(documents.flat());
      debug(`vocs:search > indexed ${pagesPaths.length} files`);
      return index;
+diff --git a/_lib/vite/vite.config.js b/_lib/vite/vite.config.js
+index df20a3add0457ff2df54c3a74edeebfc8b8d9805..b599a36c478e9a77f50971bf5fb817b13b5f959c 100644
+--- a/_lib/vite/vite.config.js
++++ b/_lib/vite/vite.config.js
+@@ -41,6 +41,7 @@ export default defineConfig(async () => {
+             exclude: ['vocs', ...(viteConfig.optimizeDeps?.exclude ?? [])],
+         },
+         plugins: [
++            ...(viteConfig.plugins ?? []),
+             splitVendorChunkPlugin(),
+             virtualConfig(),
+             vanillaExtractPlugin({
+@@ -61,7 +62,6 @@ export default defineConfig(async () => {
+             virtualRoutes(),
+             virtualStyles(),
+             ...(hasReact ? [] : react()),
+-            ...(viteConfig.plugins ?? []),
+         ],
+         server: {
+             ...viteConfig.server,
