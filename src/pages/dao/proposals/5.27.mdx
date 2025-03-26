@@ -1,0 +1,34 @@
+---
+description: "Revokes the DAO's ability to upgrade the name wrapper"
+authors: ['nick.eth']
+proposal:
+  tally: '40272043175867710511047990376059633000673751036364092383567949469124429500507'
+  type: 'executable'
+---
+
+# [EP 5.27] [Executable] Revoke the DAO's ability to upgrade the name wrapper
+
+::authors
+
+| **Status**            | Passed                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-5-27-executable-revoke-the-daos-ability-to-upgrade-the-name-wrapper/19920)       |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/40272043175867710511047990376059633000673751036364092383567949469124429500507) |
+
+## Abstract
+
+The Name Wrapper's upgrade mechanism contains a vulnerability whereby a malicious DAO could use the upgrade mechanism to seize control of wrapped names without the owner's consent, documented [here](https://discuss.ens.domains/t/security-advisory-a-malicious-dao-update-could-reduce-the-registration-duration-of-registered-eth-2lds/17576/1).
+
+Since the v2 migration plan makes the upgrade mechanism obsolete, we now know the mechanism will never be required. This EP proposes to remove the DAO's ability to upgrade the name wrapper.
+
+## Specification
+
+Admin control over the name wrapper gives the DAO two functions: it can set the upgrade contract, and it can specify the address of the metadata contract. Since we want to remove the former ability while preserving the latter, we propose the following sequence of actions:
+
+1. Deploy a new metadata contract, identical to the current one but using a proxy. The proxy instance should be owned by the DAO to provide for future metadata upgrades.
+2. Update the name wrapper to reference the new metadata contract instead of the old one.
+3. Revoke admin ownership over the name wrapper.
+
+A new metadata service has been deployed at 0x806f84F3789f51352C1B0aB3fFa192665d283808, and a transparent proxy was deployed in transaction 0xd0aca1f2efb2db5e3d494649004e341decb2e94a1f30e94f301b6626702ee4c8, at address 0xabb76d7e79de010117b147761013f11630a6799f, with the initial implementation set to the above address, and the owner set to wallet.ensdao.eth. The admin contract for this proxy is at 0xeae9309ddb1aadb4cf1ebad5e51aef999833a992.
+
+The executable component of this proposal sets the metadata service address on the name wrapper to the above proxy, then revokes ownership over it.

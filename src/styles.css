@@ -1,0 +1,146 @@
+@import 'tailwindcss';
+@config "../tailwind.config.cjs";
+
+:root {
+  --ens-blue-active: #003685;
+  --ens-blue-dim: #056aff;
+  --ens-blue-primary: #3889ff;
+  --ens-blue-bright: #569aff;
+  --ens-blue-light: #d1e4ff;
+  --ens-blue-surface: #eef5ff;
+
+  --ens-indigo-active: #19175f;
+  --ens-indigo-dim: #342fc5;
+  --ens-indigo-primary: #5854d6;
+  --ens-indigo-bright: #7e7bdf;
+  --ens-indigo-light: #c7c5f1;
+  --ens-indigo-surface: #e3e2f8;
+
+  --ens-purple-active: #3d1353;
+  --ens-purple-dim: #8a2bba;
+  --ens-purple-primary: #a343d3;
+  --ens-purple-bright: #b86edd;
+  --ens-purple-light: #e3c6f1;
+  --ens-purple-surface: #ebd6f5;
+
+  --ens-pink-active: #440e28;
+  --ens-pink-dim: #ae2366;
+  --ens-pink-primary: #d52e7e;
+  --ens-pink-bright: #de5999;
+  --ens-pink-light: #f4cde0;
+  --ens-pink-surface: #ebd6f5;
+
+  --ens-red-active: #280a06;
+  --ens-red-dim: #992515;
+  --ens-red-primary: #c6301b;
+  --ens-red-bright: #e34631;
+  --ens-red-light: #f0c2c2;
+  --ens-red-surface: #f9e7e7;
+
+  --ens-orange-active: #492c03;
+  --ens-orange-dim: #c37609;
+  --ens-orange-primary: #f3930b;
+  --ens-orange-bright: #f6a93c;
+  --ens-orange-light: #fbe1bc;
+  --ens-orange-surface: #fdf0dd;
+
+  --ens-yellow-active: #423505;
+  --ens-yellow-dim: #b9930e;
+  --ens-yellow-primary: #e9b911;
+  --ens-yellow-bright: #f0c93c;
+  --ens-yellow-light: #ffefad;
+  --ens-yellow-surface: #fff5cd;
+
+  --ens-green-active: #072c21;
+  --ens-green-dim: #158463;
+  --ens-green-primary: #199c75;
+  --ens-green-bright: #1eb789;
+  --ens-green-light: #cbe7dc;
+  --ens-green-surface: #e7f4ef;
+
+  --ens-grey-active: #1e2122;
+  --ens-grey-dim: #595959;
+  --ens-grey-primary: #9b9ba7;
+  --ens-grey-bright: #b6b6bf;
+  --ens-grey-light: #e8e8e8;
+  --ens-grey-surface: #f6f6f6;
+
+  --ens-background: #ffffff;
+  --ens-background-secondary: var(--ens-grey-surface);
+  --ens-border: var(--ens-grey-light);
+  --ens-text: var(--ens-grey-active);
+  --ens-text-secondary: var(--ens-grey-dim);
+  --ens-text-disabled: var(--ens-grey-bright);
+}
+
+.dark {
+  --ens-blue-active: #eef5ff;
+  --ens-blue-dim: #d1e4ff;
+  --ens-blue-primary: #3889ff;
+  --ens-blue-bright: #056aff;
+  --ens-blue-light: #0c4597;
+  --ens-blue-surface: #0d2851;
+
+  --ens-indigo-active: #e3e2f8;
+  --ens-indigo-dim: #c7c5f1;
+  --ens-indigo-primary: #6b67e9;
+  --ens-indigo-bright: #342fc5;
+  --ens-indigo-light: #221e90;
+  --ens-indigo-surface: #23216d;
+
+  --ens-purple-active: #ebd6f5;
+  --ens-purple-dim: #e3c6f1;
+  --ens-purple-primary: #a343d3;
+  --ens-purple-bright: #8a2bba;
+  --ens-purple-light: #5e1683;
+  --ens-purple-surface: #42145a;
+
+  --ens-pink-active: #fae8f1;
+  --ens-pink-dim: #f4cde0;
+  --ens-pink-primary: #d52e7e;
+  --ens-pink-bright: #ae2366;
+  --ens-pink-light: #761544;
+  --ens-pink-surface: #5b1135;
+
+  --ens-red-active: #f9e7e7;
+  --ens-red-dim: #f0c2c2;
+  --ens-red-primary: #c6301b;
+  --ens-red-bright: #a72614;
+  --ens-red-light: #7f1313;
+  --ens-red-surface: #280a06;
+
+  --ens-orange-active: #fdf0dd;
+  --ens-orange-dim: #fbe1bc;
+  --ens-orange-primary: #f3930b;
+  --ens-orange-bright: #c37609;
+  --ens-orange-light: #6d4308;
+  --ens-orange-surface: #583503;
+
+  --ens-yellow-active: #fff5cd;
+  --ens-yellow-dim: #ffefad;
+  --ens-yellow-primary: #e9b911;
+  --ens-yellow-bright: #b9930e;
+  --ens-yellow-light: #5c4b0c;
+  --ens-yellow-surface: #373222;
+
+  --ens-green-active: #e7f4ef;
+  --ens-green-dim: #cbe7dc;
+  --ens-green-primary: #199c75;
+  --ens-green-bright: #158463;
+  --ens-green-light: #104a38;
+  --ens-green-surface: #153c31;
+
+  --ens-grey-active: #ffffff;
+  --ens-grey-dim: #e8e8e8;
+  --ens-grey-primary: #9b9ba7;
+  --ens-grey-bright: #5d5c62;
+  --ens-grey-light: #424347;
+  --ens-grey-surface: #141416;
+
+  --ens-background: var(--ens-grey-surface);
+  --ens-background-secondary: #1e2122;
+  --ens-border: var(--ens-grey-light);
+  --ens-text: var(--ens-grey-dim);
+  --ens-text-secondary: var(--ens-grey-primary);
+  --ens-text-disabled: var(--ens-grey-bright);
+}

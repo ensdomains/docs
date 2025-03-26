@@ -1,0 +1,140 @@
+import { EmbedLink } from '../../components/EmbedLink'
+import { Card } from '../../components/ui/Card'
+
+# Getting Started [Integrate ENS into your dApp]
+
+This section walks you through how to leverage the ENS open standards to improve the user experience of your app.
+
+{/* TODO: Break the following examples into a component to fetch live data */}
+
+<Card className="flex items-center justify-center gap-2">
+  <div className="flex flex-col gap-2 rounded-md border p-2 px-3">
+    <div className="flex items-center gap-2">
+      <object
+        data={'https://ens-api.gregskril.com/avatar/vitalik.eth?width=64'}
+        type="image/jpeg"
+        className="aspect-square h-full w-8 rounded"
+      >
+        <img src="https://docs.ens.domains/fallback.svg" />
+      </object>
+      <span>vitalik.eth</span>
+    </div>
+  </div>
+  <span>➡️</span>
+  <div className="flex flex-col justify-start gap-1 rounded-md border p-2 px-3">
+    <span>mi pinxe lo crino tcati</span>
+    <span>0xd8d...6045</span>
+  </div>
+</Card>
+
+<Card>
+  <div className="flex items-stretch justify-center gap-2">
+    <div className="flex flex-col justify-between rounded-md border p-2 px-3">
+      <span>0xb8c...67d5</span>
+      <span>0x866...5eEE</span>
+      <span>0xd8d...6045</span>
+    </div>
+    <span className="flex flex-col gap-3 pt-3">
+      <span>➡️</span>
+      <span>➡️</span>
+      <span>➡️</span>
+    </span>
+    <div className="flex flex-col gap-2 rounded-md border p-2 px-3">
+      {['nick.eth', 'jefflau.eth', 'vitalik.eth'].map((name) => (
+        <div className="flex items-center gap-2" key={name}>
+          <object
+            data={'https://ens-api.gregskril.com/avatar/' + name + '?width=64'}
+            type="image/jpeg"
+            className="aspect-square h-full w-8 rounded"
+          >
+            <img src="/img/fallback-avatar.svg" />
+          </object>
+          <span>{name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</Card>
+
+## Quickstart
+
+If you are looking to jumpstart your journey with ENS, or you are looking for a quick reference, visit the [Quickstart](/web/quickstart) page.
+
+<EmbedLink
+  href="/web/quickstart"
+  title="Quickstart"
+  description="To jumpstart your journey with names."
+/>
+
+## Tools and Libraries
+
+ENS is an integral part of the Ethereum ecosystem.
+Fortunately, the open-source community is to the rescue, and almost all of the tools and libraries you use today support ENS.
+To learn more check out the [tools & libraries section](/web/libraries).
+
+<EmbedLink
+  href="/web/libraries"
+  title="Tools & Libraries"
+  description="To learn about the available tools and libraries that interact with ENS"
+/>
+
+## Avatars, Addresses & Records
+
+Information about a name is fetched from its resolver. This can be done using pre-built features included in popular [web3 libraries](/web/libraries) (recommended), or by calling a resolver contract directly.
+If you're interested in interacting with ENS resolvers, you might find the [Resolver Reference](/resolvers/interfaces) section helpful.
+
+<EmbedLink
+  href="/web/resolution"
+  title="Address Resolution"
+  description="To find guides on the address lookup features of ENS."
+/>
+
+## Subnames
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    {['root', 'registrar', 'controller', 'resolver', 'registry'].map(
+      (subname, i) => (
+        <div
+          className={
+            ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+          }
+          key={subname}
+        >
+          {subname}
+        </div>
+      )
+    )}
+  </div>
+  <div className="text-blue font-bold">.ens.eth</div>
+</Card>
+
+<EmbedLink
+  href="/web/subdomains"
+  title="Issuing Subnames"
+  description="To an overview of the difference ways to issue subnames."
+/>
+
+## Registration
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    {['nick', 'vitalik', 'matoken', 'jefflau', 'ens'].map((subname, i) => (
+      <div
+        className={
+          ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+        }
+        key={subname}
+      >
+        {subname}
+      </div>
+    ))}
+  </div>
+  <div className="text-blue font-bold">.eth</div>
+</Card>
+
+<EmbedLink
+  href="/registry/eth"
+  title="ETH Registrar"
+  description="To an overview of the two smart contracts that make up the ETH Registrar."
+/>

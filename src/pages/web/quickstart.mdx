@@ -1,0 +1,103 @@
+import { AddressRecords } from '../../components/AddressRecords'
+import { ConnectKits } from '../../components/ConnectKits'
+import { EnsProfile } from '../../components/EnsProfile'
+import { TextRecords } from '../../components/TextRecords'
+import { Card } from '../../components/ui/Card'
+
+# Quickstart
+
+Hey there 👋, this is the quickstart guide. If you want to learn the process checkout [everything about ENS in dApps](/web/).
+If you would rather just clone an example repository checkout these:
+
+## Starter Kits
+
+<ConnectKits />
+
+## Add to your dApp
+
+This quickstart guide assumes you have a basic understanding of React.
+
+### Installation
+
+```bash [Terminal]
+npm install wagmi viem @tanstack/react-query
+```
+
+### Showing the User Profile
+
+The below codesnippet demonstrates how you can create a basic user profile section that shows the users ENS name and avatar.
+The snippet leverages the [useAccount](https://wagmi.sh/react/hooks/useAccount), [useEnsName](https://wagmi.sh/react/hooks/useEnsName), and [useEnsAvatar](https://wagmi.sh/react/hooks/useEnsAvatar) hooks from wagmi.
+
+<Card className="flex flex-col items-center justify-center gap-2 sm:flex-row">
+  <EnsProfile name="nick.eth" />
+  <EnsProfile name="jefflau.eth" />
+  <EnsProfile name="vitalik.eth" />
+</Card>
+
+```tsx
+import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
+
+export const EnsProfile = () => {
+  const { address } = useAccount()
+  const { data: name } = useEnsName({ address, chainId: 1 })
+  const { data: avatar } = useEnsAvatar({ name, chainId: 1 })
+
+  return (
+    <div className="flex items-center gap-2">
+      <img src={avatar} className="h-8 w-8 rounded-full" />
+      <div className="flex flex-col leading-none">
+        <span className="font-semibold">{name}</span>
+        <span className="text-grey text-sm">{address}</span>
+      </div>
+    </div>
+  )
+}
+```
+
+:::info
+ENS resolution always starts from L1 regardless of the chain the user is connected to. This is why we specify `chainId: 1` for Ethereum Mainnet in the wagmi hooks above.
+:::
+
+### Text Record Lookups
+
+<Card>
+  <TextRecords
+    name="nick.eth"
+    keys={['url', 'com.github', 'com.twitter', 'description']}
+  />
+</Card>
+
+:::code-group
+
+```tsx [TextRecords.tsx]
+// [!include ~/components/TextRecords.tsx]
+```
+
+```ts [useEnsTexts.ts]
+// [!include ~/hooks/useEnsTexts.ts]
+```
+
+:::
+
+### Address Record Lookups
+
+While ENS resolution always starts from Ethereum L1, you can store addresses for other chains in ENS records.
+
+<Card>
+  <AddressRecords
+    name="gregskril.eth"
+    coinTypes={[60, 2147483658, 2147492101, 2147525809]}
+  />
+</Card>
+
+:::code-group
+
+```tsx [AddressRecords.tsx]
+// [!include ~/components/AddressRecords.tsx]
+```
+
+```ts [useEnsAddresses.ts]
+// [!include ~/hooks/useEnsAddresses.ts]
+```
+
+:::
