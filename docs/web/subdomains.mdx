@@ -11,7 +11,7 @@ contributors: [
 
 # Subdomains
 
-Names come in handy in many situations. We believe that any place an address is used, a name should be able to be used instead.
+We believe that any place an address is used, a name should be able to be used instead.
 The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
 
 <div className="card1 p-4 flex justify-center items-center overflow-hidden text-xl">
@@ -33,48 +33,38 @@ Luckily, the ENS Protocol has so much to offer for you to play with. There are a
 
 If you are interested in naming smart-contracts specifically, check out the [Naming Smart Contracts](/web/naming-contracts) page.
 
-## Pre-built Tooling
+## Different Types of Subnames
 
-### Durin (new!)
+ENS subnames come in a variety of forms: L1, L2, and offchain. From a technical perspective, L2 and offchain subnames are quite similar, but there are some tradeoffs to consider when choosing which one to use.
+
+### L1 Subnames
+
+If you own a .eth name like nick.eth and go to create a subname in [the manager app](https://app.ens.domains/nick.eth?tab=subnames), you will be creating a subname on Ethereum Mainnet (L1) by default. This is the simplest way to create a subname with the least amount of moving pieces, but ultimately you are limited by the gas fees of Ethereum Mainnet.
+
+If you'd like to issue L1 subnames to your users, read our guide on [creating an onchain subname registrar](/wrapper/creating-subname-registrar).
+
+<EmbedLink
+  title="Creating an Onchain Subname Registrar"
+  href="/wrapper/creating-subname-registrar"
+  description="Issue NFTs that represent subdomains on Ethereum Mainnet."
+/>
+
+### L2 Subnames
+
+Developers can connect an ENS name on L1 with their own smart contracts on any L2 network, and [depending on the implementation](/learn/ccip-read), this could be fully trustless while significantly reducing the cost of issuing subnames.
 
 [Durin](https://durin.dev/) is an opinionated approach to issuing ENS subnames on L2. It takes care of the L1 Resolver and offchain gateway parts of the [CCIP Read stack](/resolvers/ccip-read) for you, so you can focus on the business logic of your L2 smart contracts.
 
-### NameWrapper
-
-The [NameWrapper](/wrapper/overview) is a smart contract that allows you to issue trustless on-chain subdomains.
-NameWrapper subdomains come in the form of [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) NFTs, which can be transferred, sold, or traded. Read our guide to [creating an onchain subname registrar](/wrapper/creating-subname-registrar) to learn more.
-
 <EmbedLink
-  title="NameWrapper Overview"
-  href="/wrapper/overview"
-  description=""
+  title="Durin"
+  href="https://durin.dev/"
+  description="An opinionated approach to issuing ENS subnames on L2."
 />
 
-### Legacy Subdomains
+### Offchain Subnames
 
-In the previous version of the ETHRegistrar, you could register subdomains for a name. These subdomains are always owner-controlled, and can be transferred. They are also stored on-chain, but are not in the form of a standard NFT.
+Offchain subnames are exactly what they sound like - subnames that live in a centralized database on private servers, also powered by [CCIP Read](/resolvers/ccip-read). If your goal is to name a large amount of EVM addresses quickly and cheaply, with a low barrier to entry, offchain subnames might be for you. Often times, managing offchain names is as simple as interacting with a REST API.
 
-You can register a legacy subdomain by calling the `setSubnodeRecord` function on the [ENS Registry](/registry/ens) contract.
+From a user perspective, offchain subnames are hardly different than onchain subnames. They will not appear in wallet applications as NFTs like the previous two approaches, but they can resolve all the same data (addresses, text records, etc).
 
-## Writing your own Resolver
-
-You can always opt to [write your own resolver](/resolvers/writing) in solidity, doing so will give you absolute programmatic control over how resolution for your name and its subnames will behave.
-Requires deploying a smart contract.
-
-### Offchain & Layer 2
-
-To load data from an off-chain location, such as layer 2, database, or file.
-A resolver can leverage [CCIP Read](/resolvers/ccip-read) to load data from an off-chain location.
-
-Tooling has been built to allow you to easily deploy a template resolver, or leverage a library to load data from offchain.
-
-#### Unruggable Gateway
-
-The [Unruggable Gateway](https://gateway-docs.unruggable.com/) is a set of solidity tooling that allows you to write a resolver that can trustlessly load storage slots from an EVM-compatible chain.
-
-#### CCIP Tools
-
-If you are looking to skip writing & deploying a contract to mainnet you can use [ccip.tools](https://ccip.tools)'s proxy factory.
-This allows you to easily, and at low deployment cost deploy a resolver that can load data from a CCIP endpoint.
-
-This allows you to easily deploy a resolver that can load from your [Gateway API](/resolvers/ccip-read) without having to write any solidity code.
+There are multiple API providers that offer programmatic access to offchain subnames such as [NameStone](https://namestone.com/) and [Namespace](https://namespace.ninja/), along with open-source examples like [gskril/ens-offchain-registrar](https://github.com/gskril/ens-offchain-registrar).
