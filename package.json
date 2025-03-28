@@ -5,7 +5,7 @@
   "scripts": {
     "generate": "bun scripts/run-plugins.ts",
     "dev": "pnpm generate && vocs dev",
-    "build": "pnpm generate && vocs build",
+    "build": "pnpm generate && vocs build && cp _redirects src/dist",
     "preview": "vocs preview"
   },
   "dependencies": {
