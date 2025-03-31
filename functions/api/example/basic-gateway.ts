@@ -19,5 +19,6 @@ router.add({
 export async function onRequestPost({ request }: { request: Request }) {
   const body = await request.json()
   const res = await router.call(body)
+  console.log({ body, res })
   return Response.json(res)
 }
