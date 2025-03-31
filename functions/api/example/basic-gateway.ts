@@ -11,8 +11,8 @@ router.add({
 })
 
 export async function onRequestPost({ request }: { request: Request }) {
-  const { body } = await request.json()
-  const ccipReadRes = await router.call(body)
+  const body = await request.json()
+  const { body: ccipReadRes } = await router.call(body)
   const response = Response.json(ccipReadRes)
   response.headers.set('Access-Control-Allow-Origin', '*')
   response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
