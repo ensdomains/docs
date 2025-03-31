@@ -2,15 +2,14 @@
 description: Learn about how CCIP Read enables Offchain ENS Resolvers, how a gateway works, trust assumptions, and more.
 ---
 
+import { EmbedLink } from '../../components/EmbedLink'
 import { Properties } from '../../components/Properties'
 import { Repository } from '../../components/Repository'
 import { Card } from '../../components/ui/Card'
 
-# Cross Chain / Offchain Resolvers
+# Offchain / L2 Resolvers
 
-The source of truth for a name and its subdomains does not always have to be on-chain or on Ethereum L1 at all.
-By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), the Cross Chain Interoperability Protocol (or CCIP Read for short), we can load information by hitting a so called "Gateway".
-Within the context of ENS, this enables us to read names, addresses, text records and more from other chains, or even off-chain.
+The source of truth for a name and its subdomains does not always have to be onchain or on Ethereum L1 at all. By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) (CCIP Read) in a [Resolver](/resolvers/quickstart), developers can effectively defer resolution to an L2 or offchain API.
 
 <Card className="hidden items-center justify-center gap-4 p-4 md:flex">
   <div className="space-y-1 p-2 text-center leading-none">
@@ -34,10 +33,9 @@ Within the context of ENS, this enables us to read names, addresses, text record
   </div>
 </Card>
 
-## How does it work?
+## How does CCIP Read work?
 
-The Cross Chain Interoperability Protocol (CCIP Read), is a client-side implemented protocol that introduces the [OffchainLookup](https://eips.ethereum.org/EIPS/eip-3668#contract-interface) error.
-Once the client encounters this error, it will attempt to handle it by calling a gateway url. Most Ethereum libraries handle this for you, at no additional cost.
+CCIP Read (Cross Chain Interoperability Protocol) is a specification that defines a standard error smart contracts can throw if they want to trigger an offchain HTTP request.
 
 ```solidity
 error OffchainLookup(
@@ -49,66 +47,70 @@ error OffchainLookup(
 )
 ```
 
-## Demo
+When a contract reverts with the `OffchainLookup` error, it is up to clients (wagmi, viem, ethers, etc.) to handle it appropriatrely. Thankfully, many clients support CCIP Read out of the box so it's transparent to application developers in most cases.
 
-An example of CCIP Read in action can be found at [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
-This example application allows you to claim a subname for 24 hours.
-The name [offchaindemo.eth](https://ens.app/offchaindemo.eth) with resolver [0xDB3...4D27](https://etherscan.io/address/0xDB34Da70Cfd694190742E94B7f17769Bc3d84D27#code), reverts with [OffchainLookup](https://eips.ethereum.org/EIPS/eip-3668) and directs the client to a gateway url.
-The [gateway url](https://ens-gateway.gregskril.workers.dev/lookup/{sender}/{data}.json) returns the information and loads it from a temporary database.
+### How does ENS use CCIP Read?
 
-## Unruggable Gateway
+CCIP Read can be used to make ENS name resolution more flexible. Instead of storing all data on Ethereum L1, developers can [implement CCIP Read in a Resolver](/resolvers/writing#offchain-resolvers) to store data (subnames, records, etc.) on L2 networks or even an offchain database.
 
-The Unruggable Gateway is a gateway that allows you to load data from specific Layer 2's whose proofs are verifyable on L1.
-This means if you are looking to load data from Optimism or Arbitrum, the Unruggable Gateway allows you to trustlessly do so.
+![](/img/ccip-read-diagram-1.png)
+
+To resolve an offchain/L2 name using CCIP Read, the steps are as follows:
+
+1. A user types "example.eth" into their wallet.
+2. The wallet's client calls `resolve()` on example.eth's Resolver.
+3. The Resolver reverts with an `OffchainLookup` error.
+4. The client makes a request to the gateway URL specified in the error with the calldata from the error.
+5. The gateway processes the request and returns data to the client. This is where the data is fetched from L2 or an offchain database.
+6. The client calls the callback function specified in the error with the data returned from the gateway, which usually performs some sort of validation.
+7. If the callback function validates the data, the client returns the result to the user.
+
+While this might sound complex, it all happens under the hood and is completely transparent to application developers.
+
+## Offchain Subname Example
+
+An example of offchain ENS names powered by CCIP Read can be found at [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
+The name [offchaindemo.eth](https://ens.app/offchaindemo.eth) with Resolver [0x35b9...E237](https://etherscan.io/address/0x35b920d4329C5797727Af8b15358b43509e5E237#code), reverts with `OffchainLookup` and directs the client to a Gateway URL.
+
+The Gateway returns the relevant information from an offchain database, signed by a trusted private key which the smart contract can verify. This prevents a compromised Gateway from returning false information.
+
+<Repository
+  src="gskril/ens-offchain-registrar"
+  description="Offchain ENS Subnames"
+/>
+
+## Offchain vs L2 Resolvers
+
+From the perspective of the L1 Resolver contract, the process of resolving an L2 name is exactly the same as resolving on offchain name. The differences come from the Gateway implementation and the Resolver's callback function.
+
+For names that are stored offchain like the example above, the Gateway would read from a normal web2 database and the Resolver's callback function would simply verify the Gateway operator's signature.
+
+For names that are stored on L2, the Gateway would make an RPC call to the relevant L2 and the Resolver's callback function would ideally verify the response by using the L2's state roon on L1 (this assumes knowledge of how L2's work).
+
+To implement trustless L2 resolution, developers should use a solution like [Unruggable Gateways](https://gateway-docs.unruggable.com/).
 
 <Repository
   src="unruggable-labs/unruggable-gateways"
   description="Solution for fetching proofs of data from rollup chains and verifying that data on Layer 1 Ethereum."
 />
 
-## CCIP Read Flow
+## Writing a CCIP Read Gateway
 
-When a name is looked up the resolver responsible is called to resolve the name.
-During this execution the `OffchainLookup` error is thrown, and the client will attempt to reach out to the gateway specified by the error.
-If successful the gateways results are returned to the callback function specified in the error.
-The output of the callback function is then returned to the client and considered the result of the original lookup.
+A gateway is an offchain API endpoint that implements the [Gateway Interface](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) specified in EIP-3668. It is responsible for decoding the calldata from an `OffchainLookup` error and returning a relevant response.
 
-<img src="/img/ccip-read-diagram-1.png" className="card w-full" />
+### Implementing the Endpoint
 
-## Writing a Gateway
-
-A gateway is an off-chain service that is responsible for returning the data requested by a client.
-A gateway must be implemented using the [Gateway Interface](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) as specified in EIP-3668.
-This means it must expose an API served over https, and return data in a specific format.
-This service can be a server, a serverless function, worker, etc.
-The URL for this gateway is determined by the `OffchainLookup` error, and is passed as a parameter to the error.
-
-### Template Repositories
-
-<div>
-  <Repository
-    src="ensdomains/offchain-resolver"
-    description="CCIP Read Offchain ENS Resolver with Cloudflare Workers"
-  />
-  <Repository
-    src="ensdomains/offchain-gateway-rs"
-    description="Offchain CCIP Read Gateway Resolver implementation in Rust (& postgres)"
-  />
-  <Repository src="gskril/ens-offchain-resolver-read-from-api" />
-</div>
-
-### Implement Gateway Endpoint
-
-There are two methods (GET and POST) you can choose to implement when writing a gateway. When your smart-contract reverts with the `OffchainLookup` error you can decide the url it returns.
-If `{data}` can be successfully substituted out of the URL a GET request will be made, if no `{data}` is present a POST request will be made instead, with the data instead submitted as the post body.
+Your gateway must implement either a `GET` or `POST` endpoint with `{sender}` and `{data}` parameters, and be stored in the implementing smart contract. The `OffchainLookup` error will include this URL, which is how the client knows where to send the request.
 
 :::code-group
 
 ```yaml [POST]
 // POST if URL does not include '{data}' parameter
-URL: https://example.com/gateway/{sender}.json
+URL: https://example.com/gateway
 Method: POST
-Body: data
+Body:
+  sender: "0x..."
+  data: "0x..."
 ```
 
 ```yaml [GET]
@@ -129,34 +131,27 @@ Method: GET
   </Properties.Property>
 </Properties>
 
-#### Trust Assumptions
+### Example Gateway Implementation
 
-The gateways response is returned to a callback function on the resolver, we assume this function verifies the data returned by the gateway.
-Gateways form a "one-of-many" trust relationship as we require only one gateway to be honest for the system to keep functioning.
+The most basic gateway implementation is to return a static value without doing any signing. We even have a library [@ensdomains/ccip-read-router](http://github.com/ensdomains/ccip-read-router) to abstract decoding the calldata.
 
-### Deploying a Resolver
+<EmbedLink
+  title="Basic Gateway Implementation"
+  href="https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts"
+/>
 
-Once you have written your gateway you need to deploy a resolver contract.
-For ready-to-deploy contracts check the demo's above or visit [ccip.tools](https://ccip.tools/ref=ens-docs).
-If you would like to read more about writing your own resolver checkout the [Writing a Resolver](/resolvers/writing) guide.
+### Trust Assumptions
 
-The gist is that this resolver must implement the specifications you plan to support (such as `addr()` or `resolve()`), and then revert with `OffchainLookup` and your gateway URL.
+As explained in [Offchain vs L2 Resolvers](#offchain-vs-l2-resolvers), trust assumptions are up to the implementing developer and can range from fully trusted to full trustless.
 
-#### Callback Function
+The worst case scenario of a trusted implementation is that a malicious actor gains control of the gateway and can return false information.
 
-When reverting with an `OffchainLookup` error you can specify a callback function.
-The callback function is evaluated on the client side with the data returned from the gateway.
-This makes it a perfect place to validate proofs, signatures, or other data.
+The worst case scenario of a trustless implementation is that a malicious actor can take a gateway offline, but it can never return false data.
 
-### Enabling your Resolver
+## Writing an Offchain/L2 Resolver
 
-Last but not least you need to instruct your name to use the resolver-gateway combo.
-To do this, simply visit the [ENS Manager App](https://ens.app/) and set the resolver of your name to the contract address of your resolver.
-This means that all resolution for this name from now on will be handled by your resolver.
+See [Writing a Resolver](/resolvers/writing#offchain-resolvers) for more information on how to implement a Resolver with CCIP Read.
 
-An alternative option is to [set the Resolver manually](/resolvers/interacting) or [from a dApp](/resolvers/interacting).
+## Testing your offchain names
 
-## Testing your Gateway
-
-To test your gateway you can use the [ENS Manager App](https://ens.app/) or if you want more detail try using [enstate](https://enstate.rs/n/luc.willbreak.eth) and notice the `ccip_urls` field.
-If your results are loaded successfully, you have successfully implemented a gateway resolver.
+To test your implementation, search the relevant name in the [ENS Manager App](https://app.ens.domains). Make sure that you've configured your test name to return a result for common data like an ETH address or common text records like `avatar` or `description`. If you set an arbitrary text record key like `test`, the manager app has no way of knowing that it exists.

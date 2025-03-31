@@ -48,6 +48,94 @@ interface IExtendedResolver {
 Don't forget to add `0x9061b923` to your [EIP-165](https://eips.ethereum.org/) `supportsInterface()` implementation.
 :::
 
-## Offchain Resolution
+## Onchain Resolvers
 
-When you write your own resolver, you are able to leverage CCIP Read to effectively defer name resolution to an HTTP server. This server can then load data from any source including offchain databases, APIs, or other blockchains. Learn more about implementing CCIP Read in your resolver [here](/resolvers/ccip-read).
+By default, ENS names use the [Public Resolver](/resolvers/public) which stores all data onchain. An extremely basic resolver that stores a mapping of ENS names to addresses might look like this:
+
+```solidity
+contract OnchainResolver {
+    mapping(bytes32 node => address addr) public addr;
+
+    function setAddr(bytes32 node, address _addr) external {
+        addr[node] = _addr;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceID
+    ) external pure returns (bool) {
+        return
+            interfaceID == OnchainResolver.supportsInterface.selector ||
+            // function addr(bytes32 node) external view returns (address)
+            interfaceID == 0x3b3b57de;
+    }
+}
+```
+
+:::note
+This is not secure since it doesn't implement any form of access control for updating a name's address, and is only suitable for demonstration purposes.
+:::
+
+Since the mapping is stored internally, it costs gas for the owner of a name to update their address. This is great for a maximal decentralization, but is not always practical.
+
+## Offchain Resolvers
+
+An offchain resolver is a resolver that implements CCIP Read to defer a name's resolution to an HTTP server. This server can then load data from any source including offchain databases, APIs, or other blockchains. [Learn more about CCIP Read](/resolvers/ccip-read).
+
+An equivalent offchain resolver to the above onchain example looks something like this:
+
+```solidity
+contract OffchainResolver {
+    string public url =
+        "https://docs.ens.domains/api/example/basic-gateway";
+
+    error OffchainLookup(
+        address sender,
+        string[] urls,
+        bytes callData,
+        bytes4 callbackFunction,
+        bytes extraData
+    );
+
+    function addr(bytes32 node) external view returns (address) {
+        bytes memory callData = abi.encodeWithSelector(
+            OffchainResolver.addr.selector,
+            node
+        );
+
+        string[] memory urls = new string[](1);
+        urls[0] = url;
+
+        revert OffchainLookup(
+            address(this),
+            urls,
+            callData,
+            OffchainResolver.addrCallback.selector,
+            abi.encode(callData, address(this))
+        );
+    }
+
+    function addrCallback(
+        bytes calldata response,
+        bytes calldata
+    ) external pure returns (address) {
+        address _addr = abi.decode(response, (address));
+        return _addr;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceID
+    ) external pure returns (bool) {
+        return
+            interfaceID == OffchainResolver.supportsInterface.selector ||
+            interfaceID == OffchainResolver.addr.selector;
+    }
+}
+```
+
+:::note
+This is not secure since it doesn't implement any form of verification in the callback function, and is only suitable for demonstration purposes.
+:::
+
+Any ENS name that sets its resolver to this contract would resolve to whatever address the Gateway returns, which can be changed at any time offchain for free. See the [gateway code here](https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts).
+
+For the same functionality to work with subnames, you'd need to implement the `resolve()` method from ENSIP-10. A feature-complete example can be found [here](https://github.com/ensdomains/ccip-tools/blob/master/contracts/OffchainResolver.sol), and easily deployed via [ccip.tools](https://ccip.tools/).

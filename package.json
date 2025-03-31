@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "^0.1.2",
+    "@ensdomains/ccip-read-router": "^0.0.6",
     "@tanstack/react-query": "^5.64.1",
     "@theguild/remark-mermaid": "^0.2.0",
     "clsx": "^2.1.1",
@@ -22,9 +23,9 @@
     "tailwindcss": "4.0.7",
     "use-debounce": "^10.0.4",
     "viem": "^2.22.8",
-    "vite": "^6.2.1",
+    "vite": "^6.2.3",
     "vocs": "1.0.5",
-    "wagmi": "^2.14.8"
+    "wagmi": "^2.14.15"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.1",
