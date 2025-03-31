@@ -2,6 +2,7 @@
 description: Learn about how CCIP Read enables Offchain ENS Resolvers, how a gateway works, trust assumptions, and more.
 ---
 
+import { EmbedLink } from '../../components/EmbedLink'
 import { Properties } from '../../components/Properties'
 import { Repository } from '../../components/Repository'
 import { Card } from '../../components/ui/Card'
@@ -50,7 +51,7 @@ When a contract reverts with the `OffchainLookup` error, it is up to clients (wa
 
 ### How does ENS use CCIP Read?
 
-CCIP Read can be used to make ENS name resolution more flexible. Instead of storing all data on Ethereum L1, developers can [implement CCIP Read in a Resolver](/resolvers/writing) to store data (subnames, records, etc.) on L2 networks or even an offchain database.
+CCIP Read can be used to make ENS name resolution more flexible. Instead of storing all data on Ethereum L1, developers can [implement CCIP Read in a Resolver](/resolvers/writing#offchain-resolvers) to store data (subnames, records, etc.) on L2 networks or even an offchain database.
 
 ![](/img/ccip-read-diagram-1.png)
 
@@ -95,20 +96,30 @@ To implement trustless L2 resolution, developers should use a solution like [Unr
 
 ## Writing a CCIP Read Gateway
 
-A gateway is an offchain service that is responsible for returning the data requested by a client.
-A gateway must be implemented using the [Gateway Interface](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) as specified in EIP-3668.
+A gateway is an offchain API endpoint that implements the [Gateway Interface](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) specified in EIP-3668. It is responsible for decoding the calldata from an `OffchainLookup` error and returning a relevant response.
 
-This means it must expose an API served over HTTPS, and return data in a specific format.
-This service can be a server, a serverless function, worker, etc.
-The URL for this gateway is determined by the `OffchainLookup` error, and is passed as a parameter to the error.
+### Implementing the Endpoint
 
-### Implement Gateway Endpoint
+Your gateway must implement either a `GET` or `POST` endpoint with `{sender}` and `{data}` parameters, and be stored in the implementing smart contract. The `OffchainLookup` error will include this URL, which is how the client knows where to send the request.
 
-Your gateway must implement either a `GET` or `POST` endpoint with `{sender}` (optional) and `{data}` (required) parameters, and be stored in the implementing smart contract. The `OffchainLookup` error will include this URL, which the client will make a request to.
+:::code-group
 
+```yaml [POST]
+// POST if URL does not include '{data}' parameter
+URL: https://example.com/gateway
+Method: POST
+Body:
+  sender: "0x..."
+  data: "0x..."
 ```
-https://example.com/gateway/{sender}/{data}.json
+
+```yaml [GET]
+// GET if URL includes '{data}' parameter
+URL: https://example.com/gateway/{sender}/{data}.json
+Method: GET
 ```
+
+:::
 
 <Properties>
   <Properties.Property name="sender" type="address">
@@ -120,7 +131,16 @@ https://example.com/gateway/{sender}/{data}.json
   </Properties.Property>
 </Properties>
 
-#### Trust Assumptions
+### Example Gateway Implementation
+
+The most basic gateway implementation is to return a static value without doing any signing. We even have a library [@ensdomains/ccip-read-router](http://github.com/ensdomains/ccip-read-router) to abstract decoding the calldata.
+
+<EmbedLink
+  title="Basic Gateway Implementation"
+  href="https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts"
+/>
+
+### Trust Assumptions
 
 As explained in [Offchain vs L2 Resolvers](#offchain-vs-l2-resolvers), trust assumptions are up to the implementing developer and can range from fully trusted to full trustless.
 
