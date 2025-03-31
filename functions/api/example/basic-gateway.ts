@@ -4,14 +4,14 @@ const router = CcipReadRouter()
 
 router.add({
   type: 'function addr(bytes32 node) external view returns (address)',
-  handle: async ([_node]) => {
+  handle: ([_node]) => {
     // Always return the same address (registry.ens.eth)
     return ['0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e' as const]
   },
 })
 
 export async function onRequestPost({ request }: { request: Request }) {
-  const body = await request.json()
+  const { body } = await request.json()
   const ccipReadRes = await router.call(body)
   const response = Response.json(ccipReadRes)
   response.headers.set('Access-Control-Allow-Origin', '*')
