@@ -1,0 +1,148 @@
+---
+description: The ENS subgraph
+---
+
+# Subgraph
+
+This is a page covering the graph's ENS subgraph. The ENS subgraph indexes on-chain events of second-level .eth names, and DNS imported names.
+It allows us to build a reasonable approximation of the ENS names an address owns.
+
+To read more about why not all names (such as Offchain & Gasless Names) show up in the subgraph read the [listing names](/web/enumerate) page.
+
+## The Graph
+
+The Graph is a protocol for indexing and querying data from blockchains. There are multiple subgraphs that you can use to query information about ENS names.
+These subgraphs are available for [mainnet](https://api.thegraph.com/subgraphs/name/ensdomains/ens), [sepolia](https://api.studio.thegraph.com/query/49574/enssepolia/version/latest) and [holesky](https://api.studio.thegraph.com/query/49574/ensholesky/version/latest).
+
+:::note
+Developers are welcome to use our rate limited API endpoints above for
+testing, but it is highly encouraged to [sign up for a free account with
+TheGraph](https://thegraph.com/studio/apikeys/) to get your own API key.
+:::
+
+## GraphQL Schema
+
+The schema for the ENS subgraph is defined in [/schema.graphql](https://github.com/ensdomains/ens-subgraph/blob/master/schema.graphql).
+
+## Use Cases
+
+There are certain use cases where the graph is better for querying ENS specific information than through the resolution process.
+One of such use-cases is querying which NFT names are owned by a specific address.
+
+## Example Queries
+
+One can explore the following examples interactively via the [Graph Explorer Playground](https://thegraph.com/explorer/subgraphs/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH?view=Playground&chain=arbitrum-one)
+
+### Getting a list of names owned by an account
+
+Ensure the address is lowercase
+
+```graphql
+query getDomainsForAccount {
+  domains(where: { owner: "0xa508c16666c5b8981fa46eb32784fccc01942a71" }) {
+    name
+  }
+}
+```
+
+### Getting the top domain for an account based on the longest registry
+
+```graphql
+query getDomainForAccount {
+  account(id: "0xa508c16666c5b8981fa46eb32784fccc01942a71") {
+    registrations(first: 1, orderBy: expiryDate, orderDirection: desc) {
+      domain {
+        name
+      }
+    }
+    id
+  }
+}
+```
+
+returns
+
+```json
+{
+  "data": {
+    "account": {
+      "registrations": [
+        {
+          "domain": {
+            "name": "datanexus.eth"
+          }
+        }
+      ],
+      "id": "0xa508c16666c5b8981fa46eb32784fccc01942a71"
+    }
+  }
+}
+```
+
+### Searching for a subdomain
+
+```graphql
+query getSubDomains($Account: String = "messari.eth") {
+  domains(where: { name: "messari.eth" }) {
+    name
+    id
+    subdomains(first: 10) {
+      name
+    }
+    subdomainCount
+  }
+}
+```
+
+returns
+
+```json
+{
+  "data": {
+    "domains": [
+      {
+        "name": "messari.eth",
+        "id": "0x498ada62251a1227664ace8d97b0de2dcc6652ddf61e6fb5d3150f43ccf599e6",
+        "subdomains": [
+          {
+            "name": "subgraphs.messari.eth"
+          },
+          {
+            "name": "bd.messari.eth"
+          }
+        ],
+        "subdomainCount": 2
+      }
+    ]
+  }
+}
+```
+
+### Getting the expiry of an ENS domain
+
+```graphql
+query getDomainExp($Account: String = "paulieb.eth") {
+  registrations(
+    where: { domain_: { name: $Account } }
+    first: 1
+    orderBy: expiryDate
+    orderDirection: desc
+  ) {
+    expiryDate
+  }
+}
+```
+
+returns
+
+```json
+{
+  "data": {
+    "registrations": [
+      {
+        "expiryDate": "1714752524"
+      }
+    ]
+  }
+}
+```

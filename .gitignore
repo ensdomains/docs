@@ -1,1 +1,19 @@
+.env
+.env*.local
+*.DS_Store
 node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+vocs.config.ts.timestamp-*
+src/dist
+
+# Generated plugin files
+src/pages/deployments.md
+src/pages/ensip/*
+!src/pages/ensip/index.mdx
+src/data/generated/*
+!src/data/generated/.keep
+
+.wrangler

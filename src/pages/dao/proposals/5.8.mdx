@@ -1,0 +1,42 @@
+---
+description: "This EP aims to safeguard the DAO by establishing a Security Council with a two-year, time-limited veto power to counter malicious proposals, ensuring the protocol's integrity and promoting decentralized governance."
+authors: ['fireeyesdao.eth']
+proposal:
+  snapshot: '0x1f328fd1fda5f3cabfdace3e521403def7ad41b0b0582e27334c135cd23c511d'
+  type: 'social'
+---
+
+# [5.8] [Social] ENS Steward Vesting Proposal
+
+::authors
+
+| **Status**            | Passed                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/5-8-social-ens-steward-vesting-proposal/19059)                                     |
+| **Votes**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0x1f328fd1fda5f3cabfdace3e521403def7ad41b0b0582e27334c135cd23c511d) |
+
+## Abstract
+
+Following discussion in the Metagov funding request thread and feedback on the Temp Check Proposal, we have put together this amendment proposal which looks to add the requirement of vesting to ENS distributions to stewards for the current term.
+
+Under the current proposal, the MetaGov Working Group will be distributed liquid ENS tokens which will then be distributed individually to stewards. As discussed on the forum and on Meta-Gov calls, these tokens should be vested in order to ensure long-term alignment of stewards with the DAO, whilst ensuring that they are able to use the tokens to particiapte in governance.
+
+This proposal is only in reference to adding vesting to current term steward allocations. With more discussion and input needed for any other changes to steward compensation going forward.
+
+## Specification
+
+All ENS disbursements to stewards will be vested on a linear 24 month schedule from the time of their appointment. In line with the 12 month term that each steward serves plus an additional 12 months of vesting to encourage longterm DAO alignment.
+
+This vesting will be implemented by using Hedgey which allows stewards to access the full voting power of their allocated tokens up front, whilst ensuring that the monetary value of these tokens can only be accessed based on the vesting schedule.
+
+All ENS marked for steward compensation will be transferred via executable proposal to the metagov WG multisig. Term 5 stewards were appointed at the beginning of Q1 2024, and as such are already 4 and a half months into their term.
+
+For the current term's stewards, ENS vesting will be scaled retroactively based on the time since their appointment. ~37.5% of ENS will be distributed to stewards directly from the multisig, whilst the remaining ENS will then be deposited into each steward's vesting contract. These contracts will be set up by Hedgey.
+
+## Vote
+
+- For - Apply vesting to the current term
+- Against - Do not apply vesting to the current term in line with the 2023/2024 guidance
+- Abstain
+
+This vote adjusts the structure of ENS token distributions to stewards, and if passed, the Meta-gov working group will implement this vesting schedule (and associated tooling) for all ENS token distributions to stewards.

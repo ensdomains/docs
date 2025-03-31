@@ -1,0 +1,588 @@
+diff --git a/_lib/app/components/SearchDialog.js b/_lib/app/components/SearchDialog.js
+index 78e19970cb3a3d3d902c4d21cbb1b745a3229917..8fe03f0d02605811c4b6540ea4fe5c74252b4ece 100644
+--- a/_lib/app/components/SearchDialog.js
++++ b/_lib/app/components/SearchDialog.js
+@@ -1,163 +1,330 @@
+-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+-import * as Dialog from '@radix-ui/react-dialog';
+-import { ArrowLeftIcon, ChevronRightIcon, FileIcon, ListBulletIcon, MagnifyingGlassIcon, } from '@radix-ui/react-icons';
+-import * as Label from '@radix-ui/react-label';
+-import clsx from 'clsx';
+-import { default as Mark } from 'mark.js';
+-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+-import { Link, useNavigate } from 'react-router';
+-import { useConfig } from '../hooks/useConfig.js';
+-import { useDebounce } from '../hooks/useDebounce.js';
+-import { useLocalStorage } from '../hooks/useLocalStorage.js';
+-import { useSearchIndex } from '../hooks/useSearchIndex.js';
+-import { visuallyHidden } from '../styles/utils.css.js';
+-import { Content } from './Content.js';
+-import { KeyboardShortcut } from './KeyboardShortcut.js';
+-import * as styles from './SearchDialog.css.js';
++import { jsx as _jsx, jsxs as _jsxs } from 'react/jsx-runtime'
++import * as Dialog from '@radix-ui/react-dialog'
++import {
++  ArrowLeftIcon,
++  FileIcon,
++  ListBulletIcon,
++  MagnifyingGlassIcon,
++} from '@radix-ui/react-icons'
++import * as Label from '@radix-ui/react-label'
++import clsx from 'clsx'
++import { default as Mark } from 'mark.js'
++import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
++import { Link, useNavigate } from 'react-router'
++import { useConfig } from '../hooks/useConfig.js'
++import { useDebounce } from '../hooks/useDebounce.js'
++import { useLocalStorage } from '../hooks/useLocalStorage.js'
++import { useSearchIndex } from '../hooks/useSearchIndex.js'
++import { visuallyHidden } from '../styles/utils.css.js'
++import { Content } from './Content.js'
++import { KeyboardShortcut } from './KeyboardShortcut.js'
++import * as styles from './SearchDialog.css.js'
+ export function SearchDialog(props) {
+-    const { search: searchOptions } = useConfig();
+-    const navigate = useNavigate();
+-    const inputRef = useRef(null);
+-    const listRef = useRef(null);
+-    const [filterText, setFilterText] = useLocalStorage('filterText', '');
+-    const searchTerm = useDebounce(filterText, 200);
+-    const searchIndex = useSearchIndex();
+-    const [selectedIndex, setSelectedIndex] = useState(-1);
+-    const [disableMouseOver, setDisableMouseOver] = useState(false);
+-    const [showDetailView, setShowDetailView] = useLocalStorage('showDetailView', true);
+-    const results = useMemo(() => {
+-        if (!searchIndex)
+-            return [];
+-        if (!searchTerm) {
+-            setSelectedIndex(-1);
+-            return [];
++  const { search: searchOptions } = useConfig()
++  const navigate = useNavigate()
++  const inputRef = useRef(null)
++  const listRef = useRef(null)
++  const [filterText, setFilterText] = useLocalStorage('filterText', '')
++  const searchTerm = useDebounce(filterText, 200)
++  const searchIndex = useSearchIndex()
++  const [selectedIndex, setSelectedIndex] = useState(-1)
++  const [disableMouseOver, setDisableMouseOver] = useState(false)
++  const [showDetailView, setShowDetailView] = useLocalStorage(
++    'showDetailView',
++    true
++  )
++  const results = useMemo(() => {
++    if (!searchIndex) return []
++    if (!searchTerm) {
++      setSelectedIndex(-1)
++      return []
++    }
++    setSelectedIndex(0)
++    return searchIndex.search(searchTerm, searchOptions).slice(0, 16)
++  }, [searchIndex, searchOptions, searchTerm])
++  const resultsCount = results.length
++  const selectedResult = results[selectedIndex]
++  const highlight = useCallback(() => {
++    if (!listRef.current) return
++    const terms = new Set()
++    for (const result of results) {
++      for (const term in result.match) {
++        terms.add(term)
++      }
++    }
++    const mark = new Mark(listRef.current)
++    mark.unmark({
++      done() {
++        mark?.markRegExp(formMarkRegex(terms))
++      },
++    })
++    const excerptElements = listRef.current.querySelectorAll(
++      `.${styles.excerpt}`
++    )
++    for (const element of excerptElements) {
++      element
++        .querySelector('mark[data-markjs="true"]')
++        ?.scrollIntoView({ block: 'center' })
++    }
++    listRef.current?.firstElementChild?.scrollIntoView({ block: 'start' })
++  }, [results])
++  useEffect(() => {
++    if (!props.open) return
++    function keyDownHandler(event) {
++      switch (event.key) {
++        case 'ArrowDown': {
++          event.preventDefault()
++          setSelectedIndex((index) => {
++            let nextIndex = index + 1
++            if (nextIndex >= resultsCount) nextIndex = 0
++            const element = listRef.current?.children[nextIndex]
++            element?.scrollIntoView({ block: 'nearest' })
++            return nextIndex
++          })
++          setDisableMouseOver(true)
++          break
+         }
+-        setSelectedIndex(0);
+-        return searchIndex.search(searchTerm, searchOptions).slice(0, 16);
+-    }, [searchIndex, searchOptions, searchTerm]);
+-    const resultsCount = results.length;
+-    const selectedResult = results[selectedIndex];
+-    const highlight = useCallback(() => {
+-        if (!listRef.current)
+-            return;
+-        const terms = new Set();
+-        for (const result of results) {
+-            for (const term in result.match) {
+-                terms.add(term);
+-            }
++        case 'ArrowUp': {
++          event.preventDefault()
++          setSelectedIndex((index) => {
++            let nextIndex = index - 1
++            if (nextIndex < 0) nextIndex = resultsCount - 1
++            const element = listRef.current?.children[nextIndex]
++            element?.scrollIntoView({ block: 'nearest' })
++            return nextIndex
++          })
++          setDisableMouseOver(true)
++          break
+         }
+-        const mark = new Mark(listRef.current);
+-        mark.unmark({
+-            done() {
+-                mark?.markRegExp(formMarkRegex(terms));
+-            },
+-        });
+-        const excerptElements = listRef.current.querySelectorAll(`.${styles.excerpt}`);
+-        for (const element of excerptElements) {
+-            element.querySelector('mark[data-markjs="true"]')?.scrollIntoView({ block: 'center' });
++        case 'Backspace': {
++          if (!event.metaKey) return
++          event.preventDefault()
++          setFilterText('')
++          inputRef.current?.focus()
++          break
+         }
+-        listRef.current?.firstElementChild?.scrollIntoView({ block: 'start' });
+-    }, [results]);
+-    useEffect(() => {
+-        if (!props.open)
+-            return;
+-        function keyDownHandler(event) {
+-            switch (event.key) {
+-                case 'ArrowDown': {
+-                    event.preventDefault();
+-                    setSelectedIndex((index) => {
+-                        let nextIndex = index + 1;
+-                        if (nextIndex >= resultsCount)
+-                            nextIndex = 0;
+-                        const element = listRef.current?.children[nextIndex];
+-                        element?.scrollIntoView({ block: 'nearest' });
+-                        return nextIndex;
+-                    });
+-                    setDisableMouseOver(true);
+-                    break;
+-                }
+-                case 'ArrowUp': {
+-                    event.preventDefault();
+-                    setSelectedIndex((index) => {
+-                        let nextIndex = index - 1;
+-                        if (nextIndex < 0)
+-                            nextIndex = resultsCount - 1;
+-                        const element = listRef.current?.children[nextIndex];
+-                        element?.scrollIntoView({ block: 'nearest' });
+-                        return nextIndex;
+-                    });
+-                    setDisableMouseOver(true);
+-                    break;
+-                }
+-                case 'Backspace': {
+-                    if (!event.metaKey)
+-                        return;
+-                    event.preventDefault();
+-                    setFilterText('');
+-                    inputRef.current?.focus();
+-                    break;
+-                }
+-                case 'Enter': {
+-                    if (event.target instanceof HTMLButtonElement && event.target.type !== 'submit')
+-                        return;
+-                    if (!selectedResult)
+-                        return;
+-                    event.preventDefault();
+-                    navigate(selectedResult.href);
+-                    props.onClose();
+-                    break;
+-                }
+-            }
++        case 'Enter': {
++          if (
++            event.target instanceof HTMLButtonElement &&
++            event.target.type !== 'submit'
++          )
++            return
++          if (!selectedResult) return
++          event.preventDefault()
++          navigate(selectedResult.href)
++          props.onClose()
++          break
+         }
+-        window.addEventListener('keydown', keyDownHandler);
+-        return () => {
+-            window.removeEventListener('keydown', keyDownHandler);
+-        };
+-    }, [navigate, resultsCount, setFilterText, selectedResult, props.open, props.onClose]);
+-    useEffect(() => {
+-        if (searchTerm === '')
+-            return;
+-        if (!listRef.current)
+-            return;
+-        highlight();
+-    }, [highlight, searchTerm]);
+-    return (_jsxs(Dialog.Portal, { children: [_jsx(Dialog.Overlay, { className: styles.overlay }), _jsxs(Dialog.Content, { onOpenAutoFocus: (event) => {
+-                    if (inputRef.current) {
+-                        event.preventDefault();
+-                        inputRef.current.focus();
+-                    }
+-                    highlight();
+-                }, onCloseAutoFocus: () => {
+-                    setSelectedIndex(0);
+-                }, className: styles.root, "aria-describedby": undefined, children: [_jsx(Dialog.Title, { className: visuallyHidden, children: "Search" }), _jsxs("form", { className: styles.searchBox, children: [_jsx("button", { "aria-label": "Close search dialog", type: "button", onClick: () => props.onClose(), className: styles.searchInputIconMobile, children: _jsx(ArrowLeftIcon, { className: styles.searchInputIcon, height: 20, width: 20 }) }), _jsx(Label.Root, { htmlFor: "search-input", children: _jsx(MagnifyingGlassIcon, { "aria-label": "Search", className: clsx(styles.searchInputIcon, styles.searchInputIconDesktop), height: 20, width: 20 }) }), _jsx("input", { ref: inputRef, tabIndex: 0, className: styles.searchInput, id: "search-input", onChange: (event) => setFilterText(event.target.value), placeholder: "Search", type: "search", value: filterText }), _jsx("button", { "aria-label": "Toggle detail view", type: "button", onClick: () => setShowDetailView((x) => !x), children: _jsx(ListBulletIcon, { className: styles.searchInputIcon, height: 20, width: 20 }) }), _jsx("button", { "aria-label": "Reset search", type: "button", className: styles.searchInputIcon, onClick: () => {
+-                                    setFilterText('');
+-                                    inputRef.current?.focus();
+-                                }, children: "\u232B" })] }), _jsxs("ul", { className: styles.results, role: results.length ? 'listbox' : undefined, onMouseMove: () => setDisableMouseOver(false), ref: listRef, children: [searchTerm && results.length === 0 && (_jsxs("li", { children: ["No results for \"", _jsx("span", { children: searchTerm }), "\""] })), results.map((result, index) => (
+-                            // biome-ignore lint/a11y/useFocusableInteractive:
+-                            _jsx("li", { 
+-                                // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole:
+-                                // biome-ignore lint/a11y/useSemanticElements:
+-                                role: "option", className: clsx(styles.result, index === selectedIndex && styles.resultSelected), "aria-selected": index === selectedIndex, "aria-label": [...result.titles.filter((title) => Boolean(title)), result.title].join(' > '), children: _jsxs(Link, { to: result.href, onClick: (event) => {
+-                                        // Don't close the dialog if the user is opening the link in a new tab.
+-                                        if (event.metaKey)
+-                                            return;
+-                                        props.onClose();
+-                                    }, onMouseEnter: () => !disableMouseOver && setSelectedIndex(index), onFocus: () => setSelectedIndex(index), children: [_jsxs("div", { className: styles.titles, children: [result.isPage ? (_jsx(FileIcon, { className: styles.resultIcon })) : (_jsx("span", { className: styles.resultIcon, children: "#" })), result.titles
+-                                                    .filter((title) => Boolean(title))
+-                                                    .map((title) => (_jsxs("span", { className: styles.title, children: [_jsx("span", { 
+-                                                            // biome-ignore lint/security/noDangerouslySetInnerHtml:
+-                                                            dangerouslySetInnerHTML: { __html: title } }), _jsx(ChevronRightIcon, { className: styles.titleIcon })] }, title))), _jsx("span", { className: styles.title, children: _jsx("span", { 
+-                                                        // biome-ignore lint/security/noDangerouslySetInnerHtml:
+-                                                        dangerouslySetInnerHTML: { __html: result.title } }) })] }), showDetailView && result.text?.trim() && (_jsx("div", { className: styles.excerpt, children: _jsx(Content, { className: styles.content, children: _jsx("div", { 
+-                                                    // biome-ignore lint/security/noDangerouslySetInnerHtml:
+-                                                    dangerouslySetInnerHTML: { __html: result.html } }) }) }))] }) }, result.id)))] }), _jsxs("div", { className: styles.searchShortcuts, children: [_jsx(KeyboardShortcut, { description: "Navigate", keys: ['↑', '↓'] }), _jsx(KeyboardShortcut, { description: "Select", keys: ['enter'] }), _jsx(KeyboardShortcut, { description: "Close", keys: ['esc'] }), _jsx(KeyboardShortcut, { description: "Reset", keys: ['⌘', '⌫'] })] })] })] }));
++      }
++    }
++    window.addEventListener('keydown', keyDownHandler)
++    return () => {
++      window.removeEventListener('keydown', keyDownHandler)
++    }
++  }, [
++    navigate,
++    resultsCount,
++    setFilterText,
++    selectedResult,
++    props.open,
++    props.onClose,
++  ])
++  useEffect(() => {
++    if (searchTerm === '') return
++    if (!listRef.current) return
++    highlight()
++  }, [highlight, searchTerm])
++  return _jsxs(Dialog.Portal, {
++    children: [
++      _jsx(Dialog.Overlay, { className: styles.overlay }),
++      _jsxs(Dialog.Content, {
++        onOpenAutoFocus: (event) => {
++          if (inputRef.current) {
++            event.preventDefault()
++            inputRef.current.focus()
++          }
++          highlight()
++        },
++        onCloseAutoFocus: () => {
++          setSelectedIndex(0)
++        },
++        className: styles.root,
++        'aria-describedby': undefined,
++        children: [
++          _jsx(Dialog.Title, { className: visuallyHidden, children: 'Search' }),
++          _jsxs('form', {
++            className: styles.searchBox,
++            children: [
++              _jsx('button', {
++                'aria-label': 'Close search dialog',
++                type: 'button',
++                onClick: () => props.onClose(),
++                className: styles.searchInputIconMobile,
++                children: _jsx(ArrowLeftIcon, {
++                  className: styles.searchInputIcon,
++                  height: 20,
++                  width: 20,
++                }),
++              }),
++              _jsx(Label.Root, {
++                htmlFor: 'search-input',
++                children: _jsx(MagnifyingGlassIcon, {
++                  'aria-label': 'Search',
++                  className: clsx(
++                    styles.searchInputIcon,
++                    styles.searchInputIconDesktop
++                  ),
++                  height: 20,
++                  width: 20,
++                }),
++              }),
++              _jsx('input', {
++                ref: inputRef,
++                tabIndex: 0,
++                className: styles.searchInput,
++                id: 'search-input',
++                onChange: (event) => setFilterText(event.target.value),
++                placeholder: 'Search',
++                type: 'search',
++                value: filterText,
++              }),
++              _jsx('button', {
++                'aria-label': 'Toggle detail view',
++                type: 'button',
++                onClick: () => setShowDetailView((x) => !x),
++                children: _jsx(ListBulletIcon, {
++                  className: styles.searchInputIcon,
++                  height: 20,
++                  width: 20,
++                }),
++              }),
++              _jsx('button', {
++                'aria-label': 'Reset search',
++                type: 'button',
++                className: styles.searchInputIcon,
++                onClick: () => {
++                  setFilterText('')
++                  inputRef.current?.focus()
++                },
++                children: '\u232B',
++              }),
++            ],
++          }),
++          _jsxs('ul', {
++            className: styles.results,
++            role: results.length ? 'listbox' : undefined,
++            onMouseMove: () => setDisableMouseOver(false),
++            ref: listRef,
++            children: [
++              searchTerm &&
++                results.length === 0 &&
++                _jsxs('li', {
++                  children: [
++                    'No results for "',
++                    _jsx('span', { children: searchTerm }),
++                    '"',
++                  ],
++                }),
++              results.map((result, index) =>
++                // biome-ignore lint/a11y/useFocusableInteractive:
++                _jsx(
++                  'li',
++                  {
++                    // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole:
++                    // biome-ignore lint/a11y/useSemanticElements:
++                    role: 'option',
++                    className: clsx(
++                      styles.result,
++                      index === selectedIndex && styles.resultSelected
++                    ),
++                    'aria-selected': index === selectedIndex,
++                    'aria-label': [
++                      ...result.titles.filter((title) => Boolean(title)),
++                      result.title,
++                    ].join(' > '),
++                    children: _jsxs(Link, {
++                      to: result.href,
++                      onClick: (event) => {
++                        // Don't close the dialog if the user is opening the link in a new tab.
++                        if (event.metaKey) return
++                        props.onClose()
++                      },
++                      onMouseEnter: () =>
++                        !disableMouseOver && setSelectedIndex(index),
++                      onFocus: () => setSelectedIndex(index),
++                      children: [
++                        _jsxs('div', {
++                          className: styles.titles,
++                          children: [
++                            _jsx(FileIcon, { className: styles.resultIcon }),
++                            _jsx('span', {
++                              className: styles.title,
++                              children: _jsx('span', {
++                                // biome-ignore lint/security/noDangerouslySetInnerHtml:
++                                dangerouslySetInnerHTML: {
++                                  __html: result.title,
++                                },
++                              }),
++                            }),
++                          ],
++                        }),
++                        showDetailView &&
++                          result.text?.trim() &&
++                          _jsx('div', {
++                            className: styles.excerpt,
++                            children: _jsx(Content, {
++                              className: styles.content,
++                              children: _jsx('div', {
++                                // biome-ignore lint/security/noDangerouslySetInnerHtml:
++                                dangerouslySetInnerHTML: {
++                                  __html: result.text.slice(0, 120) + '...',
++                                },
++                              }),
++                            }),
++                          }),
++                      ],
++                    }),
++                  },
++                  result.id
++                )
++              ),
++            ],
++          }),
++          _jsxs('div', {
++            className: styles.searchShortcuts,
++            children: [
++              _jsx(KeyboardShortcut, {
++                description: 'Navigate',
++                keys: ['↑', '↓'],
++              }),
++              _jsx(KeyboardShortcut, {
++                description: 'Select',
++                keys: ['enter'],
++              }),
++              _jsx(KeyboardShortcut, { description: 'Close', keys: ['esc'] }),
++              _jsx(KeyboardShortcut, {
++                description: 'Reset',
++                keys: ['⌘', '⌫'],
++              }),
++            ],
++          }),
++        ],
++      }),
++    ],
++  })
+ }
++
+ function formMarkRegex(terms) {
+-    return new RegExp([...terms]
+-        .sort((a, b) => b.length - a.length)
+-        .map((term) => {
+-        return `(${term.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')})`;
+-    })
+-        .join('|'), 'gi');
++  return new RegExp(
++    [...terms]
++      .sort((a, b) => b.length - a.length)
++      .map((term) => {
++        return `(${term
++          .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
++          .replace(/-/g, '\\x2d')})`
++      })
++      .join('|'),
++    'gi'
++  )
+ }
+ //# sourceMappingURL=SearchDialog.js.map
+\ No newline at end of file
+diff --git a/_lib/vite/utils/search.js b/_lib/vite/utils/search.js
+index 0b4e150edb3b75952d56bb18c8648b3e50d6a4ca..c5a9f33bdd74eaa26429921ffcc4e8d8e76b9e14 100644
+--- a/_lib/vite/utils/search.js
++++ b/_lib/vite/utils/search.js
+@@ -10,50 +10,76 @@ import pLimit from 'p-limit';
+ import { Fragment } from 'react';
+ import { renderToStaticMarkup } from 'react-dom/server';
+ import * as runtime from 'react/jsx-runtime';
++import {marked} from 'marked'
++import matter from 'gray-matter'
++
+ import { getRehypePlugins, getRemarkPlugins } from '../plugins/mdx.js';
+ import * as cache from './cache.js';
+ import { hash } from './hash.js';
+ import { slash } from './slash.js';
+ const limit = pLimit(30);
+ export const debug = debug_('vocs:search');
++
+ export async function buildIndex({ baseDir, }) {
+     const pagesPaths = await globby(`${resolve(baseDir, 'pages')}/**/*.{md,mdx}`);
++
+     const documents = await Promise.all(pagesPaths.map((pagePath) => limit(async (pagePath) => {
+         const mdx = readFileSync(pagePath, 'utf-8');
+         const key = `index.${hash(pagePath)}`;
+         const pageCache = cache.search.get(key) ?? {};
+-        if (pageCache.mdx === mdx)
+-            return pageCache.document;
+-        const html = await processMdx(pagePath, mdx);
+-        const sections = splitPageIntoSections(html);
+-        if (sections.length === 0) {
++        if (pageCache.mdx === mdx) return pageCache.document;
++
++        const mdxAfterFrontmatter = matter(mdx).content
++        const mdxWithoutImports = mdxAfterFrontmatter.replace(/import.*?from.*?['"].*?['"]/g, '')
++        const tokens = marked.lexer(mdxWithoutImports)
++        
++        // TODO: Later index more content
++        const relevantTokenTypes = ['heading', 'paragraph']
++        const relevantTokens = tokens.filter((token) => relevantTokenTypes.includes(token.type))
++        const tokenSections = relevantTokens.map((token) => {
++            const startTextToIgnore = [':::', '```', '<']
++            if (startTextToIgnore.some(text => token.text.startsWith(text))) {
++                return null
++            }
++            
++            return {
++                text: token.text,
++                type: token.type,
++            }
++        }).filter(Boolean)
++
++        const headerTokens = tokenSections.filter((token) => token.type === 'heading')
++        const paragraphTokens = tokenSections.filter((token) => token.type === 'paragraph')
++
++        if (headerTokens.length === 0) {
+             cache.search.set(key, { mdx, document: [] });
+             return [];
+         }
++
+         const fileId = getDocId(baseDir, pagePath);
+         const relFile = slash(relative(baseDir, fileId));
+         const href = relFile
+             .replace(relative(baseDir, resolve(baseDir, 'pages')), '')
+             .replace(/\.(.*)/, '')
+             .replace(/\/index$/, '');
+-        const document = sections.map((section) => ({
+-            href: `${href}#${section.anchor}`,
+-            html: section.html,
+-            id: `${fileId}#${section.anchor}`,
+-            isPage: section.isPage,
+-            text: section.text,
+-            title: section.titles.at(-1),
+-            titles: section.titles.slice(0, -1),
+-        }));
++
++        const document = {
++            href,
++            id: fileId,
++            text: paragraphTokens.map((token) => token.text).join(' '),
++            title: headerTokens.shift().text,
++            titles: headerTokens.map((token) => token.text),
++        };
++
+         cache.search.set(key, { mdx, document });
+         return document;
+     }, pagePath)));
++
+     const index = new MiniSearch({
+         fields: ['title', 'titles', 'text'],
+-        storeFields: ['href', 'html', 'isPage', 'text', 'title', 'titles'],
+-        // TODO
+-        // ...options.miniSearch?.options,
++        storeFields: ['href', 'text', 'title', 'titles'],
+     });
++    
+     await index.addAllAsync(documents.flat());
+     debug(`vocs:search > indexed ${pagesPaths.length} files`);
+     return index;

@@ -1,0 +1,69 @@
+---
+description: Issue subdomains to your users, yourself, or your friends. Program your own resolver, or use one of the many existing ones.
+---
+
+import { EmbedLink } from '../../components/EmbedLink'
+import { Card } from '../../components/ui/Card'
+
+# Subdomains
+
+We believe that any place an address is used, a name should be able to be used instead.
+The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    {['root', 'registrar', 'controller', 'resolver', 'registry'].map(
+      (subname, i) => (
+        <div
+          className={
+            ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+          }
+          key={subname}
+        >
+          {subname}
+        </div>
+      )
+    )}
+  </div>
+  <div className="font-bold text-blue">.ens.eth</div>
+</Card>
+
+Luckily, the ENS Protocol has so much to offer for you to play with. There are a variety of ways you can give out subdomains to your apps users, set them up for yourself, or more.
+
+If you are interested in naming smart-contracts specifically, check out the [Naming Smart Contracts](/web/naming-contracts) page.
+
+## Different Types of Subnames
+
+ENS subnames come in a variety of forms: L1, L2, and offchain. From a technical perspective, L2 and offchain subnames are quite similar, but there are some tradeoffs to consider when choosing which one to use.
+
+### L1 Subnames
+
+If you own a .eth name like nick.eth and go to create a subname in [the manager app](https://app.ens.domains/nick.eth?tab=subnames), you will be creating a subname on Ethereum Mainnet (L1) by default. This is the simplest way to create a subname with the least amount of moving pieces, but ultimately you are limited by the gas fees of Ethereum Mainnet.
+
+If you'd like to issue L1 subnames to your users, read our guide on [creating an onchain subname registrar](/wrapper/creating-subname-registrar).
+
+<EmbedLink
+  title="Creating an Onchain Subname Registrar"
+  href="/wrapper/creating-subname-registrar"
+  description="Issue NFTs that represent subdomains on Ethereum Mainnet."
+/>
+
+### L2 Subnames
+
+Developers can connect an ENS name on L1 with their own smart contracts on any L2 network, and [depending on the implementation](/learn/ccip-read), this could be fully trustless while significantly reducing the cost of issuing subnames.
+
+[Durin](https://durin.dev/) is an opinionated approach to issuing ENS subnames on L2. It takes care of the L1 Resolver and offchain gateway parts of the [CCIP Read stack](/resolvers/ccip-read) for you, so you can focus on the business logic of your L2 smart contracts.
+
+<EmbedLink
+  title="Durin"
+  href="https://durin.dev/"
+  description="An opinionated approach to issuing ENS subnames on L2."
+/>
+
+### Offchain Subnames
+
+Offchain subnames are exactly what they sound like - subnames that live in a centralized database on private servers, also powered by [CCIP Read](/resolvers/ccip-read). If your goal is to name a large amount of EVM addresses quickly and cheaply, with a low barrier to entry, offchain subnames might be for you. Often times, managing offchain names is as simple as interacting with a REST API.
+
+From a user perspective, offchain subnames are hardly different than onchain subnames. They will not appear in wallet applications as NFTs like the previous two approaches, but they can resolve all the same data (addresses, text records, etc).
+
+There are multiple API providers that offer programmatic access to offchain subnames such as [NameStone](https://namestone.com/) and [Namespace](https://namespace.ninja/), along with open-source examples like [gskril/ens-offchain-registrar](https://github.com/gskril/ens-offchain-registrar).

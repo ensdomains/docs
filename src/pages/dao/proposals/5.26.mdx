@@ -1,0 +1,182 @@
+---
+description: 'This executable proposal implements the Governance Distribution Pilot Program approved in EP5.19.'
+authors: ['5pence.eth']
+proposal:
+  tally: '50152158826647742094695349340830523178083147237337111134725087674188893435887'
+  type: 'executable'
+---
+
+# [EP 5.26] [Executable] Implementation of EP 5.19’s ENS Governance Distribution Pilot Program
+
+::authors
+
+| **Status**            | Passed                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-5-26-executable-implementation-of-ep-5-19-s-ens-governance-distribution-pilot-program/19878) |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/50152158826647742094695349340830523178083147237337111134725087674188893435887)             |
+
+| **Status**            | Passed                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-5-26-executable-implementation-of-ep-5-19-s-ens-governance-distribution-pilot-program/19878) |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/50152158826647742094695349340830523178083147237337111134725087674188893435887)             |
+
+## Abstract
+
+This executable proposal implements the Governance Distribution Pilot Program approved in [EP5.19](https://snapshot.org/#/ens.eth/proposal/0xfa54ff2b55f0495c96ec2d8645241bcff48ca6afe1f4925fb51f29c4667252df). Following the community's selection of the 30k ENS distribution option, this proposal authorizes the transfer of ENS tokens from the treasury to implement the program.
+
+## Specification
+
+This proposal authorizes:
+
+1. The transfer of 30,000 ENS tokens from the DAO treasury to the Meta-governance working group's main wallet (main.mg.wg.ens.eth) for distribution to eligible recipients
+2. The Meta-governance working group will then distribute these tokens through 2-year linear vesting contracts according to the allocation table below
+
+This distribution follows the quadratic funding method, which is a progressive ratio where recipients receive ENS tokens proportional to the square root of their USDC/ETH contributions during January-September 2024. The complete distribution table is as follows:
+
+### Recipients
+
+| From                  | To                                 | SUM of Value   | Squared Weight | % of total | ENS       | % of value received |
+| --------------------- | ---------------------------------- | -------------- | -------------- | ---------- | --------- | ------------------- |
+| Ecosystem             | ETHGlobal                          | $ 190,000.00   | 435.9          | 5.2%       | 1,569.85  | 11.6%               |
+|                       | wslyvh.eth                         | $ 50,004.00    | 223.6          | 2.7%       | 805.35    | 22.5%               |
+|                       | Onthis                             | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | ipns.eth                           | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | Fluidkey                           | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | Blockscout                         | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | beaconchain.eth                    | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | 1w3.eth                            | $ 25,000.00    | 158.1          | 1.9%       | 569.44    | 31.9%               |
+|                       | Urbe Campus                        | $ 14,680.00    | 121.2          | 1.5%       | 436.36    | 41.6%               |
+|                       | Discord Support                    | $ 13,000.00    | 114.0          | 1.4%       | 410.63    | 44.2%               |
+|                       | generalmagic.eth                   | $ 11,563.43    | 107.5          | 1.3%       | 387.28    | 46.9%               |
+|                       | Pugson                             | $ 10,000.00    | 100.0          | 1.2%       | 360.15    | 50.4%               |
+|                       | Juicebox                           | $ 10,000.00    | 100.0          | 1.2%       | 360.15    | 50.4%               |
+|                       | frolic.eth                         | $ 10,000.00    | 100.0          | 1.2%       | 360.15    | 50.4%               |
+|                       | Drips                              | $ 10,000.00    | 100.0          | 1.2%       | 360.15    | 50.4%               |
+|                       | Socket                             | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | ENS Fairy                          | $ 4,781.34     | 69.1           | 0.8%       | 249.03    | 72.9%               |
+|                       | weird3.eth                         | $ 3,000.00     | 54.8           | 0.7%       | 197.26    | 92.1%               |
+|                       | stephancill.eth                    | $ 2,367.89     | 48.7           | 0.6%       | 175.25    | 103.6%              |
+|                       | Scope.sh                           | $ 2,367.89     | 48.7           | 0.6%       | 175.25    | 103.6%              |
+|                       | Kiwi News                          | $ 2,367.89     | 48.7           | 0.6%       | 175.25    | 103.6%              |
+|                       | aexek.eth                          | $ 1,750.00     | 41.8           | 0.5%       | 150.66    | 120.5%              |
+| Ecosystem Total       |                                    | $ 490,882.44   |                |            |           |                     |
+| Public Goods          | Rotki                              | $ 53,973.38    | 232.3          | 2.8%       | 836.70    | 21.7%               |
+|                       | gashawk.eth                        | $ 40,000.00    | 200.0          | 2.4%       | 720.29    | 25.2%               |
+|                       | buidlguidl.eth                     | $ 35,000.00    | 187.1          | 2.2%       | 673.77    | 27.0%               |
+|                       | borderlessafrica.eth               | $ 30,000.00    | 173.2          | 2.1%       | 623.79    | 29.1%               |
+|                       | Revoke.Cash                        | $ 20,000.00    | 141.4          | 1.7%       | 509.33    | 35.7%               |
+|                       | Firefly                            | $ 20,000.00    | 141.4          | 1.7%       | 509.33    | 35.7%               |
+|                       | EIP-7212                           | $ 20,000.00    | 141.4          | 1.7%       | 509.33    | 35.7%               |
+|                       | ethdaily.eth                       | $ 14,797.60    | 121.6          | 1.5%       | 438.10    | 41.4%               |
+|                       | Dappnode                           | $ 12,500.00    | 111.8          | 1.3%       | 402.66    | 45.1%               |
+|                       | ETHDenver                          | $ 10,000.00    | 100.0          | 1.2%       | 360.15    | 50.4%               |
+|                       | pairwise.eth                       | $ 8,402.18     | 91.7           | 1.1%       | 330.12    | 55.0%               |
+|                       | apoorv.eth                         | $ 7,021.88     | 83.8           | 1.0%       | 301.79    | 60.2%               |
+|                       | leticiaferraz.eth                  | $ 6,949.32     | 83.4           | 1.0%       | 300.23    | 60.5%               |
+|                       | Urbe Campus                        | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | Latin Hackathon                    | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | eth-mexico.eth                     | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | DAOstar                            | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | aynieducativo.eth                  | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | glodollar.eth                      | $ 3,762.22     | 61.3           | 0.7%       | 220.90    | 82.2%               |
+|                       | modularcrypto.eth                  | $ 1,818.29     | 42.6           | 0.5%       | 153.57    | 118.2%              |
+|                       | daveytea.eth                       | $ 1,818.29     | 42.6           | 0.5%       | 153.57    | 118.2%              |
+|                       | UPE                                | $ 940.56       | 30.7           | 0.4%       | 110.45    | 164.4%              |
+|                       | illuminated.eth                    | $ 940.56       | 30.7           | 0.4%       | 110.45    | 164.4%              |
+|                       | dhive.eth                          | $ 940.56       | 30.7           | 0.4%       | 110.45    | 164.4%              |
+|                       | bloomnetwork.eth                   | $ 940.56       | 30.7           | 0.4%       | 110.45    | 164.4%              |
+|                       | pabl0cks.eth                       | $ 877.74       | 29.6           | 0.4%       | 106.70    | 170.2%              |
+|                       | iviangita.eth                      | $ 877.74       | 29.6           | 0.4%       | 106.70    | 170.2%              |
+|                       | easlabs.eth                        | $ 877.74       | 29.6           | 0.4%       | 106.70    | 170.2%              |
+|                       | 2118.eth                           | $ 877.74       | 29.6           | 0.4%       | 106.70    | 170.2%              |
+| Public Goods Total    |                                    | $ 318,316.31   |                |            |           |                     |
+| Metagov               | Karpatkey                          | $ 187,149.13   | 432.6          | 5.2%       | 1,558.02  | 11.7%               |
+|                       | daemon.eth                         | $ 27,000.00    | 164.3          | 2.0%       | 591.78    | 30.7%               |
+|                       | Lemma                              | $ 9,998.67     | 100.0          | 1.2%       | 360.12    | 50.4%               |
+|                       | Tally                              | $ 8,999.54     | 94.9           | 1.1%       | 341.66    | 53.1%               |
+|                       | Event Support                      | $ 3,000.00     | 54.8           | 0.7%       | 197.26    | 92.1%               |
+|                       | daveytea.eth                       | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+|                       | andrewpage.eth                     | $ 780.00       | 27.9           | 0.3%       | 100.58    | 180.5%              |
+| Metagov Total         |                                    | $ 237,927.35   |                |            |           |                     |
+| Immunefi Bounty       | Immunefi                           | $ 102,000.00   | 319.4          | 3.8%       | 1,150.22  | 15.8%               |
+|                       | @UGWST_COM                         | $ 75,000.00    | 273.9          | 3.3%       | 986.30    | 18.4%               |
+|                       | @navad                             | $ 7,500.00     | 86.6           | 1.0%       | 311.90    | 58.2%               |
+|                       | @Sagamore                          | $ 6,000.00     | 77.5           | 0.9%       | 278.97    | 65.1%               |
+|                       | @adhd                              | $ 5,000.00     | 70.7           | 0.8%       | 254.66    | 71.3%               |
+|                       | @solidityhaxor                     | $ 2,500.00     | 50.0           | 0.6%       | 180.07    | 100.8%              |
+|                       | @haoce505                          | $ 2,500.00     | 50.0           | 0.6%       | 180.07    | 100.8%              |
+|                       | @h4nt3rx                           | $ 2,500.00     | 50.0           | 0.6%       | 180.07    | 100.8%              |
+|                       | @austinoa012                       | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+| Immunefi Bounty Total |                                    | $ 204,000.00   |                |            |           |                     |
+| ETH Global            | TF Guo                             | $ 3,000.00     | 54.8           | 0.7%       | 197.26    | 92.1%               |
+|                       | Nikolas Lionis                     | $ 2,000.00     | 44.7           | 0.5%       | 161.06    | 112.7%              |
+|                       | Arthur Sabirzyanov                 | $ 2,000.00     | 44.7           | 0.5%       | 161.06    | 112.7%              |
+|                       | Stephan Wittig                     | $ 1,500.00     | 38.7           | 0.5%       | 139.48    | 130.2%              |
+|                       | Rashmi Abbigeri                    | $ 1,500.00     | 38.7           | 0.5%       | 139.48    | 130.2%              |
+|                       | Mehran Saliminia                   | $ 1,500.00     | 38.7           | 0.5%       | 139.48    | 130.2%              |
+|                       | Mattis Deisen                      | $ 1,500.00     | 38.7           | 0.5%       | 139.48    | 130.2%              |
+|                       | Ben Levy                           | $ 1,375.00     | 37.1           | 0.4%       | 133.55    | 136.0%              |
+|                       | Aryeh Greenberg                    | $ 1,375.00     | 37.1           | 0.4%       | 133.55    | 136.0%              |
+|                       | Shoma Shiga                        | $ 1,250.00     | 35.4           | 0.4%       | 127.33    | 142.6%              |
+|                       | Rao Araki                          | $ 1,250.00     | 35.4           | 0.4%       | 127.33    | 142.6%              |
+|                       | sudolabel ‎                        | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+|                       | Simone Staffa                      | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+|                       | Paolo Rollo                        | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+|                       | Francesco Cirulli                  | $ 1,000.00     | 31.6           | 0.4%       | 113.89    | 159.4%              |
+|                       | Yong Feng Ng                       | $ 875.00       | 29.6           | 0.4%       | 106.53    | 170.5%              |
+|                       | Yik Kai Ng                         | $ 875.00       | 29.6           | 0.4%       | 106.53    | 170.5%              |
+|                       | Junyao Chan                        | $ 875.00       | 29.6           | 0.4%       | 106.53    | 170.5%              |
+|                       | Jing Jie Ng                        | $ 875.00       | 29.6           | 0.4%       | 106.53    | 170.5%              |
+|                       | Tom Chauveau                       | $ 750.00       | 27.4           | 0.3%       | 98.63     | 184.1%              |
+|                       | Roman GASCOIN                      | $ 750.00       | 27.4           | 0.3%       | 98.63     | 184.1%              |
+|                       | Coline SEGURET                     | $ 750.00       | 27.4           | 0.3%       | 98.63     | 184.1%              |
+|                       | Wojciech Staniszewski              | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Patrick Fuchs                      | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Pascal Rüger                       | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Luca Orbke                         | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Joanna Daniluk                     | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Eason Chai                         | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Bartłomiej Tarczyński              | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Antoni Koszowski                   | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Andrzej Daniel                     | $ 500.00       | 22.4           | 0.3%       | 80.53     | 225.5%              |
+|                       | Yoshiki Takabayashi                | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Shritesh Jamulkar                  | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Rohit Ramesh                       | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Nishen Kaushika Menerapitiyage Don | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Helen Femi Williams                | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Francisco Cordero                  | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Danya Carolina Gómez Cantú         | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Bianca Trovò                       | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Bernardo Vieira                    | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+|                       | Adaku Agwunobi                     | $ 250.00       | 15.8           | 0.2%       | 56.94     | 318.9%              |
+| ETH Global Total      |                                    | $ 35,000.00    |                |            |           |                     |
+| Grand Total           |                                    | $ 1,286,126.10 | 8329.9         | 100%       | 30,000.00 |                     |
+
+1. Value represents the total received of all transactions
+2. Squared Weight is simply the square root of that value, which is used as a weight
+3. % of total divided that by the total weight
+4. ENS multiplies that percentage to the total budget
+5. % of value received is a comparison of the value received in USDC with the value received in ENS, with ENS at $14
+
+## Transaction
+
+```json
+{
+  "target": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72",
+  "value": 0,
+  "calldata": "0xa9059cbb00000000000000000000000091c32893216de3ea0a55abb9851f581d4503d39b00000000000000000000000000000000000000000000065a4da25d3016c00000"
+}
+```
+
+## Verification
+
+- Target: ENS token contract (0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72)
+- Recipient: main.mg.wg.ens.eth (0x91c32893216dE3eA0a55ABb9851f581d4503d39b)
+- Amount: 30,000 ENS (30000000000000000000000 in wei)
+- Function: transfer(address,uint256)
+
+---
+
+The Meta-governance working group will handle subsequent distributions to individual recipients through Hedgey vesting contracts following the approved allocation table.
+
+The transaction will move the 30k $ENS to the main Meta-governance wallet. After the transaction completes, the Meta-governance working group will craft the Hedgey vesting contracts following the above allocation table.

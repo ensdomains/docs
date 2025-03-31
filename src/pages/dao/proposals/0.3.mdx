@@ -1,0 +1,59 @@
+---
+description: 'Amend EP2 to include funds accidentally sent back to the $ENS token contract.'
+authors: ['arachnid']
+proposal:
+  discourse: '6975'
+  snapshot: '0x9ab53c76cee40d58cb27b244dfa5f9f2763bd8b97b1b4be1dd0f0bf706818fb4'
+  type: 'social'
+---
+
+# [EP0.3] [Social] Amend airdrop proposal to include accidentally returned funds
+
+::authors
+
+| **Status**            | Passed                                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/6975)                                                                            |
+| **Votes**             | [Snapshot](https://snapshot.org/#/ens.eth/proposal/0x9ab53c76cee40d58cb27b244dfa5f9f2763bd8b97b1b4be1dd0f0bf706818fb4) |
+
+_Note: This was previously numbered EP3._
+
+## Summary
+
+Amend EP2 to include funds accidentally sent back to the $ENS token contract.
+
+## Abstract
+
+A number of users have [accidentally sent](https://discuss.ens.domains/t/proposal-to-correct-ens-transfer-errors-back-to-contract/5989) $ENS tokens back to the token contract. As of December 6, this amounted to some 6,246 tokens in 49 separate transactions.
+
+These funds are held in the same account as is used for new airdrop claims, and on May 4, 2022 when the airdrop expires, the DAO will be able to claim them back to its own account.
+
+[EP2](https://discuss.ens.domains/t/executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-name/6755) sends approximately 200k tokens to users who owned ENS names that were used as primary names but did not already benefit from the 2x multiplier.
+
+This proposal suggests that [EP2](https://discuss.ens.domains/t/executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-name/6755) be amended to include returning the mistakenly sent funds as part of the same airdrop. This minimises overhead, as the DAO will not incur transaction fees or have to set a separate system up, and enables users to get their mistakenly sent funds back promptly.
+
+## Specification
+
+Amend [EP2](https://discuss.ens.domains/t/executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-name/6755) as follows:
+
+> `-This logic is implemented by [this series of BigQuery queries](https://gist.github.com/Arachnid/667178e854945abaecb6dfd3b6c0c279/1182eea3145394181affe4bb799d6b7858f9eb58), and shows that 1,969 accounts meet these criteria but did not qualify for the multiplier under the original criteria. The sum of the tokens these accounts would be entitled to comes to ~213,049 ENS tokens.`&#x20;
+>
+> `+This logic is implemented by [this series of BigQuery queries](https://gist.github.com/Arachnid/667178e854945abaecb6dfd3b6c0c279/106d9bc156988cf96786c71f6448f13fb11599fc), and shows that 1,969 accounts meet these criteria but did not qualify for the multiplier under the original criteria. The sum of the tokens these accounts would be entitled to comes to ~213,049 ENS tokens.`
+
+> `-A list of affected accounts and balances is [here](https://gist.github.com/Arachnid/d6495f57ac6a5b17cf28e01b646e99a8).`&#x20;
+>
+> `+A list of affected accounts and balances is [here](https://gist.github.com/Arachnid/e8b1a18fc19818fb00f51fbb8d90e429).`
+
+> `-This proposal, if executed, will transfer 213,049 ENS tokens to [a new merkle airdrop contract ](https://github.com/ensdomains/governance/pull/9) allowing affected users to claim them.`&#x20;
+>
+> `+Further, a number of users have accidentally transferred their ENS tokens to the token contract, totalling 6,246 contracts across 49 transfers. These tokens should be returned to their previous owners.`&#x20;
+>
+> `+This proposal, if executed, will transfer 219,295 ENS tokens to [a new merkle airdrop contract ](https://github.com/ensdomains/governance/pull/9) allowing affected users to claim them.`
+
+> `-3. Authorise the contract deployed in (1) to spend 213049736662531485206636 base ENS tokens from the ENS DAO account.`&#x20;
+>
+> `+3. Authorise the contract deployed in (1) to spend 219295650978169915391391 base ENS tokens from the ENS DAO account.`
+
+> `-const tx = await token.populateTransaction.approve(airdropAddress, '213049736662531485206636');`&#x20;
+>
+> `+const tx = await token.populateTransaction.approve(airdropAddress, '219295650978169915391391');`

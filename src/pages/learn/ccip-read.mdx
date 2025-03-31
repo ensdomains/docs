@@ -1,0 +1,55 @@
+---
+description: Using CCIP Read to take ENS resolution cross-chain, off-chain, and more.
+---
+
+# Layer 2 & Offchain Resolution
+
+All ENS resolution starts on Ethereum Mainnet (or testnet).
+However, by leveraging [CCIP Read](/resolvers/ccip-read) and [Wildcard Resolution](/ensip/10), name resolution can be taken cross-chain, off-chain, and more.
+This allows for a lot of flexibility in how you can use your ENS and for storage of your ENS records on your favourite Layer 2, or even off-chain.
+
+## ENS on Layer 2
+
+In the resolution process, clients first fetch the resolver associated with the name in the ENS registry on L1. That resolver is responsible for telling the client where to find the data associated with the name such as the addresses, text records, etc.
+
+If you want to register and resolve (sub)names from L2, you would write a resolver smart contract that defers resolution to the L2 and ideally verifies that data against the L2's storage proofs posted to L1. This process can be done with the [Unruggable Gateway](https://gateway-docs.unruggable.com/).
+
+An example implementation of Layer 2 resolving is:
+
+### linea.eth
+
+Linea was the first L2 team to build a trust-minimized ENS subname system. Names are stored on Linea, verified with [storage proofs](https://docs.linea.build/developers/tooling/cross-chain/ccip-read-gateway) on L1, and function as ENS subnames such as [greg.linea.eth](https://app.ens.domains/greg.linea.eth). You can try it out [here](https://names.linea.build/).
+
+### clv.eth
+
+Clave is focused on enhancing user experience and security through a mobile wallet that leverages account abstraction and device hardware. Clave accounts come with usernames that are now stored onchain in ZKsync Era, verified with [storage proofs](https://github.com/getclave/zksync-storage-proofs) in L1, and issued as ENS subnames such as [ulas.clv.eth](https://enstate.rs/n/ulas.clv.eth). You can read more about the implementation [here](https://blog.getclave.io/introducing-onchain-clave-usernames-with-ens).
+
+## Primary Names on Layer 2
+
+The process of setting primary names from L2 is under active development. This doc will be updated as more information becomes available.
+
+## Offchain Resolution
+
+Moving resolution processes off-chain offers numerous advantages, including efficiency gains and reduced congestion on the main blockchain; however, it also introduces trade-offs in terms of trust, as it necessitates reliance on external systems.
+Depending on the implementation, names could be stored in a database or be ephemeral.
+Advantages of offchain name storage include gaslessness and instant updates.
+If this sounds appealing consider [writing an Offchain Resolver](/resolvers/ccip-read).
+
+Popular implementations of offchain names include but are not limited to:
+
+### cb.id
+
+Coinbase Wallet is one of the largest mobile wallets issuing free ENS subnames to their users.
+These names are stored off-chain on coinbase servers, and can be registered from the Coinbase Wallet App or Browser Extension.
+An example of a cb.id is [lucemans.cb.id](https://enstate.rs/n/lucemans.cb.id).
+
+### uni.eth
+
+Uniswap Wallet is another popular mobile wallet that issues free ENS subnames to their users.
+You can read more about the Uniswap Wallet ENS integration [here](https://blog.uniswap.org/introducing-uni-eth-your-unique-web3-username).
+An example of a uni.eth is [lucemans.uni.eth](https://enstate.rs/n/lucemans.uni.eth).
+
+### lens.xyz
+
+The Lens Ecosystem is also readily accessible through the officially maintained `lens.xyz` gateway.
+This means that you can lookup your favourite lens name such as [lucemans.lens.xyz](https://enstate.rs/n/lucemans.lens.xyz) and retrieve the information seamlessly.

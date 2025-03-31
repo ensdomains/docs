@@ -1,0 +1,125 @@
+import { Card } from '../../components/ui/Card'
+
+# Resolution
+
+The process by which we load information about a name is called resolution. It's a simple process, but it's important to understand.
+Here is a diagram of some of the contracts involved when resolving a name.
+
+<Card>
+  <img
+    src="/img/resolution-diagram-1.png"
+    alt="Diagram of the ENS resolution process"
+  />
+</Card>
+
+The resolution process involves multiple parts. Most notably the [Registry](/registry/ens), multiple Registrars ([ETH Registrar](/registry/eth), [DNS Registrar](/registry/dns), [Reverse Registrar](/registry/reverse), etc)
+and the concept of a [Resolver](/resolvers/quickstart).
+
+## How to resolve
+
+Here is a little peak at what happens under the hood of your favourite library when you do a name lookup.
+
+### 1. Find the Resolver
+
+Every name has a "resolver". A resolver is simply a contract that implements the [resolver specification](/resolvers/quickstart) and can be queried for information about a name.
+To get the resolver responsible for a name you can query [The Registry](/registry/ens) for the `resolver` of a name.
+
+:::code-group
+
+```solidity [Solidity]
+ENS.resolver(bytes32 node) view returns (address)
+```
+
+```tsx [Wagmi]
+// https://wagmi.sh/react/api/hooks/useEnsResolver
+import { normalize } from 'viem/ens'
+import { useEnsResolver } from 'wagmi'
+
+export const MyResolver = () => {
+  const { data: myResolver } = useEnsResolver({
+    name: normalize('luc.eth'), // The name to lookup
+  })
+
+  return <div>{myResolver}</div>
+}
+```
+
+```ts [Ethers]
+const resolver = await provider.getResolver('luc.eth')
+```
+
+```ts [viem]
+// https://viem.sh/docs/ens/actions/getEnsResolver.html
+import { normalize } from 'viem/ens'
+
+import { publicClient } from './client'
+
+const ensResolver = await publicClient.getEnsResolver({
+  name: normalize('luc.eth'),
+})
+```
+
+```py [Web3.py]
+# https://web3py.readthedocs.io/en/latest/ens_overview.html#working-with-resolvers
+from ens.auto import ns
+
+resolver = ns.resolver('alice.eth')
+```
+
+:::
+
+To verify which specifications are implemented by a resolver you can call the `supportsInterface(bytes4 interfaceID)` on the resolver with the interfaceID you would like to test for.
+
+### 2. Query the Resolver
+
+Now you have found the resolver responsible for the name in question, you can query it for the information you are interested in.
+There are many ways you can query the resolver, `addr()` `text()` `contenthash()` `abi()` etc.
+
+If the resolver supports text records you can call `text()` to get that text record for the name.
+More about loading information from a resolver can be found [here](/resolvers/interacting).
+
+#### Wildcard Resolution
+
+In addition, all of the above functions can be sent to the `resolve()` function, specified in [ENSIP-10](/ensip/10).
+This allows for not only multicall functionality, but also easier implementation of EIP-3668, and more.
+Most clients & many resolvers utilize wildcard resolution as their primary form of resolution.
+
+## Reverse Resolution
+
+Due to the modular nature of how ENS is designed, it is also possible to lookup the "primary name" of an address.
+This process actually uses forward resolution under the hood, you read that right - its just forwards resolution.
+
+To look up the primary name of a given address you must do a resolver lookup for `addr.reverse` and then query the `name()` field on the resolver.
+This name field returns the "preferred" name for the address. You should always follow up a reverse lookup with a forward lookup to verify that the resulting name points back to the original address. If the address doesn't match, display the address rather than the reversed name.
+
+```solidity
+/// @dev The starting point for all ENS resolution is the Registry
+ENS ens = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e;
+
+/// @dev The node hash for "addr.reverse"
+bytes32 ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
+
+/// @dev Returns the node hash for a given account's reverse records, `{address}.addr.reverse`
+function reverseNode(address addr) public pure returns (bytes32) {
+  return keccak256(
+      abi.encodePacked(ADDR_REVERSE_NODE, sha3HexAddress(addr))
+    );
+}
+
+/// @dev Get the reverse record for an address
+function getReverseRecord(address addr) public view returns (string) {
+    bytes32 reverseNodeHash = reverseNode(addr);
+
+    // Get the resolver for the reverse node
+    Resolver resolver = ens.resolver(reverseNodeHash);
+
+    // Get the address's preferred name
+    return resolver.name(reverseNodeHash);
+}
+```
+
+:::info
+**Important**: The client MUST perform a forward resolution on a user's reverse record to verify the address matches the one you are looking up. The example above does not perform this verification.
+:::
+
+Please note that many libraries already have functionality to do this, you can read more about it in the [Getting a Primary Name](/web/reverse) section.

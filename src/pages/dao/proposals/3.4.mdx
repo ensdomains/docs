@@ -1,0 +1,60 @@
+---
+description: 'The first tranche of the Endowment'
+authors: ['karpatkey']
+proposal:
+  discourse: '15952'
+  tally: '90786656233306599444783442367171420493182391933134906270328139870999449830964'
+  type: 'executable'
+---
+
+# [EP 3.4] [Executable] Fund the Endowment (first tranche)
+
+::authors
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/15952)                                                                                  |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/90786656233306599444783442367171420493182391933134906270328139870999449830964) |
+
+## Abstract
+
+First tranche to fund the Endowment with 16,000 ETH sent from [ENS DAO](https://etherscan.io/address/0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7) to the [ENS Endowment](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64) and an additional 150 ETH sent to the [Meta-Gov Pod](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b) to account for karpatkey and Steakhouse monthly fees.
+
+## Motivation
+
+[Approximately one year ago](https://discuss.ens.domains/t/an-ens-endaoment/11756), the ENS DAO initiated a process to ensure the sustainability of ENS as a self-funded public good for the long term. The [RFP process](https://discuss.ens.domains/t/ep2-2-4-social-rfp-ens-endowment/14069) (EP2.2.4), on which [karpatkey, together with Steakhouse, made a proposal](https://discuss.ens.domains/t/updated-endaoment-proposal-karpatkey-steakhouse-financial/14799), resulted in the [selection of karpatkey](https://discuss.ens.domains/t/social-ep2-2-5-selection-of-an-ens-endowment-fund-manager/15188) (EP2.2.5).
+
+For reference, the proposal submitted by karpatkey was for an initial size of \$52,000,000 USD (converted to 32,000 ETH for operational purposes as the Endowment will be founded in ETH and to account for the reduction of the pool according to [EP3.3](https://discuss.ens.domains/t/ep3-3-executable-sell-eth-into-usdc/15906)). The proposal included performance fees of 10% above the investment's reference currency, with $ for $-related investments and ETH for ETH-related investments, as well as an annual fee of 0.5% based on the size of the endowment, payable entirely in ETH on a monthly basis.
+
+Karpatkey engaged in discussions with the ENS community to seek feedback on strategies and the ramp-up process, both [here](https://discuss.ens.domains/t/social-endowment-initial-conditions-required-steps/15684) and [here](https://discuss.ens.domains/t/endowment-initiation/15952). Feedback was received regarding concerns about the required time to establish trust and the need to limit executive votes for funding. Karpatkey believes that a balanced approach, such as funding 50% on day one and the remaining 50% after six months, would be a suitable tradeoff for all parties. To address questions and concerns raised, a [FAQ](https://discuss.ens.domains/t/endowment-frequently-asked-questions-faq/16228) was provided.
+
+In the meantime, karpatkey made progress on the setup of [the Endowment safe](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64), which has been seeded to display target positions. The necessary [managing permissions](https://docs.google.com/document/d/11xrliJIveXO6C6twYOrnGJ5QUW0Apr1LCcDY8hOfpuo/edit) have been defined and audits from [Ackee](https://github.com/gnosis/zodiac-modifier-roles/blob/main/packages/evm/docs/ZodiacModifierRolesJanuary2023abch.pdf) and [Sub 7](https://github.com/gnosis/zodiac-modifier-roles/blob/main/packages/evm/docs/ZodiacModifierRolesJanuary2023sub7.pdf) have been completed. On its part, Steakhouse has started work on providing open source [accounting and financial services](https://docs.google.com/document/d/1xS4nXx1G0QCjFS-VdG5yVmVoMa5t1q9_dFZ9N4wGSJ8/edit?usp=sharing), as well as a [monitoring Dune dashboard](https://dune.com/steakhouse/ens-steakhouse), both of which are work in progress.
+
+If the Endowment is funded through this first tranche, karpatkey will allocate the funds as follows:
+
+| #   | Protocol              | Assets                           | Strategy      | Share per Strat | Allocated Funds | Share of Portfolio | Proj. APR | Proj. Rev      | Pool TVL <br />(MM) |
+| --- | --------------------- | -------------------------------- | ------------- | --------------- | --------------- | ------------------ | --------- | -------------- | ------------------- |
+| 1   | Compound v2           | DAI                              | USD - neutral | 50%             | $5,506,971      | 20.61%             | 2.21%     | $121,704       | $560                |
+| 2   | Compound v2           | USDC                             | USD - neutral | 50%             | $5,506,971      | 20.61%             | 2.16%     | $118,951       | $637                |
+| 3   | Aura Finance          | wstETH - WETH                    | ETH - neutral | 40%             | $6,282,423      | 23.51%             | 10.38%    | $652,116       | $208                |
+| 4   | Curve                 | stETH - ETH                      | ETH - neutral | 40%             | $6,282,423      | 23.51%             | 5.38%     | $337,994       | $1,653              |
+| 5   | Stakewise/ Uniswap v3 | sETH2 - ETH Range: 1.000 - 1.006 | ETH - neutral | 20%             | $3,141,212      | 11.76%             | 12.77%    | $401,133       | $65                 |
+|     | **Total**             |                                  |               |                 | **$26,720,000** | **100.00%**        | **6.11%** | **$1,631,897** |                     |
+
+## Specification
+
+1.  Transfer 16,000 ETH to the Endowment (0x4F2083f5fBede34C2714aFfb3105539775f7FE64)
+2.  Transfer 150 ETH to ens-metagov.pod.xyz (0x91c32893216dE3eA0a55ABb9851f581d4503d39b) to cover Endowment fees for Q1/Q2
+
+Addresses:
+
+- 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 - ENS DAO
+- 0x4F2083f5fBede34C2714aFfb3105539775f7FE64 - endowment
+- 0x91c32893216dE3eA0a55ABb9851f581d4503d39b - ens-metagov.pod.xyz
+
+## Transactions
+
+| Address                                    | Value      | Function | Argument | Value |
+| ------------------------------------------ | ---------- | -------- | -------- | ----- |
+| 0x4F2083f5fBede34C2714aFfb3105539775f7FE64 | 16,000 ETH |
+| 0x91c32893216dE3eA0a55ABb9851f581d4503d39b | 150 ETH    |
