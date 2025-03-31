@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 const Properties = ({ children }: PropsWithChildren) => {
-  return <ul className="list-none divide-y divide-grey-light">{children}</ul>
+  return <ul className="divide-grey-light list-none divide-y">{children}</ul>
 }
 
 const Property = ({
@@ -13,7 +13,7 @@ const Property = ({
     <li className="py-4 text-sm first:pt-0 last:pb-0">
       <dl className="m-0 flex flex-wrap items-center gap-x-3 gap-y-2">
         <dt className="sr-only">Name</dt>
-        <dd className="rounded border border-grey-light bg-grey-surface px-1">
+        <dd className="border-grey-light bg-grey-surface rounded border px-1">
           <code className="text-sm">{name}</code>
         </dd>
         <dt className="sr-only">Type</dt>

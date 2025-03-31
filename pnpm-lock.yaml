@@ -16,6 +16,9 @@ importers:
       '@cloudflare/pages-plugin-vercel-og':
         specifier: ^0.1.2
         version: 0.1.2
+      '@ensdomains/ccip-read-router':
+        specifier: ^0.0.6
+        version: 0.0.6(itty-router@5.0.18)(typescript@5.7.3)(viem@2.22.8(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))
       '@tanstack/react-query':
         specifier: ^5.64.1
         version: 5.64.1(react@19.0.0)
@@ -28,6 +31,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      itty-router:
+        specifier: ^5.0.18
+        version: 5.0.18
       marked:
         specifier: ^15.0.6
         version: 15.0.6
@@ -246,6 +252,13 @@ packages:
 
   '@emotion/hash@0.9.2':
     resolution: {integrity: sha512-MyqliTZGuOm3+5ZRSaaBGP3USLw6+EGykkwZns2EPC5g8jJ4z9OrdZY9apkl3+UP9+sdz76YYkwCKP5gh8iY3g==}
+
+  '@ensdomains/ccip-read-router@0.0.6':
+    resolution: {integrity: sha512-FewFbHrXakjyE9Y0JOWEWCcHy5HxiPm1SCe4YoSUcBlpeyr5FBHuFi9KrZ9VXA0mksNPLBWp5dvCnioaZwu1JQ==}
+    peerDependencies:
+      itty-router: ^5.0.17
+      typescript: ^5.0.0
+      viem: ^2.19.8
 
   '@esbuild/aix-ppc64@0.25.0':
     resolution: {integrity: sha512-O7vun9Sf8DFjH2UtqK8Ku3LkquL9SZL8OLY1T5NZkA34+wG3OQF7cl4Ql8vdNzM6fzBbYfLaiRLIOZ+2FOCgBQ==}
@@ -2632,6 +2645,9 @@ packages:
     peerDependencies:
       ws: '*'
 
+  itty-router@5.0.18:
+    resolution: {integrity: sha512-mK3ReOt4ARAGy0V0J7uHmArG2USN2x0zprZ+u+YgmeRjXTDbaowDy3kPcsmQY6tH+uHhDgpWit9Vqmv/4rTXwA==}
+
   javascript-natural-sort@0.7.1:
     resolution: {integrity: sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==}
 
@@ -4439,6 +4455,12 @@ snapshots:
       '@noble/ciphers': 1.2.0
 
   '@emotion/hash@0.9.2': {}
+
+  '@ensdomains/ccip-read-router@0.0.6(itty-router@5.0.18)(typescript@5.7.3)(viem@2.22.8(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))':
+    dependencies:
+      itty-router: 5.0.18
+      typescript: 5.7.3
+      viem: 2.22.8(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
 
   '@esbuild/aix-ppc64@0.25.0':
     optional: true
@@ -7353,6 +7375,8 @@ snapshots:
   isows@1.0.6(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
       ws: 8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+
+  itty-router@5.0.18: {}
 
   javascript-natural-sort@0.7.1: {}
 

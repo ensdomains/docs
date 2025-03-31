@@ -90,7 +90,7 @@ module.exports = {
         DEFAULT: 'var(--ens-grey-primary)',
         bright: 'var(--ens-grey-bright)',
         light: 'var(--ens-grey-light)',
-        surface: '#F6F6F6',
+        surface: 'var(--ens-grey-surface)',
       },
       background: {
         DEFAULT: 'var(--ens-background)',

@@ -258,7 +258,7 @@ export default defineConfig({
               link: '/resolvers/writing',
             },
             {
-              text: 'Cross Chain Resolvers',
+              text: 'Offchain/L2 Resolvers',
               link: '/resolvers/ccip-read',
             },
             {
