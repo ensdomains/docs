@@ -1,12 +1,6 @@
 import { CcipReadRouter } from '@ensdomains/ccip-read-router'
-import { cors } from 'itty-router'
 
-const { preflight, corsify } = cors()
-
-const router = CcipReadRouter({
-  before: [preflight],
-  finally: [corsify],
-})
+const router = CcipReadRouter()
 
 router.add({
   type: 'function addr(bytes32 node) external view returns (address)',
@@ -18,7 +12,10 @@ router.add({
 
 export async function onRequestPost({ request }: { request: Request }) {
   const body = await request.json()
-  const res = await router.call(body)
-  console.log({ body, res })
-  return Response.json(res)
+  const ccipReadRes = await router.call(body)
+  const response = Response.json(ccipReadRes)
+  response.headers.set('Access-Control-Allow-Origin', '*')
+  response.headers.set('Access-Control-Allow-Methods', 'POST')
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+  return response
 }

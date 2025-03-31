@@ -31,9 +31,6 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
-      itty-router:
-        specifier: ^5.0.18
-        version: 5.0.18
       marked:
         specifier: ^15.0.6
         version: 15.0.6
