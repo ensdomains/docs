@@ -1,8 +1,13 @@
 import { ImageResponse } from '@cloudflare/pages-plugin-vercel-og/api'
 
 export function onRequest({ request }: { request: Request }) {
-  const params = new URL(request.url).searchParams
+  const url = new URL(request.url)
+  const params = url.searchParams
   const title = params.get('title')
+
+  if (title === 'ENS Documentation') {
+    return fetch(url.origin + '/img/opengraph.png')
+  }
 
   return new ImageResponse(
     (
