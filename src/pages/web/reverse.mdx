@@ -20,7 +20,7 @@ Fortunately, it is super easy to retrieve a user's preferred name, and this page
 In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
 The reverse registrar is a smart contract that allows users to register their preferred name, referred to as their "primary name" for simplicity purposes.
 
-This functionality exists on Mainnet Ethereum today, and is coming soon to L2s as well (see ENSIP-19).
+This functionality exists on Mainnet Ethereum today, and is [coming soon to L2s](#l2-primary-names) as well.
 
 ## Getting a Primary Name
 
@@ -106,7 +106,7 @@ func main() {
 <Card className="flex flex-col items-center gap-2">
   <div className="flex items-center gap-2">
     <Badge>0xb8c2...67d5</Badge>
-    <span>send 0.1 ETH to</span>
+    <span>sent 0.1 ETH to</span>
     <Badge>0xd8dA....6045</Badge>
   </div>
   <span className="text-grey text-sm">turns into</span>
@@ -125,7 +125,9 @@ To do so, you can use the `setName()` function on the [reverse registrar contrac
 
 ## L2 Primary Names
 
-Currently, primary names are only supported on Ethereum Mainnet. Soon, primary names are also coming to L2s and are already available on testnets. This will make it possible for users to have an end-to-end experience with ENS on L2.
+:::warning
+Primary names are currently only supported on Ethereum Mainnet. Soon, primary names are also coming to L2s and are already available on testnets. This will make it possible for users to have an end-to-end experience with ENS on L2.
+:::
 
 New contracts will be deployed to popular L2s (starting with Base, OP Mainnet, Arbitrum, Linea, and Scroll) that allow users to declare a name as their primary onchain identity. The contract interface will look something like this (not finalized):
 
@@ -182,13 +184,17 @@ This provides multiple ways to set a primary name, usable for EOAs or smart cont
 
 After retrieving a name from L2 reverse resolution, you must verify it by performing a forward resolution for the corresponding cointype on that name to confirm it still resolves to the original address. Let's look at an example:
 
-Say I own gregskril.eth on mainnet. The name resolves to my EOA `0x179A...9285` because I've set the ETH address for that name. I call `setName("gregskril.eth")` on the Base reverse registry, and I expect that my primary name is now `gregskril.eth` on Base. But that's actually not the case.
+Say I own gregskril.eth on mainnet. The name resolves to my EOA `0x179A...9285` because I've set the ETH address for that name. I call `setName("gregskril.eth")` on the Base reverse registrar, and I expect that my primary name is now `gregskril.eth` on Base. But that's actually not the case.
 
 ENS names can resolve to [different addresses on different chains](/web/resolution), and since gregskril.eth in the example above has only specified an ETH address, the verification process will fail. In order to fix this, I need to set the Base address for gregskril.eth which is on L1 in this case. This is done by calling `setAddr(namehash("gregskril.eth"), 0x179A...9285)` on the resolver for the name.
 
-Now that gregskril.eth resolves to `0x179A...9285` when using the Base cointype, and `name(0x179A...9285)` on the Base reverse registry returns `gregskril.eth`, my primary name is fully set.
+Now that gregskril.eth resolves to `0x179A...9285` when using the Base cointype, and `name(0x179A...9285)` on the Base reverse registrar returns `gregskril.eth`, my primary name is fully set.
 
-### L2 Reverse Registry Deployments
+### L2 Reverse Registrar Deployments
+
+:::note
+The final deployment addresses will be different from the ones below. These are only for testnets.
+:::
 
 | L2 Testnet Chain | Address                                    |
 | ---------------- | ------------------------------------------ |
@@ -198,11 +204,44 @@ Now that gregskril.eth resolves to `0x179A...9285` when using the Base cointype,
 | Scroll Sepolia   | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
 | Linea Sepolia    | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
 
-On these chains, you can set a primary name for the sender via `setName()` most simply, or via signature.
+{/* Slightly rewritten from https://github.com/ensdomains/ens-contracts/tree/feature/simplify-reverse-resolver/contracts/reverseRegistrar */}
 
-`setNameForAddrWithSignature()` can be used for EOAs or smart contracts with an ERC-1271 signature, while `setNameForAddrWithSignatureAndOwnable()` can be used when a smart contract has an explicit `owner()`.
+### Setting Records
 
-### Do's and Dont's
+On these chains, you can set a primary name for the sender in a few ways:
 
-It must be noted that under no situation is it recommended to force a user to change their primary name, nor doing so without clearly notifying the user of what the transaction they are about to execute could modify.
+- `setName()` most simply, using the `msg.sender`'s address
+- `setNameForAddr()` for smart contracts that implement the Ownable pattern, where `owner() == msg.sender`
+- `setNameForAddrWithSignature()` for EOAs or smart contracts with an ERC-1271 or ERC-6492 signature to set a reverse record on behalf of a user
+- `setNameForOwnableWithSignature()` which combines the functionality of the previous two functions to set the reverse record on behalf of a smart contract that implements `Ownable`
+
+### Signatures for setting records
+
+The signature format for `setNameForAddrWithSignature` is:
+
+```
+validatorAddress, // 0xAe91c512BC1da8B00cd33dd9D9C734069e6E0fcd for testnets
+functionSignature, // 0x2023a04c
+name, // string name value
+addr, // address to set name for
+coinTypes, // array of coinTypes wanting to be set
+signatureExpiry // expiry of the signature, up to 1 hour in the future
+```
+
+The signature format for `setNameForOwnableWithSignature` is:
+
+```
+validatorAddress, // 0xAe91c512BC1da8B00cd33dd9D9C734069e6E0fcd for testnets
+functionSignature, // 0x975713ad
+name, // string name value
+contractAddr, // contract address to set name for
+owner, // owner address of contract (i.e. the signature being verified)
+coinTypes, // array of coinTypes wanting to be set
+signatureExpiry // expiry of the signature, up to 1 hour in the future
+```
+
+## Do's and Dont's
+
+Under no situation is it recommended to force a user to change their primary name, nor doing so without clearly notifying the user of what the transaction they are about to execute could modify.
+
 Doing so could be seen as hostile or undesired behaviour by end users and might degrade their experience with your app.
