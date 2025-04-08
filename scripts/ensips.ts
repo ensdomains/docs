@@ -121,11 +121,15 @@ function parseDate(date: Date | string) {
 }
 
 function processMarkdown(markdown: string) {
-  return replaceRelativeLinks(markdown)
+  return removeMarkdownComments(replaceRelativeLinks(markdown))
 }
 
 function replaceRelativeLinks(markdown: string) {
   // Replace `./{number}.md` with `/ensip/{number}`
   const relativeEnsipLink = /\.\/(\d+)\.md/g
   return markdown.replace(relativeEnsipLink, `/ensip/$1`)
+}
+
+function removeMarkdownComments(markdown: string) {
+  return markdown.replace(/<!--[\s\S]*?-->/g, '')
 }
