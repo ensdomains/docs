@@ -3,9 +3,8 @@ import path from 'path'
 import { SidebarItem } from 'vocs'
 
 // Generate a JSON file for each DAO proposal to be used in the sidebar
-// Only runs once, no need for hot reloading
 export async function daoProposalsSidebar() {
-  const sidebar = new Array<SidebarItem>()
+  const sidebar = new Array<SidebarItem & { term: number }>()
   const files = await fs.readdir(
     path.join(__dirname, '..', 'src/pages/dao/proposals')
   )
@@ -34,6 +33,7 @@ export async function daoProposalsSidebar() {
   const reversedTerms = Array.from(terms).reverse()
   for (const term of reversedTerms) {
     sidebar.push({
+      term,
       text: `Proposals - Term ${term}`,
       items: parsedFiles
         .filter(({ term: t }) => t === term)
@@ -48,6 +48,10 @@ export async function daoProposalsSidebar() {
   // Save sidebar file as JSON
   await fs.writeFile(
     path.join(__dirname, '..', 'src/data/generated/dao-proposals-sidebar.json'),
-    JSON.stringify(sidebar, null, 2)
+    JSON.stringify(
+      sidebar.sort((a, b) => b.term - a.term),
+      null,
+      2
+    )
   )
 }
