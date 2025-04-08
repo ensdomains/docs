@@ -33,8 +33,8 @@ export async function daoProposalsSidebar() {
   const reversedTerms = Array.from(terms).reverse()
   for (const term of reversedTerms) {
     sidebar.push({
-      term,
       text: `Proposals - Term ${term}`,
+      term,
       items: parsedFiles
         .filter(({ term: t }) => t === term)
         .sort((a, b) => b.proposal - a.proposal)
