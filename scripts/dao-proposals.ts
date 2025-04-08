@@ -49,7 +49,7 @@ export async function daoProposalsSidebar() {
   await fs.writeFile(
     path.join(__dirname, '..', 'src/data/generated/dao-proposals-sidebar.json'),
     JSON.stringify(
-      sidebar.sort((a, b) => b.term - a.term),
+      sidebar.sort((a, b) => b.term - a.term).map(({ term, ...rest }) => rest),
       null,
       2
     )
