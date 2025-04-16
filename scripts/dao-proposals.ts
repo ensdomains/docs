@@ -3,7 +3,6 @@ import path from 'path'
 import { SidebarItem } from 'vocs'
 
 // Generate a JSON file for each DAO proposal to be used in the sidebar
-// Only runs once, no need for hot reloading
 export async function daoProposalsSidebar() {
   const sidebar = new Array<SidebarItem>()
   const files = await fs.readdir(
