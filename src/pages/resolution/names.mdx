@@ -1,9 +1,16 @@
+import { NameProcessing } from '../../components/NameProcessing'
+import { Card } from '../../components/ui/Card'
+
 # Name Processing [Normalization and recommendations for how to handle names]
 
 When interacting with the ENS protocol smart-contracts directly it is important to note that names are not stored in their human readable format.
 In fact there are a few steps a name undergoes before it can be used by a smart-contract.
 
 When building a dApp most of the time you don't have to worry about name processing, as most [libraries](/web/libraries) will handle this for you.
+
+<Card>
+  <NameProcessing />
+</Card>
 
 ## Name Normalization
 
