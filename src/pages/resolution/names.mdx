@@ -3,10 +3,9 @@ import { Card } from '../../components/ui/Card'
 
 # Name Processing [Normalization and recommendations for how to handle names]
 
-When interacting with the ENS protocol smart-contracts directly it is important to note that names are not stored in their human readable format.
-In fact there are a few steps a name undergoes before it can be used by a smart-contract.
+When interacting with the ENS smart contracts directly, it is important to note that names are not stored as strings. [Libraries](/web/libraries) handle name encoding for you when implementing basic name resolution, but you may need to handle the encoding yourself when interacting with the protocol directly.
 
-When building a dApp most of the time you don't have to worry about name processing, as most [libraries](/web/libraries) will handle this for you.
+Below is an interactive tool that shows all the different formats of names and how to implement them.
 
 <Card>
   <NameProcessing />
