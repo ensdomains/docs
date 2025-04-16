@@ -1,0 +1,4 @@
+name = "ens-docs"
+pages_build_output_dir = "src/dist"
+compatibility_date = "2024-03-19"
+

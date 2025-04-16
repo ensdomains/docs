@@ -1,9 +1,15 @@
+import { NameProcessing } from '../../components/NameProcessing'
+import { Card } from '../../components/ui/Card'
+
 # Name Processing [Normalization and recommendations for how to handle names]
 
-When interacting with the ENS protocol smart-contracts directly it is important to note that names are not stored in their human readable format.
-In fact there are a few steps a name undergoes before it can be used by a smart-contract.
+When interacting with the ENS smart contracts directly, it is important to note that names are not stored as strings. [Libraries](/web/libraries) handle name encoding for you when implementing basic name resolution, but you may need to handle the encoding yourself when interacting with the protocol directly.
 
-When building a dApp most of the time you don't have to worry about name processing, as most [libraries](/web/libraries) will handle this for you.
+Below is an interactive tool that shows all the different formats of names and how to implement them.
+
+<Card>
+  <NameProcessing />
+</Card>
 
 ## Name Normalization
 
@@ -188,12 +194,12 @@ This is a binary format for domain names, which encodes the length of each label
 :::code-group
 
 ```tsx [Viem]
-// https://viem.sh/docs/ens/utilities/labelhash
 import { packetToBytes } from 'viem/ens'
 import { toHex } from 'viem/utils'
 
 const name = 'name.eth'
 const dnsEncodedName = toHex(packetToBytes(name))
+// 0x046e616d650365746800
 ```
 
 ```tsx [Ethers]
@@ -218,6 +224,19 @@ contract MyContract {
 ```
 
 :::
+
+### Decoding
+
+To decode a DNS-encoded name, you can use `bytesToPacket()` from ENSjs.
+
+```tsx
+import { bytesToPacket } from '@ensdomains/ensjs/utils'
+import { hexToBytes } from 'viem/utils'
+
+const dnsEncodedName = '0x046e616d650365746800'
+const name = bytesToPacket(hexToBytes(dnsEncodedName))
+// name.eth
+```
 
 ### Algorithm
 

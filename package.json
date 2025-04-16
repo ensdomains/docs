@@ -6,7 +6,8 @@
     "generate": "bun scripts/run-plugins.ts",
     "dev": "pnpm generate && vocs dev",
     "build": "pnpm generate && vocs build && cp _redirects src/dist",
-    "preview": "vocs preview"
+    "preview": "vocs preview",
+    "deploy": "pnpm build && wrangler pages deploy"
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "^0.1.2",
