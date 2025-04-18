@@ -52,7 +52,7 @@ const navigation = [
   {
     title: 'Extra',
     links: [
-      ['Naming Smart-Contracts', '/web/naming-contracts'],
+      ['Naming Smart Contracts', '/web/naming-contracts'],
       // ["Issuing Subdomains", "/web/subdomains"],
       ['Name Wrapper', '/wrapper/overview'],
       ['Subgraph', '/web/subgraph'],

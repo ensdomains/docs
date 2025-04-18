@@ -189,7 +189,7 @@ export default defineConfig({
               link: '/web/subdomains',
             },
             {
-              text: 'Naming Smart-contracts',
+              text: 'Naming Smart Contracts',
               link: '/web/naming-contracts',
             },
             {

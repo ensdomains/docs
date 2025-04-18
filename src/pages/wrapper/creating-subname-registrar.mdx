@@ -16,7 +16,7 @@ Best to do this on a testnet (Sepolia/Holesky) name first, for development or te
 
 ## Creating and Deploying your Registrar Contract
 
-In order to create a new subname, your contract should call call either `setSubnodeOwner` or `setSubnodeRecord` on the [NameWrapper contract](/learn/deployments#deployments). Also pass in the fuses and expiry at the same time, as needed.
+In order to create a new subname, your contract should call either `setSubnodeOwner` or `setSubnodeRecord` on the [NameWrapper contract](/learn/deployments#deployments). Also pass in the fuses and expiry at the same time, as needed.
 
 ```solidity
 NameWrapper.setSubnodeOwner(bytes32 parentNode, string label, address owner, uint32 fuses, uint64 expiry)

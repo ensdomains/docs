@@ -4,6 +4,9 @@ Thank you for investing your time in contributing to our documentation! Any cont
 
 In this guide you will get an overview of the contribution workflow from opening an issue, creating a PR, reviewing, and merging the PR.
 
+> [!NOTE]
+> Please be aware that we will not be merging any pull requests that appear to be an attempt to farm activity on low-effort contributions from suspicious-looking accounts.
+
 ## Getting started
 
 This guide will walk you through the process of contributing to the ENS docs. If you are new to GitHub, you can checkout this [GitHub tutorial](https://guides.github.com/activities/hello-world/) to get started.
@@ -22,7 +25,7 @@ Scan through our [existing issues](https://github.com/ensdomains/docs/issues) to
 
 #### Make changes in the UI
 
-Click **Make a contribution** at the bottom of any docs page to make small changes such as a typo, sentence fix, or a broken link. This takes you to the `.mdx` file where you can make your changes and [create a pull request](#pull-request) for a review.
+Click **Make a contribution** at the bottom of any docs page to make small changes. This takes you to the `.mdx` file where you can make your changes and [create a pull request](#pull-request) for a review.
 
 #### Make changes locally
 
