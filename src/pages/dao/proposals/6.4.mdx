@@ -1,0 +1,107 @@
+---
+description: 'This is a proposed amendment to EP 6.3.'
+authors: ['fireeyesdao.eth']
+proposal:
+  discourse: '20526/57'
+  snapshot: '0xf0c3a2fe4bd085ea74a072cafb830aaadb4830b557a3d122eab36058a17c1860'
+  type: 'social'
+---
+
+# [EP 6.4] [Social] Service Provider Season 2 Vote Amendment Proposal
+
+::authors
+
+| **Status**            | Superseded by [EP 6.5](/dao/proposals/6.5)                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20526/57)                                                                          |
+| **Votes**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0xf0c3a2fe4bd085ea74a072cafb830aaadb4830b557a3d122eab36058a17c1860) |
+
+## Abstract
+
+EP 6.3 was passed with a budget of $4.5M for 2025 on the 25th of February and pertains to Service Provider budgets and allocation mechanisms for 2025. After broad discussion between delegates, working groups and service providers, a proposed change to the voting process is now being presented for vote.
+
+## Vote
+
+This is a proposed amendment to the evaluation criteria for Service Providers. On April 1st there was an Delegate All Hands meeting in which many delegates expressed the desire to be able to fine tune their vote in order to express preference over not only the teams, but also their respective budgets. This was followed by extensive discussion between delegates, working groups and Service Providers, leading to the below amendment:
+
+_The goal here is to propose a new rule change while keeping the same properties as having a single budget be decided in one simultaneous vote._
+
+### Current Evaluation Process, as voted on snapshot
+
+> **Evaluation Process**
+>
+> Projects are assessed in ranked order:
+>
+> - If \"None Below\" is reached, evaluation stops.
+> - If the candidate has been part of the Service provider program for at least a year AND if the extended budget fits within the remaining two-year stream budget, assign to the two-year stream . Subtract the extended budget from the two-year stream budget.
+> - Assign to the one-year stream if:
+>   - The extended budget fits the one-year budget. Subtract its extended budget from the one-year stream.
+>   - OR if the basic budget fits the one-year budget, subtract the its basic budget from the one-year stream.
+>   - If none of these conditions are met, the project is eliminated.
+
+### New proposed rule amendment
+
+The vote will present both extended and basic budgets as separate options and a given voter can pick _either_ budget to rank their candidates. They do not need to rank both budget options separately, as they are considered the same candidate.
+
+The rank of each candidate will be the rank of it's highest ranked budget option, according to a Copeland methodology (using average support as a tiebreaker). Then a pairwise comparison will be made between the two budget options and the preferred one will be set as its selected budget.
+
+### Vote Processing Algorithm
+
+1. **Votes Preprocessing**:
+
+   - For providers with both basic and extended budget options, the algorithm enforces the lowest option to be ranked immediately after the highest option (of the same provider).
+   - If a provider has only one budget option, no special enforcement is needed for that provider.
+   - This grouping ensures accurate pairwise comparisons between different between different providers and then budget options from the same provider.
+
+2. **Pairwise Comparisons (copeland)**:
+
+   - For each pair of candidates (provider), we calculate the total voting power supporting each over the other.
+   - A candidate wins a head-to-head matchup if the total voting power ranking them higher exceeds that of their opponent.
+   - Each win contributes 1 point to a candidate's Copeland score.
+   - The pairwise comparison between basic and extended must also be stored, for defining the preference on the budget.
+
+3. **\"None Below\" Handling**:
+
+   - The \"None Below\" option serves as a cutoff point in a voter's ranking.
+   - Candidates ranked above \"None Below\" are considered ranked.
+   - Candidates ranked below \"None Below\" are considered unranked by that voter.
+   - A ranked candidate always wins against an unranked candidate in pairwise comparisons.
+
+4. **Scoring and Ranking**:
+   - Candidates are ranked by their Copeland score (descending), with average support as a tiebreaker.
+
+### Allocation Process
+
+1. **Budget Type Determination**:
+
+   - Each provider's budget (basic or extended) is determined by their internal head-to-head match result.
+
+2. **Stream Allocation**:
+
+   - Candidates are processed in Copeland ranking order.
+   - Candidates that are in top 5 and were selected in SPP1, are elegible for the 2-year stream.
+   - All other candidates receive allocations from the 1-year stream.
+   - From top to bottom, try to fit projects in the 2 year stream budget, and then on the 1-year stream budget using the standard knapsack algorithm, stopping once budgets are exhausted or None Below is reached.
+   - If a service providers extended scope got a majority vote over basic scope and the extended scope doesn't fit into the remaining 1-year budget but the basic budget does, then the given service provider's basic budget is included.
+   - If a candidate is ranked below \"None Below\", they're rejected regardless of budget availability.
+
+3. **Budget Transfer Mechanism**:
+
+   - After processing the top 5 candidates, any remaining 2-year budget transfers to the 1-year stream. Final 1-year budget = (Initial 1-year budget) + (Leftover 2-year budget).
+
+4. **Rejection Criteria**:
+   - A candidate is rejected if:
+     - They're ranked below the \"None Below\" option
+     - There's insufficient budget
+
+## Updated Timelines
+
+The initial proposal stated a submission deadline of March 31st, and vote to begin _soon_ after that.
+
+This vote will be conducted over the next 5 days. Then, if the vote is successful MetaGov will be interfacing with voting UI teams to ensure sufficient testing and timelines before the final SPP vote. There will be a minimum of 3 days between this proposal closing and the start of the final vote, to allow Service Providers to update their proposals if necessary.
+
+## Conclusion
+
+If this amendment proposal passes, the MetaGov working group, delegates and governance UI providers will enact the updated proposal process.
+
+We would like to thank everyone who has taken the time to be involved in this discussion and have been blown away by the level of engagement & productivity throughout.
