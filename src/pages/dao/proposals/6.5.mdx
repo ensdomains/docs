@@ -1,0 +1,106 @@
+---
+description: 'This is a counter-proposal to EP 6.4.'
+authors: ['avsa.eth']
+proposal:
+  discourse: '20526/42'
+  snapshot: '0x60c95ab69a427ce263f4c3c950df8da1134e96a3e76d139c8dac366271009530'
+  type: 'social'
+---
+
+# [EP 6.5] [Social] Service Provider Season 2 Vote Amendment Proposal II
+
+::authors
+
+| **Status**            | Passed                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20526/42)                                                                          |
+| **Votes**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0x60c95ab69a427ce263f4c3c950df8da1134e96a3e76d139c8dac366271009530) |
+
+## Abstract
+
+Season 2 of the Service Provider Program was approved with a $4.5M budget on February 25th of this year. During the Delegate All Hands meeting on April 1st, delegates expressed a desire for more granular voting — not only to approve candidates, but also to vote on individual budget allocations.
+
+In the weeks that followed, extensive discussions took place on how to address this through an amendment. Two main proposals emerged from these discussions, now formally designated as EP6.4 and EP6.5.
+
+## Vote Results
+
+There are now two active proposals to amend the Service Provider Program. Here's how the outcome of this vote should be interpreted:
+
+- If this vote passes but receives fewer votes than EP6.4, then this amendment is considered null.
+- If this vote passes and receives more votes than EP6.4, then EP6.4 is considered superseded.
+- If this vote fails to reach either a majority or consensus, then only the results of EP6.4 should be considered valid.
+  Absolutely — here's a clearer and more polished version of your section on the main differences between the proposed amendments, with improved grammar, flow, and formatting, while staying faithful to your original content:
+
+## Main Differences Between Proposed Amendments
+
+- **Ballot Reordering and Expressivity**:  
+  Both amendments enhance the expressiveness of the SPP voting system, allowing voters to choose both teams and their budgets (as opposed to the current model, where budget size is inferred from ranking). However, **EP6.5** goes further by enabling voters to place an _extended_ budget request **below multiple basic budgets**. This allows voters to express preferences such as: “This team should receive its extra funding, but only after these other teams get their basic funding.”
+
+- **Ballot Interpretation**:  
+  Both amendments involve reordering ballots based on how voters rank options.
+
+  - **EP6.4** always bundles a candidate’s basic and extended budget requests together, preserving their relative order in the original ballot.
+  - **EP6.5**, on the other hand, only reorders ballots when an _extended_ budget is ranked **above** its corresponding basic budget — to avoid accidental inconsistencies in voter intent.
+
+- **Basic vs. Extended Budget Competition**:
+
+  - In **EP6.4**, a candidate’s basic and extended budgets compete only with each other. Whichever is ranked higher wins.
+  - In **EP6.5**, a candidate’s _extended_ budget competes with **all** other allocations for the same budget amount, not just the candidate’s own basic option. This allows for a more nuanced prioritization across teams.
+
+- **Complexity of Rules**:
+  - **EP6.4** introduces a custom ballot preprocessing step, a distinct counting method, and special downgrade rules for extended budgets.
+  - **EP6.5** has a simplified preprocessing, but achieves similar outcomes through emergent behavior from its ruleset, which may lead to rankings on Snapshot that are more closely aligned with what is displayed in custom UIs.
+
+---
+
+## Amended rules for the Service Provider Program
+
+### 1. Proposals
+
+Teams can propose a **basic budget**, and optionally an **extended budget**, which is listed as the **extra amount** they’d like on top of the basic. The ballot would include all budget options as independent entries to be ranked independently.
+
+Candidates will have a chance to edit their proposal, but as it stands, these are the current asks:
+
+| Company                          | Basic Scope | Extra Ask |
+| -------------------------------- | ----------- | --------- |
+| **AlphaGrowth**                  | $400,000    | +$400,000 |
+| **ZK.Email**                     | $400,000    | +$400,000 |
+| **Blockful**                     | $400,000    | +$300,000 |
+| **Unruggable**                   | $400,000    | +$300,000 |
+| **3DNS**                         | $500,000    | +$200,000 |
+| **Ethereum.Identity.Foundation** | $500,000    | +$200,000 |
+| **JustaName**                    | $400,000    | +$200,000 |
+| **NameHash.Labs**                | $1,100,000  | +$200,000 |
+| **Namespace**                    | $400,000    | +$200,000 |
+| **Agora**                        | $300,000    | +$100,000 |
+| **dWeb.host**                    | $300,000    | +$100,000 |
+| **EthLimo**                      | $700,000    | +$100,000 |
+| **Wildcard.Labs**                | $300,000    | +$100,000 |
+| **Curia.Lab**                    | $300,000    | –         |
+| **Decent**                       | $300,000    | –         |
+| **Enscribe**                     | $400,000    | –         |
+| **GovPal**                       | $300,000    | –         |
+| **Lighthouse_Labs**              | $400,000    | –         |
+| **Namestone**                    | $800,000    | –         |
+| **PYOR**                         | $300,000    | –         |
+| **Tally**                        | $300,000    | –         |
+| **Unicorn.eth**                  | $300,000    | –         |
+| **Web3bio**                      | $500,000    | –         |
+| **WebHash**                      | $300,000    | –         |
+| **x23.ai**                       | $300,000    | –         |
+
+### 2. Preprocessing Ballots
+
+Before counting, each ballot is checked: if a voter ranks a team’s extra budget above its basic, the basic entry is moved directly above the extra. No changes are made otherwise.
+
+### 3. Creating the Rank
+
+Each entry is treated as a separate candidate and ranked using the **Copeland method**. If two entries have the same number of match victories, **average support** is used as a tiebreaker (in a sports comparison, this would be equivalent to \"total points/goals scored\" being used as a tiebreaker between teams with equal number of victories).
+
+### 4. Budget Allocation
+
+Once ranking is complete, entries are evaluated in order, using a **total budget of $4.5 million**:
+
+1. Assign an entry to the **2-year stream** if it is a **current service provider**, ranked in the **top 10**, _and_ assigning it would **not cause the total allocated to 2-year grants to exceed $1.5 million**.
+2. If those conditions aren’t met, assign the entry to the **1-year stream** if its budget fits within the **remaining total budget** (regardless of the 2-year cap).
+3. Stop the evaluation if the **$4.5M total budget** has been fully allocated, if there are **no more valid candidates**, _or_ if **“None Below”** is reached.
