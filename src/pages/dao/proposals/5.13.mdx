@@ -35,7 +35,7 @@ The short-term solution was delegating 3.8M $ENS to a contract that can only vot
 
 ## Specification
 
-To enhance security, the [SecurityCouncil contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol) will be deployed, receiving the PROPOSER_ROLE in the timelock, granting it the ability to cancel proposals (callable only by the [Security Council multisig](https://etherscan.io/address/0xaa5cd05f6b62c3af58ae9c4f3f7a2acc2cdc2cc7)) without the power to initiate or modify other DAO actions. \*\*The scope of this proposal is to assign the PROPOSER_ROLE to the SecurityCouncil contract ([Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))\*\*.
+To enhance security, the [SecurityCouncil contract](https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol) will be deployed, receiving the PROPOSER_ROLE in the timelock, granting it the ability to cancel proposals (callable only by the [Security Council multisig](https://etherscan.io/address/0xaa5cd05f6b62c3af58ae9c4f3f7a2acc2cdc2cc7)) without the power to initiate or modify other DAO actions. **The scope of this proposal is to assign the PROPOSER_ROLE to the SecurityCouncil contract ([Etherscan](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0#code))**.
 
 To ensure decentralization, the contract will also feature a time-based expiration mechanism that allows anyone to revoke the PROPOSER_ROLE after two years. This window provides time to strengthen delegation and address current vulnerabilities, facilitating the DAO's transition to a more secure governance scenario.
 
