@@ -368,6 +368,10 @@ export default defineConfig({
               link: '/dao/stewards',
             },
             {
+              text: 'Security Council',
+              link: '/dao/security-council',
+            },
+            {
               text: 'Working Group Rules',
               link: '/dao/wg/rules',
             },
