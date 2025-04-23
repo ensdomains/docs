@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { FaJava, FaReact, FaRust } from 'react-icons/fa'
-import { SiDelphi, SiKotlin, SiNuget, SiPython } from 'react-icons/si'
+import { SiDelphi, SiElixir, SiKotlin, SiNuget, SiPython } from 'react-icons/si';
 import { TbBrandGolang, TbBrandJavascript } from 'react-icons/tb'
 
 type Language = {
@@ -159,6 +159,18 @@ const ensLibraries: Language[] = [
       {
         href: 'https://github.com/svanas/delphereum',
         name: 'delphereum',
+        description: '',
+        logo: undefined, // -
+      },
+    ],
+  },
+  {
+    name: 'Elixir',
+    logo: <SiElixir />,
+    libraries: [
+      {
+        href: 'https://github.com/ExWeb3/elixir_ethers',
+        name: 'Ethers',
         description: '',
         logo: undefined, // -
       },
