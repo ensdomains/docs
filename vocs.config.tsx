@@ -211,7 +211,7 @@ export default defineConfig({
             },
             {
               text: 'Brand',
-              link: 'https://brand.ens.domains',
+              link: 'https://ens.domains/brand',
             },
           ],
         },
