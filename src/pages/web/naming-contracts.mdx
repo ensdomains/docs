@@ -154,10 +154,10 @@ If naming contracts through manual ENS interactions feels complex or unintuitive
 
 Enscribe simplifies what is otherwise a multi-step, error-prone process by offering:
 
-- Atomic deployment and naming using `CREATE2`
-- ENS subname creation and forward resolution
-- Primary name (reverse record) assignment for contracts implementing `Ownable`, `ERC173`, or `ReverseClaimer`
+- Atomic deployment using `CREATE2` and naming `Ownable`, `ERC173`, `ReverseClaimer` and `ReverseSetter` contracts
+- ENS subname creation, forward resolution and Primary name (reverse record) assignment
 - Post-deployment naming of existing contracts
+- My Contracts History - to track named and unnamed contracts
 
 Even if you don’t own an ENS name, you can use Enscribe’s hosted ENS parent — `deployd.eth` — to create subnames like `my-app.deployd.eth` and set them as the primary name for your contract.
 
