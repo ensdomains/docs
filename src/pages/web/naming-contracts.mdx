@@ -147,3 +147,22 @@ If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/
 
 If your contract is a Safe, Multisig, DAO, or has a function that can send arbitrary ETH calls, you can use the [ReverseRegistrar](/registry/reverse) contract directly to set a name for it.
 You might even be able to use the [ENS Manager App](https://ens.app/) inside of your safe app to set a primary name.
+
+## Naming Tools
+
+If naming contracts through manual ENS interactions feels complex or unintuitive, consider using [Enscribe](https://www.enscribe.xyz) — a smart contract deployment and naming tool that allows developers to assign ENS names to contracts at the time of deployment.
+
+Enscribe simplifies what is otherwise a multi-step, error-prone process by offering:
+
+- Atomic deployment and naming using `CREATE2`
+- ENS subname creation and forward resolution
+- Primary name (reverse record) assignment for contracts implementing `Ownable`, `ERC173`, or `ReverseClaimer`
+- Post-deployment naming of existing contracts
+
+Even if you don’t own an ENS name, you can use Enscribe’s hosted ENS parent — `deployd.eth` — to create subnames like `my-app.deployd.eth` and set them as the primary name for your contract.
+
+Enscribe is fully on-chain, stateless, and supports the following networks:
+- **Mainnets**: Ethereum, Linea, Base
+- **Testnets**: Sepolia, Linea Sepolia, Base Sepolia
+
+🔗 [Learn more](https://www.enscribe.xyz/docs/)
