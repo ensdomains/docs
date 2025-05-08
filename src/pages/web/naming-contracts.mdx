@@ -4,11 +4,11 @@ While it's commonly known that regular user accounts can have [primary names](/w
 
 In order for you to manage the primary name of your smart contract, you need to own the [reverse node](/terminology#reverse-node) for the contract address. There are several ways of doing this, depending on if you are actively developing your contract or if it is already deployed.
 
-The simplest way to achieve this is using the [Enscribe app](https://app.enscribe.xyz/).
-
 :::note
 To enable reverse resolution, you must set both the reverse record and the ETH address to the contract’s deployed address.
 :::
+
+Skip to [Naming Tools](#naming-tools) for a frontend solution to naming your smart contracts.
 
 ## New Contracts
 
@@ -152,19 +152,19 @@ You might even be able to use the [ENS Manager App](https://ens.app/) inside of 
 
 ## Naming Tools
 
-Enscribe has been created to simplify naming smart contracts with ENS names. Its [app](https://app.enscribe.xyz/) allows users to deploy smart contracts with primary ENS names set as well as easily locate and name their existing smart contracts.
+:::warning
+These are 3rd party tools and not officially supported by ENS Labs.
+:::
+
+[Enscribe](https://app.enscribe.xyz/) is a tool designed to simplify the process of naming smart contracts with ENS names. The application enables users to deploy new smart contracts with a primary name directly and easily name existing smart contracts.
 
 Enscribe simplifies what is otherwise a multi-step, error-prone process by offering:
 
-- Atomic deployment using `CREATE2` and naming `Ownable`, `ERC173`, `ReverseClaimer` and `ReverseSetter` contracts described above
-- ENS subname creation, forward resolution and Primary name (reverse record) assignment
-- Post-deployment naming of existing contracts
-- Contracts history - to easily locate contracts that can be named and those you have already named
+- Atomic contract deployment using `CREATE2`
+- Naming `Ownable`, `ERC173`, `ReverseClaimer` and `ReverseSetter` contracts as described above
+- ENS subname creation, forward resolution and reverse record assignment
+- Naming of existing contracts, with an easy way to locate contracts that you've already deployed
 
-Additionally, even if you don’t own an ENS name, you can use Enscribe’s hosted ENS parent — `deployd.eth` — to create subnames like `my-app.deployd.eth` and set them as the primary name for your contract.
+Even if you don't own an ENS name, you can still utilize Enscribe's hosted ENS parent, `deployd.eth`, to create subnames like `my-app.deployd.eth` and set them as the primary name for your contract.
 
-Enscribe is fully on-chain, stateless, and supports the following networks:
-- **Mainnets**: Ethereum, Linea, Base
-- **Testnets**: Sepolia, Linea Sepolia, Base Sepolia
-
-🔗 To learn more refer to the [Enscribe Docs](https://www.enscribe.xyz/docs/)
+To learn more, refer to the [Enscribe Docs](https://www.enscribe.xyz/docs/).
