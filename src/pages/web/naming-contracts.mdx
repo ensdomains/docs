@@ -8,6 +8,8 @@ In order for you to manage the primary name of your smart contract, you need to 
 To enable reverse resolution, you must set both the reverse record and the ETH address to the contract’s deployed address.
 :::
 
+Skip to [Naming Tools](#naming-tools) for a frontend solution to naming your smart contracts.
+
 ## New Contracts
 
 Depending on your use case, there are a few ways to set a smart contract's primary name.
@@ -147,3 +149,22 @@ If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/
 
 If your contract is a Safe, Multisig, DAO, or has a function that can send arbitrary ETH calls, you can use the [ReverseRegistrar](/registry/reverse) contract directly to set a name for it.
 You might even be able to use the [ENS Manager App](https://ens.app/) inside of your safe app to set a primary name.
+
+## Naming Tools
+
+:::warning
+These are 3rd party tools and not officially supported by ENS Labs.
+:::
+
+[Enscribe](https://app.enscribe.xyz/) is a tool designed to simplify the process of naming smart contracts with ENS names. The application enables users to deploy new smart contracts with a primary name directly and easily name existing smart contracts.
+
+Enscribe simplifies what is otherwise a multi-step, error-prone process by offering:
+
+- Atomic contract deployment using `CREATE2`
+- Naming `Ownable`, `ERC173`, `ReverseClaimer` and `ReverseSetter` contracts as described above
+- ENS subname creation, forward resolution and reverse record assignment
+- Naming of existing contracts, with an easy way to locate contracts that you've already deployed
+
+Even if you don't own an ENS name, you can still utilize Enscribe's hosted ENS parent, `deployd.eth`, to create subnames like `my-app.deployd.eth` and set them as the primary name for your contract.
+
+To learn more, refer to the [Enscribe Docs](https://www.enscribe.xyz/docs/).
