@@ -5,21 +5,21 @@ While it's commonly known that regular user accounts can have [primary names](/w
 In order for you to manage the primary name of your smart contract, you need to own the [reverse node](/terminology#reverse-node) for the contract address. There are several ways of doing this, depending on if you are actively developing your contract or if it is already deployed.
 
 :::note
-Reverse names are just half of ENS primary names. Remember that you always must set the ETH address of your name to the address at which your contract was deployed.
+To enable reverse resolution, you must set both the reverse record and the ETH address to the contract’s deployed address.
 :::
 
 ## New Contracts
 
-Depending on your use case, there are a few different approaches to setting the primary name of a new smart contract.
+Depending on your use case, there are a few ways to set a smart contract's primary name.
 
-First, let's assume you want to be able to change the name in the future. The two ways to do this are:
+If you want to be able to change the name later, you have two options:
 
-- Take ownership of the reverse node (`{address}.addr.reverse`) for the contract address.
-- (Recommended) Make the contract [Ownable](https://docs.openzeppelin.com/contracts/5.x/access-control), which is may already be, and set the owner to yourself.
+- **(Recommended)** Make the contract [Ownable](https://docs.openzeppelin.com/contracts/5.x/access-control) and set yourself as the owner.
+- Take ownership of the reverse node (`{address}.addr.reverse`) for the contract.
 
-The Ownable approach is recommended because it's possible that your contract will already have it implemented, and Etherscan will index the events correctly.
+The Ownable method is preferred since it's widely used and works well with Etherscan.
 
-If you are deploying a new contract that does not have any admin permissions, and you don't want to be able to change the name in the future, you can set the reverse name in the constructor of the contract directly.
+For contracts without admin permissions, you can set the reverse name in the constructor. This name can't be changed later.
 
 Let's look at a few examples.
 
