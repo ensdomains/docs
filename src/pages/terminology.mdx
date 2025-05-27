@@ -108,7 +108,7 @@ A resolver is a contract that maps from name to the resource (e.g., cryptocurren
 
 ### Wildcard Resolver
 
-This refers to a resolver that supports [ENSIP-10](/ensip/10). This scheme allows clients to resolve data for subnames that either don't have a resolver of their own, or subnames that may not even exist on-chain at all. For offchain names, this is typically used in conjunction with [CCIP Read](#ccip-read).
+This refers to a resolver that supports [ENSIP-10](/ensip/10). This scheme allows clients to resolve data for subnames that either don't have a resolver of their own, or subnames that may not even exist onchain at all. For offchain names, this is typically used in conjunction with [CCIP Read](#ccip-read).
 
 ## Public Resolver
 
@@ -116,13 +116,13 @@ This is a standard resolver contract implementation written by ENS Labs. It supp
 
 ## Offchain
 
-This term is typically used with respect to the Ethereum Mainnet blockchain. If data is not posted to the chain via an actual Ethereum Mainnet transaction, then it is "offchain". ENS names can also be offchain. For example names can use a special resolver to resolve records for subnames that don't exist on-chain in the Registry. This is also typically done with [CCIP Read](#ccip-read).
+This term is typically used with respect to the Ethereum Mainnet blockchain. If data is not posted to the chain via an actual Ethereum Mainnet transaction, then it is "offchain". ENS names can also be offchain. For example names can use a special resolver to resolve records for subnames that don't exist onchain in the Registry. This is also typically done with [CCIP Read](#ccip-read).
 
 ### CCIP Read
 
 The "Cross Chain Interoperability Protocol Read" specification, also known as [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), authored by Nick Johnson, is a specification that allows for secure and trustless offchain data retrieval.
 
-It allows for an Ethereum call to defer to an [offchain gateway](/resolvers/ccip-read#writing-a-gateway) and then securely verify the resulting data on-chain.
+It allows for an Ethereum call to defer to an [offchain gateway](/resolvers/ccip-read#writing-a-gateway) and then securely verify the resulting data onchain.
 With respect to ENS, this is typically used for offchain subnames that don't exist in the core Registry.
 
 <EmbedLink

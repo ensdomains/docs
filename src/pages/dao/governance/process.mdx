@@ -10,7 +10,7 @@ There are three workstream categories: [Meta-Governance](https://discuss.ens.dom
 
 ### Snapshot
 
-[Snapshot](https://snapshot.org/#/ens.eth/) is a simple voting interface that allows users to signal sentiment off-chain. Votes on snapshot are weighted by the number of ENS delegated to the address used to vote.
+[Snapshot](https://snapshot.org/#/ens.eth/) is a simple voting interface that allows users to signal sentiment offchain. Votes on snapshot are weighted by the number of ENS delegated to the address used to vote.
 
 ### Governance portals
 
@@ -108,7 +108,7 @@ Once the propose() function has been called, a seven day voting period is starte
 
 **Delegation**: ENS holders cannot vote or create proposals until they delegate their voting rights to an address. Delegation can be given to one address at a time, including the holder’s own address. Note that delegation does not lock tokens; it simply adds votes to the chosen delegation address.
 
-**Executable Proposal**: An executable proposal is a type of proposal that is executed by the governance contract through timelock. It can replace the governance contract, transfer tokens from the community treasury, or perform an almost infinite range of other on-chain actions. In order to create a proposal, an address must have at least 0.1% (100k ENS) of all ENS delegated to their address. Proposals are stored in the “proposals” mapping of the Governor smart contract. All proposals are subject to a 7-day voting period.
+**Executable Proposal**: An executable proposal is a type of proposal that is executed by the governance contract through timelock. It can replace the governance contract, transfer tokens from the community treasury, or perform an almost infinite range of other onchain actions. In order to create a proposal, an address must have at least 0.1% (100k ENS) of all ENS delegated to their address. Proposals are stored in the “proposals” mapping of the Governor smart contract. All proposals are subject to a 7-day voting period.
 
 **Quorum**: In order for a vote to pass, a certain percentage of ENS tokens must vote in the affirmative. The current quorum requirements are:
 

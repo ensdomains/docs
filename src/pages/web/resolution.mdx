@@ -29,7 +29,7 @@ import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
 export const Name = () => {
   const { data: ensName } = useEnsAddress({
     address: 'luc.eth', // The name to lookup
-    chainId: 1, // The chain to start resolution on (Ethereum mainnet or testnet)
+    chainId: 1, // The chain to start resolution on (Ethereum Mainnet or a testnet)
   })
 
   return <div>{ensName || address}</div>
@@ -125,7 +125,7 @@ To learn what happens under the hood when you do a forward lookup, read the [res
 ENS Names aren't just limited to storing Ethereum addresses.
 Any blockchain address (BTC, LTC, SOL, etc.) can be queried by [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) coin type or a value derived from an EVM Chain ID (specified in [ENSIP-11](/ensip/11)). This includes Ethereum L2 networks such as OP Mainnet and Base.
 
-For EVM Chains besides Mainnet Ethereum, always use its [ENSIP-11](/ensip/11) coin type, irrespective of being included in SLIP-0044 (like Ether Classic).
+For EVM Chains besides Ethereum Mainnet, always use its [ENSIP-11](/ensip/11) coin type, irrespective of being included in SLIP-0044 (like Ether Classic).
 
 The standardization of multichain addresses was first introduced in [ENSIP-9](/ensip/9), and also [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304).
 
