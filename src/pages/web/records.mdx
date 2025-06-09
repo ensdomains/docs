@@ -8,14 +8,17 @@ import { Card } from '../../components/ui/Card'
 
 # Text Records
 
-With every name come a set of records. These records are key value pairs that can be used to store information about the profile.
-Think of this as a user's **digital backpack**. Utalized for storage of preferences, public details, and more.
+Text records are key-value pairs that can be used to store any arbitrary data associated with a name.
+Think of this as a user's **digital backpack** utilized for the storage of preferences, public details, and more.
 
 <Card>
-  <TextRecords name="nick.eth" keys={['description', 'com.twitter']} />
+  <TextRecords
+    name="nick.eth"
+    keys={['description', 'com.twitter', 'com.github']}
+  />
 </Card>
 
-Text records allow us to attach and read any key value pair from an ENS name. The most popular records have been standardised.
+The most popular records have been standardised.
 One example of a standardised record is the [avatar record](/web/avatars) which is used to store a user's profile picture.
 
 ## Getting Records
@@ -31,7 +34,7 @@ import { useEnsText } from 'wagmi'
 
 export const MyProfile: FC<{ name: string }> = ({ name }) => {
   const { data } = useEnsText({
-    name: normalize('luc.eth'),
+    name: normalize('nick.eth'),
     key: 'com.twitter',
   })
 
@@ -47,7 +50,7 @@ export const MyProfile: FC<{ name: string }> = ({ name }) => {
 // https://docs.ethers.org/v5/api/providers/provider/#EnsResolver
 const provider = new ethers.providers.JsonRpcProvider()
 
-const resolver = await provider.getResolver('luc.eth')
+const resolver = await provider.getResolver('nick.eth')
 const twitter = await resolver.getText('com.twitter')
 ```
 
@@ -63,7 +66,7 @@ const publicClient = createPublicClient({
 })
 
 const ensText = await publicClient.getEnsText({
-  name: normalize('luc.eth'),
+  name: normalize('nick.eth'),
   key: 'com.twitter',
 })
 ```
@@ -93,7 +96,7 @@ import (
 func main() {
 	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
 
-	domain, _ := ens.Normalize("luc.eth")
+	domain, _ := ens.Normalize("nick.eth")
 	resolver, _ := ens.NewResolver(client, domain)
 	twitter, _ := resolver.Text("com.twitter")
 
@@ -105,34 +108,24 @@ func main() {
 
 ## Types of Records
 
-Here are some of the most commonly used records:
+[ENSIP-5](/ensip/5) and [ENSIP-18](/ensip/18) specify two sets of records that are considered standardized. Below are some of the most commonly ones:
 
-| Name        | Usage                                        | Reference             | Example             |
-| ----------- | -------------------------------------------- | --------------------- | ------------------- |
-| display     | Preferred capitalization                     | [ENSIP-5](/ensip/5)   | Luc.eth             |
-| avatar      | Avatar or logo (see [Avatars](/web/avatars)) | [ENSIP-5](/ensip/5)   | ipfs://dQw4w9WgXcQ  |
-| description | Description of the name                      | [ENSIP-5](/ensip/5)   | DevRel @ ENS Labs   |
-| keywords    | List of comma-separated keywords             | [ENSIP-5](/ensip/5)   | person, ens         |
-| email       | Email address                                | [ENSIP-5](/ensip/5)   | luc@ens.domains     |
-| mail        | Physical mailing address                     | [ENSIP-5](/ensip/5)   | V3X HQ              |
-| notice      | Notice regarding this name                   | [ENSIP-5](/ensip/5)   | This is a notice    |
-| location    | Generic location (e.g. "Toronto, Canada")    | [ENSIP-5](/ensip/5)   | Breda, NL           |
-| phone       | Phone number as an E.164 string              | [ENSIP-5](/ensip/5)   | +1 234 567 890      |
-| url         | Website URL                                  | [ENSIP-5](/ensip/5)   | https://ens.domains |
-| header      | Image URL to be used as a header/banner      | [ENSIP-18](/ensip/18) | ipfs://dQw4w9WgXcQ  |
+| Name        | Usage                                   | Reference             | Example                    |
+| ----------- | --------------------------------------- | --------------------- | -------------------------- |
+| avatar      | [Avatar](/web/avatars)                  | [ENSIP-5](/ensip/5)   | eip155:1/erc1155:0x495f... |
+| description | Bio or description of the profile       | [ENSIP-5](/ensip/5)   | Lead developer of ENS      |
+| com.twitter | Twitter/X handle                        | [ENSIP-5](/ensip/5)   | nicksdjohnson              |
+| com.github  | GitHub handle                           | [ENSIP-5](/ensip/5)   | arachnid                   |
+| url         | Website URL                             | [ENSIP-5](/ensip/5)   | https://ens.domains        |
+| header      | Image URL to be used as a header/banner | [ENSIP-18](/ensip/18) | ipfs://QmNtHN7WE...        |
 
-### Other Records
+### Custom Records
 
-Currently there are a few records that have been standardised. However you are welcome to store any key value pair you desire.
-We generally recommend to stick to a pattern, or prefix things with your app or protocol (eg. `com.discord`, or `org.reddit`), as such to avoid collisions.
-
-One of the newer standardised records is the "header" record. This header record, similar to the avatar record, accepts any IPFS, Arweave, EIP155, or regular URL to an image resource.
-The image is then displayed as a banner on the profile page and tends to be in a 1:3 aspect ratio.
+While standardized records are expected to have the best ecosystem support, it's possible to store any key-value pair you desire. We generally recommend to stick to a pattern, or prefix things with your app or protocol (eg. `com.discord`, or `org.reddit`), as such to avoid collisions.
 
 ## Setting Records
 
-When records are loaded they are loaded from the resolver responsible for the name. As resolvers are user controlled, we cannot guarantee a write function is available.
-This makes it a more in-depth process to update a users records.
+Text records are controlled by the resolver associated with a given name. Read more about [interacting with a resolver](/resolvers/interacting).
 
 <EmbedLink
   href="/resolvers/interacting"
