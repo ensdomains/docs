@@ -9,17 +9,17 @@ import { Card } from '../../components/ui/Card'
 
 # Offchain / L2 Resolvers
 
-The source of truth for a name and its subdomains does not always have to be onchain or on Ethereum L1 at all. By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) (CCIP Read) in a [Resolver](/resolvers/quickstart), developers can effectively defer resolution to an L2 or offchain API.
+While ENS name resolution always starts from Ethereum Mainnet, it's possible to store almost all data associated with a name and its subdomains elsewhere. By leveraging [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) (CCIP Read) in a [Resolver](/resolvers/quickstart), developers can effectively defer resolution to an L2 or offchain API.
 
 <Card className="hidden items-center justify-center gap-4 p-4 md:flex">
   <div className="space-y-1 p-2 text-center leading-none">
     <div className="font-bold">Name</div>
-    <div>jesse.cb.id</div>
+    <div>greg.base.eth</div>
   </div>
   <div>➡️</div>
   <div className="space-y-1 p-2 text-center leading-none">
-    <div className="font-bold">Resolver</div>
-    <div>0x1934...BE56</div>
+    <div className="font-bold">L1 Resolver</div>
+    <div>0xde90...4F31</div>
   </div>
   <div>➡️</div>
   <div className="space-y-1 p-2 text-center leading-none">
@@ -29,7 +29,7 @@ The source of truth for a name and its subdomains does not always have to be onc
   <div>➡️</div>
   <div className="space-y-1 p-2 text-center leading-none">
     <div className="font-bold">Address</div>
-    <div>0x8491...8bf1</div>
+    <div>0x179A...9285</div>
   </div>
 </Card>
 
@@ -47,11 +47,13 @@ error OffchainLookup(
 )
 ```
 
-When a contract reverts with the `OffchainLookup` error, it is up to clients (wagmi, viem, ethers, etc.) to handle it appropriatrely. Thankfully, many clients support CCIP Read out of the box so it's transparent to application developers in most cases.
+When a contract reverts with the `OffchainLookup` error, clients (wagmi, viem, ethers, etc.) unwrap the error and handle it appropriately.
 
 ### How does ENS use CCIP Read?
 
-CCIP Read can be used to make ENS name resolution more flexible. Instead of storing all data on Ethereum L1, developers can [implement CCIP Read in a Resolver](/resolvers/writing#offchain-resolvers) to store data (subnames, records, etc.) on L2 networks or even an offchain database.
+By [leveraging CCIP Read in a Resolver](/resolvers/writing#offchain-resolvers), developers can store name data beyond Ethereum Mainnet. A common use case is managing subnames on Layer 2 networks - for example, Coinbase allows users to register names like `jesse.base.eth` on Base, while the parent name `base.eth` remains on Ethereum Mainnet.
+
+This creates a seamless experience for application developers - they can resolve names like `jesse.base.eth` exactly the same way they would resolve mainnet names, without needing to know which network the data is actually stored on. The use of CCIP Read in name resolution is completely transparent to users.
 
 ![](/img/ccip-read-diagram-1.png)
 
