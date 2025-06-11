@@ -16,14 +16,14 @@ architecture, guiding principles and migration strategy for ENSv2.
 
 ## What's new in ENSv2?
 
-- **Native L2 Support** – contracts have been designed with Layer 2 deployment
-  and cross-chain resolution in mind, building on existing CCIP-Read support in ENSv1.
+- **Native L2 Support** – contracts have been designed with Namechain and other Layer 2 deployments
+  with cross-chain resolution in mind, building on existing [CCIP-Read support in ENSv1](/resolvers/ccip-read).
 - **Hierarchical Registries** – while ENSv1 used a single flat registry for all
   names, ENSv2 allows each name to provide its own registry implementation for
   subnames. This provides name owners and developers with direct control over
   the ownership and transfer rules for names and subnames.
-- **Permissions as Standard** - All of the functionality enabled by the Name Wrapper
-  in ENSv1 has been integrated into the core of ENSv2, using a new, highly flexible,
+- **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
+  in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2, using a new, highly flexible,
   role-based permissions model.
 - **No Grace Period** - The grace period is no longer a part of the ENS protocol,
   meaning names expire when they say they expire. Users will need to renew prior
@@ -46,15 +46,15 @@ architecture, guiding principles and migration strategy for ENSv2.
    centralized third-parties.
  - **Truly multi-chain** - Although ENSv2 hosts .eth names on Namechain by default,
    ENS continues to support all L2s. Names can be 'ejected' from Namechain to L1,
-   and from there can either be managed directly on L1 or delegated to another L2.  
+   and from there can either be managed directly on L1 or delegated to another L2.
 
 ## ENSv2 Registry Architecture
 
-### Overview 
+### Overview
 
 ENSv1 used a simple architecture, where a single flat registry maintained a mapping
 from all names to their owner and resolver addresses. Hierarchical ownership was enforced
-through the use of namehash to calculate IDs for subnames. This has the advantage of simplicity,
+through the use of [namehash](/resolution/names#namehash) to calculate IDs for subnames. This has the advantage of simplicity,
 but means that ownership rules are enforced by a single, non-upgradeable contract, and
 changes in the status of a parent name do not automatically ripple down to affect
 subnames.
@@ -67,10 +67,10 @@ flowchart LR
     subgraph Registry
         direction LR
         root["<b>&lt;root></b><hr>owner: 0x0123..."]
-        eth["<b>eth</b><hr>• owner: 0x1234..."]
-        montoya["<b>montoya.eth</b><hr>• owner: 0x5678...<br/>• resolver: 0x6789..."]
-        inigo["<b>inigo.montoya.eth</b><hr>• owner: 0x7890...<br/>• resolver: 0x890A..."]
-        domingo["<b>domingo.montoya.eth</b><hr>• owner: 0x90AB...<br/>• resolver: 0x0ABC..."]
+        eth["<b>eth</b><hr>owner: 0x1234..."]
+        montoya["<b>montoya.eth</b><hr>owner: 0x5678...<br/>• resolver: 0x6789..."]
+        inigo["<b>inigo.montoya.eth</b><hr>owner: 0x7890...<br/>• resolver: 0x890A..."]
+        domingo["<b>domingo.montoya.eth</b><hr>owner: 0x90AB...<br/>• resolver: 0x0ABC..."]
     end
 
     resolvers@{label: "Resolvers", shape: processes}
@@ -199,10 +199,10 @@ ENSv2 is split into the following logical groups:
 
 | Package | Description |
 | ------- | ----------- |
-| [Registries](./registries) | Registries govern ownership of names |
-| [Resolvers)(./resolvers)  | Resolvers control how a name is converted to a resource |
+| [Registries](/contracts/ensv2/registries) | Registries govern ownership of names |
+| [Resolvers](/contracts/ensv2/resolvers)  | Resolvers control how a name is converted to a resource |
 
-## Migration timeline
+## Upgrade timeline
 
 The team is targeting **Q4 2024** for main-net deployment, subject to audit and
-community review. A detailed migration guide will be published here soon. 
+community review. A detailed upgrade guide will be published here soon.
