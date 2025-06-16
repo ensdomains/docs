@@ -75,7 +75,7 @@ If you just want to **rent** subnames, then do not burn **`CAN_EXTEND_EXPIRY`**.
 
 If you want to enable "unruggable renewals" for your registrar, to guarantee that users will always be able to renew, then you can call `approve` on the Name Wrapper and approve your registrar contract as the "subname renewal manager" for your name.
 
-Then, burn the **`CANNOT_APPROVE`** fuse on your name, to guarantee that you can never revoke that contract for subname renewals. See the [Approved Operators](#approved-operators) section above for more info.
+Then, burn the **`CANNOT_APPROVE`** fuse on your name, to guarantee that you can never revoke that contract for subname renewals. See [Approved Operators](/wrapper/contracts/#approved-operators) for more info.
 
 If you want to impose other restrictions on your registered subnames, then you can burn the **`CANNOT_UNWRAP`** fuse to Lock the subname, and also burn whatever other fuses you want.
 
