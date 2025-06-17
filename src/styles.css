@@ -144,8 +144,3 @@
   --ens-text-secondary: var(--ens-grey-primary);
   --ens-text-disabled: var(--ens-grey-bright);
 }
-
-.vocs_Paragraph a, .vocs_List a {
-  color: var(--vocs-color_link);
-  text-decoration: underline;
-}
