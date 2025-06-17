@@ -2,6 +2,8 @@ import fs from 'fs/promises'
 import path from 'path'
 import { SidebarItem } from 'vocs'
 
+import { getFirstHeadingToken } from './utils'
+
 // Generate a JSON file for each DAO proposal to be used in the sidebar
 export async function daoProposalsSidebar() {
   const sidebar = new Array<SidebarItem>()
@@ -14,6 +16,7 @@ export async function daoProposalsSidebar() {
     filename: string
     term: number
     proposal: number
+    title: string
   }>()
 
   for (const file of files) {
@@ -26,8 +29,25 @@ export async function daoProposalsSidebar() {
     const term = Number(filenameParts[0])
     const proposal = Number(filenameParts.slice(1).join('.'))
 
+    // Extract markdown title from the file
+    const markdown = await fs.readFile(
+      path.join(__dirname, '..', 'src/pages/dao/proposals', file),
+      'utf8'
+    )
+    const title = getFirstHeadingToken(markdown)?.text
+
+    // Sanity check. This should never happen
+    if (!title) {
+      throw new Error(`No title found for ${file}`)
+    }
+
     terms.add(term)
-    parsedFiles.push({ filename: filenameWithoutExtension, term, proposal })
+    parsedFiles.push({
+      filename: filenameWithoutExtension,
+      term,
+      proposal,
+      title,
+    })
   }
 
   const reversedTerms = Array.from(terms).reverse()
@@ -37,8 +57,8 @@ export async function daoProposalsSidebar() {
       items: parsedFiles
         .filter(({ term: t }) => t === term)
         .sort((a, b) => b.proposal - a.proposal)
-        .map(({ filename }) => ({
-          text: `EP ${filename}`,
+        .map(({ filename, title }) => ({
+          text: title,
           link: `/dao/proposals/${filename}`,
         })),
     })
