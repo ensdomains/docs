@@ -75,7 +75,7 @@ If you just want to **rent** subnames, then do not burn **`CAN_EXTEND_EXPIRY`**.
 
 If you want to enable "unruggable renewals" for your registrar, to guarantee that users will always be able to renew, then you can call `approve` on the Name Wrapper and approve your registrar contract as the "subname renewal manager" for your name.
 
-Then, burn the **`CANNOT_APPROVE`** fuse on your name, to guarantee that you can never revoke that contract for subname renewals. See the <a href="#approved-operators">Approved Operators</a> section above for more info.
+Then, burn the **`CANNOT_APPROVE`** fuse on your name, to guarantee that you can never revoke that contract for subname renewals. See [Approved Operators](/wrapper/contracts/#approved-operators) for more info.
 
 If you want to impose other restrictions on your registered subnames, then you can burn the **`CANNOT_UNWRAP`** fuse to Lock the subname, and also burn whatever other fuses you want.
 
@@ -98,7 +98,7 @@ And so on, it's up to you. You can also burn whatever custom parent-controlled o
 
 Yes! It's your registrar contract, so you can impose whatever rules and fees you want.
 
-For example, the .eth Registrar imposes a 3-character minimum on all names, as well as a <a href="https://support.ens.domains/core/registration/fees">custom fee structure</a> and a <a href="https://support.ens.domains/core/registration/temporary-premium">temporary premium auction</a> upon expiration.
+For example, the .eth Registrar imposes a 3-character minimum on all names, as well as a [custom fee structure](https://support.ens.domains/core/registration/fees) and a [temporary premium auction](https://support.ens.domains/core/registration/temporary-premium) upon expiration.
 
 By default there is no character limit on subnames, but your contract could have its own rules and fee structure or whatever you want. For example, you can:
 
@@ -114,9 +114,9 @@ By default there is no character limit on subnames, but your contract could have
 
 ### More information
 
-See this page for a step-by-step guide on creating and setting up your own subname registrar: <a href="/wrapper/creating-subname-registrar">Creating a Subname Registrar</a>
+See this page for a step-by-step guide on creating and setting up your own subname registrar: [Creating a Subname Registrar](/wrapper/creating-subname-registrar)
 
-There is even a set of <a href="/wrapper/creating-subname-registrar#reference-implementation">reference implementation contracts</a> you can use as a starting base!
+There is even a set of [reference implementation contracts](/wrapper/creating-subname-registrar#reference-implementation) you can use as a starting base!
 
 ## Give subnames out to NFT holders
 
@@ -126,7 +126,7 @@ Say you own the wrapped name `mycoolnft.eth`, representing a popular NFT project
 
 One option is to just bulk create the subnames and drop the wrapped NFTs into their wallets. This might be good at least as an initial drop, because then the holders don't need to interact with any contract or spend any gas, you're doing that for them!
 
-To create the subnames, you'd use the <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#setsubnodeowner">setSubnodeOwner</a> or <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#setsubnoderecord">setSubnodeRecord</a> methods.
+To create the subnames, you'd use the [setSubnodeOwner](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#setsubnodeowner) or [setSubnodeRecord](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#setsubnoderecord) methods.
 
 You must also decide:
 

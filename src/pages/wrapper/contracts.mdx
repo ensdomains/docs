@@ -11,7 +11,7 @@ When wrapping a .eth 2LD, you transfer the Owner (Registrant) of the ERC-721 NFT
 
 The contract will then automatically take over the Manager (Controller) for the name as well.
 
-You can do this by calling the <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrapeth2ld">wrapETH2LD</a> method. Or, you can directly transfer the ERC-721 NFT to the Name Wrapper contract. In return, the contract issues you an ERC-1155 NFT.
+You can do this by calling the [wrapETH2LD](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrapeth2ld) method. Or, you can directly transfer the ERC-721 NFT to the Name Wrapper contract. In return, the contract issues you an ERC-1155 NFT.
 
 ```solidity
 NameWrapper.wrapETH2LD(string label, address wrappedOwner, uint16 ownerControlledFuses, address resolver)
@@ -25,7 +25,7 @@ wrapETH2LD(
 )
 ```
 
-When wrapping any other ENS name, you transfer the Manager (Controller) of the name to the Name Wrapper contract. You can do this by calling the <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrap">wrap</a> method. In return, the contract issues you an ERC-1155 NFT.
+When wrapping any other ENS name, you transfer the Manager (Controller) of the name to the Name Wrapper contract. You can do this by calling the [wrap](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrap) method. In return, the contract issues you an ERC-1155 NFT.
 
 ```solidity
 NameWrapper.wrap(bytes name, address wrappedOwner, address resolver)
@@ -38,7 +38,7 @@ wrapETH2LD(
 )
 ```
 
-As the owner of the wrapped name, you can unwrap at any time by calling either <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#unwrapeth2ld">unwrapETH2LD</a> or <a href="https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#unwrap">unwrap</a>. You can do this as long as the permission to unwrap has not been revoked.
+As the owner of the wrapped name, you can unwrap at any time by calling either [unwrapETH2LD](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#unwrapeth2ld) or [unwrap](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#unwrap). You can do this as long as the permission to unwrap has not been revoked.
 
 ```solidity
 NameWrapper.unwrapETH2LD(bytes32 labelhash, address registrant, address controller)
