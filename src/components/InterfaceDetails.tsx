@@ -30,7 +30,9 @@ export function InterfaceDetails({
       <Table
         columns={['Usage', 'Function Definition']}
         rows={methods.map((method) => [
-          <A href={`#${method.interface}`}>{method.usage}</A>,
+          <A href={`#${method.interface}`} key={method.interface}>
+            {method.usage}
+          </A>,
           method.name,
         ])}
       />
@@ -121,12 +123,19 @@ function convertEIPLinks(string_: string) {
   return string_.split(/(EIP-\d+|ENSIP-\d+).*?/g).map((part) => {
     if (/EIP-\d+/.test(part)) {
       return (
-        <A href={`https://eips.ethereum.org/EIPS/eip-${part.slice(4)}`}>
+        <A
+          href={`https://eips.ethereum.org/EIPS/eip-${part.slice(4)}`}
+          key={part}
+        >
           {part}
         </A>
       )
     } else if (/ENSIP-\d+/.test(part)) {
-      return <A href={`/ensip/${part.slice(6)}`}>{part}</A>
+      return (
+        <A href={`/ensip/${part.slice(6)}`} key={part}>
+          {part}
+        </A>
+      )
     } else {
       return part
     }
@@ -137,7 +146,11 @@ function convertEIPLinks(string_: string) {
 function convertCodeTags(string_: string) {
   return string_ && string_.includes('`')
     ? string_.split(/(`[^`]+`).*?/g).map((part) => {
-        return /`[^`]+`/.test(part) ? <Code>{part.slice(1, -1)}</Code> : part
+        return /`[^`]+`/.test(part) ? (
+          <Code key={part}>{part.slice(1, -1)}</Code>
+        ) : (
+          part
+        )
       })
     : string_ || ''
 }

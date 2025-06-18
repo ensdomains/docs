@@ -11,7 +11,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
 }
 
-export function Input(props: InputProps) {
+export function Input({ copyButton, ...props }: InputProps) {
   const [copied, setCopied] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
 
@@ -35,14 +35,14 @@ export function Input(props: InputProps) {
           ref={ref}
           className={cn(
             'border-border disabled:bg-grey-light disabled:text-grey z-0 w-full rounded-md border px-4 py-3 leading-none font-normal transition-all outline-none focus-visible:border-[var(--vocs-color_borderAccent)]',
-            props.copyButton && 'pr-12',
+            copyButton && 'pr-12',
             props.error && '!border-red text-red',
             props.className
           )}
           {...props}
         />
 
-        {props.copyButton && (
+        {copyButton && (
           <button
             className="!bg-background text-text-secondary hover:text-text border-border absolute top-1/2 right-3 z-10 -translate-y-1/2 rounded border p-1 text-xs leading-none font-semibold !uppercase transition"
             onClick={async () => {
