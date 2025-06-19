@@ -144,3 +144,11 @@
   --ens-text-secondary: var(--ens-grey-primary);
   --ens-text-disabled: var(--ens-grey-bright);
 }
+
+/* Dampen styling on <code> in <th> */
+th.vocs_TableHeader > code.vocs_Code {
+  background-color: transparent;
+  border: none;
+  color: unset;
+  font-size: unset;
+}
