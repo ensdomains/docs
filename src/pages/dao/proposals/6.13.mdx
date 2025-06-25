@@ -1,0 +1,153 @@
+---
+authors:
+  - 5pence.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.13] [Executable] - Service Provider Program Season 2 Implementation
+
+::authors
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20971)           |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/6325634497264265012626716784077918930541180346289202027480596910133312093648) |
+
+## Abstract
+
+This executable proposal implements the Service Provider Program Season 2 (SPP2) following the approval of [EP 6.10](https://www.tally.xyz/gov/ens/proposal/50462913323863149622798490468303951055439459905477651666479638328507088159695) for service provider selection and the budget framework established in [EP 6.3](https://www.tally.xyz/gov/ens/proposal/45863606498975303062952719073086674668061306651606831273917754523416516421073).
+
+This proposal transitions our existing streaming infrastructure from the $3.6M annual budget supporting 9 providers to the new $4.5M annual budget supporting 8 providers, including 6 continuing providers and 2 new additions.
+
+## Specification
+
+Following the selection of service providers in EP 6.10, this proposal implements the technical changes required to:
+
+1. **Adjust Streaming Infrastructure** - Update the master flow rate from ENS DAO to the Stream Management Pod to accommodate the increased budget
+2. **Provide Initial Funding** - Supply one month of USDC funding (375,000 USDC) to ensure uninterrupted service
+3. **Configure Autowrap Parameters** - Set appropriate allowances for automatic USDC-to-USDCx conversion
+
+The Stream Management Pod will continue to manage individual provider streams, adjusting rates for continuing providers and establishing new streams for JustaName and ZK Email.
+
+### Service Provider Allocations
+
+The following providers and allocations have been approved:
+
+| Service Provider | Annual Allocation | Stream Duration |
+| ---------------- | ----------------- | --------------- |
+| ETH.LIMO         | $700,000          | 2 years         |
+| Blockful         | $700,000          | 2 years         |
+| Namespace        | $600,000          | 1 year          |
+| Unruggable       | $600,000          | 1 year          |
+| NameHash Labs    | $500,000          | 1 year          |
+| Resolverworks    | $500,000          | 1 year          |
+| JustaName        | $450,000          | 1 year          |
+| ZK Email         | $450,000          | 1 year          |
+| **Total**        | **$4,500,000**    |                 |
+
+### Technical Implementation
+
+The implementation maintains our existing Superfluid architecture:
+
+- ENS Treasury (Timelock) → Stream Management Pod → Individual Service Providers
+- The Stream Management Pod continues to be controlled by 3 of 5 signatures (3 Metagov Stewards, Secretary, and DAO Governor)
+- Security measures remain in place, limiting exposure to approximately 50 days of funding in case of contract compromise
+
+## Transactions
+
+### Transaction 1: Approve USDCx
+
+**Target:** `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC)  
+**Function:** `approve`  
+**Arguments:**
+
+- `spender: 0x1BA8603DA702602A8657980e825A6DAa03Dee93a`
+- `amount: 375000000000`
+
+**Calldata:**
+
+```
+0x095ea7b30000000000000000000000001ba8603da702602a8657980e825a6daa03dee93a000000000000000000000000000000000000000000000000000000000574fbde600
+```
+
+- Tenderly: [Approve USDCx](https://www.tdly.co/shared/simulation/2207ca50-6804-4e33-be61-4181ecd3f8e5)
+
+### Transaction 2: Upgrade USDC to USDCx
+
+**Target:** `0x1BA8603DA702602A8657980e825A6DAa03Dee93a` (USDCx)  
+**Function:** `upgrade`  
+**Arguments:**
+
+- `amount: 375000000000000000000000`
+
+**Calldata:**
+
+```
+0x45977d03000000000000000000000000000000000000000000004f68ca6d8cd91c600000
+```
+
+- Tenderly: [Upgrade USDC](https://www.tdly.co/shared/simulation/6abf821b-779e-429b-b8dd-707b71360687)
+
+### Transaction 3: Set Flow Rate
+
+**Target:** `0xcfA132E353cB4E398080B9700609bb008eceB125` (Superfluid)  
+**Function:** `setFlowrate`  
+**Arguments:**
+
+- `token: 0x1BA8603DA702602A8657980e825A6DAa03Dee93a`
+- `receiver: 0xB162Bf7A7fD64eF32b787719335d06B2780e31D1`
+- `flowrate: 142599440769357573`
+
+**Calldata:**
+
+```
+0x57e6aa360000000000000000000000001ba8603da702602a8657980e825a6daa03dee93a000000000000000000000000b162bf7a7fd64ef32b787719335d06b2780e31d100000000000000000000000000000000000000000000000001fa9d6f943a1705
+```
+
+- Tenderly: [Set Flow Rate](https://www.tdly.co/shared/simulation/9dd3a70d-cec4-4fac-88cf-9362fda170fc)
+
+### Transaction 4: Set Autowrap Allowance
+
+**Target:** `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC)  
+**Function:** `approve`  
+**Arguments:**
+
+- `spender: 0x1D65c6d3AD39d454Ea8F682c49aE7744706eA96d`
+- `amount: 6375000000000`
+
+**Calldata:**
+
+```
+0x095ea7b30000000000000000000000001d65c6d3ad39d454ea8f682c49ae7744706ea96d000000000000000000000000000000000000000000000000000005cc4b9c4600
+```
+
+- Tenderly: [Set Autowrap Allowance](https://www.tdly.co/shared/simulation/e192ea31-145c-4d50-9632-1342267f5b8b)
+-
+
+### Transaction Details
+
+1. **Approve USDCx**: Allows the USDCx contract to spend 375,000 USDC from the ENS DAO treasury for the initial month of funding
+
+2. **Upgrade USDC to USDCx**: Wraps 375,000 USDC to USDCx (Superfluid's streaming token format)
+
+3. **Set Flow Rate**: Increases the master stream from 0.114155251141552512 USDCx/second (~$3.6M/year) to 0.142599440769357573 USDCx/second (~$4.5M/year)
+
+4. **Set Autowrap Allowance**: Authorizes the Superfluid autowrapper to convert up to 6.375M USDC over time, ensuring continuous funding availability
+
+## Verification
+
+The testing repository with calculation tools and verification scripts is available at [github.com/5ajaki/SPP2-Streams](https://github.com/5ajaki/SPP2-Streams).
+
+## Implementation Timeline
+
+Upon passage of this proposal:
+
+1. The transactions will be executed immediately
+2. The Stream Management Pod will receive the increased flow rate
+3. Metagov stewards will coordinate with service providers to:
+   - Update existing provider streams to new rates
+   - Establish streams for new providers (JustaName and ZK Email)
+   - Calculate and distribute any backdated payments for rate increases
+
+All providers will continue to be subject to the existing KYC and sanctions compliance requirements established in SPP1.
