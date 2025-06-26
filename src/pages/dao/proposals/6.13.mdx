@@ -14,6 +14,10 @@ proposal:
 | **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20971)                                                                                 |
 | **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/6325634497264265012626716784077918930541180346289202027480596910133312093648) |
 
+## Correction
+
+The previous version of this proposal has incorrect text in the description. This version is corrected.
+
 ## Abstract
 
 This executable proposal implements the Service Provider Program Season 2 (SPP2) following the approval of [EP 6.10](https://www.tally.xyz/gov/ens/proposal/50462913323863149622798490468303951055439459905477651666479638328507088159695) for service provider selection and the budget framework established in [EP 6.3](https://www.tally.xyz/gov/ens/proposal/45863606498975303062952719073086674668061306651606831273917754523416516421073).
@@ -34,17 +38,17 @@ The Stream Management Pod will continue to manage individual provider streams, a
 
 The following providers and allocations have been approved:
 
-| Service Provider | Annual Allocation | Stream Duration |
-| ---------------- | ----------------- | --------------- |
-| ETH.LIMO         | $700,000          | 2 years         |
-| Blockful         | $700,000          | 2 years         |
-| Namespace        | $600,000          | 1 year          |
-| Unruggable       | $600,000          | 1 year          |
-| NameHash Labs    | $500,000          | 1 year          |
-| Resolverworks    | $500,000          | 1 year          |
-| JustaName        | $450,000          | 1 year          |
-| ZK Email         | $450,000          | 1 year          |
-| **Total**        | **$4,500,000**    |                 |
+| Service Provider           | Annual Allocation | Stream Duration |
+| -------------------------- | ----------------- | --------------- |
+| ETH.LIMO                   | $700,000          | 2 years         |
+| Blockful                   | $700,000          | 2 years         |
+| Namehash Labs              | $1,100,000        | 1 year          |
+| Ethereum Identity Protocol | $500,000          | 1 year          |
+| Unruggable                 | $400,000          | 1 year          |
+| Namespace                  | $400,000          | 1 year          |
+| ZK Email                   | $400,000          | 1 year          |
+| Justaname                  | $300,000          | 1 year          |
+| **Total**                  | **$4,500,000**    |                 |
 
 ### Technical Implementation
 
@@ -123,16 +127,12 @@ The implementation maintains our existing Superfluid architecture:
 ```
 
 - Tenderly: [Set Autowrap Allowance](https://www.tdly.co/shared/simulation/e192ea31-145c-4d50-9632-1342267f5b8b)
--
 
 ### Transaction Details
 
 1. **Approve USDCx**: Allows the USDCx contract to spend 375,000 USDC from the ENS DAO treasury for the initial month of funding
-
 2. **Upgrade USDC to USDCx**: Wraps 375,000 USDC to USDCx (Superfluid's streaming token format)
-
-3. **Set Flow Rate**: Increases the master stream from 0.114155251141552512 USDCx/second (~$3.6M/year) to 0.142599440769357573 USDCx/second (~$4.5M/year)
-
+3. **Set Flow Rate**: Increases the master stream from 0.114155251141552512 USDCx per second ($3.6M/year) to 0.142599440769357573 USDCx/second ($4.5M/year)
 4. **Set Autowrap Allowance**: Authorizes the Superfluid autowrapper to convert up to 6.375M USDC over time, ensuring continuous funding availability
 
 ## Verification
