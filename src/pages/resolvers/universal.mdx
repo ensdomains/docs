@@ -5,13 +5,19 @@ import { universalresolver_methods } from '../../data/universal-resolver'
 
 ## Overview
 
-The Universal Resolver is a smart contract that handles the work of resolving a name entirely onchain, making it possible to make a single smart contract call to resolve an ENS name.
+:::note
+Application developers typically don't need to interact with the universal resolver directly. This guide is directed at lower level-library developers.
+:::
 
-This is the recommended way to implement ENS resolution in low-level libraries like [ethers](https://ethers.org/) and [viem](https://viem.sh). Application developers typically don't need to use it directly.
+The Universal Resolver is a smart contract that simplifies the process of resolving ENS names. It's the recommended way to implement ENS resolution in modern libraries.
+
+Adopting the universal resolver will make the transition to [ENSv2](https://ens.domains/ensv2) seamless.
 
 ## Implementation Guide
 
-The universal resolver is the only ENS smart contract that should to be hardcoded into a library for resolution. You can find the [latest deployment addresses here](/learn/deployments).
+The universal resolver is the only ENS smart contract that should to be hardcoded into an application for resolution. You can find the [latest deployment addresses here](/learn/deployments).
+
+This guide assumes that your application already supports [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668).
 
 ### Forward Resolution
 
@@ -72,7 +78,7 @@ const data = encodeFunctionData({
 
 Learn about [standard resolver methods](/resolvers/interfaces) for ABI-encoding that should be added to `simpleResolverAbi` in production.
 
-The response you'll get back from `resolve` will have to be decoded against the multicall ABI, then further decoded against the simple resolver ABI. This results in the ETH address and description text record value. The rest of the logic would look something like this:
+The response you'll get back from `resolve` will have to be decoded against the multicall ABI, then further decoded against the base resolver ABI. This results in the ETH address and value of the description text record. The rest of the logic would look something like this:
 
 ```ts
 import { createPublicClient, decodeFunctionResult, http, toHex } from 'viem'
@@ -166,4 +172,4 @@ const [primaryName] = await client.readContract({
 
 ### CCIP Read Gateways
 
-{/* I need help on this part to explain Batch Gateway Offchain Lookup Protocol */}
+TODO: explain Batch Gateway Offchain Lookup Protocol / [ENSIP-21](/ensip/21/)
