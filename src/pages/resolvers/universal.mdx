@@ -126,26 +126,44 @@ const decodedRes = decodedMulticall.map((res, i) =>
 
 ### Reverse Resolution
 
-To reverse-resolve an address to an ENS name, call one of the `reverse` methods, such as `reverse(bytes reverseName)`.
+To reverse-resolve an address to an ENS name (go from address to name), call the `reverse (bytes lookupAddress, uint256 coinType)` method which returns `(string primary, address resolver, address reverseResolver)`.
 
-The `reverseName` argument for these methods will be the [DNS-encoded](/resolution/names#dns) version of the reverse name. The "reverse name" is `[addr].addr.reverse`, where `[addr]` is the lowercased Ethereum public address without the "0x". Make sure to [normalize](/resolution/names#normalize) the name as well! For example, given the address `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63`:
+The `lookupAddress` argument is the Ethereum address of the account you want to fetch the primary name for. The `coinType` argument defines the chain you'd like to fetch the reverse record from. See [Multichain Addresses](/web/resolution#multichain-addresses) for more information about the `coinType` argument.
 
-1. Construct Reverse Name:
-   ```
-   0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63 ->
-   231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse
-   ```
-2. Normalize:
-   ```
-   231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse ->
-   231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse
-   ```
-3. DNS Encode:
-   ```
-   231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse ->
-   0x28323331623065653134303438653964636364316432343737343464313134613465623565386536330461646472077265766572736500
-   ```
+`reverse` internally checks that the name forward resolves to the address you're looking up, so your implementation doesn't need to do any additional checks and should be quite straightforward. It might look something like this:
 
-## Interface Standards
+```ts
+import { createPublicClient, http, parseAbi } from 'viem'
+import { mainnet } from 'viem/chains'
 
-<InterfaceDetails methods={universalresolver_methods} />
+const address = '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
+
+const universalResolverAbi = parseAbi([
+  'error ResolverNotFound(bytes name)',
+  'error ResolverNotContract(bytes name, address resolver)',
+  'error UnsupportedResolverProfile(bytes4 selector)',
+  'error ResolverError(bytes errorData)',
+  'error ReverseAddressMismatch(string primary, bytes primaryAddress)',
+  'error HttpError(uint16 status, string message)',
+  'function resolve(bytes name, bytes data) view returns (bytes result, address resolver)',
+  'function reverse(bytes lookupAddress, uint256 coinType) view returns (string primary, address resolver, address reverseResolver)',
+])
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+const [primaryName] = await client.readContract({
+  abi: universalResolverAbi,
+  address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+  functionName: 'reverse',
+  args: [address, 60n],
+})
+
+// primaryName = "nick.eth"
+```
+
+### CCIP Read Gateways
+
+{/* I need help on this part to explain Batch Gateway Offchain Lookup Protocol */}
