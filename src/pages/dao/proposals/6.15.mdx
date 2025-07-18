@@ -1,0 +1,161 @@
+---
+authors:
+  - daostrat.eth
+proposal:
+  type: 'social'
+---
+
+# [EP6.15] [Social] Enhancing ENS Governance with Tally’s Enterprise Support
+
+::authors
+
+| **Status**            | Active                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20937/)                                                                            |
+| **Votes**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0xe8c1007204a51baa9ec6a16cdb096fbe18ba2469cb78fe40a3fa36fce7a42827) |
+
+## Abstract
+
+Tally proposes a formal enterprise level service agreement that elevates ENS governance UX, broadens the distribution of ENS primitives across
+all governance users on Tally, and furnishes the DAO with battle-tested uptime, reporting, and support guarantees. This proposal formalises a
+service agreement that ensures the DAO can hold us to explicit uptime and delivery standards.
+
+## Scope of work
+
+### Proposal-lifecycle webhooks
+
+We will ship a fully open-source webhook system that listens directly to Governor events, signs each payload, retries on failure, and delivers notifications to any Slack, Discord, Telegram, or custom endpoint the DAO chooses.
+
+The webhooks will be deeply integrated into Tally’s backend infrastructure (proprietary), but the webhook spec and the onchain proposal events (on-chain publish, quorum reached, execution) are public, and anyone could add them to a community-run webhook system. Via these webhooks, delegates will be able to receive draft-published pings, quorum alerts, 24-hour reminders, execution confirmations, and more, reducing missed votes and improving quorum.
+
+The part that would be harder for a community-run system to duplicate would be reliability. This proposal includes an SLA, monitoring, alerting and the engineering resources to keep the webhooks and the rest of the tally.xyz services running reliably for ENS DAO.
+
+### Deep ENS integrations
+
+1. #### Prioritize Namechain rollout
+
+As soon as Namechain is live on mainnet, Tally will add support for it on tally.xyz. Tally will index, decode, and display governance contracts on the network.
+
+2. #### Indexing offchain ENS names
+
+Tally will extend our resolver pipeline to ingest CCIP-Read & wildcard-enabled sub-name registries (eg \*.cb.id issued by Coinbase) and Farcaster’s \*.fcast.id Fnames, cryptographically verifying gateway signatures before caching in our indexer. Every user, regardless of where their ENS-compatible name is anchored, will see that name reflected on Tally profiles and proposal metadata.
+
+3. #### Action to Update ENS record
+
+Create a low-code proposal builder that lets all DAOs on Ethereum mainnet easily modify text records directly from a proposal. This includes setting resolvers and records (text, address, reverse).
+
+Core governance flows, ENS look-ups, and the waived 0.25% proposal fee all remain free, just as they have for the past 3 years. The paid scope accelerates work that is uniquely heavy for ENS. We could build these eventually, but a formal mandate moves them to the front of the queue _and_ ties them to explicit SLAs the DAO can hold us to.
+
+### Indexing off-chain proposals (new from temp check)
+
+Offchain Snapshot votes will be fetched, ordered canonically alongside executable proposals, and displayed in the same list view. Delegates will no longer need to context-switch or risk overlooking social-signal polls that lead to on-chain execution.
+
+### Enhanced Proposal Transparency (new from temp check)
+
+**Full calldata preview** - The proposal builder will generate and display the complete ABI-encoded calldata for each action so delegates can verify it directly against third-party checkers such as Blockful, without resorting to “click-Publish-then-copy.”
+
+**Import / export of action bundles** - Builders will be able to paste a single ABI-encoded blob or upload a JSON transaction bundle in the Gnosis Safe format; likewise, any proposal drafted on Tally can be exported in either format for external audit or reuse.
+
+**Readable bytes32 fields** - Posted proposals will render bytes32 parameters in clean hexadecimal so reviewers no longer have to decode them offline.
+
+### Enterprise-grade support
+
+ENS will have access to Tally’s in-house engineers directly available to proactively resolve support issues and assist users, even in cases where the issues are not confined exclusively to the Tally platform. In addition, we will be waiving the 0.25% transfer fee on every proposal.
+
+**Support response time guarantees**
+
+- Critical Issues (e.g., service outage, security breach): Initial response within 1 hour, updates every 2 hours until resolved.
+- High-Priority Issues (e.g., significant performance issues, partial system failure): Initial response within 4 hours, updates every 6 hours until resolved.
+- Medium-Priority Issues (e.g., UI/UX bugs, non-critical feature issues): Initial response within 1 business day, resolved within a commercially reasonable timeframe.
+- Low-Priority Issues (e.g., minor bugs, general inquiries): Initial response within 3 business days, resolved within a commercially reasonable timeframe
+
+### KPIs and Success Metrics
+
+#### Ongoing Program KPIs
+
+- 90 % \+ attendance at weekly MetaGov calls by at least one Tally team member
+- Maintain 99.9 % \+ uptime for the ENS Tally client (web \+ API)
+- Support 100 % of on-chain governance proposals with timely frontend updates reflecting user feedback and governance activity
+- Add full support for Namechain on mainnet launch
+
+#### Quarterly KPIs
+
+- Deliver quarterly reports detailing features shipped to the ENS Tally client and their alignment with ENS governance priorities
+- Publish a quarterly feedback and fixes summary documenting bugs, feature requests, and actions taken by the Tally team
+- Report ENS-specific usage metrics within Tally, including delegate discovery traffic, proposal creation frequency, and number of unique ENS-based user sessions
+- Highlight integrations or UI/UX improvements that expand ENS visibility within Tally, such as showcasing ENS names in proposal authorship, delegate profiles, and voting summaries
+
+### SLAs
+
+- Tally usage
+  - We will continue to track the number of proposals and % of votes per proposal made on Tally and report on those to the DAO.
+- Roadmap feature usage
+  - As we roll out new features for the ENS DAO, we will track usage of those features and report on them to the DAO.
+- Monthly office hours
+  - An open feedback session for ENS DAO contributors to suggest new features and contribute to our roadmap
+- Uptime and availability
+  - System Uptime: 99.9% monthly uptime, ensuring the system is accessible with minimal disruptions.
+  - Scheduled Downtime: Maximum of 2% monthly allowance for scheduled maintenance, communicated in advance.
+- Response and resolution time
+  - As per the Enterprise Support Levels section above.
+- Maintenance and support
+  - Bug Resolution: Resolution of non-critical bugs within 5 business days and critical bugs within 1 business day. For bugs that are not possible to resolve in this time frame, a post-mortem analysis to be shared with the DAO following resolution.
+  - Regular Maintenance Updates: Regular monthly maintenance updates, including minor upgrades, patches, and performance improvements.
+- [Public API access](https://apidocs.tally.xyz/)
+  - Tally provides open access to its governance API, allowing developers to query proposal data, vote records, delegate profiles, and DAO metadata. We ensure 99.9% monthly uptime for the API and will notify the DAO of any major updates, deprecations, or downtime.
+  - Feature requests and support for API integrations can be raised during monthly office hours or through direct support channels.
+
+### Costs
+
+| Workstream                                      | Year 1 Cost (USD)                                                 | Recurring (Year 2 onwards)                                       |
+| :---------------------------------------------- | :---------------------------------------------------------------- | :--------------------------------------------------------------- |
+| Proposal lifecycle Webhooks                     | $28,000                                                           |                                                                  |
+| ENS integration (off-chain indexing, Namechain) | $92,000                                                           |                                                                  |
+| Offchain proposal integration                   | $20,000                                                           |                                                                  |
+| Enhanced Proposal Transparency                  | $15,000                                                           |                                                                  |
+| Enterprise Support Levels                       | $60,000                                                           |                                                                  |
+| **Total**                                       | **$215,000**                                                      | **$60,000**                                                      |
+| Payment Split                                   | $175,000 (USD) \+ $40,000 in ENS tokens to be used for governance | $40,000 (USD) \+ $20,000 in ENS tokens to be used for governance |
+
+#### Payment Operations
+
+As clarified by multiple delegates during the Meta-Governance Weekly Calls, Tally will be positioning this as a social proposal instead of an executable one, to request for funds for the above mentioned work scope from the [MetaGov Committee’s budget](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b).
+
+A successful Snapshot vote will task the Meta-Gov stewards with working alongside Tally to define clear, time-bound milestones for Year 1 and to release each payment only after the relevant milestone is met to the DAO’s satisfaction. At the one-year mark the committee will review performance against those milestones and SLAs; it may then renew the agreement at the quoted Year 2 rate, or decline to renew, taking into account both its own assessment and any signal delegates provide.
+
+### No Exclusivity
+
+We want to call out a common point of concern raised by multiple delegates across the temperature check post, as well as on the MetaGov Weekly Calls.
+
+When we say dedicated we mean “formally accountable”, not “sole vendor.” We wholeheartedly agree that governance is more than just creating and voting on proposals, and supporting every end to end engagement is not something a single provider can feasibly, and optimally do today.
+
+To reflect this explicitly, we have amended the title of the proposal from ‘Should the DAO have Tally as a Dedicated Governance Service Provider?’ to ‘**Enhancing ENS Governance with Tally’s Enterprise Support’.**
+
+### Next Steps
+
+If this proposal passes,
+
+1. **Post-approval coordination**
+
+   1. Tally and the Meta-Gov stewards will draft a time-boxed Year 1 milestone plan.
+   2. The plan will be posted on the forum and reviewed in the next weekly Meta-Gov call.
+   3. Delegates may raise questions in the thread at any time; Tally will reply promptly.
+
+2. **Initial disbursement**
+
+   1. Once the milestone plan is ratified, the stewards will release **US$40 000** in stablecoins and **US$20 000 in ENS** (to be retained for on-chain voting) to cover the Year 1 enterprise support budget.
+
+3. **Ongoing reporting and payments**
+
+   1. Subsequent disbursements will be made only after each milestone is completed to the stewards’ satisfaction.
+   2. Tally will provide ongoing progress updates during Meta-Gov Weekly calls.
+
+4. **Year-end review**
+
+   1. As the twelve-month mark approaches, Tally and the stewards will prepare a comprehensive report detailing completed milestones, ongoing builds, and payment status to inform any renewal decision.
+
+### Conclusion
+
+ENS has long been Tally’s most influential partner, anchoring on-chain identity and powering roughly 70% of all onchain votes cast through our platform. This agreement lets us double-down on that partnership \- bringing real-time governance alerts, Namechain continuity, seamless record management, and iron-clad uptime, while the DAO retains full optionality, open code, and clear recourse if we fall short.
+
+We are committed to engaging more consistently with working groups, Meta-Gov calls, and delegate discussions, and we welcome any further suggestions that strengthen ENS governance for the years ahead.
