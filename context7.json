@@ -1,0 +1,6 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Ethereum Name Service (ENS)",
+  "description": "Documentation for the ENS protocol",
+  "folders": ["src/pages"]
+}
