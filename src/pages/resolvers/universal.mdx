@@ -170,6 +170,16 @@ const [primaryName] = await client.readContract({
 // primaryName = "nick.eth"
 ```
 
-### CCIP Read Gateways
+### Batch Gateways
 
-TODO: explain Batch Gateway Offchain Lookup Protocol / [ENSIP-21](/ensip/21/)
+The Universal Resolver utilizes a batch gateway to perform parallel [CCIP-Read](https://eips.ethereum.org/EIPS/eip-3668) requests and mitigate offchain server issues.  [`CCIPBatcher.sol`](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ccipRead/CCIPBatcher.sol) is the recommended batch gateway client implementation.  The protocol and server implementation is defined in [ENSIP-21: Batch Gateway Offchain Lookup Protocol](/ensip/21/) (BGOLP). 
+
+The latest batch gateways can be queried from the Universal Resolver via `batchGateways()` which returns `(string[] gateways)`.
+
+1. **External Batch Gateway** `https://ccip-v3.ens.xyz` is a trustless service operated by ENS which receives batch gateway requests, performs the supplied CCIP Read requests in parallel, bundles up the responses or failures, and replies to the caller.  This service acts like an open proxy.  This mechanism functions in **ALL** clients that support CCIP Read.
+
+2. **Local Batch Gateway** `x-batch-gateway:true` is a [special-purpose URL](/ensip/21/) which notifies ENSIP-21 aware clients that the `OffchainLookup` is a BGOLP request and can be handled locally without using the **External Batch Gateway** service.  The client follows the same process but the requests originate locally without an additional network hop to an external service.  For unaware clients, the URL is ignored by the [Client Lookup Protocol](https://eips.ethereum.org/EIPS/eip-3668#client-lookup-protocol) in EIP-3668.
+
+:::note
+Currently only [viem](https://github.com/wevm/viem/blob/main/src/utils/ens/localBatchGatewayRequest.ts) supports ENSIP-21.
+:::
