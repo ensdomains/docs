@@ -1,0 +1,84 @@
+---
+authors:
+  - slobo.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.17] [Executable] Transfer .locker TLD to Orange Domains LLC
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21077/)                                                                                                                                                                                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/51903780073989583830128732176342966426696684927524697157008519276797273489808), [Tally](https://tally.ensdao.org/dao/proposal/51903780073989583830128732176342966426696684927524697157008519276797273489808) |
+
+## Abstract
+
+Orange Domains LLC is requesting the transfer of ownership of the “locker” Top Level Domain (TLD) in the ENS ecosystem. As the ICANN-accredited registry operator of the .locker TLD and controller of the .locker namespace on the Bitcoin Naming System (BNS), Orange Domains operates a comprehensive Web2-to-Web3 bridge that launched in general availability on October 23rd, 2024.
+
+Our .locker solution enables seamless connection between traditional DNS domain names and Web3 digital identities, with Web2 domains registered through over 50 ICANN-accredited registrars (including GoDaddy and NameCheap) and corresponding Web3 identities minted on Bitcoin’s Stacks L2. Currently supporting Bitcoin, Stacks, Ethereum, and Solana address resolution, we seek ENS integration to provide .locker users with full utility across Ethereum’s vast ecosystem through native ENS resolution and reverse resolution capabilities.
+
+This proposal aligns with ENS’s mission to integrate with existing internet infrastructure while bringing millions of Web2 users into Web3 through trusted, familiar registration channels.
+
+## Proof of Ownership
+
+To demonstrate our legitimate ownership of the .locker TLD and authorization for this transfer request, Orange Domains has set a TXT record on the official .locker DNS infrastructure:
+
+DNS Record: \_ens.nic.locker
+Value: dotlocker.eth
+Verification Command: dig TXT \_ens.nic.locker
+
+This record confirms our control over the .locker DNS namespace and our intention to delegate ENS management to our designated Ethereum address, following the same verification pattern established in previous TLD transfer proposals.
+
+## Specification
+
+### Primary Transfer Action
+
+This proposal transfers ownership of the “locker” TLD to Orange Domains LLC by calling setSubnodeOwner on the ENS Root contract at root.ens.eth, passing keccak256(“locker”) as the label parameter and dotlocker.eth as the owner parameter.
+
+### Technical Implementation Architecture
+
+Multi-Chain Resolution System: Orange Domains will implement a hybrid resolver architecture that coordinates resolution across our existing multi-chain infrastructure (Bitcoin, Stacks, Solana) with new ENS capabilities on Ethereum.
+
+Offchain Resolver with CCIP Read: We will deploy an ENS resolver utilizing EIP-3668 (CCIP Read) to enable gasless resolution while maintaining synchronization with our existing Web2 DNS infrastructure and multi-chain Web3 systems. This approach ensures consistency across all supported blockchain networks.
+
+Gateway Implementation: Our existing resolution infrastructure will be extended with an ENS-compatible gateway that can serve Ethereum addresses, text records, and other ENS-standard data types while coordinating with our Bitcoin/Stacks resolution services.
+
+### Community and Ecosystem Benefits
+
+Web2 User Onboarding: This integration enables millions of users registering .locker domains through familiar Web2 channels (GoDaddy, NameCheap, etc.) to automatically gain ENS functionality, significantly expanding ENS adoption beyond crypto-native users.
+
+Cross-Chain Utility: .locker domains will serve as universal identifiers resolving consistently across Bitcoin, Stacks, Ethereum, and Solana, providing users with unified identity across major blockchain ecosystems.
+
+Infrastructure Alignment: Following ENS’s stated goal that “for ENS to succeed, it must integrate with existing infrastructure,” this proposal bridges traditional DNS registration with ENS functionality through established ICANN processes.
+
+Registrar Network Expansion: Leveraging our relationships with 50+ ICANN-accredited registrars creates new distribution channels for ENS-compatible domains through traditional domain registration workflows.
+
+### Migration and User Experience
+
+Seamless Integration: Existing .locker domain holders will automatically gain ENS resolution capabilities without requiring additional registration or migration steps.
+
+Backward Compatibility: All existing .locker functionality (Bitcoin, Stacks, Solana resolution) will be preserved and enhanced with new Ethereum capabilities.
+
+Subdomain Management: Orange Domains will implement subdomain registration and management that maintains consistency across all supported blockchain networks while providing gasless updates through our offchain infrastructure.
+
+## Governance Alignment
+
+This proposal directly supports ENS’s constitutional principles by:
+
+- Expanding Access: Bringing Web2 users into Web3 through trusted, familiar registration channels
+- Infrastructure Integration: Building bridges between traditional internet infrastructure and decentralized naming
+- Utility Enhancement: Providing cross-chain resolution that increases the practical value of decentralized naming
+- Responsible Stewardship: Leveraging established ICANN accreditation and regulatory compliance to ensure professional namespace management
+
+## Transaction Details
+
+This proposal transfers the ownership of the “locker” TLD to Orange Domains by calling `setSubnodeOwner` on root.ens.eth (0xaB528d626EC275E3faD363fF1393A41F581c5897) with `keccak256("locker")` as the label, and `dotlocker.eth` as the owner.
+
+## Conclusion
+
+Orange Domains’ management of the .locker TLD in ENS represents a significant opportunity to bridge Web2 and Web3 naming infrastructure while maintaining the highest standards of professional registry operation. Our ICANN accreditation, existing multi-chain infrastructure, and extensive registrar partnerships position us to bring unprecedented scale to ENS adoption through traditional domain registration channels.
+
+We respectfully request the ENS community’s support for this proposal, which will enhance utility for millions of potential users while advancing ENS’s mission of universal, decentralized naming.
