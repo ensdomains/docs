@@ -20,7 +20,7 @@ Fortunately, it is super easy to retrieve a user's preferred name, and this page
 In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
 The reverse registrar is a smart contract that allows users to register their preferred name, referred to as their "primary name" for simplicity purposes.
 
-This functionality exists on Ethereum Mainnet today, and is [coming soon to L2s](#l2-primary-names) as well.
+With the introduction of L2 Primary Names, addresses can now set a unique primary name for each chain they operate on. Additionally, users can set a default reverse record on Ethereum Mainnet (L1) that serves as a fallback when no chain-specific primary name is set. This functionality exists on Ethereum Mainnet and is [now available on L2s](#l2-primary-names) as well.
 
 ## Getting a Primary Name
 
@@ -30,7 +30,11 @@ This functionality exists on Ethereum Mainnet today, and is [coming soon to L2s]
 
 Looking up a users primary name is very simple. In most web3 libraries (wagmi, viem, ethers, web3py, etc.), you will find a built-in function to do a lookup by address as shown below. In most cases, the library will handle the verification for you.
 
-Note that all ENS requests are made from Ethereum Mainnet, even if your application is on an L2.
+:::info
+All primary name requests should be made via the [Universal Resolver](https://docs.ens.domains/web/resolution#universal-resolver), which handles both L1 and L2 primary name resolution automatically. Most application developers don't need to worry about this implementation detail because it's already integrated into popular web3 libraries.
+:::
+
+Note that ENS resolution starts from Ethereum Mainnet and can resolve primary names across different chains, including L2-specific primary names.
 
 :::code-group
 
@@ -125,11 +129,11 @@ To do so, you can use the `setName()` function on the [reverse registrar contrac
 
 ## L2 Primary Names
 
-:::warning
-Primary names are currently only supported on Ethereum Mainnet. Soon, primary names are also coming to L2s and are already available on testnets. This will make it possible for users to have an end-to-end experience with ENS on L2.
+:::info
+Primary names are now supported on both Ethereum Mainnet and popular L2s (Base, OP Mainnet, Arbitrum One, Scroll, and Linea). This enables users to have an end-to-end experience with ENS on their preferred L2.
 :::
 
-New contracts will be deployed to popular L2s (starting with Base, OP Mainnet, Arbitrum, Linea, and Scroll) that allow users to declare a name as their primary onchain identity. The contract interface will look something like this (not finalized):
+Contracts have been deployed to popular L2s that allow users to declare a name as their primary onchain identity. The contract interface will look something like this (not finalized):
 
 ```solidity
 /// @notice Sets the `name()` record for the reverse ENS record associated with the calling account.
@@ -182,6 +186,8 @@ function setNameForAddrWithSignature(
 
 This provides multiple ways to set a primary name, usable for EOAs or smart contracts which is a big improvement over the current L1-only implementation.
 
+L2 Primary Names integrate seamlessly with the default EVM address feature in the new public resolver, allowing names to automatically resolve to the correct address across different chains without requiring explicit address records for each chain.
+
 After retrieving a name from L2 reverse resolution, you must verify it by performing a forward resolution for the corresponding cointype on that name to confirm it still resolves to the original address. Let's look at an example:
 
 Say I own gregskril.eth on mainnet. The name resolves to my EOA `0x179A...9285` because I've set the ETH address for that name. I call `setName("gregskril.eth")` on the Base reverse registrar, and I expect that my primary name is now `gregskril.eth` on Base. But that's actually not the case.
@@ -192,9 +198,15 @@ Now that gregskril.eth resolves to `0x179A...9285` when using the Base cointype,
 
 ### L2 Reverse Registrar Deployments
 
-:::note
-The final deployment addresses will be different from the ones below. These are only for testnets.
-:::
+| Chain | Address |
+| ----- | ------- |
+| Base | 0x0000000000D8e504002cC26E3Ec46D81971C1664 |
+| OP Mainnet | 0x0000000000D8e504002cC26E3Ec46D81971C1664 |
+| Arbitrum One | 0x0000000000D8e504002cC26E3Ec46D81971C1664 |
+| Scroll | 0x0000000000D8e504002cC26E3Ec46D81971C1664 |
+| Linea | 0x0000000000D8e504002cC26E3Ec46D81971C1664 |
+
+#### Testnet Deployments
 
 | L2 Testnet Chain | Address                                    |
 | ---------------- | ------------------------------------------ |
