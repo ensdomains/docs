@@ -67,21 +67,42 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMermaid],
   },
-  head: {
+  head({ path }) {
+    const BaseScript = ({ children }: React.PropsWithChildren) => (
+      <>
+        <script
+          defer
+          data-domain="docs.ens"
+          src="https://plausible.io/js/script.outbound-links.tagged-events.js"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        ></script>
+
+        {children}
+      </>
+    )
+
     // TODO: Ideally this should get injected into <header> for semantics via a remark plugin.
     // Overriding styles will look the same and is easier for now.
     // https://vocs.dev/docs/api/config#markdownremarkplugins
-    '/ensip/': (
-      <>
-        <style>{`
+    if (path.includes('/ensip/')) {
+      return (
+        <BaseScript>
+          <style>{`
           .vocs_Header {
             margin-bottom: var(--vocs-space_16) !important;
             padding-bottom: 0 !important;
             border-bottom: none !important;
           }
         `}</style>
-      </>
-    ),
+        </BaseScript>
+      )
+    }
+
+    return <BaseScript />
   },
   sidebar: [
     {
