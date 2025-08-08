@@ -186,7 +186,7 @@ function setNameForAddrWithSignature(
 
 This provides multiple ways to set a primary name, usable for EOAs or smart contracts which is a big improvement over the current L1-only implementation.
 
-L2 Primary Names integrate seamlessly with the default EVM address feature in the new public resolver, allowing names to automatically resolve to the correct address across different chains without requiring explicit address records for each chain.
+L2 Primary Names integrate seamlessly with the default EVM address feature in the [new public resolver](/resolvers/public), allowing names to automatically resolve to the correct address across different chains without requiring explicit address records for each chain.
 
 After retrieving a name from L2 reverse resolution, you must verify it by performing a forward resolution for the corresponding cointype on that name to confirm it still resolves to the original address. Let's look at an example:
 
