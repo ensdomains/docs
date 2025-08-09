@@ -28,7 +28,7 @@ export default function Footer() {
 
             setSelectedResponse('yes')
             ;(window as any).plausible?.('Page Useful', {
-              props: { response: 'Yes' },
+              props: { response: 'yes' },
             })
           }}
         >
@@ -44,7 +44,7 @@ export default function Footer() {
 
             setSelectedResponse('no')
             ;(window as any).plausible?.('Page Useful', {
-              props: { response: 'No' },
+              props: { response: 'no' },
             })
           }}
         >
