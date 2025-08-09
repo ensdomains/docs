@@ -67,28 +67,24 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMermaid],
   },
-  head: (
-    <>
-      {/* Plausible Analytics behind a proxy */}
-      <script
-        defer
-        data-domain="docs.ens"
-        data-api={`${baseUrl}/api/blah/event`}
-        src={`${baseUrl}/api/blah/script`}
-      ></script>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
-        }}
-      ></script>
-
-      <style>{`
-          .vocs_Link {
-            background: red !important;
-          }
-        `}</style>
-    </>
-  ),
+  head() {
+    // Plausible Analytics behind a proxy
+    return (
+      <>
+        <script
+          defer
+          data-domain="docs.ens"
+          data-api="/api/blah/event"
+          src="/api/blah/script"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        ></script>
+      </>
+    )
+  },
   sidebar: [
     {
       text: 'Intro',
