@@ -67,21 +67,23 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMermaid],
   },
-  head: {
-    // TODO: Ideally this should get injected into <header> for semantics via a remark plugin.
-    // Overriding styles will look the same and is easier for now.
-    // https://vocs.dev/docs/api/config#markdownremarkplugins
-    '/ensip/': (
+  head() {
+    // Plausible Analytics behind a proxy
+    return (
       <>
-        <style>{`
-          .vocs_Header {
-            margin-bottom: var(--vocs-space_16) !important;
-            padding-bottom: 0 !important;
-            border-bottom: none !important;
-          }
-        `}</style>
+        <script
+          defer
+          data-domain="docs.ens"
+          data-api="/api/blah/event"
+          src="/api/blah/script"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        ></script>
       </>
-    ),
+    )
   },
   sidebar: [
     {

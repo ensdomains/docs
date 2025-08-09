@@ -18,8 +18,8 @@ const ArrowIcon: FC<ComponentProps<'svg'>> = (properties) => {
 const variantStyles = {
   primary: 'bg-blue text-white hover:bg-blue-bright',
   disabled: 'bg-grey-light text-grey',
-  destructive: 'bg-red text-white hover:bg-red-bright',
-  success: 'bg-green text-white hover:bg-green-bright',
+  destructive: '!bg-red text-white hover:!bg-red-bright',
+  success: '!bg-green text-white hover:!bg-green-bright',
   outline:
     'ring-2 ring-inset ring-grey-active text-grey-active hover:ring-grey hover:text-grey',
 }

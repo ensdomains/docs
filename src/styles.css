@@ -152,3 +152,10 @@ th.vocs_TableHeader > code.vocs_Code {
   color: unset;
   font-size: unset;
 }
+
+/* Remove bottom border on the page header when it's followed by the ENSIP header block */
+.vocs_Content > .vocs_Header:has(+ .ensip-header) {
+  margin-bottom: var(--vocs-space_16) !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+}

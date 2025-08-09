@@ -6,7 +6,7 @@ type Props = {
 
 export function EnsipHeader({ authors, created, status }: Props) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="ensip-header flex flex-col gap-1">
       <p>
         <strong>Authors:</strong> {authors.join(', ')}
       </p>
