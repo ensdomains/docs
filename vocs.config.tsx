@@ -73,8 +73,8 @@ export default defineConfig({
       <script
         defer
         data-domain="docs.ens"
-        data-api="/api/blah/event"
-        src="/api/blah/script"
+        data-api={`${baseUrl}/api/blah/event`}
+        src={`${baseUrl}/api/blah/script`}
       ></script>
       <script
         dangerouslySetInnerHTML={{
