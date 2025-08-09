@@ -69,10 +69,12 @@ export default defineConfig({
   },
   head: (
     <>
+      {/* Plausible Analytics behind a proxy */}
       <script
         defer
         data-domain="docs.ens"
-        src="https://plausible.io/js/script.outbound-links.tagged-events.js"
+        data-api="/api/blah/event"
+        src="/api/blah/script"
       ></script>
       <script
         dangerouslySetInnerHTML={{
