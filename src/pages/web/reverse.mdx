@@ -59,7 +59,15 @@ The key thing to understand is that the forward address _for a given chain_ must
 
 Say I own `nick.eth`. The name resolves to `0x1234...5678` because I've set the ETH address for that name. I call `setName("nick.eth")` on the Base reverse registrar, and I expect that my primary name is now `nick.eth` on Base. But that's actually not the case.
 
-ENS names can resolve to [different addresses on different chains](/web/resolution), and since `nick.eth` in the example above has only specified an Ethereum Mainnet address, the verification process will fail. In order to fix this, I need to set the Base address for `nick.eth` which is on L1 in this case. This is done by calling `setAddr(namehash("nick.eth"), 0x1234...5678)` on the resolver for the name.
+ENS names can resolve to [different addresses on different chains](/web/resolution), and since `nick.eth` in the example above has only specified an Ethereum Mainnet address, the verification process will fail. In order to fix this, I need to set the Base address for `nick.eth` which is on L1 in this case. This is done by calling the following function on the resolver for the name.
+
+```solidity
+setAddr(
+  namehash("nick.eth"), // node (see Name Processing)
+  convertEVMChainIdToCoinType(8453), // coinType (see ENSIP-11)
+  0x1234...5678 // the address to set
+)
+```
 
 Now that `nick.eth` resolves to `0x1234...5678` via the Base cointype, and `name(0x1234...5678)` on the Base reverse registrar returns `nick.eth`, my primary name is fully set.
 
