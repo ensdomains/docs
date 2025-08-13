@@ -2,14 +2,24 @@
 description: To lookup the name of an address we use a reverse resolution. This allows users to indicate a primary name.
 ---
 
+import { EmbedLink } from '../../components/EmbedLink'
 import { EnsProfile } from '../../components/EnsProfile'
+import { QandA } from '../../components/QandA'
 import { Badge } from '../../components/ui/Badge'
 import { Card } from '../../components/ui/Card'
 
 # Primary Names
 
-We can all agree 42-character long machine-optimized addresses (eg. 0x225...c3b5) are not aesthetically pleasing.
-Fortunately, it is super easy to retrieve a user's preferred name, and this page will show you how.
+:::info
+Primary names are now supported on both Ethereum Mainnet and popular L2s (Base, OP Mainnet, Arbitrum One, Scroll, and Linea). This enables users to have an end-to-end experience with ENS on their preferred L2!
+:::
+
+A "primary name" is the result of a bi-directional relationship between an EVM address and a human-readable ENS name. The two directions are:
+
+1. Name -> Address (forward resolution)
+2. Address -> Name (reverse resolution)
+
+The outcome of this relationship makes it safe for applications to display ENS names instead of EVM addresses, leading to a better user experience.
 
 <Card className="flex items-center justify-center gap-2">
   <span className="font-medium">0xb8c...67d5</span>
@@ -17,10 +27,51 @@ Fortunately, it is super easy to retrieve a user's preferred name, and this page
   <EnsProfile name="nick.eth" hideAddress />
 </Card>
 
-In order to convert them to human-readable names, we use [the reverse registrar](/registry/reverse).
-The reverse registrar is a smart contract that allows users to register their preferred name, referred to as their "primary name" for simplicity purposes.
+While forward resolution is configured in [Resolvers](/resolvers/quickstart), reverse records are typically set via smart contracts called Reverse Registrars which you can [read more about below](#setting-primary-names).
 
-This functionality exists on Ethereum Mainnet today, and is [coming soon to L2s](#l2-primary-names) as well.
+## L2 Primary Names
+
+Before we dive into code examples, let's first understand why things work the way they do.
+
+Prior to August 2025, ENS users had to make a transaction on Ethereum Mainnet (L1) to set a primary name. More specifically, they had to set a reverse record on the [Reverse Registrar](/registry/reverse) contract which was only available on L1.
+
+<QandA
+  open
+  question="What is the difference between a reverse record and a primary name?"
+  answer="A reverse record is a mapping from an EVM address to an ENS name, which is only part of a primary name. In order for a primary name to be valid, the name must also forward resolve to the same address on the respective chain."
+/>
+
+Since a majority of user activity is now on L2s, we've added the ability to set a reverse record on the following Ethereum Rollups:
+
+- Arbitrum
+- Base
+- Linea
+- OP Mainnet
+- Scroll
+
+In addition to these chains, we've also added the ability to set a default reverse record on Ethereum Mainnet (L1) that serves as a fallback when no chain-specific primary name is set. This is the simplest way to set a universal primary name for users who have a wallet that supports all EVM chains.
+
+While this may sound simple in theory, it's easy to get tripped on the details in practice. Let's look at an example.
+
+### Understanding the Verification Process
+
+The key thing to understand is that the forward address _for a given chain_ must match the reverse record on the respective chain's reverse registrar.
+
+Say I own `nick.eth`. The name resolves to `0x1234...5678` because I've set the ETH address for that name. I call `setName("nick.eth")` on the Base reverse registrar, and I expect that my primary name is now `nick.eth` on Base. But that's actually not the case.
+
+ENS names can resolve to [different addresses on different chains](/web/resolution), and since `nick.eth` in the example above has only specified an Ethereum Mainnet address, the verification process will fail. In order to fix this, I need to set the Base address for `nick.eth` which is on L1 in this case. This is done by calling the following function on the resolver for the name.
+
+```solidity
+setAddr(
+  namehash("nick.eth"), // node (see Name Processing)
+  convertEVMChainIdToCoinType(8453), // coinType (see ENSIP-11)
+  0x1234...5678 // the address to set
+)
+```
+
+Now that `nick.eth` resolves to `0x1234...5678` via the Base cointype, and `name(0x1234...5678)` on the Base reverse registrar returns `nick.eth`, my primary name is fully set.
+
+An alternative approach, which would be more efficient in this case, is to set the default EVM address for `nick.eth` on the latest [public resolver](/resolvers/public), and the default reverse record to `nick.eth` on the default reverse registrar. This would allow the name to resolve to the correct address on all chains.
 
 ## Getting a Primary Name
 
@@ -30,7 +81,11 @@ This functionality exists on Ethereum Mainnet today, and is [coming soon to L2s]
 
 Looking up a users primary name is very simple. In most web3 libraries (wagmi, viem, ethers, web3py, etc.), you will find a built-in function to do a lookup by address as shown below. In most cases, the library will handle the verification for you.
 
-Note that all ENS requests are made from Ethereum Mainnet, even if your application is on an L2.
+:::warning
+As of August 12, 2025, no library has been updated to support L2 Primary Names. Refer to [this temporary reference implementation](https://github.com/ensdomains/frontend-template/blob/main/src/hooks/usePrimaryName.ts).
+:::
+
+Remember that in all cases, ENS resolution always starts from Ethereum Mainnet.
 
 :::code-group
 
@@ -117,131 +172,22 @@ func main() {
   </div>
 </Card>
 
+:::info
+If you're a library developer looking to implement this functionality, we recommend using the [Universal Resolver](/resolvers/universal). It's a utility contract that greatly simplifies the process of resolving a name.
+:::
+
 ## Setting Primary Names
 
-In some cases you might want to encourage users to set their primary name. This might be in the event you are issuing names, or want people to be part of a community.
+Since primary names require two-way resolution, there are technically two steps to setting it up. Let's say that user `0x1234...5678` wants to set their primary name on Base to `nick.eth`.
 
-To do so, you can use the `setName()` function on the [reverse registrar contract](/learn/deployments).
+First, the user would need to set the Base address for `nick.eth` to `0x1234...5678`. [Read more about multichain addresses](/web/resolution#multi-chain-addresses-btc-ltc-etc) to understand how this works.
 
-## L2 Primary Names
+Next, the user would need to set the reverse record for `0x1234...5678` to `nick.eth` in the Base Reverse Registrar. [Read more about reverse records](/registry/reverse) to understand how this works.
 
-:::warning
-Primary names are currently only supported on Ethereum Mainnet. Soon, primary names are also coming to L2s and are already available on testnets. This will make it possible for users to have an end-to-end experience with ENS on L2.
-:::
+In order to avoid doing this manually for multiple chains, the user can set their default reverse record to `nick.eth` on the default reverse registrar, and their default EVM address to `0x1234...5678` on the latest [public resolver](/resolvers/public).
 
-New contracts will be deployed to popular L2s (starting with Base, OP Mainnet, Arbitrum, Linea, and Scroll) that allow users to declare a name as their primary onchain identity. The contract interface will look something like this (not finalized):
-
-```solidity
-/// @notice Sets the `name()` record for the reverse ENS record associated with the calling account.
-/// @param name The name to set
-/// @return The ENS node hash of the reverse record
-function setName(string memory name) external returns (bytes32);
-
-/// @notice Sets the `name()` record for the reverse ENS record associated with the addr provided account.
-///         Can be used if the addr is a contract that is owned by an SCA.
-/// @param addr The address to set the name for
-/// @param name The name to set
-/// @return The ENS node hash of the reverse record
-function setNameForAddr(
-    address addr,
-    string memory name
-) external returns (bytes32);
-
-/// @notice Sets the `name()` record for the reverse ENS record associated with the contract provided that is owned with `Ownable`.
-/// @param contractAddr The address of the contract to set the name for (implementing Ownable)
-/// @param owner The owner of the contract (via Ownable)
-/// @param name The name to set
-/// @param coinTypes The coin types to set. Must be inclusive of the coin type for the contract
-/// @param signatureExpiry The expiry of the signature
-/// @param signature The signature of an address that will return true on isValidSignature for the owner
-/// @return The ENS node hash of the reverse record
-function setNameForOwnableWithSignature(
-    address contractAddr,
-    address owner,
-    string calldata name,
-    uint256[] memory coinTypes,
-    uint256 signatureExpiry,
-    bytes calldata signature
-) external returns (bytes32);
-
-/// @notice Sets the `name()` record for the reverse ENS record associated with the addr provided account using a signature.
-/// @param addr The address to set the name for
-/// @param name The name of the reverse record
-/// @param coinTypes The coin types to set. Must be inclusive of the coin type for the contract
-/// @param signatureExpiry Date when the signature expires
-/// @param signature The signature from the addr
-/// @return The ENS node hash of the reverse record
-function setNameForAddrWithSignature(
-    address addr,
-    string calldata name,
-    uint256[] calldata coinTypes,
-    uint256 signatureExpiry,
-    bytes calldata signature
-) external returns (bytes32);
-```
-
-This provides multiple ways to set a primary name, usable for EOAs or smart contracts which is a big improvement over the current L1-only implementation.
-
-After retrieving a name from L2 reverse resolution, you must verify it by performing a forward resolution for the corresponding cointype on that name to confirm it still resolves to the original address. Let's look at an example:
-
-Say I own gregskril.eth on mainnet. The name resolves to my EOA `0x179A...9285` because I've set the ETH address for that name. I call `setName("gregskril.eth")` on the Base reverse registrar, and I expect that my primary name is now `gregskril.eth` on Base. But that's actually not the case.
-
-ENS names can resolve to [different addresses on different chains](/web/resolution), and since gregskril.eth in the example above has only specified an ETH address, the verification process will fail. In order to fix this, I need to set the Base address for gregskril.eth which is on L1 in this case. This is done by calling `setAddr(namehash("gregskril.eth"), 0x179A...9285)` on the resolver for the name.
-
-Now that gregskril.eth resolves to `0x179A...9285` when using the Base cointype, and `name(0x179A...9285)` on the Base reverse registrar returns `gregskril.eth`, my primary name is fully set.
-
-### L2 Reverse Registrar Deployments
-
-:::note
-The final deployment addresses will be different from the ones below. These are only for testnets.
-:::
-
-| L2 Testnet Chain | Address                                    |
-| ---------------- | ------------------------------------------ |
-| Base Sepolia     | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
-| OP Sepolia       | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
-| Arbitrum Sepolia | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
-| Scroll Sepolia   | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
-| Linea Sepolia    | 0x00000BeEF055f7934784D6d81b6BC86665630dbA |
-
-{/* Slightly rewritten from https://github.com/ensdomains/ens-contracts/tree/feature/simplify-reverse-resolver/contracts/reverseRegistrar */}
-
-### Setting Records
-
-On these chains, you can set a primary name for the sender in a few ways:
-
-- `setName()` most simply, using the `msg.sender`'s address
-- `setNameForAddr()` for smart contracts that implement the Ownable pattern, where `owner() == msg.sender`
-- `setNameForAddrWithSignature()` for EOAs or smart contracts with an ERC-1271 or ERC-6492 signature to set a reverse record on behalf of a user
-- `setNameForOwnableWithSignature()` which combines the functionality of the previous two functions to set the reverse record on behalf of a smart contract that implements `Ownable`
-
-### Signatures for setting records
-
-The signature format for `setNameForAddrWithSignature` is:
-
-```
-validatorAddress, // 0xAe91c512BC1da8B00cd33dd9D9C734069e6E0fcd for testnets
-functionSignature, // 0x2023a04c
-name, // string name value
-addr, // address to set name for
-coinTypes, // array of coinTypes wanting to be set
-signatureExpiry // expiry of the signature, up to 1 hour in the future
-```
-
-The signature format for `setNameForOwnableWithSignature` is:
-
-```
-validatorAddress, // 0xAe91c512BC1da8B00cd33dd9D9C734069e6E0fcd for testnets
-functionSignature, // 0x975713ad
-name, // string name value
-contractAddr, // contract address to set name for
-owner, // owner address of contract (i.e. the signature being verified)
-coinTypes, // array of coinTypes wanting to be set
-signatureExpiry // expiry of the signature, up to 1 hour in the future
-```
-
-## Do's and Dont's
-
-Under no situation is it recommended to force a user to change their primary name, nor doing so without clearly notifying the user of what the transaction they are about to execute could modify.
-
-Doing so could be seen as hostile or undesired behaviour by end users and might degrade their experience with your app.
+<EmbedLink
+  href="/registry/reverse"
+  title="Reverse Registrars"
+  description="Learn more about the smart contracts that manage reverse records on L1 and L2s."
+/>

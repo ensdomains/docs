@@ -1,40 +1,145 @@
-# Reverse Registrar [Registrar responsible for Primary Names]
+# Reverse Registrars
 
-Reverse resolution in ENS - the process of mapping from an Ethereum address (eg, 0x1234...) to an ENS name - is handled using a special namespace, .addr.reverse. A special-purpose registrar controls this namespace and allocates subdomains to any caller based on their address. The reverse registrar is specified in EIP 181.
+:::info
+Reverse resolution is part of the [primary name](/web/reverse) feature. If you're just trying to fetch a name for an address, you should start there.
+:::
 
-For example, the account `0x314159265dd8dbb310642f98f50c066173c1259b` can claim `314159265dd8dbb310642f98f50c066173c1259b.addr.reverse`.
-After doing so, it can configure a resolver and expose metadata, such as a canonical ENS name for this address.
+Reverse resolution is the process of mapping an EVM address (eg, `0x1234...5678`) to an ENS name on a number of different chains. This is accomplished by using special namespaces in the ENS registry:
+
+| Reverse Namespace  | Name in the ENS registry |
+| ------------------ | ------------------------ |
+| Default (Ethereum) | reverse                  |
+| Ethereum           | addr.reverse             |
+| Arbitrum           | 8000a4b1.reverse         |
+| Base               | 80002105.reverse         |
+| Linea              | 8000e708.reverse         |
+| Optimism           | 8000000a.reverse         |
+| Scroll             | 80082750.reverse         |
+
+L2 namespaces are derived via `[coinTypeAsHex].reverse` as specified in [ENSIP-19](/ensip/19/), and users' reverse records can be resolved via `[address].[reverseNamespace]`.
+
+For example, the account `0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5` can claim `b8c2c29ee19d8307cb7255e1cd9cbde883a267d5.addr.reverse` in the ENS registry. After doing so, it can configure a resolver and expose metadata, such as a canonical ENS name for this address.
 
 The reverse registrar provides functions to `claim` a reverse record,
 as well as a convenience function (`setName`) to configure the record as it's most commonly used, as a way of specifying a canonical name for an address.
 
-## Lookup Primary Name
+## Supported Chains
 
-If you are interested in [querying the primary name for an address](/web/reverse) you can checkout the web section.
+Reverse Registrars are deployed on Ethereum Mainnet (L1) and popular L2s (Base, OP Mainnet, Arbitrum One, Scroll, and Linea). This enables users to set a chain-specific reverse record while also supporting a default reverse record on L1 that acts as a fallback when a chain-specific record is not set.
 
-## Set Primary Name
+In practice, it's strongly recommended to **not** hardcode the reverse registrar addresses because they can change in the future and unexpectedly break your application. Instead, resolve them according to [ENSIP-19](/ensip/19).
+
+For convenience, the latest deployments of the reverse registrars are listed below.
+
+{/* TODO: Add an example of how to do this */}
+
+### Mainnet Deployments
+
+| Chain              | Address                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Default (Ethereum) | [0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9](https://etherscan.io/address/0x283F227c4Bd38ecE252C4Ae7ECE650B0e913f1f9)            |
+| Ethereum           | [0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb](https://etherscan.io/address/0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb)            |
+| Arbitrum One       | [0x0000000000D8e504002cC26E3Ec46D81971C1664](https://arbiscan.io/address/0x0000000000D8e504002cC26E3Ec46D81971C1664)             |
+| Base               | [0x0000000000D8e504002cC26E3Ec46D81971C1664](https://basescan.org/address/0x0000000000D8e504002cC26E3Ec46D81971C1664)            |
+| Linea              | [0x0000000000D8e504002cC26E3Ec46D81971C1664](https://lineascan.build/address/0x0000000000D8e504002cC26E3Ec46D81971C1664)         |
+| Optimism           | [0x0000000000D8e504002cC26E3Ec46D81971C1664](https://optimistic.etherscan.io/address/0x0000000000D8e504002cC26E3Ec46D81971C1664) |
+| Scroll             | [0x0000000000D8e504002cC26E3Ec46D81971C1664](https://scrollscan.com/address/0x0000000000D8e504002cC26E3Ec46D81971C1664)          |
+
+### Testnet Deployments
+
+| L2 Testnet Chain   | Address                                                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Default (Ethereum) | [0x4F382928805ba0e23B30cFB75fC9E848e82DFD47](https://sepolia.etherscan.io/address/0x4F382928805ba0e23B30cFB75fC9E848e82DFD47)                  |
+| Ethereum           | [0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6](https://sepolia.etherscan.io/address/0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6)                  |
+| Arbitrum Sepolia   | [0x00000BeEF055f7934784D6d81b6BC86665630dbA](https://sepolia.arbiscan.io/address/0x00000BeEF055f7934784D6d81b6BC86665630dbA)                   |
+| Base Sepolia       | [0x00000BeEF055f7934784D6d81b6BC86665630dbA](https://sepolia.basescan.org/address/0x00000BeEF055f7934784D6d81b6BC86665630dbA)                  |
+| Linea Sepolia      | [0x00000BeEF055f7934784D6d81b6BC86665630dbA](https://sepolia.lineascan.build/address/0x00000BeEF055f7934784D6d81b6BC86665630dbA)               |
+| Optimism           | [0x00000BeEF055f7934784D6d81b6BC86665630dbA](https://sepolia-optimism.etherscan.io/address/address/0x00000BeEF055f7934784D6d81b6BC86665630dbA) |
+| Scroll Sepolia     | [0x00000BeEF055f7934784D6d81b6BC86665630dbA](https://sepolia.scrollscan.com/address/0x00000BeEF055f7934784D6d81b6BC86665630dbA)                |
+
+## Setting Records
+
+The updated Reverse Registrar interface exposes methods to support that make it easier to set a reverse record for an EOA or smart contract:
 
 ```solidity
-function setName(string memory name) public returns (bytes32)
+/// @notice Sets the `name()` record for the reverse ENS record associated with the calling account.
+/// @param name The name to set
+/// @return The ENS node hash of the reverse record
+function setName(string memory name) external returns (bytes32);
+
+/// @notice Sets the `name()` record for the reverse ENS record associated with the addr provided account.
+///         Can be used if the addr is a contract that is owned by an SCA.
+/// @param addr The address to set the name for
+/// @param name The name to set
+/// @return The ENS node hash of the reverse record
+function setNameForAddr(
+    address addr,
+    string memory name
+) external returns (bytes32);
+
+/// @notice Sets the `name()` record for the reverse ENS record associated with the contract provided that is owned with `Ownable`.
+/// @param contractAddr The address of the contract to set the name for (implementing Ownable)
+/// @param owner The owner of the contract (via Ownable)
+/// @param name The name to set
+/// @param coinTypes The coin types to set. Must be inclusive of the coin type for the contract
+/// @param signatureExpiry The expiry of the signature
+/// @param signature The signature of an address that will return true on isValidSignature for the owner
+/// @return The ENS node hash of the reverse record
+function setNameForOwnableWithSignature(
+    address contractAddr,
+    address owner,
+    string calldata name,
+    uint256[] memory coinTypes,
+    uint256 signatureExpiry,
+    bytes calldata signature
+) external returns (bytes32);
+
+/// @notice Sets the `name()` record for the reverse ENS record associated with the addr provided account using a signature.
+/// @param addr The address to set the name for
+/// @param name The name of the reverse record
+/// @param coinTypes The coin types to set. Must be inclusive of the coin type for the contract
+/// @param signatureExpiry Date when the signature expires
+/// @param signature The signature from the addr
+/// @return The ENS node hash of the reverse record
+function setNameForAddrWithSignature(
+    address addr,
+    string calldata name,
+    uint256[] calldata coinTypes,
+    uint256 signatureExpiry,
+    bytes calldata signature
+) external returns (bytes32);
 ```
 
-Configures the caller's reverse ENS record to point to the provided `name`.
+### Signatures
 
-This convenience function streamlines the process of setting up a reverse record for the common case where a user only wants to configure a reverse name and nothing else. It performs the following steps:
+Signature format for `setNameForAddrWithSignature`:
 
-1. Sets the reverse record for the caller to be owned by the ReverseRegistrar.
-2. Sets the reverse record for the caller to have `defaultResolver` as its resolver.
-3. Sets the `name()` field in the `defaultResolver` for the caller's reverse record to `name`.
+```
+validatorAddress, // the address of the reverse registrar
+functionSignature, // 0x2023a04c
+name, // string name value
+addr, // address to set name for
+coinTypes, // array of coinTypes wanting to be set
+signatureExpiry // expiry of the signature, up to 1 hour in the future
+```
 
-In short, after calling this, a user has a fully configured reverse record claiming the provided name as that account's canonical name.
+Signature format for `setNameForOwnableWithSignature`:
 
-Users wanting more flexibility will need to use `claim` or `claimWithResolver` and configure records manually on their chosen resolver contract.
-
-## Multichain Considerations
-
-The current infrastructure for primary names across multiple chains is being worked on.
+```
+validatorAddress, // the address of the reverse registrar
+functionSignature, // 0x975713ad
+name, // string name value
+contractAddr, // contract address to set name for
+owner, // owner address of contract (i.e. the signature being verified)
+coinTypes, // array of coinTypes wanting to be set
+signatureExpiry // expiry of the signature, up to 1 hour in the future
+```
 
 ## Other Functions
+
+:::info
+The following functions are only available on the ETH Reverse Registrar.
+:::
 
 ### Claim Address
 
@@ -42,7 +147,7 @@ The current infrastructure for primary names across multiple chains is being wor
 function claim(address owner) public returns (bytes32);
 ```
 
-Claims the caller's address in the reverse registrar, assigning ownership of the reverse record to `owner`. Equivalent to calling `claimWithResolver(owner, 0)`.
+Claims the caller's address in the reverse registrar, assigning ownership of the reverse record to `owner`. Equivalent to calling `claimWithResolver(owner, 0)`. Doesn't actually set the reverse record.
 
 ```solidity
 function claimWithResolver(address owner, address resolver) public returns (bytes32)
@@ -58,7 +163,13 @@ After calling this function:
 ### Get Default Resolver
 
 ```solidity
-Resolver public defaultResolver;
+function defaultResolver() public view returns (address);
 ```
 
 Returns the address of the resolver contract that the `ReverseRegistrar` uses for `setName`.
+
+## Do's and Dont's
+
+Under no situation is it recommended to force a user to change their primary name, nor doing so without clearly notifying the user of what the transaction they are about to execute could modify.
+
+Doing so could be seen as hostile or undesired behaviour by end users and might degrade their experience with your app.
