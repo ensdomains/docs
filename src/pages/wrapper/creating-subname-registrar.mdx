@@ -1,14 +1,20 @@
 # Creating a Subname Registrar
 
-In the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do. It's recommended to first read the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section to get an overview of the decisions you'll need to make.
+In the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do.
+
+It's recommended to first read the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section to get an overview of the decisions you'll need to make.
 
 ## Prerequisites
 
-This guide assumes that your parent name (such as `myname.eth`) is already wrapped. If you're not sure whether your name is wrapped, look at the More tab on the Manager app. If the name is unwrapped, it will say so, and it will show you a "Wrap Name" button.
+This guide assumes that your parent name (such as `myname.eth`) is already wrapped. If you're not sure whether your name is wrapped, look at the "More" tab on the Manager app. If the name is unwrapped, it will say so, and it will show you a "Wrap Name" button.
 
 If you want to issue [Emancipated](/wrapper/states#emancipated) subnames, or subnames with [any other fuses](/wrapper/fuses) burned, then your parent name must first be [Locked](/wrapper/states#locked). You can do this on the Permissions tab in the ENS manager app.
 
 :::note
+With ENSv2 on the horizon, we recommend holding off on locking your name; locked names in the Name Wrapper will only be migratable to L1, so if you want to be able to issue trustless subnames on Namechain your best option is to wait until Namechain is live.
+:::
+
+:::warning
 Locking your name (in other words revoking the permission to unwrap) is an **irreversible** change. After you lock the name, you will no longer be able to unwrap it. This is a security guarantee for the holders of all subnames. It ensures that the owner of the parent name cannot get around the security guarantees of the Name Wrapper.
 
 Best to do this on a testnet (Sepolia/Holesky) name first, for development or testing purposes.
