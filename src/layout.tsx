@@ -4,6 +4,8 @@ import { IntercomProvider } from 'react-use-intercom'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 
+import { AskCookbook } from './components/AskCookbook'
+
 const config = createConfig({
   chains: [mainnet],
   transports: {
@@ -21,6 +23,7 @@ export default function Layout({ children }: PropsWithChildren) {
           {children}
         </QueryClientProvider>
       </IntercomProvider>
+      <AskCookbook />
     </WagmiProvider>
   )
 }
