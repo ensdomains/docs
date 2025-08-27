@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 import { IntercomProvider } from 'react-use-intercom'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
+import ChefAI from './components/ChefAI'
 
 const config = createConfig({
   chains: [mainnet],
@@ -21,6 +22,7 @@ export default function Layout({ children }: PropsWithChildren) {
           {children}
         </QueryClientProvider>
       </IntercomProvider>
+      <ChefAI />
     </WagmiProvider>
   )
 }
