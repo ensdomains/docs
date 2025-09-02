@@ -43,9 +43,6 @@ importers:
       react-icons:
         specifier: ^5.4.0
         version: 5.4.0(react@19.1.0)
-      react-use-intercom:
-        specifier: ^5.4.3
-        version: 5.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
@@ -3473,12 +3470,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  react-use-intercom@5.4.3:
-    resolution: {integrity: sha512-evTgJWzBB+0G3lb8PKQlWIRub/VyfaJrNAgSb3HpCq6EQjI12r0F2kriUkE2EWbbj7HSA05SG+weA0Hb+kzq1g==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
@@ -8446,11 +8437,6 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.0.6
-
-  react-use-intercom@5.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
 
   react@19.1.0: {}
 
