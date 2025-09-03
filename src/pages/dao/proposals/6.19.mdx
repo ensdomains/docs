@@ -1,0 +1,141 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.19] [Executable] Adopt The SEAL Safe Harbor Agreement
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21226/)                                                                                                                                                                                                           |
+| **Authors**           | [@samczsun](https://discuss.ens.domains/u/samczsun) (SEAL), [@dickson](https://discuss.ens.domains/u/dickson) (SEAL), [@Alexu](https://discuss.ens.domains/u/alexu) (ENS)                                                                               |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/48262157524430528705514027771464261215955420389394621161356313649894506972547), [Tally](https://tally.ensdao.org/dao/proposal/48262157524430528705514027771464261215955420389394621161356313649894506972547) |
+
+## Introduction
+
+This proposal outlines ENS’s adoption of the SEAL ([Security Alliance](https://www.securityalliance.org/)) Whitehat Safe Harbor Agreement (“Safe Harbor Agreement”). By adopting the Safe Harbor Agreement, ENS improves the security of its on-chain assets by allowing whitehats to intervene during active exploits to save protocol funds.
+
+### What is the Safe Harbor Agreement?
+
+The Safe Harbor Agreement addresses a critical need in crypto: enabling whitehats to intervene during active exploits when the urgency of an attack makes traditional processes too slow to save funds.
+
+The Safe Harbor Agreement was created by SEAL, a nonprofit founded by samczsun, to secure the future of crypto. In addition to the Safe Harbor Agreement, SEAL runs multiple initiatives including SEAL 911 (emergency response hotline for exploits), SEAL Intel (crypto-native threat intelligence sharing), SEAL Frameworks (open source security best practices and playbooks), SEAL Wargames (incident response training), and more in development.
+
+Key aspects of the agreement include:
+
+- **Encouraging Whitehats to Protect the Protocol:** By adopting the Safe Harbor Agreement, ENS incentivizes whitehats to step in and protect the protocol during active exploits by limiting their legal exposure.
+- **Intervention Only During Active Exploits:** Whitehats are authorized to act only when there is an immediate or ongoing exploit that threatens the protocol. This agreement is not intended for routine security testing or bug bounty reporting. It applies only to critical situations where the urgency of the exploit supersedes traditional procedures for responsible disclosure in order to save funds.
+- **Mandatory Return of Rescued Funds:** Under the terms of the Safe Harbor, whitehats are required to return all rescued assets to a pre-designated recovery address controlled by the protocol within 72 hours of recovery to ensure these funds are quickly secured, preventing delay or potential loss.
+- **Clear Guidelines and Legal Protection:** The agreement establishes strict rules for how whitehats must operate during an exploit, ensuring recovery efforts are conducted professionally and safely, minimizing the risk of mistakes or further damage to the protocol. By adhering to these guidelines, whitehats can limit their potential legal exposure, allowing them to act in good faith without fear of liability.
+- **Incentivized Rescue Efforts:** To motivate whitehats to act during critical situations, the agreement offers a bounty system that rewards rescuers with a percentage of the recovered assets, up to a predefined cap, for successful interventions.
+
+Safe Harbor has already been adopted by leading protocols such as Uniswap, Zksync, Pendle, Pancakeswap, and Balancer, establishing it as a trusted industry standard for empowering whitehats during active exploits.
+
+## Rationale
+
+ENS is committed to enhancing its security and protecting user funds during critical moments. While security audits and other preventive measures are crucial, the unpredictable nature of active exploits requires a swift, decisive response mechanism to minimize potential damage.
+
+Benefits of adopting the Safe Harbor Agreement include:
+
+- **Agile Defense Against Exploits:** Whitehats are authorized to intervene as soon as an active exploit is detected, enabling them to respond faster than traditional methods. Immediate action minimizes the window for malicious actors, reduces damages, and accelerates the recovery of assets during critical moments.
+- **Clarified Rescue Process:** The agreement ensures that every step, from intervention to fund recovery, is predetermined and streamlined. Whitehats know exactly where to send recovered funds, preventing chaotic negotiations or rushed decisions during an exploit. This clarity ensures efficient, decisive action when it matters most.
+- **Clear Financial Boundaries:** The predefined bounty system, with a cap matching ENS’s existing bug bounty, ensures that whitehats are incentivized fairly without creating conflicting priorities between exploit intervention and standard vulnerability disclosure. By setting expectations upfront, it eliminates post-exploit negotiations, ensuring funds are returned promptly without attempts to change the reward amount, keeping the process fair and transparent.
+- **Aligning with Industry Best Practices:** By adopting the Safe Harbor Agreement, ENS aligns itself with leading security practices across the industry, reinforcing its commitment to staying at the forefront of protocol security.
+
+Adoption of the agreement complements audits by providing an additional layer of security, ensuring that the protocol is better prepared to respond to active threats.
+
+## Adoption Details
+
+### Bounty Terms
+
+_Predetermined rewards for successful whitehats that recover protocol funds. For more information review the_ [_Safe Harbor Scope_](https://frameworks.securityalliance.org/safe-harbor/scope-terms.html) _document._
+
+- **Percentage:** 10%
+- **Cap (USD):** $250,000
+- **Aggregate Cap (USD):** $250,000
+- **Retainable:** False
+  - This means that whitehats cannot retain their bounty directly from the recovered assets. Instead, all rescued funds must be returned to the protocol’s designated asset recovery address, and the bounty will be paid out separately after verification.
+- **Identity:** Named
+  - Whitehats must provide their full legal name. This requirement ensures compliance with legal obligations and is similar to the identity verification standards seen in traditional bug bounty programs.
+- **Diligence Requirements:** KYC and OFAC Screening
+  - ENS requires all eligible whitehats to undergo Know Your Customer (KYC) verification and be screened against the Office of Foreign Assets Control (OFAC) sanctions lists. This process ensures that all bounty recipients are compliant with legal and regulatory standards before qualifying for payment.
+
+### Contact Details
+
+_Designated security contacts for the protocol who whitehats will contact following a safe harbor recovery_
+
+| Name              | Contact          |
+| ----------------- | ---------------- |
+| Alexander Urbelis | alex@ens.domains |
+
+### Chains & Asset Recovery Addresses
+
+_Addresses controlled by the protocol which recovered protocol funds will be returned to by the whitehat_
+
+| Chain         | Asset Recovery Address                     |
+| ------------- | ------------------------------------------ |
+| ETH - Mainnet | 0x91c32893216dE3eA0a55ABb9851f581d4503d39b |
+
+### Accounts
+
+_List of all on-chain assets owned by the protocol protected under Safe Harbor_
+
+| Chain       | Name                                         | Address                                    | Child Contract Scope |
+| ----------- | -------------------------------------------- | ------------------------------------------ | -------------------- |
+| ETH Mainnet | ENS DAO Wallet                               | 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 | All                  |
+| ETH Mainnet | ENS Gnosis Safe                              | 0xCF60916b6CB4753f58533808fA610FcbD4098Ec0 | All                  |
+| ETH Mainnet | ENS Multisig                                 | 0x911143d946bA5d467BfC476491fdb235fEf4D667 | All                  |
+| ETH Mainnet | ENS EnDAOment                                | 0x4F2083f5fBede34C2714aFfb3105539775f7FE64 | All                  |
+| ETH Mainnet | ENS Token                                    | 0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72 | All                  |
+| ETH Mainnet | ENS DAO Multisig, Eco Main                   | 0x2686A8919Df194aA7673244549E68D42C1685d03 | All                  |
+| ETH Mainnet | ENS DAO Multisig, Eco IRL                    | 0x536013c57DAF01D78e8a70cAd1B1abAda9411819 | All                  |
+| ETH Mainnet | ENS DAO Multisig, Hackathons                 | 0x9B9c249Be04dd433c7e8FbBF5E61E6741b89966D | All                  |
+| ETH Mainnet | ENS DAO Multisig,Newsletters                 | 0x13aEe52C1C688d3554a15556c5353cb0c3696ea2 | All                  |
+| ETH Mainnet | ENS DAO Multisig,Metagov Main                | 0x91c32893216dE3eA0a55ABb9851f581d4503d39b | All                  |
+| ETH Mainnet | ENS DAO Multisig, Metgov Stream              | 0xB162Bf7A7fD64eF32b787719335d06B2780e31D1 | All                  |
+| ETH Mainnet | ENS DAO Multisig,Public Goods Main           | 0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d | All                  |
+| ETH Mainet  | ENS DAO Multisig, Public Goods, Large Grants | 0xebA76C907F02BA13064EDAD7876Fe51D9d856F62 | All                  |
+| ETH Mainnet | ETHRegistrarController 1                     | 0xF0AD5cAd05e10572EfcEB849f6Ff0c68f9700455 | All                  |
+| ETH Mainnet | ETHRegistrarController 2                     | 0xB22c1C159d12461EA124b0deb4b5b93020E6Ad16 | All                  |
+| ETH Mainnet | ETHRegistrarController 3                     | 0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5 | All                  |
+| ETH Mainnet | ETHRegistrarController 4                     | 0x253553366Da8546fC250F225fe3d25d0C782303b | All                  |
+
+- _“All”: The Safe Harbor Agreement will cover the contract, along with all current and future subcontracts deployed by that address._
+- _Note: All Ethereum Name Service Domains (i.e., .eth domains) are under scope to be rescued and returned to the Asset Recovery Address. Their value will be based on: Each rescued .eth name is valued as_ `alpha * base_rate(length) * min(remaining_years, year_cap)` _USD, where_ `base_rate(length)` _is ENS’s base rate by length (3-char=$640/yr, 4-char=$160/yr, 5+=$5/yr),_ `remaining_years` _is the paid registration time left at the rescue timestamp,_ `alpha` _is the haircut factor and is set at 0.50, and_ `year_cap`_=5 yrs. Names with_ `remaining_years`_=0 (_`expired`_/_`grace`_/_`premium`_) are valued at $0. Wrapped names follow the valuation of their underlying .eth._
+
+## Implementation Plan
+
+1. **Register Agreement On-Chain**:
+   - The agreement will be registered on Ethereum in the Safe Harbor Registry at address `0x1eaCD100B0546E433fbf4d773109cAD482c34686`, including all adoptionDetails. This ensures transparency and immutability.
+2. **Communicate Adoption**:
+   - An official announcement will be made across all ENS communication channels, explaining the adoption and its significance to the community.
+3. **Future Updates to Scope:**
+   - New versions of ENS will be reviewed and added to the Safe Harbor Agreement scope via ENS Governance vote, ensuring continued protection for all new contracts and functionalities.
+
+## Transaction Information
+
+Target: Safe Harbor Registry V2
+Address: `0x1eacd100b0546e433fbf4d773109cad482c34686`
+Function: adoptSafeHarbor
+
+Parameter:
+
+address agreementAddress: `0x3303a9a3eb71836c0e88e8ab4eaf0d478e29e04c`
+
+Encoded Calldata: `0x344fbd200000000000000000000000003303a9a3eb71836c0e88e8ab4eaf0d478e29e04c`
+
+## Conclusion
+
+Adopting the SEAL Whitehat Safe Harbor Agreement equips ENS with a rapid response mechanism for active exploits, enabling whitehats to step in effectively when needed most. The agreement provides clear guidelines for action, increasing the protection of user funds and demonstrating ENS's commitment to proactive security.
+
+**Note**: This proposal does **not** request any funds from the DAO treasury and does **not** involve any budget allocation. It solely seeks governance approval for ENS to adopt the SEAL Whitehat Safe Harbor Agreement.
+
+## References
+
+- **SEAL Whitehat Safe Harbor Agreement Documentation:** [Framework](https://frameworks.securityalliance.org/safe-harbor/index.html)
+- **SEAL Whitehat Safe Harbor Agreement Legal Agreement:** [Link](https://github.com/security-alliance/safe-harbor/blob/main/documents/agreement.pdf)
+- **ENS Bug Bounty**: [Bug Bounty](https://immunefi.com/bug-bounty/ens/information/)
