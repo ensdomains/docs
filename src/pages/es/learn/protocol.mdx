@@ -1,0 +1,79 @@
+---
+description: Aprende sobre el protocolo Ethereum Name Service (ENS) y cómo habilita el nombrado descentralizado en la blockchain de Ethereum.
+---
+
+import { DNSGrid } from '../../../components/DNSGrid'
+import { EmbedLink } from '../../../components/EmbedLink'
+import { EnsProfile } from '../../../components/EnsProfile'
+import { Card } from '../../../components/ui/Card'
+
+# ¿Qué es el Ethereum Name Service?
+
+El Ethereum Name Service (ENS) es un sistema de nombres distribuido, abierto y extensible basado en la blockchain de Ethereum.
+
+<Card className="flex flex-col items-center justify-center gap-2 sm:flex-row">
+  <EnsProfile name="nick.eth" />
+  <EnsProfile name="jefflau.eth" />
+</Card>
+
+ENS mapea nombres legibles por humanos como 'alice.eth' a identificadores legibles por máquina como direcciones de Ethereum, otras direcciones de criptomonedas, hashes de contenido, metadatos, y más.
+ENS también soporta 'resolución inversa', haciendo posible asociar metadatos como nombres primarios o descripciones de interfaz con direcciones de Ethereum.
+
+Los Dominios de Primer Nivel (TLDs), como `.eth` y `.test`, son propiedad de contratos inteligentes llamados [registradores](/es/registry/eth), que especifican reglas que gobiernan la asignación de sus nombres.
+Habilitando interoperabilidad perfecta con el DNS (Sistema de Nombres de Dominio).
+
+## Registrador ETH
+
+El [Registrador ETH](/es/registry/eth) es el registrador para el TLD `.eth`, permite que se emitan nombres descentralizados sin confianza como tokens en la Blockchain de Ethereum.
+El registro se hace a través de contratos inteligentes, y la propiedad del nombre está asegurada por la blockchain de Ethereum.
+
+## DNS + ENS
+
+ENS tiene objetivos similares al DNS, el Servicio de Nombres de Dominio existente de Internet, y tiene como objetivo extender su capacidad.
+ENS también soporta importar nombres DNS a través del uso de DNSSEC.
+Permitiéndote llevar tu `.com`, `.xyz`, o `.art` (y más) al ecosistema ENS. Lee más sobre nombres DNSSEC [en esta página](/es/learn/dns).
+
+<DNSGrid />
+
+## Subnombres
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    {['root', 'registrar', 'controller', 'resolver', 'registry'].map(
+      (subname, i) => (
+        <div
+          className={
+            ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+          }
+          key={subname}
+        >
+          {subname}
+        </div>
+      )
+    )}
+  </div>
+  <div className="text-blue font-bold">.ens.eth</div>
+</Card>
+
+Debido a la naturaleza jerárquica de ENS, cualquiera que posea un dominio en cualquier nivel puede tomar control de la resolución.
+Los usuarios pueden crear subdominios manualmente, o tomar las cosas en sus propias manos y escribir su propia lógica de resolución.
+
+Por ejemplo, si Alice posee 'alice.eth', puede crear 'pay.alice.eth' y configurarlo como desee.
+O, usar un [Resolver Personalizado](/es/resolvers/quickstart), y emitir subdominios programáticamente, por ejemplo en una App, Comunidad, o DAO.
+
+<EmbedLink
+  href="/es/web/subdomains"
+  title="Emisión de Subdominios"
+  description="Aprende cómo emitir subdominios en ENS."
+/>
+
+## Aplicación ENS Manager
+
+Puedes probar ENS por ti mismo ahora usando la [Aplicación ENS Manager](https://ens.app/), o usando cualquiera de las muchas aplicaciones habilitadas para ENS en [nuestra página de inicio](https://ens.domains/).
+
+<EmbedLink
+  href="https://ens.app"
+  target="_blank"
+  title="Aplicación ENS Manager"
+  description="La Aplicación ENS Manager es una interfaz basada en web para gestionar nombres ENS."
+/>

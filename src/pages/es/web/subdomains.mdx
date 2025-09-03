@@ -1,0 +1,69 @@
+---
+description: Emite subdominios a tus usuarios, a ti mismo, o a tus amigos. Programa tu propio resolver, o usa uno de los muchos existentes.
+---
+
+import { EmbedLink } from '../../../components/EmbedLink'
+import { Card } from '../../../components/ui/Card'
+
+# Subdominios
+
+Creemos que en cualquier lugar donde se use una dirección, un nombre debería poder usarse en su lugar.
+Los contratos inteligentes con los que interactúas tienen nombres, la dirección de depósito para tu exchange favorito tiene un nombre, tu DAO favorito tiene un nombre, o tal vez usas subnombres para mantener tus wallets organizadas.
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    {['root', 'registrar', 'controller', 'resolver', 'registry'].map(
+      (subname, i) => (
+        <div
+          className={
+            ['opacity-20', 'opacity-50', '', 'opacity-50', 'opacity-20'][i]
+          }
+          key={subname}
+        >
+          {subname}
+        </div>
+      )
+    )}
+  </div>
+  <div className="text-blue font-bold">.ens.eth</div>
+</Card>
+
+Afortunadamente, el Protocolo ENS tiene mucho que ofrecer para que juegues. Hay una variedad de formas en las que puedes dar subdominios a los usuarios de tus aplicaciones, configurarlos para ti mismo, o más.
+
+Si estás interesado en nombrar contratos inteligentes específicamente, revisa la página [Nombrar Contratos Inteligentes](/es/web/naming-contracts).
+
+## Diferentes Tipos de Subnombres
+
+Los subnombres ENS vienen en una variedad de formas: L1, L2, y fuera de la cadena. Desde una perspectiva técnica, los subnombres L2 y fuera de la cadena son bastante similares, pero hay algunas compensaciones a considerar al elegir cuál usar.
+
+### Subnombres L1
+
+Si posees un nombre .eth como nick.eth y vas a crear un subnombre en [la aplicación de gestión](https://app.ens.domains/nick.eth?tab=subnames), estarás creando un subnombre en Ethereum Mainnet (L1) por defecto. Esta es la forma más simple de crear un subnombre con la menor cantidad de piezas móviles, pero en última instancia estás limitado por las tarifas de gas de Ethereum Mainnet.
+
+Si te gustaría emitir subnombres L1 a tus usuarios, lee nuestra guía sobre [crear un registrador de subnombres en la cadena](/es/wrapper/creating-subname-registrar).
+
+<EmbedLink
+  title="Creando un Registrador de Subnombres en la Cadena"
+  href="/es/wrapper/creating-subname-registrar"
+  description="Emite NFTs que representen subdominios en Ethereum Mainnet."
+/>
+
+### Subnombres L2
+
+Los desarrolladores pueden conectar un nombre ENS en L1 con sus propios contratos inteligentes en cualquier red L2, y [dependiendo de la implementación](/es/learn/ccip-read), esto podría ser completamente sin confianza mientras reduce significativamente el costo de emitir subnombres.
+
+[Durin](https://durin.dev/) es un enfoque con opinión para emitir subnombres ENS en L2. Se encarga de las partes L1 Resolver y puerta de enlace fuera de la cadena de la [pila CCIP Read](/es/resolvers/ccip-read) por ti, para que puedas enfocarte en la lógica de negocio de tus contratos inteligentes L2.
+
+<EmbedLink
+  title="Durin"
+  href="https://durin.dev/"
+  description="Un enfoque con opinión para emitir subnombres ENS en L2."
+/>
+
+### Subnombres Fuera de la Cadena
+
+Los subnombres fuera de la cadena son exactamente lo que suenan - subnombres que viven en una base de datos centralizada en servidores privados, también impulsados por [CCIP Read](/es/resolvers/ccip-read). Si tu objetivo es nombrar una gran cantidad de direcciones EVM rápida y baratamente, con una barrera baja de entrada, los subnombres fuera de la cadena podrían ser para ti. A menudo, gestionar nombres fuera de la cadena es tan simple como interactuar con una API REST.
+
+Desde la perspectiva del usuario, los subnombres fuera de la cadena son apenas diferentes a los subnombres en la cadena. No aparecerán en aplicaciones de wallet como NFTs como los dos enfoques anteriores, pero pueden resolver todos los mismos datos (direcciones, registros de texto, etc).
+
+Hay múltiples proveedores de API que ofrecen acceso programático a subnombres fuera de la cadena como [NameStone](https://namestone.com/) y [Namespace](https://namespace.ninja/), junto con ejemplos de código abierto como [gskril/ens-offchain-registrar](https://github.com/gskril/ens-offchain-registrar).

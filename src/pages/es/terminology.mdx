@@ -1,0 +1,160 @@
+---
+description: Una visión técnica general de toda la terminología utilizada en la documentación de ENS.
+---
+
+import { EmbedLink } from '../../components/EmbedLink'
+
+# Terminología
+
+Esta página contiene un glosario de términos utilizados en la documentación de ENS.
+
+## Nombre
+
+Un identificador ENS como 'alice.eth'. Los nombres pueden consistir en múltiples partes, llamadas etiquetas, separadas por puntos. Esto también incluye nombres DNS como `name.xyz`, o subnombres como `sub.name.eth`.
+
+## 2LD
+
+Dominio de segundo nivel.
+Esto se refiere a un subnombre/subdominio de un dominio de primer nivel.
+Por ejemplo, `name.eth` y `name.com` son ambos nombres de segundo nivel.
+Un subnombre de un 2LD es un dominio de tercer nivel o 3LD.
+
+## Subnombre / Subdominio
+
+Un nombre hijo como `sub.name.eth`, cuyo padre es `name.eth`. También se conoce como "subdominio". Cada nombre (excepto el nodo raíz) tiene un padre. Por ejemplo, `name.eth` es un subnombre de `eth`.
+
+```
+vault.luc.eth
+```
+
+## TLD
+
+Dominio de primer nivel. Esto se refiere a nombres como `eth`, `com`, `xyz` que se encuentran en la "cima" de la jerarquía de nombres.
+
+```
+.eth .com .xyz
+```
+
+## Controlador
+
+La cuenta que puede editar los registros de un nombre. El Controlador puede ser cambiado por el Registrante o Controlador.
+
+## Etiqueta
+
+Un componente individual de un nombre, como 'alice'.
+
+## Labelhash
+
+El hash keccak256 de una etiqueta individual.
+
+## Namehash
+
+El algoritmo utilizado para procesar un nombre ENS y devolver un hash criptográfico que identifica únicamente ese nombre. Namehash toma un nombre como entrada y produce un _nodo_.
+
+## Nodo
+
+Un hash criptográfico que identifica únicamente un nombre.
+
+## Propietario
+
+El propietario de un nombre es la entidad referenciada en el campo propietario del registro ENS. Un propietario puede transferir la propiedad, establecer un resolver o TTL, y crear o reasignar subdominios.
+
+## Registro
+
+Una pieza de información a la que un nombre ENS "resuelve" (apunta). El registro más común es el registro de Dirección ETH, que determina a qué dirección ETH 0x apunta un nombre ENS.
+
+## Registro
+
+Un registro es el registro de un registrador de la propiedad de un usuario de un nombre. Esto es distinto del campo propietario en el Registro; los registros se mantienen en el contrato registrador y además almacenan información sobre fecha de expiración, tarifas pagadas, etc.
+
+### Registrador
+
+Un registrador es un contrato responsable de asignar subdominios. Los registradores pueden configurarse en cualquier nivel de ENS, y son apuntados por el campo propietario del registro.
+
+### Registrante
+
+El propietario de un registro. El registrante puede transferir el registro, establecer el Controlador, y reclamar la propiedad del nombre en el registro si es necesario.
+
+### Registro
+
+El contrato central de ENS, el registro mantiene un mapeo desde el nombre de dominio (en cualquier nivel - x, y.x, z.y.x etc) a propietario, resolver, y tiempo de vida. Todas las búsquedas comienzan con el Registro.
+
+### Expiración
+
+La fecha y hora en la que expira un nombre ENS.
+Las implicaciones de la expiración dependen del tipo de nombre que sea.
+Cuando un 2LD .eth expira (y su período de gracia transcurre), entonces pierdes la propiedad del nombre.
+Cuando un subnombre envuelto expira, puedes o no perder la propiedad, dependiendo de si el nombre fue emancipado.
+
+### Período de Gracia
+
+Esta es una ventana corta de tiempo después de que un nombre ENS .eth expire, en la que el propietario aún puede renovar y retener el nombre. Actualmente esta ventana es de 90 días.
+
+### TTL
+
+Significa "Tiempo de Vida". Este es un campo en el registro central que puede establecerse junto con el resolver. Puede usarse como una pista para que los clientes decidan cuánto tiempo cachear los datos resueltos.
+
+## DNS
+
+Este es el Servicio de Nombres de Dominio utilizado por internet para resolver direcciones y otros registros desde nombres legibles por humanos. ENS tiene como objetivo ser completamente complementario y compatible con DNS, y soporta la importación fácil de nombres DNS a través de un [DNSSEC](#dnssec) registrador especial.
+
+### DNSSEC
+
+Significa Extensiones de Seguridad del Sistema de Nombres de Dominio. Cuando un TLD DNS particular soporta DNSSEC, entonces los propietarios de nombres pueden firmar criptográficamente registros. Esto permite a ENS soportar la importación fácil de nombres DNS al registro ENS, ya que el propietario del nombre DNS puede probar la propiedad con esos registros firmados.
+
+## Resolver
+
+Un resolver es un contrato que mapea desde nombre al recurso (ej., direcciones de criptomonedas, hash de contenido, etc). Los resolvers son apuntados por el campo resolver del registro.
+
+### Resolver Wildcard
+
+Esto se refiere a un resolver que soporta [ENSIP-10](/ensip/10). Este esquema permite a los clientes resolver datos para subnombres que no tienen un resolver propio, o subnombres que pueden no existir en la cadena en absoluto. Para nombres fuera de la cadena, esto típicamente se usa en conjunto con [CCIP Read](#ccip-read).
+
+## Resolver Público
+
+Este es un contrato resolver estándar implementado por ENS Labs. Soporta todos los tipos de registro y cualquiera puede usarlo. Este es el resolver por defecto usado cuando se registra un nuevo nombre a través de la aplicación oficial de gestión.
+
+## Fuera de la Cadena
+
+Este término típicamente se usa con respecto a la blockchain Ethereum Mainnet. Si los datos no se publican en la cadena a través de una transacción real de Ethereum Mainnet, entonces están "fuera de la cadena". Los nombres ENS también pueden estar fuera de la cadena. Por ejemplo, los nombres pueden usar un resolver especial para resolver registros para subnombres que no existen en la cadena en el Registro. Esto también típicamente se hace con [CCIP Read](#ccip-read).
+
+### CCIP Read
+
+La especificación "Cross Chain Interoperability Protocol Read", también conocida como [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668), autorizada por Nick Johnson, es una especificación que permite la recuperación de datos fuera de la cadena segura y sin confianza.
+
+Permite que una llamada Ethereum se diferencie a una [puerta de enlace fuera de la cadena](/es/resolvers/ccip-read#writing-a-gateway) y luego verifique de forma segura los datos resultantes en la cadena.
+Con respecto a ENS, esto típicamente se usa para subnombres fuera de la cadena que no existen en el Registro central.
+
+<EmbedLink
+  title="Resolución Fuera de la Cadena"
+  href="/es/learn/ccip-read#offchain-resolution"
+  description="Lee más sobre resolución fuera de la cadena y CCIP Read aquí"
+/>
+
+## Nombre Primario
+
+El nombre ENS que quieres que una cuenta ETH particular esté asociada. Cuando se establece, se mostrará en lugar de tu dirección 0x en sitios web/aplicaciones integradas. Esto también se conoce a menudo como el "registro inverso".
+
+### Nodo Inverso
+
+Un nodo en el Registro que puede ser reclamado para cualquier cuenta Ethereum. El nombre que este nodo representa es `[addr].addr.reverse`, donde `[addr]` es la dirección pública de Ethereum (minúscula, sin el "0x"). Estos nodos inversos típicamente se usan para establecer un [Nombre Primario](#primary-name) para una cuenta.
+
+### Registro Inverso
+
+Usualmente, esto se refiere al [Nombre Primario](#primary-name). Técnicamente hablando, un [Nodo Inverso](#reverse-node) puede tener múltiples registros establecidos en él, igual que cualquier nodo.
+
+## NameWrapper
+
+### Nombre Envuelto
+
+El [ENS Name Wrapper](/es/wrapper/overview) es un contrato para ENS que te permite "envolver" cualquier nombre ENS en un NFT ERC-1155. Esto incluye no solo 2LDs .eth como `name.eth`, sino también nombres DNS como `name.xyz`, o subnombres como `sub.name.eth`.
+
+### Fusible
+
+El término técnico para un bit de "permiso" específico para un nombre envuelto. Como el nombre implica, una vez que ese bit se activa, el fusible se quema y no puede ser desquemado (a menos que el nombre expire).
+
+## Subgrafo
+
+Una colección indexada de datos usando el protocolo TheGraph.
+En este portal de documentación, "el subgrafo" usualmente se refiere al subgrafo ENS oficial mantenido por ENS Labs.
+Este es un servicio fuera de la cadena útil que permite a los clientes consultar información sobre nombres o cuentas.

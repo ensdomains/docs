@@ -1,0 +1,226 @@
+import { EmbedLink } from '../../../components/EmbedLink'
+import { EnsProfile } from '../../../components/EnsProfile'
+import { Card } from '../../../components/ui/Card'
+
+# Búsqueda de Direcciones [Aprende cómo resolver direcciones blockchain desde nombres legibles por humanos con ENS.]
+
+El Protocolo ENS tiene como objetivo hacer fácil el uso de Ethereum.
+Lo hace proporcionando una forma simple de usar nombres legibles por humanos en lugar de direcciones largas legibles por máquina.
+
+## Obteniendo la Dirección Ethereum del Usuario
+
+El objetivo aquí es tomar un nombre, como `nick.eth`, y convertirlo a una dirección, como `0x225f137127d9067788314bc7fcc1f36746a3c3B5`.
+
+<Card className="flex justify-center">
+  <EnsProfile name="nick.eth" />
+</Card>
+
+Lo más simple que puedes hacer es comenzar con un nombre, y resolverlo a una dirección.
+Llamamos a esto una "búsqueda hacia adelante".
+Piensa en lugares donde los usuarios pueden ingresar nombres, como enviar transacciones, chatear, etc.
+
+Ten en cuenta que todas las cadenas separadas por puntos deben tratarse como nombres ENS potenciales, ya que ENS soporta [muchos TLDs](/es/dns/tlds). Un error común es tratar solo las cadenas que terminan en `.eth` como nombres ENS.
+
+:::code-group
+
+```tsx [Wagmi]
+import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
+
+export const Name = () => {
+  const { data: ensName } = useEnsAddress({
+    address: 'luc.eth', // El nombre a buscar
+    chainId: 1, // La cadena en la que comenzar la resolución (Ethereum Mainnet o una testnet)
+  })
+
+  return <div>{ensName || address}</div>
+}
+```
+
+```ts [Ethers.js]
+const address = await provider.lookupAddress('luc.eth')
+```
+
+```ts [Viem]
+import { normalize } from 'viem/ens'
+
+import { publicClient } from './client'
+
+const ensAddress = await publicClient.getEnsAddress({
+  name: normalize('luc.eth'),
+})
+```
+
+```py [web3.py]
+from ens.auto import ns
+
+address = ns.address('alice.eth')
+```
+
+```rust [ethers-rs]
+let provider = Provider::<Http>::try_from("https://mainnet.infura.io/v3/...")?;
+
+let address = provider.lookup_address("luc.eth").await?;
+```
+
+```go [go-ens]
+package main
+
+import (
+	"fmt"
+
+	"github.com/ethereum/go-ethereum/ethclient"
+	ens "github.com/wealdtech/go-ens/v3"
+)
+
+func main() {
+	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
+
+	domain, _ := ens.Normalize("luc.eth")
+	resolver, _ := ens.NewResolver(client, domain)
+	address, _ := resolver.Address()
+
+	fmt.Println("Address:", address.Hex())
+}
+```
+
+```ts [ensjs]
+import { createEnsPublicClient } from '@ensdomains/ensjs'
+import { http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createEnsPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+const subgraphRecords = client.getSubgraphRecords({ name: 'ens.eth' })
+
+const records = client.getRecords({
+  name: 'ens.eth',
+  records: {
+    coins: [...(subgraphRecords?.coins || []), 'BTC', 'ETH', 'ETC', 'SOL'],
+    texts: [
+      ...(subgraphRecords?.texts || []),
+      'avatar',
+      'email',
+      'description',
+    ],
+    contentHash: true,
+    abi: true,
+  },
+})
+```
+
+```csharp [nethereum]
+var ensService = new Nethereum.ENS.ENSService(web3)
+var address = await ensService.ResolveAddressAsync('alice.eth')
+```
+
+:::
+
+Para aprender qué sucede bajo el capó cuando haces una búsqueda hacia adelante, lee la sección [resolución](/es/resolution).
+
+## Direcciones Multi-Cadena (BTC, LTC, etc)
+
+Los Nombres ENS no están limitados solo a almacenar direcciones de Ethereum.
+Cualquier dirección blockchain (BTC, LTC, SOL, etc.) puede ser consultada por tipo de moneda [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) o un valor derivado de un ID de Cadena EVM (especificado en [ENSIP-11](/ensip/11)). Esto incluye redes Ethereum L2 como OP Mainnet y Base.
+
+Para Cadenas EVM además de Ethereum Mainnet, siempre usa su tipo de moneda [ENSIP-11](/ensip/11), independientemente de estar incluido en SLIP-0044 (como Ether Classic).
+
+La estandarización de direcciones multichain fue introducida por primera vez en [ENSIP-9](/ensip/9), y también [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304).
+
+:::note
+Independientemente de la cadena para la que estés resolviendo una dirección, la resolución ENS siempre comienza desde Ethereum L1.
+:::
+
+:::code-group
+
+```tsx [Wagmi]
+// https://wagmi.sh/react/api/hooks/useEnsAddress
+import { useEnsAddress } from 'wagmi'
+import { arbitrum, base } from 'wagmi/chains'
+
+const name = 'gregskril.eth'
+
+const evmChainIdToCoinType = (chainId: number) => {
+  return (0x80000000 | chainId) >>> 0
+}
+
+export const MyAddresses = () => {
+  // Tipos de Moneda SLIP-0044 (ver ENSIP-9)
+  const { data: bitcoinAddr } = useEnsAddress({ name, coinType: 0, chainId: 1 })
+  const { data: solanaAddr } = useEnsAddress({
+    name,
+    coinType: 501,
+    chainId: 1,
+  })
+
+  // IDs de Cadena EVM (ver ENSIP-11)
+  const { data: baseAddr } = useEnsAddress({
+    name,
+    coinType: evmChainIdToCoinType(base.id),
+    chainId: 1,
+  })
+  const { data: arbitrumAddr } = useEnsAddress({
+    name,
+    coinType: evmChainIdToCoinType(arbitrum.id),
+    chainId: 1,
+  })
+
+  return (
+    <div>
+      {JSON.stringify({ bitcoinAddr, solanaAddr, baseAddr, arbitrumAddr })}
+    </div>
+  )
+}
+```
+
+```ts [Viem]
+// https://viem.sh/docs/ens/actions/getEnsAddress.html#cointype-optional
+const ensName = await publicClient.getEnsAddress({
+  name: normalize('wagmi-dev.eth'),
+  coinType: 0, // BTC
+})
+```
+
+```ts [Ethers.js]
+// https://docs.ethers.org/v5/api/providers/provider/#EnsResolver
+const resolver = await provider.getResolver('luc.eth')
+const btcAddress = await resolver?.getAddress(0)
+```
+
+```py [web3.py (Python)]
+# https://web3py.readthedocs.io/en/latest/ens_overview.html#multichain-address-resolution
+from ens.auto import ns
+
+eth_address = ns.address('alice.eth', coin_type=60)
+```
+
+:::
+
+| Red         | Tipo de Moneda |
+| ----------- | -------------- |
+| Bitcoin     | 0              |
+| Litecoin    | 2              |
+| Dogecoin    | 3              |
+| Ethereum    | 60             |
+| Solana      | 501            |
+| OP Mainnet  | 2147483658     |
+| Polygon     | 2147483785     |
+| Base        | 2147492101     |
+| Arbitrum One| 2147525809     |
+
+... y muchas más siguiendo [SLIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) y [ENSIP-11](/ensip/11)
+
+### Decodificando Hashes de Direcciones
+
+Los resolvers ENS almacenan todas las direcciones en bytes, que pueden tener que ser codificadas a sus formatos de dirección respectivos. Para hacer esto, recomendamos usar el paquete [@ensdomains/address-encoder](https://www.npmjs.com/package/@ensdomains/address-encoder).
+
+## Avanzado
+
+<EmbedLink
+  href="/es/resolution"
+  title="Resolución en Profundidad"
+  tag="Avanzado"
+  description="Para aprender más sobre el proceso de resolución, por favor lee la sección de Resolución."
+/>

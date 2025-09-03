@@ -1,0 +1,38 @@
+---
+description: "Desplegar una nueva versión del oráculo DNSSEC y registrador DNS que habilita la funcionalidad 'DNSSEC sin gas'."
+authors: ['arachnid']
+proposal:
+  discourse: '18535'
+  tally: '4208408830555077285685632645423534041634535116286721240943655761928631543220'
+  type: 'executable'
+---
+
+# [EP5.1] [Ejecutable] Actualizar soporte DNSSEC
+
+::authors
+
+| **Estado**            | Aprobado                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Hilo de Discusión** | [Foro](https://discuss.ens.domains/t/ep5-1-executable-upgrade-dnssec-support/18535)                                     |
+| **Votos**             | [Agora](https://agora.ensdao.org/proposals/4208408830555077285685632645423534041634535116286721240943655761928631543220) |
+
+## Resumen
+
+El equipo de ENS labs ha estado trabajando en una nueva versión del oráculo DNSSEC y el registrador DNS que, combinado con resolución wildcard (ENSIP 10) y CCIP-Read, permite 'DNSSEC sin gas' - habilitando el uso de nombres DNS dentro de ENS sin transacciones en la cadena requeridas. Esta propuesta reemplaza el registrador DNSSEC existente con el nuevo.
+
+Los nombres DNS existentes continuarán funcionando como antes, y los nombres aún pueden ser importados usando el método 'legacy'. El nuevo registrador también permite configurar un nombre estableciendo un registro TXT en \_ens.name.tld, conteniendo la dirección de un contrato resolver especial a usar, seguido por cualquier dato específico del resolver. Los resolvers diseñados para el propósito pueden ser configurados para analizar estos datos extra, haciendo la configuración completamente fuera de la cadena una posibilidad.
+
+Junto con los nuevos contratos registrador y oráculo, se proporciona un resolver simple que lee la dirección Ethereum para resolver un nombre desde los datos extra.
+
+Post-ejecución, ENS Labs ejecutará un proceso para actualizar todos los TLDs DNS actuales para usar el nuevo registrador. Los TLDs solo funcionarán con el nuevo registrador una vez que esta transacción (sin permisos) sea enviada para el TLD.
+
+## Especificación
+
+Llamar `setController` en el contrato Root en `root.ens.eth`, pasando la dirección del nuevo registrador DNS (`0xb32cb5677a7c971689228ec835800432b339ba2b`).
+
+## Transacciones
+
+| Dirección                                    | Valor | Función      | Argumento | Valor                                      |
+| ------------------------------------------ | ----- | ------------- | -------- | ------------------------------------------ |
+| 0xaB528d626EC275E3faD363fF1393A41F581c5897 | 0 ETH | setController |          | 0xB32cB5677a7C971689228EC835800432B339bA2B |
+|                                            |       |               |          | true                                       |

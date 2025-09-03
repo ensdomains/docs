@@ -1,0 +1,47 @@
+---
+description: 'Esta propuesta transfiere la propiedad de la clave raíz de ENS al ENS DAO, con el objetivo de descentralizar aún más la gobernanza y mejorar la confianza y poder de la comunidad en la gestión del Protocolo ENS.'
+authors: ['estmcmxci.eth']
+proposal:
+  discourse: '18338'
+  snapshot: '0x8e3c8812bd52d1760eb2bbf8dc603d68860741f80d489dc051017e863151a242'
+  type: 'social'
+---
+
+# [EP4.10] [Social] Transferir la Propiedad de la Clave Raíz de ENS al ENS DAO
+
+::authors
+
+| **Estado**            | Aprobado                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Hilo de Discusión** | [Foro](https://discuss.ens.domains/t/18338)                                                                             |
+| **Votos**             | [Snapshot](https://snapshot.box/#/s:ens.eth/proposal/0x8e3c8812bd52d1760eb2bbf8dc603d68860741f80d489dc051017e863151a242) |
+
+## Resumen
+
+El ENS DAO se ha establecido como la entidad de gobernanza clave para el Ethereum Name Service (ENS) y ha demostrado capacidad y responsabilidad en la propiedad de varios aspectos del protocolo. Ahora proponemos la mayor descentralización de la estructura de gobernanza de ENS transfiriendo la propiedad de la clave raíz de ENS del sistema multisig actual (multisig.ens.eth) al ENS DAO (wallet.ensdao.eth).
+
+## Antecedentes
+
+### Clave Raíz de ENS
+
+El nodo raíz de ENS es actualmente propiedad de un contrato multisig. La clave raíz puede controlar la asignación y reemplazo de todos los TLDs excepto .eth. Los titulares de claves son individuos muy respetados en la comunidad Ethereum y, con la excepción de Nick Johnson, fundador de ENS, no están afiliados con ENS. Mientras que el control del contrato registrador .eth ha sido bloqueado y no puede ser afectado por los titulares de la clave raíz, aún mantienen poderes significativos sobre la estructura y funcionamiento del Protocolo ENS.
+
+### Poderes Actuales del ENS DAO
+
+El ENS DAO mantiene la propiedad del registrador .eth y tiene control sobre funcionalidades como el NameWrapper. El DAO no tiene control sobre el nombre raíz central de ENS, que retiene la capacidad de crear nuevos TLDs, ajustar controles para los existentes, y actualizar los contratos responsables de la resolución inversa.
+
+## Propuesta
+
+1. **Transferencia de Propiedad de la Clave Raíz**: Proponemos la transferencia de la propiedad de la clave raíz de ENS de los titulares multisig actuales al ENS DAO. Esto consolidará los poderes de gobernanza y promoverá la visión de control descentralizado sobre el Protocolo ENS.
+2. **Gestión de TLD**: Mientras que .eth está permanentemente establecido e inmutable, el DAO heredará el poder de crear y gestionar otros dominios de primer nivel (TLD). El DAO también tendrá la capacidad de bloquear cualquier TLD permanentemente si se considera necesario.
+3. **Resoluciones Inversas y L2s**: El DAO tendrá la capacidad de actualizar resoluciones inversas. Adicionalmente, con el apoyo del equipo de Labs, el DAO explorará y potencialmente implementará nombres de dominio primarios en soluciones de Capa 2 (L2s).
+
+## Especificación
+
+1. Se solicita a los titulares actuales de la clave raíz de ENS que ejecuten una transacción transfiriendo la propiedad de la clave raíz al contrato designado del ENS DAO.
+2. El ENS DAO se compromete a gestionar los nuevos poderes y fondos de acuerdo con la [Constitución del ENS DAO](/es/dao/constitution), asegurando gobernanza transparente y toma de decisiones.
+3. El DAO desarrollará políticas para gobernar la gestión de TLD, actualizaciones de precios (oráculo), y otras decisiones clave.
+
+## Coda (Conclusión)
+
+Con esta propuesta, tenemos como objetivo descentralizar aún más el control y gobernanza del Protocolo ENS, colocando más confianza y poder en las manos de la comunidad ENS a través del DAO. La discusión de la comunidad seguirá en el [Foro de Gobernanza](https://discuss.ens.domains). La votación comenzará en [Snapshot](https://snapshot.org/#/ens.eth) y, si es aprobada, los titulares actuales de la clave raíz de ENS iniciarán una transferencia de la clave raíz de ENS al ENS DAO donde será gestionada según los preceptos esbozados aquí.

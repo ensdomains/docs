@@ -1,0 +1,253 @@
+import { FiBookOpen, FiClock, FiHash } from 'react-icons/fi'
+
+import { Card } from '../../../components/ui/Card'
+
+# Registrador ETH [Contratos inteligentes responsables del TLD ".eth"]
+
+El Registrador ETH es un registrador especial. Permite el registro de nombres en la cadena sin confianza y está a cargo del TLD ".eth".
+
+## BaseRegistrar vs Controlador
+
+El Registrador ETH está dividido en dos contratos. El [BaseRegistrar](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/BaseRegistrarImplementation.sol) y el [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol).
+
+El BaseRegistrar es responsable de la propiedad del nombre, transferencias, etc (relacionado con la propiedad), mientras que el Controlador es responsable del registro y renovación (relacionado con precios). Esta separación se hace para reducir la superficie de ataque del registrador, y proporciona a los usuarios las garantías de propiedad continua de un nombre mientras el registrador esté en su lugar.
+
+### Controladores
+
+El [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol) es el controlador principal para el Registrador ETH, y proporciona un mecanismo directo de registro y renovación.
+
+## Estructura de Precios
+
+El Registrador ETH cobra una tarifa por el registro.
+Esta tarifa se paga en ETH y está establecida para prevenir el spam del registrador.
+Cualquier tarifa de protocolo se envía al Tesoro ENS.
+
+### Oráculo de Precios
+
+Inicialmente, se desplegó un solo oráculo de precios, el [StablePriceOracle](https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/StablePriceOracle.sol).
+Este contrato tiene precios establecidos por el propietario para cada longitud de nombre (1, 2, 3, 4, 5 o más).
+Los usuarios no tienen que interactuar con este oráculo directamente, ya que el controlador proporciona funcionalidad para determinar el precio de un registro o renovación.
+
+### Nombres de 3, 4 y 5 Letras
+
+El Registrador ETH tiene precios especiales para nombres de 3, 4 y 5 (y más) letras. Al momento de escribir, un `.eth` de `5+` letras te costará `5 USD` por año.
+Un `4` letras `160 USD` por año, y un `3` letras `640 USD` por año.
+Esta estructura de precios se hace para promover la diversidad del mercado ya que hay una cantidad exponencialmente menor de nombres cuanto más cortos se vuelven.
+La longitud mínima de un nombre es de 3 caracteres.
+
+| Longitud del Nombre | Precio (USD) |
+| ------------------- | ------------ |
+| 5+                  | 5            |
+| 4                   | 160          |
+| 3                   | 640          |
+
+### Prima y Subastas
+
+Además de los precios basados en longitud, el Registrador ETH también tiene una estructura de precios premium.
+90 días después de que un nombre expire (también conocido como después del período de gracia), el nombre entrará en una Subasta de Prima Temporal.
+La Subasta es una subasta holandesa de 21 días, lo que significa que el precio comienza alto (~100 Millones USD) y disminuye exponencialmente hasta que llega a 0 o una oferta pasa.
+
+Esto se hace para prevenir el acaparamiento de nombres, y asegura que el nombre vaya al mejor postor de manera justa.
+
+<Card>
+  <div className="mx-auto h-32">
+    <svg className="h-full w-full" width="160" height="90" viewBox="0 0 160 90">
+      <path d="M 10 10 Q 10 80 150 80" stroke="#3889FF" fill="transparent" />
+    </svg>
+  </div>
+</Card>
+
+Puedes leer más sobre la prima temporal en [este artículo](https://support.ens.domains/en/articles/7900612-temporary-premium).
+
+### ¿A dónde va el dinero?
+
+Al registrarse, los fondos se envían al ETHRegistrarController. El controlador luego envía los fondos al Tesoro ENS (cualquiera puede llamar al método `withdraw` para activar esto).
+Los ingresos del Registrador ETH se usan para financiar el desarrollo de ENS, su ecosistema, y otros bienes públicos.
+
+Lee más sobre nuestro gasto en [Artículo III de la Constitución](/es/dao/constitution#iii-income-funds-ens-and-other-public-goods).
+
+## ERC721 y NFTs
+
+En los primeros días de ENS, el estándar ERC721 no existía.
+El Registrador ETH original formó el precursor del estándar ERC721.
+Mientras presenciamos la estandarización del ERC721, se agregó soporte para él al Registrador ETH.
+
+Hoy, los usuarios pueden interactuar con el Registrador ETH para transferir su nombre igual que con cualquier otro token ERC721.
+
+## Registrando un Nombre
+
+Registrar un nombre es un proceso sin confianza que tiene lugar en la cadena (más sobre esto abajo). Algunos frontends de código abierto para registrar nombres son la [Aplicación ENS Manager](https://app.ens.domains/), [ENS Fairy](https://ensfairy.xyz/), Rainbow Wallet.
+
+El proceso de registrar un nombre `.eth` usa un proceso commit-reveal.
+
+<Card className="flex items-center justify-center gap-8">
+  <div className="flex flex-col items-center text-center">
+    <FiHash className="text-2xl" />
+    <span>Commit</span>
+  </div>
+  <div className="flex flex-col items-center text-center">
+    <FiClock className="text-2xl" />
+    <span>Esperar</span>
+  </div>
+  <div className="flex flex-col items-center text-center">
+    <FiBookOpen className="text-2xl" />
+    <span>Revelar</span>
+  </div>
+</Card>
+
+### Commit-Reveal
+
+El ETHRegistrarController, el contrato de más alto nivel a través del cual los usuarios registran nombres, implementa un esquema commit reveal para prevenir el frontrunning de registros.
+
+Primero llamamos a la función `commit` con un bit opaco de datos (el `commitmenthash`), esperamos 60 segundos, y luego llamamos a la función `register`. La función `commit` toma un hash de compromiso, que puede generarse usando la función `makeCommitment`. El hash de compromiso es opaco y se revela durante la función `register`.
+
+El proceso commit-reveal es para prevenir que un actor malicioso vea tu transacción `register` en el mempool público y haga frontrunning.
+
+```solidity
+ETHRegistrarController.makeCommitment(
+    name string,
+    owner address,
+    duration uint256,
+    secret bytes32,
+    resolver address,
+    data bytes[],
+    reverseRecord bool,
+    ownerControlledFuses uint16
+)
+
+// Por ejemplo
+makeCommitment(
+    "myname", // "myname.eth" pero solo la etiqueta
+    0x1234..., // La dirección que quieres que posea el nombre
+    31536000, // 1 año (en segundos)
+    0x1234..., // Un secreto de 32 bytes generado aleatoriamente que creas
+    0x1234..., // La dirección del resolver que quieres usar
+    [0x8b95dd71...], // Llamadas de función codificadas que quieres pasar al resolver, como `setAddr()`
+    false, // Si establecer o no el nuevo nombre como tu nombre primario
+    0 // Los fusibles NameWrapper que quieres establecer
+);
+```
+
+Una vez que hayas calculado el hash de compromiso, envía la transacción `commit`.
+
+```solidity
+ETHRegistrarController.commit(commitment bytes32)
+```
+
+Después de haber hecho commit, es requerido esperar al menos el `MIN_COMMITMENT_AGE` (60 segundos) antes de hacer la transacción `register` subsecuente.
+
+### Registrando
+
+Una vez que hayas hecho el compromiso en la cadena y esperado 60 segundos, puedes registrar tu nombre.
+El registro toma los mismos parámetros que la función `makeCommitment` arriba.
+
+Antes de iniciar el registro, asegúrate de que:
+
+- `available(label)` == `true`, donde `label` es "name" en "name.eth"
+- `duration` >= `MIN_REGISTRATION_DURATION`
+- `commitments[commitment]` está entre 1 min y 24 hrs de antigüedad
+- `msg.value` >= `rentPrice(name, duration)` + `5-10% (slippage)`
+
+Debido a que el precio de renta se paga en ETH pero se denomina en USD, se recomienda a los llamadores enviar ligeramente más que el valor devuelto por `rentPrice` para evitar problemas con cambios rápidos de precio. Una prima de 3-5% probablemente será suficiente.
+Cualquier fondo excesivo enviado durante el registro se devuelve automáticamente al llamador.
+
+```solidity
+ETHRegistrarController.register(
+    name string,
+    owner address,
+    duration uint256,
+    secret bytes32,
+    resolver address,
+    data bytes[],
+    reverseRecord bool,
+    ownerControlledFuses uint16
+)
+
+// Por ejemplo
+register(
+    "myname", // "myname.eth" pero solo la etiqueta
+    0x1234..., // La dirección que quieres que posea el nombre
+    31536000, // 1 año (en segundos)
+    0x1234..., // El mismo secreto que usaste en la transacción `commit`
+    0x1234..., // La dirección del resolver que quieres usar
+    [0x8b95dd71...], // Llamadas de función codificadas que quieres pasar al resolver, como `setAddr()`
+    false, // Si establecer o no el nuevo nombre como tu nombre primario
+    0 // Los fusibles NameWrapper que quieres establecer
+);
+```
+
+## Renovando un Nombre
+
+```solidity
+ETHRegistrarController.renew()
+```
+
+Cualquier usuario puede renovar un dominio, no solo el propietario. Esto significa que si quieres asegurar que un nombre no expire puedes renovarlo para alguien.
+
+Al permitir renovación por cualquier cantidad arbitraria de tiempo, los usuarios pueden asegurar que su nombre no expirará.
+Según la separación entre registro y controlador, incluso con un controlador actualizado tu nombre seguirá siendo tuyo.
+
+## Otras características
+
+```solidity
+ETHRegistrarController.MIN_COMMITMENT_AGE uint
+ETHRegistrarController.MAX_COMMITMENT_AGE uint
+ETHRegistrarController.MIN_REGISTRATION_DURATION uint
+// Obtener Timestamp de Compromiso
+ETHRegistrarController.commitments mapping(bytes32=>uint)
+// Obtener Precio de Renta
+ETHRegistrarController.rentPrice(string name, uint duration) view returns (uint)
+// Verificar Validez del Nombre
+ETHRegistrarController.valid(string name) view returns (bool)
+// Verificar Disponibilidad del Nombre
+// Devuelve true si el nombre es tanto válido como disponible para registro por este controlador.
+ETHRegistrarController.available(string name) view returns (bool)
+// Calcular Hash de Compromiso
+ETHRegistrarController.makeCommitment(string name, address owner, uint256 duration, bytes32 secret, address resolver, bytes[] data, bool reverseRecord, uint16 ownerControlledFuses) view returns (bytes32)
+
+// Obtener Expiración del Nombre (timestamp unix en el que expira el registro)
+BaseRegistrar.nameExpires(uint256 label) view returns (uint)
+// Verificar Disponibilidad del Nombre (menos específico, usar ETHRegistrarController.available en su lugar)
+BaseRegistrar.available(uint256 label) view returns (bool)
+// Obtener Fin del Período de Transferencia (timestamp unix en el que termina el período de transferencia (del registrador legacy))
+BaseRegistrar.transferPeriodEnds uint
+// Obtener Estado del Controlador
+BaseRegistrar.controllers mapping(address=>bool)
+// Verificar Aprobación del Token
+BaseRegistrar.getApproved(uint256 tokenId) view returns (address operator)
+// Verificar Aprobación de Todos los Tokens
+BaseRegistrar.isApprovedForAll(address owner, address operator) view returns (bool)
+// Obtener Propietario del Token
+BaseRegistrar.ownerOf(uint256 tokenId) view returns (address)
+// Obtener URI del Token
+BaseRegistrar.tokenURI(uint256 tokenId) view returns (string)
+```
+
+Escribible
+
+```solidity
+// Transferir un Nombre
+BaseRegistrar.transferFrom(address from, address to, uint256 tokenId)
+BaseRegistrar.safeTransferFrom(address from, address to, uint256 tokenId)
+BaseRegistrar.safeTransferFrom(address from, address to, uint256 tokenId, bytes _data)
+// Aprobar Operador
+BaseRegistrar.approve(address to, uint256 tokenId)
+// Establecer Aprobación Para Todos
+BaseRegistrar.setApprovalForAll(address operator, bool approved)
+// Reclamar Registro ENS
+BaseRegistrar.reclaim(uint256 label)
+```
+
+Eventos
+
+```solidity
+// BaseRegistrar
+event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+event NameMigrated(uint256 indexed hash, address indexed owner, uint expires);
+event NameRegistered(uint256 indexed hash, address indexed owner, uint expires);
+event NameRenewed(uint256 indexed hash, uint expires);
+
+// Controlador
+event NameRegistered(string name, bytes32 indexed label, address indexed owner, uint cost, uint expires);
+event NameRenewed(string name, bytes32 indexed label, uint cost, uint expires);
+```

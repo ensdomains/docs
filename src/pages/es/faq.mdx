@@ -1,0 +1,108 @@
+---
+description: Preguntas Frecuentes sobre el Ethereum Name Service
+---
+
+# FAQ
+
+## ¿Qué wallets y dApps soportan ENS?
+
+ENS es soportado por una amplia gama de wallets y dApps, algunos notables se pueden encontrar en la [página de integraciones](https://ens.domains/).
+Esta página está actualmente en construcción, sin embargo, pronto se pondrá aquí un enlace para agregarte.
+
+## ¿Puedo mantener mi nombre con una dirección y apuntarlo a otra?
+
+Sí, puedes mantener tu nombre con una dirección y apuntarlo a otra.
+Simplemente visita la [Aplicación ENS Manager](https://ens.app/) y actualiza el registro de dirección apropiado (por cadena) para tu nombre para que apunte a la dirección que desees.
+
+## Una vez que poseo un nombre, ¿puedo crear mis propios subdominios?
+
+Sí. Puedes crear los subdominios que desees y asignar la propiedad de ellos a otras personas si lo deseas. Incluso puedes configurar tu propio registrador para tu dominio.
+
+Algunos resolvers podrían proporcionar características aún más avanzadas, lee más [sobre Resolvers](/es/resolvers/quickstart).
+
+## ¿Puedo cambiar la dirección a la que apunta mi nombre después de haberlo comprado?
+
+Sí, puedes actualizar las direcciones y otros recursos a los que apunta tu nombre en cualquier momento.
+
+Para actualizar tu nombre, revisa la [Aplicación ENS Manager](https://ens.app/).
+
+## Registro ETH
+
+### ¿Por qué los nombres se registran como hashes?
+
+Los hashes proporcionan un identificador de longitud fija que puede pasarse fácilmente entre contratos con sobrecarga fija y sin problemas al pasar cadenas de longitud variable.
+
+Lee más sobre [labelhash, namehash y codificaciones](/es/resolution/names).
+
+### ¿Qué caracteres están soportados?
+
+Los nombres ENS generalmente se codifican usando UTS-46.
+Esto significa que hay soporte parcial para caracteres Unicode, incluyendo emojis.
+
+Sin embargo, aunque técnicamente es posible registrar cualquier nombre, los nombres que no son válidos UTS-46 no serán resolubles por la mayoría de resolvers.
+Por lo tanto, generalmente se recomienda que las aplicaciones que implementan registro limiten los caracteres que pueden registrarse para asegurar una experiencia fluida.
+
+Para leer más sobre caracteres soportados [normalización de nombres](/es/resolution/names).
+
+### ¿Cuánto cuesta registrar un dominio .eth?
+
+Actualmente, los costos de registro están establecidos en los siguientes precios:
+
+- Nombres .eth de 5+ caracteres: $5 en ETH por año.
+- Nombres .eth de 4 caracteres: $160 en ETH por año.
+- Nombres .eth de 3 caracteres: $640 en ETH por año.
+
+Los nombres de 3 y 4 caracteres tienen precios más altos para reflejar el pequeño número de estos nombres disponibles.
+
+Para leer más sobre la estructura de precios de los nombres .eth [lee más sobre precios](/es/registry/eth)
+
+### ¿Por cuánto tiempo puedo registrar un nombre?
+
+Puedes registrar un nombre por el tiempo que desees.
+No hay duración máxima de registro.
+
+### ¿Qué pasa si olvido renovar mi nombre?
+
+Si olvidas renovar tu nombre, será liberado de vuelta al grupo público de nombres disponibles.
+Afortunadamente, el proceso de expiración tiene un período de gracia de 90 días.
+Esto significa que una vez que el nombre expire, el propietario original tiene 90 días para renovar el nombre antes de que sea liberado.
+Después del período de gracia, el nombre se libera para registro por cualquiera con una prima temporal que disminuye durante un período de 21 días.
+El nombre liberado continúa resolviendo tu dirección ETH hasta que el nuevo propietario lo sobrescriba.
+
+### ¿De qué manera podría perder acceso a mi nombre?
+
+El registrador .eth está construido para asegurar que una vez emitido, un nombre no puede ser revocado o quitado de su propietario.
+La pérdida potencial puede ocurrir si el propietario pierde acceso a su clave privada, o si el propietario olvida renovar su nombre.
+
+## Registro Raíz
+
+### ¿Quién posee el nodo raíz de ENS? ¿Qué poderes les otorga?
+
+El nodo raíz de ENS es actualmente propiedad del ENS DAO. Solía ser propiedad del ENS Multi-sig, un grupo de titulares de claves de diferentes partes del ecosistema, sin embargo, a partir de [EP4.10](/es/dao/proposals/4.10) la propiedad ha sido transferida al ENS DAO.
+
+La propiedad del nodo raíz otorga la capacidad de hacer lo siguiente:
+
+- Controlar la asignación y reemplazo de TLDs que no sean .eth - esto es requerido para implementar la integración DNSSEC.
+- Habilitar y deshabilitar controladores para el registrador .eth, que afectan las políticas de registro y renovación para nombres .eth.
+- Actualizar el precio de los nombres .eth.
+- Recibir y gestionar los ingresos de registro.
+
+### ¿Puedo registrar mi propio TLD dentro de ENS?
+
+Sí y No, Consideramos que ENS es parte del 'espacio de nombres global' en coexistencia con DNS, y es nuestra prioridad no contaminar el espacio de nombres.
+Los TLDs específicos de ENS están restringidos solo a '.eth' en Ethereum Mainnet, o .eth y .test en testnets.
+
+Por defecto, ENS permite a los usuarios [importar su nombre DNS](/es/learn/dns) a través del uso del [Registrador DNS](/es/registry/dns).
+Los TLDs DNS existentes pueden [contactarnos](mailto:info@ens.domains) para tomar control de su TLD.
+
+## ¿Cuáles son las diferencias entre ENS y otros servicios de nombres como Namecoin o Handshake?
+
+ENS complementa y extiende la utilidad de DNS con resolución de nombres descentralizada y confiable para recursos web3 como direcciones blockchain y contenido distribuido, mientras que Namecoin y Handshake son esfuerzos para reemplazar todo o parte de DNS con una alternativa basada en blockchain.
+
+## Token de Gobernanza
+
+### ¿Puedo recuperar tokens enviados accidentalmente a la dirección incorrecta?
+
+La respuesta depende de la dirección a la que se envió el token. Si accidentalmente enviaste el token a la dirección token.ensdao.eth (0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72) o la dirección wallet.ensdao.eth (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7) entonces los tokens podrían ser recuperables. Contacta al [grupo de trabajo de Meta-gobernanza](/es/dao/stewards/) en el [Foro ENS](https://discuss.ens.domains) y explica la situación. Los tokens solo pueden enviarse de vuelta a la dirección desde la que fueron enviados, así que si fue enviado desde un exchange, contacta al soporte de tu exchange para asegurar que la dirección pueda recibir tokens.
+
+Si los tokens fueron enviados a la dirección nula (0x000..) o una dirección con un error tipográfico, entonces los tokens son irrecuperables y no hay nada que nadie pueda hacer. Si los tokens fueron enviados a un exchange o un tercero, entonces contacta a ese tercero para ayuda.
