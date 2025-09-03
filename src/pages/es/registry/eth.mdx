@@ -2,24 +2,24 @@ import { FiBookOpen, FiClock, FiHash } from 'react-icons/fi'
 
 import { Card } from '../../../components/ui/Card'
 
-# Registrador ETH [Contratos inteligentes responsables del TLD ".eth"]
+# ETH Registrar [Contratos inteligentes responsables del TLD ".eth"]
 
-El Registrador ETH es un registrador especial. Permite el registro de nombres en la cadena sin confianza y está a cargo del TLD ".eth".
+El ETH Registrar es un registrar especial. Permite el registro de nombres en la cadena sin confianza y está a cargo del TLD ".eth".
 
-## BaseRegistrar vs Controlador
+## BaseRegistrar vs Controller
 
-El Registrador ETH está dividido en dos contratos. El [BaseRegistrar](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/BaseRegistrarImplementation.sol) y el [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol).
+El ETH Registrar está dividido en dos contratos. El [BaseRegistrar](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/BaseRegistrarImplementation.sol) y el [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol).
 
-El BaseRegistrar es responsable de la propiedad del nombre, transferencias, etc (relacionado con la propiedad), mientras que el Controlador es responsable del registro y renovación (relacionado con precios). Esta separación se hace para reducir la superficie de ataque del registrador, y proporciona a los usuarios las garantías de propiedad continua de un nombre mientras el registrador esté en su lugar.
+El BaseRegistrar es responsable de la propiedad del nombre, transferencias, etc (relacionado con la propiedad), mientras que el Controller es responsable del registro y renovación (relacionado con precios). Esta separación se hace para reducir la superficie de ataque del registrar, y proporciona a los usuarios las garantías de propiedad continua de un nombre mientras el registrar esté en su lugar.
 
-### Controladores
+### Controllers
 
-El [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol) es el controlador principal para el Registrador ETH, y proporciona un mecanismo directo de registro y renovación.
+El [ETHRegistrarController](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ethregistrar/ETHRegistrarController.sol) es el controller principal para el ETH Registrar, y proporciona un mecanismo directo de registro y renovación.
 
 ## Estructura de Precios
 
-El Registrador ETH cobra una tarifa por el registro.
-Esta tarifa se paga en ETH y está establecida para prevenir el spam del registrador.
+El ETH Registrar cobra una tarifa por el registro.
+Esta tarifa se paga en ETH y está establecida para prevenir el spam del registrar.
 Cualquier tarifa de protocolo se envía al Tesoro ENS.
 
 ### Oráculo de Precios
