@@ -1,0 +1,61 @@
+import { Card } from '../../../components/ui/Card'
+
+# Resumen del Name Wrapper
+
+:::note
+¿Estás buscando guías orientadas al usuario sobre cómo interactuar con el Name Wrapper en la Aplicación ENS Manager? Si es así, ve aquí en su lugar: [Guías del Name Wrapper](https://support.ens.domains/en/collections/4194784-name-wrapper-guides)
+:::
+
+<iframe
+  className="aspect-video w-full rounded-lg shadow-sm"
+  src="https://www.youtube-nocookie.com/embed/njb7jp5_Qoo?si=YyESSjAk4W5btawz"
+  title="Reproductor de video de YouTube"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowFullScreen
+/>
+
+El **Name Wrapper** es un contrato para ENS que te permite "envolver" cualquier nombre ENS en un NFT ERC-1155.
+
+## Sin el Name Wrapper
+
+Antes del Name Wrapper, solo los 2LDs .eth (dominios de segundo nivel, como `ens.eth`) tenían NFTs ERC-721 asociados con ellos, a menos que el propietario creara un contrato personalizado separado.
+
+<Card>
+  <img
+    src="/img/namewrapper-overview-subnames.jpg"
+    alt="Subnombres sin NFTs"
+  />
+</Card>
+
+## Con el Name Wrapper
+
+<img src="/img/namewrapper-overview-wrapped.jpg" alt="Diagrama del Name Wrapper" />
+
+**Fusibles Controlados por el Padre:**
+
+- [Fusibles](/es/wrapper/fuses) que solo el propietario padre puede quemar
+- "Beneficios" que se pueden dar al propietario de un nombre
+
+**Ejemplo:** Al quemar `CAN_EXTEND_EXPIRY`, permites al propietario extender/renovar su propio subnombre
+
+**Fusibles Controlados por el Propietario:**
+
+- [Fusibles](/es/wrapper/fuses) que el propietario o propietario padre pueden quemar
+- "Permisos" que se pueden revocar en un nombre
+
+**Ejemplo:** Al quemar `CANNOT_TRANSFER`, el NFT envuelto ya no puede ser transferido o vendido.
+
+**Fusibles de Subnombre:**
+
+- El propietario padre tiene el poder de quemar fusibles al crear subnombres
+- Decide qué beneficios, permisos o garantías dar a los propietarios de subnombres
+
+Con este nuevo contrato, puedes envolver:
+
+- Cualquier nombre .eth o subnombre (ej. `name.eth`, `sub.name.eth`)
+- Cualquier nombre DNS o subnombre (ej. `name.com`, `sub.name.com`)
+
+Los 2LDs .eth sin envolver tienen el concepto de un **Propietario** (Registrante) y **Gestor** (Controlador) separados.
+
+Esto cambia después de que envuelves el nombre, porque hay solo una cuenta que sirve tanto como **Propietario** y **Gestor** para el nombre envuelto.

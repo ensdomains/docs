@@ -1,0 +1,158 @@
+---
+description: Aprende sobre cómo CCIP Read habilita Resolvers ENS fuera de la cadena, cómo funciona una puerta de enlace, supuestos de confianza, y más.
+---
+
+import { EmbedLink } from '../../components/EmbedLink'
+import { Properties } from '../../components/Properties'
+import { Repository } from '../../components/Repository'
+import { Card } from '../../components/ui/Card'
+
+# Resolvers fuera de la Cadena / L2
+
+Mientras que la resolución de nombres ENS siempre comienza desde Ethereum Mainnet, es posible almacenar casi todos los datos asociados con un nombre y sus subdominios en otro lugar. Al aprovechar [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) (CCIP Read) en un [Resolver](/es/resolvers/quickstart), los desarrolladores pueden efectivamente diferir la resolución a una API L2 o fuera de la cadena.
+
+<Card className="hidden items-center justify-center gap-4 p-4 md:flex">
+  <div className="space-y-1 p-2 text-center leading-none">
+    <div className="font-bold">Nombre</div>
+    <div>greg.base.eth</div>
+  </div>
+  <div>➡️</div>
+  <div className="space-y-1 p-2 text-center leading-none">
+    <div className="font-bold">Resolver L1</div>
+    <div>0xde90...4F31</div>
+  </div>
+  <div>➡️</div>
+  <div className="space-y-1 p-2 text-center leading-none">
+    <div className="font-bold">Puerta de Enlace</div>
+    <div>api.coinbase.com</div>
+  </div>
+  <div>➡️</div>
+  <div className="space-y-1 p-2 text-center leading-none">
+    <div className="font-bold">Dirección</div>
+    <div>0x179A...9285</div>
+  </div>
+</Card>
+
+## ¿Cómo funciona CCIP Read?
+
+CCIP Read (Protocolo de Interoperabilidad Cross Chain) es una especificación que define un error estándar que los contratos inteligentes pueden lanzar si quieren activar una solicitud HTTP fuera de la cadena.
+
+```solidity
+error OffchainLookup(
+    address sender,
+    string[] urls,
+    bytes callData,
+    bytes4 callbackFunction,
+    bytes extraData
+)
+```
+
+Cuando un contrato revierte con el error `OffchainLookup`, los clientes (wagmi, viem, ethers, etc.) desenvuelven el error y lo manejan apropiadamente.
+
+### ¿Cómo usa ENS CCIP Read?
+
+Al [aprovechar CCIP Read en un Resolver](/es/resolvers/writing#offchain-resolvers), los desarrolladores pueden almacenar datos de nombres más allá de Ethereum Mainnet. Un caso de uso común es gestionar subnombres en redes de Capa 2 - por ejemplo, Coinbase permite a los usuarios registrar nombres como `jesse.base.eth` en Base, mientras que el nombre padre `base.eth` permanece en Ethereum Mainnet.
+
+Esto crea una experiencia perfecta para los desarrolladores de aplicaciones - pueden resolver nombres como `jesse.base.eth` exactamente de la misma manera que resolverían nombres de mainnet, sin necesidad de saber en qué red se almacenan realmente los datos. El uso de CCIP Read en la resolución de nombres es completamente transparente para los usuarios.
+
+![](/img/ccip-read-diagram-1.png)
+
+Para resolver un nombre fuera de la cadena/L2 usando CCIP Read, los pasos son los siguientes:
+
+1. Un usuario escribe "example.eth" en su wallet.
+2. El cliente de la wallet llama a `resolve()` en el Resolver de example.eth.
+3. El Resolver revierte con un error `OffchainLookup`.
+4. El cliente hace una solicitud a la URL de la puerta de enlace especificada en el error con los datos de llamada del error.
+5. La puerta de enlace procesa la solicitud y devuelve datos al cliente. Aquí es donde se obtienen los datos de L2 o una base de datos fuera de la cadena.
+6. El cliente llama a la función de callback especificada en el error con los datos devueltos de la puerta de enlace, que usualmente realiza algún tipo de validación.
+7. Si la función de callback valida los datos, el cliente devuelve el resultado al usuario.
+
+Aunque esto puede sonar complejo, todo sucede bajo el capó y es completamente transparente para los desarrolladores de aplicaciones.
+
+## Ejemplo de Subnombre fuera de la Cadena
+
+Un ejemplo de nombres ENS fuera de la cadena impulsados por CCIP Read se puede encontrar en [offchain.ens.gregskril.com](https://offchain.ens.gregskril.com/).
+El nombre [offchaindemo.eth](https://ens.app/offchaindemo.eth) con Resolver [0x35b9...E237](https://etherscan.io/address/0x35b920d4329C5797727Af8b15358b43509e5E237#code), revierte con `OffchainLookup` y dirige al cliente a una URL de Puerta de Enlace.
+
+La Puerta de Enlace devuelve la información relevante de una base de datos fuera de la cadena, firmada por una clave privada confiable que el contrato inteligente puede verificar. Esto previene que una Puerta de Enlace comprometida devuelva información falsa.
+
+<Repository
+  src="gskril/ens-offchain-registrar"
+  description="Subnombres ENS fuera de la Cadena"
+/>
+
+## Resolvers fuera de la Cadena vs L2
+
+Desde la perspectiva del contrato Resolver L1, el proceso de resolver un nombre L2 es exactamente el mismo que resolver un nombre fuera de la cadena. Las diferencias vienen de la implementación de la Puerta de Enlace y la función de callback del Resolver.
+
+Para nombres que se almacenan fuera de la cadena como el ejemplo anterior, la Puerta de Enlace leería de una base de datos web2 normal y la función de callback del Resolver simplemente verificaría la firma del operador de la Puerta de Enlace.
+
+Para nombres que se almacenan en L2, la Puerta de Enlace haría una llamada RPC a la L2 relevante y la función de callback del Resolver idealmente verificaría la respuesta usando el state root de L2 en L1 (esto asume conocimiento de cómo funcionan las L2s).
+
+Para implementar resolución L2 sin confianza, los desarrolladores deberían usar una solución como [Unruggable Gateways](https://gateway-docs.unruggable.com/).
+
+<Repository
+  src="unruggable-labs/unruggable-gateways"
+  description="Solución para obtener pruebas de datos de cadenas rollup y verificar esos datos en Layer 1 Ethereum."
+/>
+
+## Escribiendo una Puerta de Enlace CCIP Read
+
+Una puerta de enlace es un endpoint de API fuera de la cadena que implementa la [Interfaz de Puerta de Enlace](https://eips.ethereum.org/EIPS/eip-3668#gateway-interface) especificada en EIP-3668. Es responsable de decodificar los datos de llamada de un error `OffchainLookup` y devolver una respuesta relevante.
+
+### Implementando el Endpoint
+
+Tu puerta de enlace debe implementar un endpoint `GET` o `POST` con parámetros `{sender}` y `{data}`, y ser almacenada en el contrato inteligente implementador. El error `OffchainLookup` incluirá esta URL, que es cómo el cliente sabe dónde enviar la solicitud.
+
+:::code-group
+
+```yaml [POST]
+// POST si la URL no incluye parámetro '{data}'
+URL: https://example.com/gateway
+Método: POST
+Cuerpo:
+  sender: "0x..."
+  data: "0x..."
+```
+
+```yaml [GET]
+// GET si la URL incluye parámetro '{data}'
+URL: https://example.com/gateway/{sender}/{data}.json
+Método: GET
+```
+
+:::
+
+<Properties>
+  <Properties.Property name="sender" type="address">
+    Dirección en minúsculas del contrato que revierte con el error `OffchainLookup`.
+  </Properties.Property>
+  <Properties.Property name="data" type="bytes">
+    Bytes con prefijo 0x de los datos pasados al error `OffchainLookup`.
+  </Properties.Property>
+</Properties>
+
+### Ejemplo de Implementación de Puerta de Enlace
+
+La implementación de puerta de enlace más básica es devolver un valor estático sin hacer ninguna firma. Incluso tenemos una librería [@ensdomains/ccip-read-router](http://github.com/ensdomains/ccip-read-router) para abstraer la decodificación de los datos de llamada.
+
+<EmbedLink
+  title="Implementación Básica de Puerta de Enlace"
+  href="https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts"
+/>
+
+### Supuestos de Confianza
+
+Como se explica en [Resolvers fuera de la Cadena vs L2](#offchain-vs-l2-resolvers), los supuestos de confianza dependen del desarrollador implementador y pueden variar desde completamente confiables hasta completamente sin confianza.
+
+El peor escenario de una implementación confiable es que un actor malicioso gane control de la puerta de enlace y pueda devolver información falsa.
+
+El peor escenario de una implementación sin confianza es que un actor malicioso pueda tomar una puerta de enlace offline, pero nunca puede devolver datos falsos.
+
+## Escribiendo un Resolver fuera de la Cadena/L2
+
+Ver [Escribiendo un Resolver](/es/resolvers/writing#offchain-resolvers) para más información sobre cómo implementar un Resolver con CCIP Read.
+
+## Probando tus nombres fuera de la cadena
+
+Para probar tu implementación, busca el nombre relevante en la [Aplicación ENS Manager](https://app.ens.domains). Asegúrate de que hayas configurado tu nombre de prueba para devolver un resultado para datos comunes como una dirección ETH o registros de texto comunes como `avatar` o `description`. Si estableces una clave de registro de texto arbitraria como `test`, la aplicación de gestión no tiene forma de saber que existe.
