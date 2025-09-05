@@ -10,7 +10,7 @@ It can be queried by hitting the [contenthash(bytes32)](/resolvers/interfaces#0x
 You can also [set the contenthash on a name](/resolvers/interfaces#0x304e6ade) if the resolver supports it.
 
 <Card className="flex justify-center gap-4">
-  {['ipfs://qMhx...', 'bzz:/2477', 'ar://HGa8...'].map((tag) => (
+  {['ipfs://bafy...', 'bzz://2477', 'ar://HGa8...'].map((tag) => (
     <Badge key={tag} variant="secondary">
       {tag}
     </Badge>
@@ -36,8 +36,13 @@ or require to be actively stored on at least one machine, also known as "pinning
 ### Deploy your sites
 
 Several helpful tools and platforms exist that you can use to deploy your website to IPFS, Swarm, or Arweave.
-Most notably [fleek](https://fleek.xyz), [Pinata](https://pinata.cloud), and [Blumen](https://blumen.stauro.dev/).
-Helping you easily deploy your website to a decentralized storage network.
+
+| Tool | Network Support |
+| --- | --- |
+| [Blumen](https://blumen.stauro.eth.link) |  IPFS and Swarm |
+| [Orbiter](https://orbiter.website) |  IPFS |
+| [IPFS Deploy Action](https://github.com/ipfs/ipfs-deploy-action) | IPFS |
+| [4EVERLAND](https://4everland.org) | IPFS and Arweave |
 
 ## Setting your ContentHash
 
@@ -48,7 +53,19 @@ See [ENSIP-7](/ensip/7) for more information on the contenthash field.
 
 ## Browser Support & Gateways
 
-In the ideal world every browser supports decentralized websites out of the box.
-If you are using [MetaMask](https://metamask.io) or [Brave Browser](https://brave.com) you can already access IPFS websites directly.
-On non-conforming browsers you can use a gateway such as [eth.link](https://eth.link) or [eth.limo](https://eth.limo) to access your website.
-You can test if your browser supports decentralized websites by visiting [ens.eth](https://ens.eth) or use a gateway via [ens.eth.link](https://ens.eth.link).
+At the moment of writing, major browsers such as Chrome, Firefox and Safari do not natively support accessing decentralized websites.
+If you want to directly access .eth websites without relying on third-party infrastructure, you can use [Brave](https://brave.com) or [Opera](https://opera.com), which both support .eth resolution.
+Certain browser extensions such as [MetaMask](https://metamask.io) are also able to resolve .eth names.
+
+In order to access dweb without having to install a new browser or an extension, you can use one of the following ENS gateways:
+- [eth.link](https://eth.link) for IPFS, Swarm and Arweave
+- [eth.limo](https://eth.limo) for IPFS, Swarm and Arweave
+- [eth.sucks](https://eth.sucks) for IPFS
+- [bzz.link](https://bzz.link) for Swarm
+
+If a website is hosted on IPFS, it is also possible to access it directly from IPFS gateways.
+In order to access a decentralized website through an IPFS gateway, convert dots to dashes and append the `.ipns` namespace (e.g. `ens.eth` becomes `ens-eth.ipns.<gateway>`).
+Below is a list of IPFS gateways that support ENS:
+
+- [inbrowser.link](https://inbrowser.link) - trustlessly verifies content client-side
+- [dweb.link](https://dweb.link) - official subdomain IPFS gateway
