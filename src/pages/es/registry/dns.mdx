@@ -1,0 +1,132 @@
+---
+description: Registrador responsable de todos los nombres habilitados para DNSSEC
+---
+
+# Registrador DNS
+
+En [DNS en ENS](/es/learn/dns) aprendimos cómo ENS tiene como objetivo extender la funcionalidad del DNS.
+En esta página exploraremos la implementación de DNSSEC, el DNSRegistrar, y los bloques de construcción para DNSSEC sin gas.
+
+:::note
+No todos los dominios de primer nivel soportan DNSSEC, y algunos pueden tener implementaciones ENS personalizadas. Por favor refiérete a la [Lista de TLDs](/es/dns/tlds) para información específica de TLD.
+:::
+
+## DNSSEC
+
+DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) es una capa adicional de seguridad encima de DNS que permite la verificación criptográfica de registros. Establece una cadena de confianza desde la clave raíz (que está firmada por ICANN) hasta cada clave.
+
+Todos los nombres DNS habilitados para ENS requieren usar DNSSEC, y el [DNSSECOracle](https://github.com/ensdomains/ens-contracts/tree/master/contracts/dnssec-oracle) es responsable de verificar las firmas.
+
+### Reclamando un Nombre en la Cadena
+
+Desde 2021, ha sido posible [importar un nombre DNS](/es/learn/dns#importing-a-dns-name) y usar eso como un nombre ENS. Este proceso involucra habilitar DNSSEC, establecer un registro TXT específico, y enviar una prueba al contrato inteligente [DNSRegistrar](https://github.com/ensdomains/ens-contracts/tree/master/contracts/dnsregistrar).
+
+Espera que tu registro `TXT` se vea algo así:
+
+```
+TXT @ _ens a=&lt;eth-address&gt;
+```
+
+Puedes aprender más sobre [cómo importar un nombre DNS](/es/learn/dns#importing-a-dns-name) en la sección DNS, o ver cómo [completar estos pasos programáticamente](#programming-dnssec-proofs).
+
+No hay tarifa de protocolo ENS para importar un nombre DNS, pero requiere una gran cantidad de gas (hasta unos pocos millones) para enviar la prueba en la cadena. Continúa leyendo para aprender cómo esto ha sido mitigado.
+
+## Verificación Fuera de la Cadena (Sin Gas)
+
+[EP 5.1](/es/dao/proposals/5.1) introdujo un nuevo DNSSECOracle y DNSRegistrar que hace posible realizar verificación DNSSEC en tiempo de consulta, habilitando el uso verdaderamente gratuito de nombres DNS en ENS. Llamamos a esto "DNSSEC sin gas".
+
+Funciona habilitando [resolución wildcard](/ensip/10) a nivel de TLD DNS. Durante el [proceso de resolución de nombres](/es/resolution), si un nombre no existe ya en la cadena pero ha sido configurado para uso en ENS, la prueba DNSSEC se obtendrá fuera de la cadena vía [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668) y luego se verificará en la cadena con el mismo DNSSECOracle mencionado arriba.
+
+### Importar un nombre DNS sin gas
+
+Para configurar un nombre DNS para uso en ENS, simplemente agrega un registro `TXT` con el siguiente formato:
+
+```
+TXT @ ENS1 &lt;resolver-address&gt;
+```
+
+La implementación de `resolver-address` es personalizable igual que cualquier otro resolver ENS. Para comenzar rápidamente, se ha desplegado un ExtendedDNSResolver especial que permite a los usuarios especificar una dirección ETH a la que el nombre debería resolver dentro del mismo registro `TXT`. Para usar esta configuración, simplemente agrega un registro con el siguiente formato:
+
+```
+TXT @ ENS1 &lt;extended-resolver-address&gt; &lt;eth-address&gt;
+TXT @ ENS1 0x238A8F792dFA6033814B18618aD4100654aeef01 0x225f137127d9067788314bc7fcc1f36746a3c3B5
+```
+
+## Otros
+
+### Propiedad de TLD
+
+Puedes buscar el `propietario` de cualquier TLD llamando a la función `Registry.owner(bytes32 node)`.
+Si al menos un dominio ha sido importado para este TLD (vía el método en la cadena), el propietario será el `DNSRegistrar` o un contrato inteligente controlado por el operador de registro respectivo.
+
+Si un TLD no ha sido activado aún, el `propietario` devolverá `0x0` y puede requerir que un usuario importe un nombre en la cadena para activar el TLD. Ver la [lista de TLDs soportados](/es/dns/tlds) para más información.
+
+### Programando Pruebas DNSSEC
+
+Para ayudarte a interactuar con datos DNSSEC y el DNSRegistrar, proporcionamos algunas librerías.
+
+- [DNSProvejs](https://github.com/ensdomains/dnsprovejs) = Una librería para consultar y validar datos DNSSEC desde DNS
+- [ENSjs](https://github.com/ensdomains/ensjs) = Una librería para interactuar con contratos inteligentes ENS
+
+#### Recuperando una prueba
+
+```ts
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getDnsImportData } from '@ensdomains/ensjs/dns'
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({
+  chain: addEnsContracts(mainnet),
+  transport: http(),
+})
+
+const dnsImportData = await getDnsImportData(client, {
+  name: 'example.com',
+})
+```
+
+#### Enviando la prueba al DNSRegistrar
+
+```ts
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { getDnsImportData, importDnsName } from '@ensdomains/ensjs/dns'
+import { createPublicClient, createWalletClient, custom, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const mainnetWithEns = addEnsContracts(mainnet)
+
+const client = createPublicClient({
+  chain: mainnetWithEns,
+  transport: http(),
+})
+
+const wallet = createWalletClient({
+  chain: mainnetWithEns,
+  transport: custom(window.ethereum),
+})
+
+const dnsImportData = await getDnsImportData(client, {
+  name: 'example.com',
+})
+
+await importDnsName(wallet, {
+  name: 'example.com',
+  dnsImportData,
+})
+```
+
+## Otras funciones
+
+```ts
+// Obtener la lista de sufijos
+DNSRegistrar.suffixes
+// Obtener Oracle
+DNSRegistrar.oracle
+```
+
+```ts
+DNSRegistrar.claim(bytes name, bytes proof)
+DNSRegistrar.proveAndClaim(bytes name, tuple[] input, bytes proof)
+DNSRegistrar.proveAndClaimWithResolver(bytes name, tuple[] input, bytes proof, address resolver, address addr)
+```
