@@ -157,8 +157,8 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
       {
         name: 'Registry',
         github: {
-          filename: 'ENSRegistry',
-          srcPath: 'contracts/registry/',
+          filename: '⚠️ Deprecated',
+          srcPath: 'null',
         },
       },
       {
