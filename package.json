@@ -27,7 +27,7 @@
     "usehooks-ts": "^3.1.1",
     "viem": "^2.22.8",
     "vite": "^6.2.7",
-    "vocs": "1.0.5",
+    "vocs": "^1.0.13",
     "wagmi": "^2.14.15"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "vocs@1.0.5": "patches/vocs@1.0.5.patch"
+      "vocs": "patches/vocs.patch"
     }
   }
 }
