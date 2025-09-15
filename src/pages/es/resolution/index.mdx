@@ -12,7 +12,7 @@ Aquí hay un diagrama de algunos de los contratos involucrados cuando se resuelv
   />
 </Card>
 
-El proceso de resolución involucra múltiples partes. Más notablemente el [Registro](/registry/ens), múltiples Registradores ([Registrador ETH](/es/registry/eth), [Registrador DNS](/es/registry/dns), [Registrador Inverso](/registry/reverse), etc)
+El proceso de resolución involucra múltiples partes. Más notablemente el [Registro](/es/registry/ens), múltiples Registradores ([Registrador ETH](/es/registry/eth), [Registrador DNS](/es/registry/dns), [Registrador Inverso](/es/registry/reverse), etc)
 y el concepto de un [Resolver](/es/resolvers/quickstart).
 
 ## Cómo resolver
@@ -22,7 +22,7 @@ Aquí hay una pequeña mirada a lo que sucede bajo el capó de tu librería favo
 ### 1. Encontrar el Resolver
 
 Cada nombre tiene un "resolver". Un resolver es simplemente un contrato que implementa la [especificación del resolver](/es/resolvers/quickstart) y puede ser consultado para información sobre un nombre.
-Para obtener el resolver responsable de un nombre, puedes consultar [El Registro](/registry/ens) para el `resolver` de un nombre.
+Para obtener el resolver responsable de un nombre, puedes consultar [El Registro](/es/registry/ens) para el `resolver` de un nombre.
 
 :::code-group
 
@@ -76,7 +76,7 @@ Ahora que has encontrado el resolver responsable del nombre en cuestión, puedes
 Hay muchas formas en las que puedes consultar el resolver, `addr()` `text()` `contenthash()` `abi()` etc.
 
 Si el resolver soporta registros de texto, puedes llamar a `text()` para obtener ese registro de texto para el nombre.
-Más sobre cargar información de un resolver se puede encontrar [aquí](/resolvers/interacting).
+Más sobre cargar información de un resolver se puede encontrar [aquí](/es/resolvers/interacting).
 
 #### Resolución Wildcard
 
@@ -122,4 +122,4 @@ function getReverseRecord(address addr) public view returns (string) {
 **Importante**: El cliente DEBE realizar una resolución hacia adelante en el registro inverso de un usuario para verificar que la dirección coincida con la que estás buscando. El ejemplo anterior no realiza esta verificación.
 :::
 
-Ten en cuenta que muchas librerías ya tienen funcionalidad para hacer esto. Puedes leer más sobre esto en la sección [Obteniendo un Nombre Primario](/web/reverse).
+Ten en cuenta que muchas librerías ya tienen funcionalidad para hacer esto. Puedes leer más sobre esto en la sección [Obteniendo un Nombre Primario](/es/web/reverse).
