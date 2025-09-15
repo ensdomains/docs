@@ -392,7 +392,7 @@ export default defineConfig({
             },
             {
               text: 'Tally',
-              link: 'https://www.withtally.com/governance/ens',
+              link: 'https://www.tally.xyz/gov/ens',
             },
             {
               text: 'Agora',
