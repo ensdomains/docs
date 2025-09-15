@@ -9,6 +9,7 @@ const navigation = [
       ['Resolution', '/resolution'],
       ['Tools and Libraries', '/web/libraries'],
       ['Layer 2 & Offchain', '/learn/ccip-read'],
+      ['ENSIPs', '/ensip'],
     ],
   },
   {
@@ -46,7 +47,7 @@ const navigation = [
       ['Welcome', '/dao'],
       ['Constitution', '/dao/constitution'],
       ['Foundation', '/dao/foundation'],
-      ['Governance Token & Airdrop', '/dao/token'],
+      ['Token & Airdrop', '/dao/token'],
     ],
   },
   {
@@ -57,26 +58,6 @@ const navigation = [
       ['Name Wrapper', '/wrapper/overview'],
       ['Subgraph', '/web/subgraph'],
       ['Sign In With Ethereum (SIWE)', '/web/siwe'],
-    ],
-  },
-  {
-    title: 'Design',
-    links: [
-      ['Thorin', 'https://thorin.ens.domains/'],
-      [
-        'Thorin (Figma)',
-        'https://www.figma.com/community/file/1303431204471074291',
-      ],
-      ['Brand', 'https://ens.domains/brand'],
-    ],
-  },
-  {
-    title: 'Support',
-    links: [
-      ['Changelog', '/changelog'],
-      ['Knowledgebase', 'https://support.ens.domains/'],
-      ['Community Blog', 'https://blog.ens.domains'],
-      ['Discord', 'https://chat.ens.domains/'],
     ],
   },
 ]
@@ -98,7 +79,7 @@ export function HomePage() {
   return (
     <>
       <div className="bg-background-secondary border-grey-light border-t px-4 py-16">
-        <div className="mx-auto flex max-w-5xl flex-col gap-4">
+        <div className="mx-auto flex max-w-4xl flex-col gap-4">
           <h1 className="text-3xl font-semibold sm:text-4xl">
             ENS Documentation
           </h1>
@@ -112,7 +93,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 pt-6 lg:grid-cols-4 lg:gap-y-10">
+      <div className="mx-auto grid max-w-4xl grid-cols-2 gap-6 px-4 pt-6 lg:grid-cols-3 lg:gap-y-10">
         {navigation.map((column) => (
           <div key={column.title}>
             <div className="font-bold">{column.title}</div>
@@ -127,7 +108,7 @@ export function HomePage() {
         ))}
       </div>
 
-      <div className="mx-auto flex max-w-5xl flex-col px-4">
+      <div className="mx-auto flex max-w-4xl flex-col px-4">
         <H2>Videos</H2>
         <div className="grid grid-cols-2 gap-6 lg:gap-y-10">
           {videos.map((video) => (

@@ -4,6 +4,10 @@ description: A general purpose resolver that suits most user needs.
 
 # Public Resolver
 
+:::info
+Find the address of the latest public resolver on the [deployments page](/learn/deployments).
+:::
+
 The public resolver is a general-purpose ENS resolver that is suitable for most user needs.
 It permits the owner of a name to update their records, includes permissions, and stores its data on layer-1 ethereum.
 
@@ -24,16 +28,14 @@ The public resolver supports the following features:
 - [EIP-634](https://eips.ethereum.org/EIPS/eip-634) - Text records (`text()`)
 - [EIP-1577](https://eips.ethereum.org/EIPS/eip-1577) - Content hash resolution (`contenthash()`)
 - [EIP-2304](https://eips.ethereum.org/EIPS/eip-2304) - Multicoin support (`addr()`)
+- [ENSIP-19](/ensip/19#default-address) - Default EVM address resolution
 
 :::note
-While the `PublicResolver` provides a convenient default implementation. Many
-versions & variations may exist, and it is therefore not recommended to
-hardcode any addresses. To ensure a safe implementation, always use the
-`supportsInterface()` method to check for the existence of a specific
-interface. See [Interacting with a Resolver](/resolvers/interacting) for how
-to do this.
+While the `PublicResolver` provides a default implementation, remember that custom resolvers exist. It is therefore not recommended to hardcode any addresses. To ensure a safe implementation, always use the `supportsInterface()` method to check for the existence of a specific interface. See [Interacting with a Resolver](/resolvers/interacting) for how to do this.
 :::
 
-## Permissions
+## Default EVM Address Resolution
 
-The public resolver supports the notion of a "owner" and "manager".
+The latest public resolver supports the notion of a "default EVM address" for a name, represented by coinType `0`. If this is set, it will be returned by the `addr(bytes32 node, uint256 coinType)` function regardless of the `coinType` parameter, unless overridden by a more specific address.
+
+This pairs nicely with the default reverse registrar when dealing with [L2 primary names](/web/reverse#l2-primary-names).
