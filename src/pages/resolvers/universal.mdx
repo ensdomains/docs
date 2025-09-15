@@ -5,53 +5,181 @@ import { universalresolver_methods } from '../../data/universal-resolver'
 
 ## Overview
 
-The Universal Resolver is a contract that handles the work of resolving a name entirely onchain, making it possible to make a single smart contract call to resolve an ENS name.
+:::note
+Application developers typically don't need to interact with the universal resolver directly. This guide is directed at lower level-library developers.
+:::
 
-Note that this contract is already built into libraries like [viem](https://viem.sh) and [ENSjs](https://github.com/ensdomains/ensjs), so most developers don't typically need to use it directly.
+The Universal Resolver is a smart contract that simplifies the process of resolving ENS names. It's the recommended way to implement ENS resolution in modern libraries.
+
+Adopting the universal resolver will make the transition to [ENSv2](https://ens.domains/ensv2) seamless.
+
+## Implementation Guide
+
+The universal resolver is the only ENS smart contract that should to be hardcoded into an application for resolution. You can find the [latest deployment addresses here](/learn/deployments).
+
+This guide assumes that your application already supports [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668).
 
 ### Forward Resolution
 
-To resolve one or more records for a name, use one of the `resolve` methods, such as `resolve(bytes name, bytes data)`.
+To resolve one or more records for a name, use the `resolve(bytes name, bytes data)` method which returns `(bytes data, address resolver)`.
 
-The `name` argument for these methods will be the [DNS-encoded](/resolution/names#dns) version of the name. Make sure to [normalize](/resolution/names#normalize) the name first, as well! For example, given the name `My.Name.eth`:
+The `name` argument is the [DNS-encoded](/resolution/names#dns) version of the name. Make sure to [normalize](/resolution/names#normalize) the name first, as well! For example, given the name `My.Name.eth`:
 
 1. Normalize:
    - `My.Name.eth` -> `my.name.eth`
 2. DNS Encode:
    - `my.name.eth` -> `0x026d79046e616d650365746800`
 
-The `data` argument for these methods will be an ABI-encoded call to the resolver for that name.
+The `data` argument is a single ABI-encoded call to the resolver for that name, or a multicall encoded via the following interface:
 
-For example, if you want to resolve the ETH address for `my.name.eth`, using the `addr(bytes32 node)` method, then the corresponding ABI-encoded call would be:
-
+```solidity
+interface IMulticallable {
+  function multicall(bytes[] calldata data) external view returns (bytes[] memory results);
+}
 ```
-0x3b3b57def61adbd8ee36cf930560efc644af752731733dc6421afe47608f8e2cfeaabe2b
+
+For example, if you want to resolve the ETH address and description text record for `nick.eth`, your logic to generate the `data` parameter would look something like this:
+
+```ts
+import { namehash, normalize } from 'viem/ens'
+import { encodeFunctionData, parseAbi } from 'viem/utils'
+
+const simpleResolverAbi = parseAbi([
+  'function addr(bytes32 node) view returns (address)',
+  'function text(bytes32 node, string key) view returns (string)',
+])
+
+const multicallAbi = parseAbi([
+  'function multicall(bytes[] data) returns (bytes[] results)',
+])
+
+const name = normalize('nick.eth')
+const node = namehash(name)
+
+const resolverCalls = [
+  {
+    abi: simpleResolverAbi,
+    functionName: 'addr',
+    args: [node],
+  },
+  {
+    abi: simpleResolverAbi,
+    functionName: 'text',
+    args: [node, 'description'],
+  },
+] as const
+
+const data = encodeFunctionData({
+  abi: multicallAbi,
+  functionName: 'multicall',
+  args: [resolverCalls.map((call) => encodeFunctionData(call))],
+})
 ```
 
-See here for standard resolver methods: [Resolver Interface Standards](/resolvers/interfaces)
+Learn about [standard resolver methods](/resolvers/interfaces) for ABI-encoding that should be added to `simpleResolverAbi` in production.
+
+The response you'll get back from `resolve` will have to be decoded against the multicall ABI, then further decoded against the base resolver ABI. This results in the ETH address and value of the description text record. The rest of the logic would look something like this:
+
+```ts
+import { createPublicClient, decodeFunctionResult, http, toHex } from 'viem'
+import { mainnet } from 'viem/chains'
+import { packetToBytes } from 'viem/ens'
+
+// ...adding from the above example
+
+const dnsEncodedName = toHex(packetToBytes(name))
+
+const universalResolverAbi = parseAbi([
+  'error ResolverNotFound(bytes name)',
+  'error ResolverNotContract(bytes name, address resolver)',
+  'error UnsupportedResolverProfile(bytes4 selector)',
+  'error ResolverError(bytes errorData)',
+  'error ReverseAddressMismatch(string primary, bytes primaryAddress)',
+  'error HttpError(uint16 status, string message)',
+  'function resolve(bytes name, bytes data) view returns (bytes result, address resolver)',
+  'function reverse(bytes lookupAddress, uint256 coinType) view returns (string primary, address resolver, address reverseResolver)',
+])
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+const resolveRes = await client.readContract({
+  abi: universalResolverAbi,
+  address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+  functionName: 'resolve',
+  args: [dnsEncodedName, data],
+})
+
+const decodedMulticall = decodeFunctionResult({
+  abi: multicallAbi,
+  functionName: 'multicall',
+  data: resolveRes[0],
+})
+
+const decodedRes = decodedMulticall.map((res, i) =>
+  decodeFunctionResult({
+    abi: simpleResolverAbi,
+    functionName: resolverCalls[i].functionName,
+    data: res,
+  })
+)
+
+// decodedRes[0] = "0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5"
+// decodedRes[1] = "Lead developer of ENS & Ethereum Foundation alum. Certified rat tickler. he/him."
+```
 
 ### Reverse Resolution
 
-To reverse-resolve an address to an ENS name, call one of the `reverse` methods, such as `reverse(bytes reverseName)`.
+To reverse-resolve an address to an ENS name (go from address to name), call the `reverse (bytes lookupAddress, uint256 coinType)` method which returns `(string primary, address resolver, address reverseResolver)`.
 
-The `reverseName` argument for these methods will be the [DNS-encoded](/resolution/names#dns) version of the reverse name. The "reverse name" is `[addr].addr.reverse`, where `[addr]` is the lowercased Ethereum public address without the "0x". Make sure to [normalize](/resolution/names#normalize) the name as well! For example, given the address `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63`:
+The `lookupAddress` argument is the Ethereum address of the account you want to fetch the primary name for. The `coinType` argument defines the chain you'd like to fetch the reverse record from. See [Multichain Addresses](/web/resolution#multichain-addresses) for more information about the `coinType` argument.
 
-1. Construct Reverse Name:
-   ```
-   0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63 ->
-   231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse
-   ```
-2. Normalize:
-   ```
-   231b0Ee14048e9dCcD1d247744d114a4EB5E8E63.addr.reverse ->
-   231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse
-   ```
-3. DNS Encode:
-   ```
-   231b0ee14048e9dccd1d247744d114a4eb5e8e63.addr.reverse ->
-   0x28323331623065653134303438653964636364316432343737343464313134613465623565386536330461646472077265766572736500
-   ```
+`reverse` internally checks that the name forward resolves to the address you're looking up, so your implementation doesn't need to do any additional checks and should be quite straightforward. It might look something like this:
 
-## Interface Standards
+```ts
+import { createPublicClient, http, parseAbi } from 'viem'
+import { mainnet } from 'viem/chains'
 
-<InterfaceDetails methods={universalresolver_methods} />
+const address = '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
+
+const universalResolverAbi = parseAbi([
+  'error ResolverNotFound(bytes name)',
+  'error ResolverNotContract(bytes name, address resolver)',
+  'error UnsupportedResolverProfile(bytes4 selector)',
+  'error ResolverError(bytes errorData)',
+  'error ReverseAddressMismatch(string primary, bytes primaryAddress)',
+  'error HttpError(uint16 status, string message)',
+  'function resolve(bytes name, bytes data) view returns (bytes result, address resolver)',
+  'function reverse(bytes lookupAddress, uint256 coinType) view returns (string primary, address resolver, address reverseResolver)',
+])
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+const [primaryName] = await client.readContract({
+  abi: universalResolverAbi,
+  address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+  functionName: 'reverse',
+  args: [address, 60n],
+})
+
+// primaryName = "nick.eth"
+```
+
+### Batch Gateways
+
+The Universal Resolver utilizes a batch gateway to perform parallel [EIP-3668](https://eips.ethereum.org/EIPS/eip-3668) (CCIP-Read) requests and mitigate offchain server issues. [`CCIPBatcher.sol`](https://github.com/ensdomains/ens-contracts/blob/staging/contracts/ccipRead/CCIPBatcher.sol) is the recommended batch gateway client implementation. The protocol and server implementation is defined in [ENSIP-21: Batch Gateway Offchain Lookup Protocol](/ensip/21/) (BGOLP).
+
+The latest batch gateways can be queried from the Universal Resolver via `batchGateways()` which returns `(string[] gateways)`.
+
+1. **External Batch Gateway** `https://ccip-v3.ens.xyz` is a trustless service operated by ENS Labs which receives batch gateway requests, performs the supplied CCIP-Read requests in parallel, bundles up the responses or failures, and replies to the caller. This service acts like an open proxy. This mechanism functions in **ALL** clients that support CCIP-Read.
+
+2. **Local Batch Gateway** `x-batch-gateway:true` is a [special-purpose URL](/ensip/21/) which notifies ENSIP-21 aware clients that the `OffchainLookup` is a BGOLP request and can be handled locally without using the **External Batch Gateway** service. The client follows the same process but the requests originate locally without an additional network hop to an external service. For unaware clients, the URL is ignored by the [Client Lookup Protocol](https://eips.ethereum.org/EIPS/eip-3668#client-lookup-protocol) in EIP-3668.
+
+:::note
+Currently only [viem](https://github.com/wevm/viem/blob/main/src/utils/ens/localBatchGatewayRequest.ts) supports ENSIP-21.
+:::
