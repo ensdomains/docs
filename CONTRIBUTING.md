@@ -29,13 +29,17 @@ Click **Make a contribution** at the bottom of any docs page to make small chang
 
 #### Make changes locally
 
-> [!NOTE]  
+> [!NOTE] Prerequisites  
 > Node.js version 20 or higher is required to build the docs.
+> pnpm package manager `npm install -g pnpm`
 
 1. Fork the repository via the GitHub UI.
 2. Clone your forked repository to your local machine.
 3. Create a working branch and make your changes!
-4. Build the docs locally with `pnpm run build` to ensure your changes are valid.
+4. For a fresh clone, run `pnpm install`
+5. Build the docs locally with `pnpm run build` to ensure your changes are valid.
+
+> Optionally, serve on local host with `pnpm dlx serve src/dist` to view your build in the browser.
 
 ### Commit your update
 
