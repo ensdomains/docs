@@ -1,7 +1,7 @@
 import { AnchorHTMLAttributes } from 'react'
 
+import { DeploymentsByChain } from '../../scripts/deployments'
 import deploymentsJson from '../data/generated/deployments.json' with { type: 'any' }
-import { DeploymentsByChain } from '../plugins/deployments'
 
 const deploymentsByChain = deploymentsJson as DeploymentsByChain[]
 
@@ -31,11 +31,13 @@ export function ContractDeployments({
                   >
                     ABI
                   </VocsExternalLink>
-                  <VocsExternalLink
-                    href={`https://github.com/ensdomains/ens-contracts/blob/staging/${contract.github.srcPath}/${contract.github.filename}.sol`}
-                  >
-                    Source
-                  </VocsExternalLink>
+                  {contract.github.srcPath && (
+                    <VocsExternalLink
+                      href={`https://github.com/ensdomains/ens-contracts/blob/staging/${contract.github.srcPath}/${contract.github.filename}.sol`}
+                    >
+                      Source
+                    </VocsExternalLink>
+                  )}
                 </div>
               </td>
               <td className="vocs_TableCell font-mono">{contract.address}</td>

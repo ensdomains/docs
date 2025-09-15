@@ -7,7 +7,7 @@ type Deployment = {
   address?: Hex
   github: {
     filename: string
-    srcPath: string
+    srcPath?: string
   }
 }
 
@@ -45,10 +45,16 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
         },
       },
       {
-        name: 'ETH Registrar Controller',
+        name: 'ETH Registrar Controller (Latest)',
         github: {
           filename: 'ETHRegistrarController',
           srcPath: 'contracts/ethregistrar/',
+        },
+      },
+      {
+        name: 'Wrapped ETH Registrar Controller',
+        github: {
+          filename: 'WrappedETHRegistrarController',
         },
       },
       {
@@ -59,9 +65,16 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
         },
       },
       {
-        name: 'Reverse Registrar',
+        name: 'L1 Reverse Registrar',
         github: {
           filename: 'ReverseRegistrar',
+          srcPath: 'contracts/reverseRegistrar/',
+        },
+      },
+      {
+        name: 'Default Reverse Registrar',
+        github: {
+          filename: 'DefaultReverseRegistrar',
           srcPath: 'contracts/reverseRegistrar/',
         },
       },
@@ -121,9 +134,16 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
         },
       },
       {
-        name: 'Reverse Registrar',
+        name: 'L1 Reverse Registrar',
         github: {
           filename: 'ReverseRegistrar',
+          srcPath: 'contracts/reverseRegistrar/',
+        },
+      },
+      {
+        name: 'Default Reverse Registrar',
+        github: {
+          filename: 'DefaultReverseRegistrar',
           srcPath: 'contracts/reverseRegistrar/',
         },
       },
@@ -183,9 +203,16 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
         },
       },
       {
-        name: 'Reverse Registrar',
+        name: 'L1 Reverse Registrar',
         github: {
           filename: 'ReverseRegistrar',
+          srcPath: 'contracts/reverseRegistrar/',
+        },
+      },
+      {
+        name: 'Default Reverse Registrar',
+        github: {
+          filename: 'DefaultReverseRegistrar',
           srcPath: 'contracts/reverseRegistrar/',
         },
       },
