@@ -28,7 +28,7 @@ import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
 
 export const Name = () => {
   const { data: ensName } = useEnsAddress({
-    address: 'luc.eth', // The name to lookup
+    address: 'nick.eth', // The name to lookup
     chainId: 1, // The chain to start resolution on (Ethereum Mainnet or a testnet)
   })
 
@@ -37,7 +37,7 @@ export const Name = () => {
 ```
 
 ```ts [Ethers.js]
-const address = await provider.lookupAddress('luc.eth')
+const address = await provider.lookupAddress('nick.eth')
 ```
 
 ```ts [Viem]
@@ -46,7 +46,7 @@ import { normalize } from 'viem/ens'
 import { publicClient } from './client'
 
 const ensAddress = await publicClient.getEnsAddress({
-  name: normalize('luc.eth'),
+  name: normalize('nick.eth'),
 })
 ```
 
@@ -59,7 +59,7 @@ address = ns.address('alice.eth')
 ```rust [ethers-rs]
 let provider = Provider::<Http>::try_from("https://mainnet.infura.io/v3/...")?;
 
-let address = provider.lookup_address("luc.eth").await?;
+let address = provider.lookup_address("nick.eth").await?;
 ```
 
 ```go [go-ens]
@@ -75,7 +75,7 @@ import (
 func main() {
 	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
 
-	domain, _ := ens.Normalize("luc.eth")
+	domain, _ := ens.Normalize("nick.eth")
 	resolver, _ := ens.NewResolver(client, domain)
 	address, _ := resolver.Address()
 
@@ -185,7 +185,7 @@ const ensName = await publicClient.getEnsAddress({
 
 ```ts [Ethers.js]
 // https://docs.ethers.org/v5/api/providers/provider/#EnsResolver
-const resolver = await provider.getResolver('luc.eth')
+const resolver = await provider.getResolver('ricmoo.eth')
 const btcAddress = await resolver?.getAddress(0)
 ```
 

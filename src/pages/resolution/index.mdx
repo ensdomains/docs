@@ -37,7 +37,7 @@ import { useEnsResolver } from 'wagmi'
 
 export const MyResolver = () => {
   const { data: myResolver } = useEnsResolver({
-    name: normalize('luc.eth'), // The name to lookup
+    name: normalize('nick.eth'), // The name to lookup
   })
 
   return <div>{myResolver}</div>
@@ -45,7 +45,7 @@ export const MyResolver = () => {
 ```
 
 ```ts [Ethers]
-const resolver = await provider.getResolver('luc.eth')
+const resolver = await provider.getResolver('nick.eth')
 ```
 
 ```ts [viem]
@@ -55,7 +55,7 @@ import { normalize } from 'viem/ens'
 import { publicClient } from './client'
 
 const ensResolver = await publicClient.getEnsResolver({
-  name: normalize('luc.eth'),
+  name: normalize('nick.eth'),
 })
 ```
 
