@@ -139,12 +139,9 @@ Regardless of the chain you're resolving an address for, ENS resolution always s
 // https://wagmi.sh/react/api/hooks/useEnsAddress
 import { useEnsAddress } from 'wagmi'
 import { arbitrum, base } from 'wagmi/chains'
+import { toCoinType } from 'viem'
 
 const name = 'gregskril.eth'
-
-const evmChainIdToCoinType = (chainId: number) => {
-  return (0x80000000 | chainId) >>> 0
-}
 
 export const MyAddresses = () => {
   // SLIP-0044 Coin Types (see ENSIP-9)
@@ -158,12 +155,12 @@ export const MyAddresses = () => {
   // EVM Chain IDs (see ENSIP-11)
   const { data: baseAddr } = useEnsAddress({
     name,
-    coinType: evmChainIdToCoinType(base.id),
+    coinType: toCoinType(base.id),
     chainId: 1,
   })
   const { data: arbitrumAddr } = useEnsAddress({
     name,
-    coinType: evmChainIdToCoinType(arbitrum.id),
+    coinType: toCoinType(arbitrum.id),
     chainId: 1,
   })
 
