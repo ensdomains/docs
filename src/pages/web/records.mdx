@@ -1,0 +1,135 @@
+---
+description: Store & Retrieve information from Profiles
+---
+
+import { EmbedLink } from '../../components/EmbedLink'
+import { TextRecords } from '../../components/TextRecords'
+import { Card } from '../../components/ui/Card'
+
+# Text Records
+
+Text records are key-value pairs that can be used to store any arbitrary data associated with a name.
+Think of this as a user's **digital backpack** utilized for the storage of preferences, public details, and more.
+
+<Card>
+  <TextRecords
+    name="nick.eth"
+    keys={['description', 'com.twitter', 'com.github']}
+  />
+</Card>
+
+The most popular records have been standardised.
+One example of a standardised record is the [avatar record](/web/avatars) which is used to store a user's profile picture.
+
+## Getting Records
+
+To fetch the record for a specific name, you can use one of the following methods:
+
+:::code-group
+
+```tsx [Wagmi]
+// https://wagmi.sh/react/api/hooks/useEnsText
+import { normalize } from 'viem/ens'
+import { useEnsText } from 'wagmi'
+
+export const MyProfile: FC<{ name: string }> = ({ name }) => {
+  const { data } = useEnsText({
+    name: normalize('nick.eth'),
+    key: 'com.twitter',
+  })
+
+  return (
+    <div>
+      <span>Twitter: {data}</span>
+    </div>
+  )
+}
+```
+
+```tsx [Ethers]
+// https://docs.ethers.org/v5/api/providers/provider/#EnsResolver
+const provider = new ethers.providers.JsonRpcProvider()
+
+const resolver = await provider.getResolver('nick.eth')
+const twitter = await resolver.getText('com.twitter')
+```
+
+```tsx [Viem]
+// https://viem.sh/docs/ens/actions/getEnsText.html
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+import { normalize } from 'viem/ens'
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+const ensText = await publicClient.getEnsText({
+  name: normalize('nick.eth'),
+  key: 'com.twitter',
+})
+```
+
+```python [web3.py]
+# https://web3py.readthedocs.io/en/latest/ens_overview.html#text-records
+from ens.auto import ns
+
+# set text
+ns.set_text('alice.eth', 'url', 'https://example.com')
+
+# get text
+url = ns.get_text('alice.eth', 'url')
+assert url == 'https://example.com'
+```
+
+```go [Go]
+package main
+
+import (
+	"fmt"
+
+	"github.com/ethereum/go-ethereum/ethclient"
+	ens "github.com/wealdtech/go-ens/v3"
+)
+
+func main() {
+	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
+
+	domain, _ := ens.Normalize("nick.eth")
+	resolver, _ := ens.NewResolver(client, domain)
+	twitter, _ := resolver.Text("com.twitter")
+
+	fmt.Println("Twitter: ", twitter)
+}
+```
+
+:::
+
+## Types of Records
+
+[ENSIP-5](/ensip/5) and [ENSIP-18](/ensip/18) specify two sets of records that are considered standardized. Below are some of the most commonly ones:
+
+| Name        | Usage                                   | Reference             | Example                    |
+| ----------- | --------------------------------------- | --------------------- | -------------------------- |
+| avatar      | [Avatar](/web/avatars)                  | [ENSIP-5](/ensip/5)   | eip155:1/erc1155:0x495f... |
+| description | Bio or description of the profile       | [ENSIP-5](/ensip/5)   | Lead developer of ENS      |
+| com.twitter | Twitter/X handle                        | [ENSIP-5](/ensip/5)   | nicksdjohnson              |
+| com.github  | GitHub handle                           | [ENSIP-5](/ensip/5)   | arachnid                   |
+| url         | Website URL                             | [ENSIP-5](/ensip/5)   | https://ens.domains        |
+| header      | Image URL to be used as a header/banner | [ENSIP-18](/ensip/18) | ipfs://QmNtHN7WE...        |
+
+### Custom Records
+
+While standardized records are expected to have the best ecosystem support, it's possible to store any key-value pair you desire. We generally recommend to stick to a pattern, or prefix things with your app or protocol (eg. `com.discord`, or `org.reddit`), as such to avoid collisions.
+
+## Setting Records
+
+Text records are controlled by the resolver associated with a given name. Read more about [interacting with a resolver](/resolvers/interacting).
+
+<EmbedLink
+  href="/resolvers/interacting"
+  title="Interacting with a Resolver"
+  tag="Advanced"
+  description="To learn more about interacting with a resolver."
+/>

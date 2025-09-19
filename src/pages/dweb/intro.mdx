@@ -1,0 +1,71 @@
+import { Badge } from '../../components/ui/Badge'
+import { Card } from '../../components/ui/Card'
+
+# Hosting a Decentralized Website [Introduction to hosting a decentralized website using ENS]
+
+## ContentHash
+
+The ContentHash is a very popular component of an ENS name, first introduced in [ENSIP-7](/ensip/7).
+It can be queried by hitting the [contenthash(bytes32)](/resolvers/interfaces#0xbc1c58d1) function on a name's resolver.
+You can also [set the contenthash on a name](/resolvers/interfaces#0x304e6ade) if the resolver supports it.
+
+<Card className="flex justify-center gap-4">
+  {['ipfs://bafy...', 'bzz://2477', 'ar://HGa8...'].map((tag) => (
+    <Badge key={tag} variant="secondary">
+      {tag}
+    </Badge>
+  ))}
+</Card>
+
+## Hosting & Pinning
+
+When it comes to hosting your files there are many options to choose from.
+
+<Card className="flex justify-center gap-4">
+  {['IPFS / Filecoin', 'Swarm', 'Arweave'].map((tag) => (
+    <Badge key={tag} variant="secondary">
+      {tag}
+    </Badge>
+  ))}
+</Card>
+
+Popular options include [IPFS](https://ipfs.io), [Swarm](https://ethswarm.org), and [Arweave](https://arweave.org).
+Depending on what option you go with your files are either permanently stored on a network,
+or require to be actively stored on at least one machine, also known as "pinning".
+
+### Deploy your sites
+
+Several helpful tools and platforms exist that you can use to deploy your website to IPFS, Swarm, or Arweave.
+
+| Tool | Network Support |
+| --- | --- |
+| [Blumen](https://blumen.stauro.eth.link) |  IPFS and Swarm |
+| [Orbiter](https://orbiter.host) |  IPFS |
+| [IPFS Deploy Action](https://github.com/ipfs/ipfs-deploy-action) | IPFS |
+| [4EVERLAND](https://4everland.org) | IPFS and Arweave |
+
+## Setting your ContentHash
+
+If you are using the public resolver (the default for names registered using the ENS Manager App), you can set the contenthash directly from within the [ENS Manager App](https://app.ens.domains).
+
+If you are using a custom resolver, or are writing your own resolver you will be able to have more fine grained control over the contenthash field.
+See [ENSIP-7](/ensip/7) for more information on the contenthash field.
+
+## Browser Support & Gateways
+
+At the moment of writing, major browsers such as Chrome, Firefox and Safari do not natively support accessing decentralized websites.
+If you want to directly access .eth websites without relying on third-party infrastructure, you can use [Brave](https://brave.com) or [Opera](https://opera.com), which both support .eth resolution.
+Certain browser extensions such as [MetaMask](https://metamask.io) are also able to resolve .eth names.
+
+In order to access dweb without having to install a new browser or an extension, you can use one of the following ENS gateways:
+- [eth.link](https://eth.link) for IPFS, Swarm and Arweave
+- [eth.limo](https://eth.limo) for IPFS, Swarm and Arweave
+- [eth.sucks](https://eth.sucks) for IPFS
+- [bzz.link](https://bzz.link) for Swarm
+
+If a website is hosted on IPFS, it is also possible to access it directly from IPFS gateways.
+In order to access a decentralized website through an IPFS gateway, convert dots to dashes and append the `.ipns` namespace (e.g. `ens.eth` becomes `ens-eth.ipns.<gateway>`).
+Below is a list of IPFS gateways that support ENS:
+
+- [inbrowser.link](https://inbrowser.link) - trustlessly verifies content client-side
+- [dweb.link](https://dweb.link) - official subdomain IPFS gateway

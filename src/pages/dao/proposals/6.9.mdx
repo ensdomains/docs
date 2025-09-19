@@ -1,0 +1,22 @@
+---
+authors: ['nick.eth']
+---
+
+# [EP 6.9] [Executable] Revoke root controller role from legacy ENS multisig
+
+::authors
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20644)                                                                                  |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/83558494563463316177076768398348085020294312678713085260352382286714788322618) |
+
+## Abstract
+
+We have identified that the legacy ENS multisig, which originally controlled ENS before the DAO was created, still has the 'controller' role on the ENS root. This means that a majority of multisig keyholders could create or replace any ENS TLD other than .eth. .eth is locked and cannot be modified by the DAO or anyone else.
+
+In order to correct this oversight, this proposal revokes the legacy multisig's controller role from the root contract.
+
+## Specification
+
+Call `setController` on the ENS `Root` contract at `0xaB528d626EC275E3faD363fF1393A41F581c5897`, passing in the address of the legacy multisig, `0xCF60916b6CB4753f58533808fA610FcbD4098Ec0`.

@@ -1,0 +1,26 @@
+# ENS DAO Security Council
+
+The ENS DAO Security Council is a 4-of-8 multi-sig with a limited mandate: to cancel malicious proposals that threaten the DAO, particularly those that would compromise the treasury. It was created to address vulnerabilities stemming from low voter participation relative to treasury size.
+
+## Purpose and Powers
+
+The security council is expected to act only in emergency, in the given following situations or similar cases:
+
+- If a proposal goes against the [ENS Constitution](/dao/constitution)
+- If a proposal is approved with malicious intent against the DAO longevity/sustainability
+- If such [a] proposal is approved by any group of voters, but [they are] directly financially incentivised to vote against the DAO's interests to preserve their own financial stake
+- If any approved proposal goes directly against the DAO for the sole benefit of an attacker
+
+The council cannot propose, amend, or otherwise initiate governance actions.
+
+## Time-Limited Authority
+
+The Security Council's cancel authority is time-limited. Two years after deployment (at unix timestamp `1784919179`), any address may call `renounceTimelockRoleByExpiration()` to permanently disable the cancel role, promoting decentralisation over time.
+
+## Relevant Proposals
+
+The veto was first introduced in [Introducing veto.ensdao.eth](https://discuss.ens.domains/t/introducing-veto-ensdao-eth/19088), and approved via social proposal [EP 5.7](/dao/proposals/5.7). Additional discussion occured in [Enable the cancel role on the DAO](https://discuss.ens.domains/t/temp-check-enable-cancel-role-on-the-dao/19090). Member appointments were confirmed in social proposal [EP 5.10](/dao/proposals/5.10), and the Security Council was formally implemented in Executable [EP 5.13](/dao/proposals/5.13).
+
+## Contract Details
+
+[`SecurityCouncil.sol`](https://github.com/blockful-io/security-council-ens) is deployed to [0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0) on Ethereum Mainnet. It is owned by the [4-of-8 multi-sig](https://etherscan.io/address/0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7) specified in [EP 5.10](/dao/proposals/5.10).

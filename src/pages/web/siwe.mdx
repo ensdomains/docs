@@ -1,0 +1,29 @@
+import { Card } from '../../components/ui/Card'
+
+# Sign In With Ethereum (SIWE) [A specification that leverages Ethereum signatures to perform authentication]
+
+[ERC-4361](https://eips.ethereum.org/EIPS/eip-4361) defines a message format that a user signs using their keys to authenticate.
+
+An example payload looks like the following:
+
+```
+localhost wants you to sign in with your Ethereum account:
+0x225f137127d9067788314bc7fcc1f36746a3c3B5
+
+This is a test statement.
+
+URI: https://localhost/login
+Version: 1
+Chain ID: 1
+Nonce: abcdef1234567890
+Issued At: 2023-01-30T00:00:00.000Z
+```
+
+After authentication, an app may resolve the user's ENS name and profile, as well as other [onchain resources](https://docs.siwe.xyz/quickstart/retrieve-onchain-data).
+
+## Resources
+
+* [ERC-4361](https://eips.ethereum.org/EIPS/eip-4361)
+* [Project website](https://siwe.xyz/)
+* [Docs](https://docs.siwe.xyz/)
+* [Libraries](https://docs.siwe.xyz/libraries/)

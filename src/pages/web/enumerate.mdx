@@ -1,0 +1,40 @@
+---
+description: List all names a user has, owns, or might have access to.
+---
+
+# Listing a Users Names
+
+In some cases you might want to show off all names that a user owns. Due to the nature of how the ENS Protocol works under the hood, this might be a slightly more difficult task than expected.
+
+Fortunately, tooling has been developed to accommodate for this and to make it easier.
+
+## Why not all names?
+
+Not all ENS names exist onchain ([learn more about wildcard resolution](/ensip/10)), meaning we don't always know which names a user owns/controls.
+
+The notable exception is [second-level](/terminology#first-layer) [.eth names](/registry/eth). Ownership of these names are onchain and indexable through scanning events on the appropriate smart contracts. Note that this does not necessarily mean address and text records associated with the name are onchain ([read more about offchain resolvers](/resolvers/ccip-read)).
+
+## Guidelines
+
+When using one of the methods described below it is important to keep in mind that you should always allow for a user to manually enter a name, as not all names are indexable.
+
+It is generally recommended to allow users to input a name using an [input box](/web/design#2-resolving-input-fields) and to verify it resolves to the correct address upon user-completion.
+
+## The Graph
+
+The [ENS subgraph](/web/subgraph) indexes all events from relevant smart contracts and exposes them via a GraphQL endpoint. Note that addresses in filters must be lowercased.
+
+ENSjs makes it easy to run common queries on the subgraph with strong type safety. Docs can be found [here](https://github.com/ensdomains/ensjs/tree/main/docs/subgraph).
+
+```graphql
+{
+  domains(where: { owner: "0x225f137127d9067788314bc7fcc1f36746a3c3b5" }) {
+    name
+  }
+  wrappedDomains(
+    where: { owner: "0x225f137127d9067788314bc7fcc1f36746a3c3b5" }
+  ) {
+    name
+  }
+}
+```

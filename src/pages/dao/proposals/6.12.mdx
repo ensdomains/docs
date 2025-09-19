@@ -1,0 +1,30 @@
+---
+authors: ['nick.eth']
+---
+
+# [EP 6.12] [Executable] Set resolver for .ceo TLD
+
+::authors
+
+| **Status**            | Passed                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/20820)                                                                                  |
+| **Votes**             | [Tally](https://www.tally.xyz/gov/ens/proposal/75480516867756766284972947192514005324792532674550120092693062891336419998702) |
+
+## Abstract
+
+[EP6.7](https://discuss.ens.domains/t/ep-6-7-executable-transfer-ceo-tld-to-the-dnssec-registrar/20594) reconfigured the .ceo TLD, setting the owner record to the DNSSEC registrar contract. This allowed onchain claiming of .ceo 2LDs to resume, reclaiming control from a custom registrar that had been set by a previous owner of .ceo.
+
+Unfortunately, this neglected to consider the necessary infrastructure for offchain claiming, which requires also setting the resolver record. As a result, a follow-up executable EP is required to set the resolver also.
+
+To prove ownership of .ceo and their intention that we action this request, they have set a TXT record on `_ens.nic.ceo` to the address of the DNSSEC registrar, `0xB32cB5677a7C971689228EC835800432B339bA2B`. This can be verified with the following command:
+
+```
+dig TXT _ens.nic.ceo
+```
+
+## Specification
+
+1. Call `setSubnodeOwner` on the ENS `Root` contract at `0xaB528d626EC275E3faD363fF1393A41F581c5897`, passing in the keccak256 hash of `ceo` and the address of the ENS timelock, `0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7`.
+2. Call `setResolver` on the ENS registry contract at `0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e`, passing in the namehash of `ceo` and the address of the `OffchainDNSResolver`, `0xF142B308cF687d4358410a4cB885513b30A42025`.
+3. Call `setOwner` on the ENS registry contract at `0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e`, passing in the namehash of `ceo` and the address of the DNSSEC reistrar at `0xB32cB5677a7C971689228EC835800432B339bA2B`.

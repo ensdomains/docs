@@ -1,0 +1,16 @@
+diff --git a/_lib/vite/utils/search.js b/_lib/vite/utils/search.js
+index b2c1d6548f7b263ceabf0a8d39c9973e14a01823..2cf0808333ef9f5de76c61d7f83fa7d290319b90 100644
+--- a/_lib/vite/utils/search.js
++++ b/_lib/vite/utils/search.js
+@@ -26,7 +26,10 @@ export async function buildIndex({ baseDir, cacheDir, }) {
+         const pageCache = cache.get(key) ?? {};
+         if (pageCache.mdx === mdx)
+             return pageCache.document;
+-        const html = await processMdx(pagePath, mdx, { rehypePlugins });
++
++        const mdxNoImports = mdx.replace(/^(import|export).*/gm, '');
++        const mdxNoComponents = mdxNoImports.replace(/<\/?\s*[A-Z][^>]*>/g, '');
++        const html = await processMdx(pagePath, mdxNoComponents, { rehypePlugins });
+         const sections = splitPageIntoSections(html);
+         if (sections.length === 0) {
+             cache.set(key, { mdx, document: [] });

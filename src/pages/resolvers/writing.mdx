@@ -1,0 +1,141 @@
+# Writing a Resolver
+
+Every ENS name has a resolver, which is responsible for resolving information about a name.
+
+Resolvers are a core part of the ENS protocol. They give each name, represented as a ["node"](/resolution/names#namehash), the power to control the resolution process for itself and all of its subnames. Resolvers were originally standardized in [EIP 137](https://eips.ethereum.org/EIPS/eip-137), but have since received a few updates such as [EIP 181](https://eips.ethereum.org/EIPS/eip-181), [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-10](/ensip/10).
+
+You can find the latest default resolver implementation, called the Public Resolver, on [GitHub](https://github.com/ensdomains/ens-contracts/blob/mainnet/contracts/resolvers/PublicResolver.sol) and [Etherscan](/learn/deployments).
+
+## Resolver Interface
+
+You can view an extended list of resolver methods [here](/resolvers/interfaces), however a simple interface might look something like this:
+
+```solidity
+interface IMyResolver {
+    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function addr(bytes32 node) external view returns (address payable);
+    function addr(bytes32 node, uint256 coinType) external view returns (bytes memory);
+    function contenthash(bytes32 node) external view returns (bytes memory);
+    function text(bytes32 node, string calldata key) external view returns (string memory);
+
+    function setAddr(bytes32 node, address addr) external;
+    function setAddr(bytes32 node, uint256 coinType, bytes calldata a) external;
+    function setContenthash(bytes32 node, bytes calldata hash) external;
+    function setText(bytes32 node, string calldata key, string calldata value) external;
+}
+```
+
+## Wildcard Resolution
+
+In [ENSIP-10](/ensip/10) a new `resolve()` method was added to the resolver interface to allow for wildcard resolution.
+
+```solidity
+interface IExtendedResolver {
+    /**
+     * @dev Performs ENS name resolution for the supplied name and resolution data.
+     * @param name The name to resolve, in normalised and DNS-encoded form.
+     * @param data The resolution data, as specified in ENSIP-10.
+     * @return The result of resolving the name.
+     */
+    function resolve(
+        bytes memory name,
+        bytes memory data
+    ) external view returns (bytes memory);
+}
+```
+
+:::note
+Don't forget to add `0x9061b923` to your [EIP-165](https://eips.ethereum.org/) `supportsInterface()` implementation.
+:::
+
+## Onchain Resolvers
+
+By default, ENS names use the [Public Resolver](/resolvers/public) which stores all data onchain. An extremely basic resolver that stores a mapping of ENS names to addresses might look like this:
+
+```solidity
+contract OnchainResolver {
+    mapping(bytes32 node => address addr) public addr;
+
+    function setAddr(bytes32 node, address _addr) external {
+        addr[node] = _addr;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceID
+    ) external pure returns (bool) {
+        return
+            interfaceID == OnchainResolver.supportsInterface.selector ||
+            // function addr(bytes32 node) external view returns (address)
+            interfaceID == 0x3b3b57de;
+    }
+}
+```
+
+:::note
+This is not secure since it doesn't implement any form of access control for updating a name's address, and is only suitable for demonstration purposes.
+:::
+
+Since the mapping is stored internally, it costs gas for the owner of a name to update their address. This is great for a maximal decentralization, but is not always practical.
+
+## Offchain Resolvers
+
+An offchain resolver is a resolver that implements CCIP Read to defer a name's resolution to an HTTP server. This server can then load data from any source including offchain databases, APIs, or other blockchains. [Learn more about CCIP Read](/resolvers/ccip-read).
+
+An equivalent offchain resolver to the above onchain example looks something like this:
+
+```solidity
+contract OffchainResolver {
+    string public url =
+        "https://docs.ens.domains/api/example/basic-gateway";
+
+    error OffchainLookup(
+        address sender,
+        string[] urls,
+        bytes callData,
+        bytes4 callbackFunction,
+        bytes extraData
+    );
+
+    function addr(bytes32 node) external view returns (address) {
+        bytes memory callData = abi.encodeWithSelector(
+            OffchainResolver.addr.selector,
+            node
+        );
+
+        string[] memory urls = new string[](1);
+        urls[0] = url;
+
+        revert OffchainLookup(
+            address(this),
+            urls,
+            callData,
+            OffchainResolver.addrCallback.selector,
+            abi.encode(callData, address(this))
+        );
+    }
+
+    function addrCallback(
+        bytes calldata response,
+        bytes calldata
+    ) external pure returns (address) {
+        address _addr = abi.decode(response, (address));
+        return _addr;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceID
+    ) external pure returns (bool) {
+        return
+            interfaceID == OffchainResolver.supportsInterface.selector ||
+            interfaceID == OffchainResolver.addr.selector;
+    }
+}
+```
+
+:::note
+This is not secure since it doesn't implement any form of verification in the callback function, and is only suitable for demonstration purposes.
+:::
+
+Any ENS name that sets its resolver to this contract would resolve to whatever address the Gateway returns, which can be changed at any time offchain for free. See the [gateway code here](https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts).
+
+For the same functionality to work with subnames, you'd need to implement the `resolve()` method from ENSIP-10. A feature-complete example can be found [here](https://github.com/ensdomains/ccip-tools/blob/master/contracts/OffchainResolver.sol), and easily deployed via https://ccip-tools.pages.dev.
