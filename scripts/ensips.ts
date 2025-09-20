@@ -1,8 +1,9 @@
 import fs from 'fs/promises'
 import matter from 'gray-matter'
-import { Tokens, marked } from 'marked'
 import path from 'path'
 import { SidebarItem } from 'vocs'
+
+import { getFirstHeadingToken } from './utils'
 
 type DirectoryContents = {
   name: string
@@ -103,13 +104,6 @@ export async function ensips() {
       )
     )
   }
-}
-
-function getFirstHeadingToken(description: string) {
-  const tokens = marked.lexer(description)
-  return tokens.find(
-    (token) => token.type === 'heading' && token.depth === 1
-  ) as Tokens.Heading | undefined
 }
 
 function parseDate(date: Date | string) {
