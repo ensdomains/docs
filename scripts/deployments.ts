@@ -171,7 +171,7 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
     ],
   },
   {
-    name: 'Holesky',
+    name: 'Holesky: Deprecated',
     slug: 'holesky',
     contracts: [
       {
