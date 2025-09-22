@@ -39,7 +39,7 @@ Click **Make a contribution** at the bottom of any docs page to make small chang
 4. For a fresh clone, run `pnpm install`
 5. Build the docs locally with `pnpm run build` to ensure your changes are valid.
 
-> Optionally, serve on local host with `pnpm dlx serve src/dist` to view your build in the browser.
+> Optionally, serve on local host with `pnpm run dev` to view your build in the browser.
 
 ### Commit your update
 
