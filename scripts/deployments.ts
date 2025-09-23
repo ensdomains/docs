@@ -94,6 +94,7 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
       },
       {
         name: 'Universal Resolver',
+        address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
         github: {
           filename: 'UniversalResolver',
           srcPath: 'contracts/utils/',
@@ -163,6 +164,7 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
       },
       {
         name: 'Universal Resolver',
+        address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
         github: {
           filename: 'UniversalResolver',
           srcPath: 'contracts/utils/',
@@ -232,6 +234,7 @@ let DEPLOYMENTS: DeploymentsByChain[] = [
       },
       {
         name: 'Universal Resolver',
+        address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
         github: {
           filename: 'UniversalResolver',
           srcPath: 'contracts/utils/',
@@ -264,8 +267,8 @@ export async function deployments() {
               `https://raw.githubusercontent.com/ensdomains/ens-contracts/staging/deployments/${chain.slug}/${contract.github.filename}.json`
             ).then((res) => res.json() as Promise<DeploymentFile>)
 
-            // Add the contract address to the deployment
-            contract.address = res.address
+            // Add the contract address to the deployment, if it's not hardcoded in the list above
+            contract.address = contract.address || res.address
           })
         )
       })
