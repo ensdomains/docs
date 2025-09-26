@@ -76,14 +76,10 @@ An alternative approach, which would be more efficient in this case, is to set t
 ## Getting a Primary Name
 
 :::info
-**Important**: After retrieving a name from reverse resolution, you **must** verify it by performing a forward resolution on that name to confirm it still resolves to the original address. This prevents spoofing or misconfiguration. If the addresses don't match, display the original address instead of the name.
+**Important**: After retrieving a name from reverse resolution, you **must** verify it by performing a forward resolution on that name to confirm it still resolves to the original address. This prevents spoofing or misconfiguration. If the addresses don't match, display the original address instead of the name. Most libraries will handle this for you.
 :::
 
-Looking up a users primary name is very simple. In most web3 libraries (wagmi, viem, ethers, web3py, etc.), you will find a built-in function to do a lookup by address as shown below. In most cases, the library will handle the verification for you.
-
-:::warning
-As of August 12, 2025, no library has been updated to support L2 Primary Names. Refer to [this temporary reference implementation](https://github.com/ensdomains/frontend-template/blob/main/src/hooks/useEnsName.tsx).
-:::
+Looking up a users L1 primary name is very simple. In most web3 libraries (wagmi, viem, ethers, web3py, etc.), you will find a built-in function to do a lookup by address as shown below. In most cases, the library will handle the verification for you.
 
 Remember that in all cases, ENS resolution always starts from Ethereum Mainnet.
 
@@ -154,6 +150,29 @@ func main() {
 }
 ```
 
+:::
+
+As of September 2025, Wagmi and Viem are the only libraries that support L2 Primary Names, and they can be used like this:
+
+```tsx [Wagmi]
+// https://wagmi.sh/react/hooks/useEnsName
+import { toCoinType } from 'viem'
+import { useEnsName } from 'wagmi'
+import { base, mainnet } from 'wagmi/chains'
+
+export const Name = () => {
+  const { data: name } = useEnsName({
+    address: '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5',
+    chainId: mainnet.id, // resolution always starts from L1
+    coinType: toCoinType(base.id), // [!code ++]
+  })
+
+  return <div>Name: {name}</div>
+}
+```
+
+:::info
+The official implementation has a propogation period of up to 6 hours. If you're participating in a hackathon and need to resolve a name immediately, you can use [this implementation](https://github.com/ensdomains/frontend-template/blob/main/src/hooks/useEnsName.tsx) instead (not recommended for production use).
 :::
 
 🎉 And that's it! Now you can turn all your pages from this, to this:
