@@ -1,0 +1,60 @@
+---
+authors:
+  - brantly.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.20] [Executable] Reimbursement for eth.limo’s Legal Fees
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21468)                                                                                                                                                                                                            |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/28621945985399756809323229823216459792275185227390789031203077499124321674250), [Tally](https://tally.ensdao.org/dao/proposal/28621945985399756809323229823216459792275185227390789031203077499124321674250) |
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-reimbursement-for-eth-limo-s-legal-fees/21435)
+
+### Summary
+
+This proposal aims to reimburse eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+
+### Background
+
+eth.limo provides critical public goods infrastructure for ENS, powering countless dApps and dWebsites. The eth.limo team is on call 24/7/365 to ensure uptime and availability as well as providing technical support for builders and projects. Operating such infrastructure involves not only technical upkeep but also significant human and legal costs.
+
+Recent legal requests and compliance requirements in the U.S. have resulted in substantial and unpredictable legal fees for our small team. For a more detailed background and context, please refer to our recent post:
+[Eth.limo - Legal Update & Full Summary](https://discuss.ens.domains/t/eth-limo-legal-update-full-summary/21377)
+
+## Links
+
+[Temperature Check](https://discuss.ens.domains/t/temp-check-reimbursement-for-eth-limo-s-legal-fees/21435)
+
+### Specification
+
+This executable proposal will initiate a transfer of 109,818.82 USDC from the ENS DAO treasury to ethdotlimo.eth. This amount represents the ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+
+### Transaction Details
+
+- **From**: ENS DAO Treasury (0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
+- **To**: USDC Token Contract (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
+- **Recipient**: ethdotlimo.eth (0xB352bB4E2A4f27683435f153A259f1B207218b1b)
+- **Amount**: 109,818.82 USDC (109818820000 considering USDC’s 6 decimal places)
+- **Purpose**: The reimbursement of eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+
+This transaction calls the `transfer` function of the USDC contract, transferring 109,818.82 USDC to eth.limo's address.
+
+## Calldata
+
+```
+{
+    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "value": 0,
+    "calldata": "0xa9059cbb000000000000000000000000b352bb4e2a4f27683435f153a259f1b207218b1b0000000000000000000000000000000000000000000000000000001991b635a0"
+}
+```
+
+### Rationale
+
+By approving this reimbursement, ENS DAO affirms the importance of supporting eth.limo’s legal expenses so the service can continue operating a free, public ENS gateway for Ethereum-native dApps and content.
