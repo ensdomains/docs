@@ -54,12 +54,6 @@ const ensLibraries: Language[] = [
         official: true,
       },
       {
-        href: 'https://web3js.readthedocs.io/',
-        name: 'Web3.js',
-        description: '',
-        logo: '/img/libraries/web3js.svg',
-      },
-      {
         href: 'https://portal.thirdweb.com/typescript/v5',
         name: 'Thirdweb',
         description: '',
@@ -72,13 +66,7 @@ const ensLibraries: Language[] = [
     logo: <FaRust />,
     libraries: [
       {
-        href: 'https://ethers.rs/',
-        name: 'Ethers.rs',
-        description: '',
-        logo: undefined,
-      },
-      {
-        href: 'https://github.com/alloy-rs/',
+        href: 'https://github.com/alloy-rs/alloy/tree/main/crates/ens',
         name: 'Alloy',
         description: '',
         logo: undefined,
