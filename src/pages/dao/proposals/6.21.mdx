@@ -1,0 +1,56 @@
+---
+authors:
+  - slobo.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.21] [Executable] Set Primary Names for Core DAO Addresses
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                   |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/108835189906614532703236602621229289879643217303874617456878894788222576090451), [Tally](https://tally.ensdao.org/dao/proposal/108835189906614532703236602621229289879643217303874617456878894788222576090451) |
+
+## Abstract
+
+Several ENS DAO contracts lack primary names. This proposal establishes reverse records for core DAO addresses.
+
+## Motivation
+
+By setting reverse records for core DAO addresses:
+
+- ENS DAO demonstrates best practices by using its own protocol fully, serving as an example for other DAOs
+- ENS DAO contracts become easier to identify and navigate
+- Names will resolve on sites that list the contracts like [enswallets.xyz](https://www.enswallets.xyz/)
+
+## Details
+
+Executing this proposal will set primary names for
+
+1. The [ENS DAO wallet](https://etherscan.io/address/0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
+2. The [ENS token](https://etherscan.io/address/0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72)
+3. The [ENS Endowment wallet](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64)
+
+## Specification
+
+Call `setName("wallet.ensdao.eth")` on the Reverse Registrar (reverse.ens.eth) to set the reverse record of 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7.
+
+Call `setNameForAddr(0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72, 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7, 0xF29100983E058B709F3D539b0c765937B804AC15, "token.ensdao.eth")` on the Reverse Registrar to set the reverse record of 0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72.
+
+Call `execTransaction()` on the Endowment multisig (endowment.ensdao.eth) with the encoded calldata for `setName("endowment.ensdao.eth")` to set the reverse record of 0x4F2083f5fBede34C2714aFfb3105539775f7FE64. The Safe transaction looks like this:
+
+```
+To: 0xa58E81fe9b61B5c3fE2AFD33CF304c454AbFc7Cb
+Value: 0
+Data: 0xc47f002700000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000014656e646f776d656e742e656e7364616f2e657468000000000000000000000000
+Operation: 0
+SafeTxGas: 0
+BaseGas: 0
+GasPrice: 0
+GasToken: 0x0000000000000000000000000000000000000000
+RefundReceiver: 0x0000000000000000000000000000000000000000
+Signatures: 0x000000000000000000000000Fe89cc7aBB2C4183683ab71653C4cdc9B02D44b7000000000000000000000000000000000000000000000000000000000000000001
+```
