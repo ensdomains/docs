@@ -29,9 +29,21 @@ The schema for the ENS subgraph is defined in [/schema.graphql](https://github.c
 There are certain use cases where the graph is better for querying ENS specific information than through the resolution process.
 One of such use-cases is querying which NFT names are owned by a specific address.
 
+## Terminology
+
+When using the subgraph, you may encounter `registrant` and `controller` fields. These were the old terminology for [Owner](/terminology#owner) and [Manager](/terminology#manager) respectively.
+
+The `registrant` address is the owner of a name. It's the same value that will be returned from calling `ownerOf()` on the Base Registrar Controller (registrar.ens.eth). A registrant/owner may transfer ownership and assign a controller/manager.
+
+The `controller` address is the manager of a name. It's the same value that will be returned from calling `owner()` on the ENS Registry (registry.ens.eth). A controller/manager may change the resolver of a name and set its records.
+
 ## Example Queries
 
-One can explore the following examples interactively via the [Graph Explorer Playground](https://thegraph.com/explorer/subgraphs/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH?view=Playground&chain=arbitrum-one)
+:::note
+Most of these example queries have equivalent functionality in [ENSjs](https://github.com/ensdomains/ensjs/tree/main/docs).
+:::
+
+You can explore the following examples interactively via the [Graph Explorer Playground](https://thegraph.com/explorer/subgraphs/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH?view=Playground&chain=arbitrum-one)
 
 ### Getting a list of names owned by an account
 
