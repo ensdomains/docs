@@ -35,9 +35,9 @@ Top-level domain. This refers to names like `eth`, `com`, `xyz` which lie at the
 .eth .com .xyz
 ```
 
-## Controller
+## Manager
 
-The account that may edit the records of a name. The Controller may be changed by the Registrant or Controller.
+The account that may edit the records of a name. The Manager may be changed by the Owner.
 
 ## Label
 
@@ -57,7 +57,7 @@ A cryptographic hash uniquely identifying a name.
 
 ## Owner
 
-The owner of a name is the entity referenced in the ENS registry's owner field. An owner may transfer ownership, set a resolver or TTL, and create or reassign subdomains.
+The owner of a name is the entity referenced in the ENS registry's owner field. An owner may transfer ownership, set a resolver, and create or reassign subdomains.
 
 ## Record
 
@@ -70,10 +70,6 @@ A registration is a registrar's record of a user's ownership of a name. This is 
 ### Registrar
 
 A registrar is a contract responsible for allocating subdomains. Registrars can be configured at any level of ENS, and are pointed to by the owner field of the registry.
-
-### Registrant
-
-The owner of a registration. The registrant may transfer the registration, set the Controller, and reclaim ownership of the name in the registry if required.
 
 ### Registry
 
