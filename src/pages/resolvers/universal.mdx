@@ -15,7 +15,7 @@ Adopting the universal resolver will make the transition to [ENSv2](https://ens.
 
 ## Implementation Guide
 
-The universal resolver is the only ENS smart contract that should to be hardcoded into an application for resolution. You can find the [latest deployment addresses here](/learn/deployments).
+The Universal Resolver should be treated as the canonical entrypoint to ENS for name resolution. `0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe` is the official deployment address on Ethereum Mainnet and testnets, which is a proxy contract owned by ENS DAO that will be upgraded to support [ENSv2](https://ens.domains/ensv2) in the future.
 
 This guide assumes that your application already supports [CCIP Read](https://eips.ethereum.org/EIPS/eip-3668).
 
