@@ -15,7 +15,7 @@ In order to ensure that resolvers we interact with are compatible with specific 
 
 Interface IDs are calculated according to solidity ABI and stored in a four-byte value.
 
-## Updating a user's Record
+## Updating a User's Record
 
 If you want to help a user set their avatar, specify a preferred color scheme, or set any other record on their ENS name you can do so in specific cases.
 
@@ -57,17 +57,20 @@ const hash = await setRecords(wallet, {
 
 :::
 
-Please make it clear to the user what you are doing and why. If possible please also showcase the record you are setting to the user before you do so.
+Note that only the [Manager](/terminology#manager) of a name can set records on the resolver. For unwrapped names, the manager can be found by calling `owner()` on the ENS Registry. For wrapped names, the manager can be found by calling `ownerOf()` on the Name Wrapper. You can find the contract addresses [here](/learn/deployments#mainnet).
 
-## Update a user's Resolver
+## Update a User's Resolver
 
 Overwriting a user's resolver involves overwriting the behaviour of their ENS name.
 
-In order to overwrite the resolver for a user you need to call the `setResolver` function on the `ENSRegistry` contract.
+To change the resolver of a name, the Manager must call `setResolver()` on either the ENS Registry or the Name Wrapper, depending on whether the name is wrapped or not.
+
+To figure out if a name is wrapped, call `owner()` on the ENS Registry. If this returns the address of the Name Wrapper, that indicates the name is wrapped and you should call `ownerOf()` on the Name Wrapper to get the effective owner of the name. You can find the contract addresses [here](/learn/deployments#mainnet).
 
 :::code-group
 
 ```solidity [Solidity]
+// Both the ENS Registry and the Name Wrapper implement this interface
 interface ENS {
     function setResolver(bytes32 node, address resolver) external;
 }
