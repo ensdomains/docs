@@ -2,14 +2,12 @@
 
 The Name Wrapper contract is deployed on these chains:
 
-- Mainnet: [wrapper.ens.eth](https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401#code) ( `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401` )
-- Sepolia: [wrapper.ens.eth](https://sepolia.etherscan.io/address/0x0635513f179D50A207757E05759CbD106d7dFcE8#code) ( `0x0635513f179D50A207757E05759CbD106d7dFcE8` )
+- Mainnet: [wrapper.ens.eth](https://etherscan.io/address/0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401#code)
+- Sepolia: [wrapper.ens.eth](https://sepolia.etherscan.io/address/0x0635513f179D50A207757E05759CbD106d7dFcE8#code)
 
 ## Wrapping and Unwrapping
 
-When wrapping a .eth 2LD, you transfer the Owner (Registrant) of the ERC-721 NFT to the Name Wrapper contract.
-
-The contract will then automatically take over the Manager (Controller) for the name as well.
+When wrapping a .eth 2LD, you're effectively transferring the ERC-721 NFT ownership to the Name Wrapper contract, which will take over the [Manager](/terminology#manager) role for the name as well.
 
 You can do this by calling the [wrapETH2LD](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrapeth2ld) method. Or, you can directly transfer the ERC-721 NFT to the Name Wrapper contract. In return, the contract issues you an ERC-1155 NFT.
 
@@ -25,7 +23,7 @@ wrapETH2LD(
 )
 ```
 
-When wrapping any other ENS name, you transfer the Manager (Controller) of the name to the Name Wrapper contract. You can do this by calling the [wrap](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrap) method. In return, the contract issues you an ERC-1155 NFT.
+When wrapping any other ENS name, you transfer the Manager of the name to the Name Wrapper contract. You can do this by calling the [wrap](https://github.com/ensdomains/ens-contracts/tree/master/contracts/wrapper#wrap) method. In return, the contract issues you an ERC-1155 NFT.
 
 ```solidity
 NameWrapper.wrap(bytes name, address wrappedOwner, address resolver)
