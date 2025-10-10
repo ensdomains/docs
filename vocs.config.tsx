@@ -336,14 +336,14 @@ export default defineConfig({
               text: 'Overview',
               link: '/contracts/ensv2/overview',
             },
-            {
-              text: 'Registries',
-              link: '/contracts/ensv2/registries',
-            },
-            {
-              text: 'Resolvers',
-              link: '/contracts/ensv2/resolvers',
-            },
+            // {
+            //   text: 'Registries',
+            //   link: '/contracts/ensv2/registries',
+            // },
+            // {
+            //   text: 'Resolvers',
+            //   link: '/contracts/ensv2/resolvers',
+            // },
           ],
         },
       ],
