@@ -10,13 +10,13 @@ ENSv2 introduces a suite of upgraded smart-contracts designed to make the protoc
 more scalable, modular and future-proof. This section will outline the high-level
 architecture, guiding principles and migration strategy for ENSv2.
 
-> **Note**
-> The information on this page is a work-in-progress. Expect updates as the
-> design is finalised and audits are completed.
+:::note
+The information on this page is a work-in-progress. Expect updates as the design is finalised and audits are completed.
+:::
 
 ## What's new in ENSv2?
 
-- **Native L2 Support** – contracts have been designed with Namechain and other Layer 2 deployments
+- **Native L2 Support** – contracts have been designed with [Namechain](https://ens.domains/ensv2) and other Layer 2 deployments
   with cross-chain resolution in mind, building on existing [CCIP-Read support in ENSv1](/resolvers/ccip-read).
 - **Hierarchical Registries** – while ENSv1 used a single flat registry for all
   names, ENSv2 allows each name to provide its own registry implementation for
@@ -37,16 +37,16 @@ architecture, guiding principles and migration strategy for ENSv2.
 
 ## What hasn't changed?
 
- - **Resolvers** - while we have developed new resolver contracts to take advantage
-   of the changed environment enabled by ENSv2 and Namechain, the interface used
-   by resolvers remains the same, and all existing ENSv1 resolvers will continue
-   to work seamlessly in ENSv2.
- - **True Ownership** - ENSv2 continues to prioritize trust minimization, enabling
-   you to own your name fully, without having to worry about interference from
-   centralized third-parties.
- - **Truly multi-chain** - Although ENSv2 hosts .eth names on Namechain by default,
-   ENS continues to support all L2s. Names can be 'ejected' from Namechain to L1,
-   and from there can either be managed directly on L1 or delegated to another L2.
+- **Resolvers** - while we have developed new resolver contracts to take advantage
+  of the changed environment enabled by ENSv2 and Namechain, the interface used
+  by resolvers remains the same, and all existing ENSv1 resolvers will continue
+  to work seamlessly in ENSv2.
+- **True Ownership** - ENSv2 continues to prioritize trust minimization, enabling
+  you to own your name fully, without having to worry about interference from
+  centralized third-parties.
+- **Truly multi-chain** - Although ENSv2 hosts .eth names on Namechain by default,
+  ENS continues to support all L2s. Names can be 'ejected' from Namechain to L1,
+  and from there can either be managed directly on L1 or delegated to another L2.
 
 ## ENSv2 Registry Architecture
 
@@ -182,12 +182,12 @@ Roles can also be granted for the registry contract as a whole, and an account m
 a role if it has the role granted for the specific name or on the contract as a whole. Some roles, such as
 creating new subnames, are available only as contract-wide roles.
 
-By selectively revoking roles, all the functionality of the ENSv1 name wrapper can be replicated - for example,
+By selectively revoking roles, all the functionality of the [ENSv1 name wrapper](/wrapper/overview) can be replicated - for example,
 the owner of wallet.eth can grant a registrar contract the 'registrar' role on the wallet.eth registry,
 while revoking their own contract-wide 'set resolver' and 'set subregistry' roles and admin roles on the same
-registry.  If they then revoke the 'set subregistry' role and admin role for the 'wallet' subname on the 'eth'
+registry. If they then revoke the 'set subregistry' role and admin role for the 'wallet' subname on the 'eth'
 registry, they will no longer be able to modify wallet.eth subnames they don't own - giving the same effect as
-'emancipating' a name in the ENSv1 name wrapper.
+['emancipating'](/terminology#emancipated) a name in the ENSv1 name wrapper.
 
 When a subname is transferred to a new owner, any roles that were granted to the previous owner are automatically
 transferred to the new owner, but roles granted to other accounts remain unmodified - so it is important that
