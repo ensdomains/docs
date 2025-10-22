@@ -1,0 +1,121 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.23] [Executable] Endowment permissions to karpatkey - Update #6
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21396/)                                                                                                                                                                                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/12950686153984121876325788121804936905339482144562527684056466889156345680789), [Tally](https://tally.ensdao.org/dao/proposal/12950686153984121876325788121804936905339482144562527684056466889156345680789) |
+
+# Abstract
+
+This proposal introduces updated permissions for the Endowment, with a continued focus on diversification and alignment with the evolving market landscape and liquidity.
+
+# Motivation
+
+The proposed new permissions focus on strategies involving:
+
+- Airdrop claim: Claim the SPK airdrop and add permissions to swap the SPK token
+- Additional permissions on already permitted platforms for generating yield on Endowment assets, including:
+  - Balancer v3 pools: since the protocol upgrade in December 2024, liquidity and incentives have been migrating from v2 to v3 pools
+  - Curve ETH stable-pair pools
+- New platform for generating yield on permitted assets: Morpho
+  - Morpho has now established itself as one of the leading lending platforms in DeFi and presents various attractive yield opportunities that can complement and diversify the current strategies for both ETH and stablecoins. With its minimal and immutable code, market isolation with singular collateral/loan pairs, and strong institutional backing, Morpho is one of the safest and most robust lending platforms.
+- CowSwap TWAP functionality:
+  - kpk worked with the Gnosis Guild team to enable support for TWAP functionality in the Zodiac Roles module, which will unlock additional value when transacting with Endowment funds. TWAP orders allow large orders to be broken down into smaller chunks, reducing market impact and ensuring higher-quality execution.
+- Remove irrelevant permissions:
+  - Remove USDM- and related- permissions, as [USDM has been acquired and wound down](https://medium.com/@MountainUSDM/mountain-protocol-signs-definitive-agreement-to-be-acquired-by-anchorage-digital-716d8b35c30c).
+
+# Specification
+
+## New permissions implemented in this payload
+
+### Airdrop Claim
+
+- Spark - [Link](https://app.spark.fi/spk/airdrop)
+  - Check eligibility & claim SPK
+
+### Money Markets
+
+- AAVE v3 - [Link](https://app.aave.com/markets/?marketName=proto_mainnet_v3)
+  - Deposit & Withdraw ETHx & claim rewards - [Link](https://app.aave.com/reserve-overview/?underlyingAsset=0xa35b1b31ce002fbf2058d22f30f95d405200a15b&marketName=proto_mainnet_v3)
+- Spark - [Link](https://app.spark.fi/markets)
+  - Deposit & Withdraw USDC & claim rewards - [Link](https://app.spark.fi/markets/1/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)
+  - Deposit & Withdraw USDT & claim rewards - [Link](https://app.spark.fi/markets/1/0xdAC17F958D2ee523a2206206994597C13D831ec7)
+  - Deposit & Withdraw USDS & claim rewards - [Link](https://app.spark.fi/markets/1/0xdC035D45d973E3EC169d2276DDab16f1e407384F)
+  - Deposit & Withdraw wstETH & claim rewards - [Link](https://app.spark.fi/markets/1/0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0)
+- Compound V3
+  - Deposit & Withdraw USDS & claim rewards
+
+## Morpho Lending Markets
+
+Deposit, Withdraw, and Claim Rewards for the following morpho markets
+
+- [cbBTC/USDC](https://app.morpho.org/ethereum/market/0x64d65c9a2d91c36d56fbc42d69e979335320169b3df63bf92789e2c8883fcc64/cbbtc-usdc?subTab=advanced) (86%)
+- [wstETH/WETH](https://app.morpho.org/ethereum/market/0xb8fc70e82bc5bb53e773626fcc6a23f7eefa036918d7ef216ecfb1950a94a85e/wsteth-weth) (96.5%)
+- [wstETH/WETH](https://app.morpho.org/ethereum/market/0xd0e50cdac92fe2172043f5e0c36532c6369d24947e40968f34a5e8819ca9ec5d/wsteth-weth) (94.5%)
+- [WBTC/USDC](https://app.morpho.org/ethereum/market/0x3a85e619751152991742810df6ec69ce473daef99e28a64ab2340d7b7ccfee49/wbtc-usdc?tab=market&subTab=advanced) (86%)
+- [wstETH/USDC](https://app.morpho.org/ethereum/market/0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc/wsteth-usdc?tab=market&subTab=advanced) (86%)
+
+### Rebasing
+
+- Origin - [Link](https://app.originprotocol.com/#/ousd/)
+  - Enable rebasing for OETH (opt-in)
+
+### DEX LPing
+
+- Balancer V3: Deposit (provide liq.), stake LP tokens, claim rewards, unstake and withdraw
+  - [wstETH-WETH](https://balancer.fi/pools/ethereum/v3/0xc4ce391d82d164c166df9c8336ddf84206b2f812)
+  - [osETH-WETH](https://balancer.fi/pools/ethereum/v3/0x57c23c58b1d8c3292c15becf07c62c5c52457a42)
+  - [WETH-ETHx](https://balancer.fi/pools/ethereum/v3/0x4ab7ab316d43345009b2140e0580b072eec7df16)
+- Aura Finance: Deposit (stake LP or single asset entry), claim rewards, unstake
+  - [wstETH-WETH](https://app.aura.finance/#/1/pool/240)
+  - [osETH-WETH](https://app.aura.finance/#/1/pool/260)
+- Curve: Deposit (provide liq.), stake LP tokens, claim rewards, unstake and withdraw
+  - [ETHx-ETH](https://www.curve.finance/dex/ethereum/pools/factory-v2-338/deposit/)
+  - [osETH-rETH](https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-15/deposit/)
+  - [OETH-WETH](https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-402/deposit/)
+- Convex: stake LP tokens, claim rewards, unstake LP tokens, and withdraw
+  - ETHx-ETH
+  - osETH-rETH
+
+### Swaps
+
+- CowSwap and Uniswap swap:
+  - Tokens in:
+    - SPK, MORPHO
+  - Tokens Out:
+    - USDC, USDT, DAI, USDS
+- CowSwap TWAP:
+  - Tokens in:
+    - USDC, USDT, USDS, ETH
+  - Tokens Out:
+    - USDC, USDT, USDS, ETH
+
+### Remove permissions
+
+- USDM from all permissions
+  - Curve: Remove permissions for swap, liquidity provision, staking, claim rewards, unstake and withdraw
+    - [sDAI-USDM](https://www.curve.finance/dex/ethereum/pools/factory-stable-ng-23/deposit/)
+  - Remove USDM from Token IN and Token OUT for all swaps
+
+## Implications on the ENS Investment Policy Statement
+
+There are no material implications to the ENS Investment Policy Statement as a result of the abovementioned changes. The [Investment Policy Statement](https://copper-added-anglerfish-892.mypinata.cloud/ipfs/bafybeiajihjdrplt75h36upclptjmkqziboekuf7e25fgfuyk2m54sonfi) is pinned on IPFS.
+
+# Zodiac Roles Modifier Permissions Policy
+
+The payload to be executed upon the successful approval of this proposal can be found [here](https://github.com/karpatkey/client-configs/blob/main/clients/ens-dao/mainnet/payloads/ensPermissionsUpdate6.json) (to be downloaded and dropped into [Safe’s transaction builder](https://app.safe.global/apps/open?safe=eth:0x4F2083f5fBede34C2714aFfb3105539775f7FE64&appUrl=https%3A%2F%2Fapps-portal.safe.global%2Ftx-builder)).
+
+The UI visualization of added (green), removed (red), and updated (blue) permissions is available [here](https://roles.gnosisguild.org/eth:0x703806E61847984346d2D7DDd853049627e50A40/roles/MANAGER/diff/RMyooL7Ul3J4BQkqjMtaGhwWTVUDApWnqPOLKDYeQk), as well as the resulting Tenderly simulation available [here](https://dashboard.tenderly.co/public/safe/safe-apps/simulator/491ff83d-726d-4cd7-9cb6-354b5ed5160a).
+
+The permissions in this proposal have been tested beforehand through our [Test Safe](https://app.safe.global/transactions/history?safe=eth:0xC01318baB7ee1f5ba734172bF7718b5DC6Ec90E1).
+
+EDIT: updated links to reflect inclusion of the permission to transfer SPK to the [ENS Timelock](https://etherscan.io/address/0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7).
