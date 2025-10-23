@@ -107,7 +107,7 @@ const client = createPublicClient({
 
 const resolveRes = await client.readContract({
   abi: universalResolverAbi,
-  address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+  address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
   functionName: 'resolve',
   args: [dnsEncodedName, data],
 })
@@ -162,7 +162,7 @@ const client = createPublicClient({
 
 const [primaryName] = await client.readContract({
   abi: universalResolverAbi,
-  address: '0xaBd80E8a13596fEeA40Fd26fD6a24c3fe76F05fB',
+  address: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
   functionName: 'reverse',
   args: [address, 60n],
 })
