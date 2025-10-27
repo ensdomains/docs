@@ -27,7 +27,7 @@
     "usehooks-ts": "^3.1.1",
     "viem": "^2.22.8",
     "vite": "^6.4.1",
-    "vocs": "^1.0.13",
+    "vocs": "^1.1.0",
     "wagmi": "^2.14.15"
   },
   "devDependencies": {

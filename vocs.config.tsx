@@ -26,7 +26,14 @@ export default defineConfig({
   baseUrl,
   ogImageUrl: baseUrl ? `${baseUrl}/api/og?title=%title` : undefined,
   editLink: {
-    pattern: 'https://github.com/ensdomains/docs/edit/master/src/pages/:path',
+    pattern: ({ filePath }) => {
+      if (filePath?.startsWith('ensip/')) {
+        const ensipNumber = filePath?.split('/')[1].split('.')[0] // ensip/5.mdx -> 5
+        return `https://github.com/ensdomains/ensips/edit/master/ensips/${ensipNumber}.md`
+      }
+
+      return `https://github.com/ensdomains/docs/edit/master/src/pages/${filePath}`
+    },
     text: 'Edit on Github',
   },
   socials: [
