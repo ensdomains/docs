@@ -94,14 +94,16 @@ const mainnetClient = createPublicClient({
   transport: http(),
 })
 
-// Use mainnetClient for ENS resolution
-const ensAddress = await mainnetClient.getEnsAddress({
+// Get the Base address for this ENS name
+const baseAddress = await mainnetClient.getEnsAddress({
   name: 'vitalik.eth',
+  coinType: 8453, // Base chain ID
 })
 ```
 
 ```tsx [Wagmi]
 import { createConfig, http } from 'wagmi'
+import { useEnsAddress } from 'wagmi'
 import { base, mainnet } from 'wagmi/chains'
 
 export const config = createConfig({
@@ -112,9 +114,15 @@ export const config = createConfig({
   },
 })
 
-// ENS resolution will automatically use Mainnet
+// In your component - ENS resolution automatically uses Mainnet
+function MyComponent() {
+  // Get Base address
+  const { data: baseAddress } = useEnsAddress({
+    name: 'vitalik.eth',
+    chainId: base.id,
+  })
+}
 ```
-
 
 ```ts [Ethers]
 import { ethers } from 'ethers'
@@ -125,8 +133,10 @@ const baseProvider = new ethers.getDefaultProvider('base')
 // Provider for ENS resolution on Mainnet
 const mainnetProvider = new ethers.getDefaultProvider('mainnet')
 
-// Use mainnetProvider for ENS lookups
-const address = await mainnetProvider.resolveName('vitalik.eth')
+// Get the Base address for this ENS name
+const resolver = await mainnetProvider.getResolver('vitalik.eth')
+const baseAddress = await resolver?.getAddress(8453) // Base chain ID
 ```
 
 :::
+
