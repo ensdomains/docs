@@ -1,36 +1,37 @@
 # Preparing for ENSv2 [Everything you need to know to prepare your application for ENSv2.]
 
-Preparing an application for [ENSv2](/contracts/ensv2/overview) should be as simple as updating to the latest version of a [supported library](/web/libraries). At the time of writing, not all libraries added support for ENSv2. Here is the current status:
+ENSv2 brings multi-chain support and improved architecture to ENS. While names can still be stored on Ethereum Mainnet, ENSv2 introduces Namechain as the primary Layer 2 for ENS, with support for additional L2s as well. To ensure your application works seamlessly with ENSv2, you'll need to make a few key updates.
+
+The good news? For most applications, preparing for ENSv2 is as simple as updating to the latest version of a [supported library](/web/libraries). At the time of writing, not all libraries have added ENSv2 support yet. Here's the current status:
 
 - [viem >= v2.35.0](https://github.com/wevm/viem/blob/main/src/CHANGELOG.md#2350)
 - ethers.js: Not published yet. [Work in progress on v6.16.0](https://github.com/ethers-io/ethers.js/tree/wip-v6.16.0-ens)
 - web3.js: Deprecated
 
-Following on this page are some integration-specific features of ENS that will be important to support in order to be ready for ENSv2:
+If you're using a supported library, it should handle everything automatically. The sections below explain what's happening under the hood and how to test that your integration is working correctly:
 
 ## Universal Resolver
 
-Although ENSv2 is designed with multi-chain in mind, resolution always starts on
-Ethereum Mainnet. In order to prepare for ENSv2, a new Universal Resolver [was deployed](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe)
-which acts as the canonical entry point and can be updated in the future if needed.
+Even though ENSv2 supports multi-chain, all resolution starts on Ethereum Mainnet. ENS deployed a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This resolver can be updated in the future if needed.
 
-Applications integrating ENS resolution need to switch over to the new Universal Resolver. As described above, this might be as simple as just updating the appropriate library to the latest version which supports Universal Resolver.
+Your application needs to use this new Universal Resolver. As mentioned above, updating to the latest version of your library should handle this automatically.
 
 Learn more about the [Universal Resolver here](/resolvers/universal) and about the [resolution process in general here](/resolution).
 
-### Test
+### Testing Universal Resolver Support
 
-To test if an integration uses the Universal Resolver, one can simply try to resolve the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`
+To test if your integration uses the Universal Resolver, try resolving the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`.
 
 ## CCIP Read
 
-Already with ENSv1 it is possible to delegate resolution from Ethereum Mainnet to an L2 or completely offchain with [CCIP Read as specified in ERC-3668](https://eips.ethereum.org/EIPS/eip-3668).
-All libraries mentioned above already implement CCIP Read. That being said, not all integrations do it properly. Since ENSv2 will introduce the option to store a name on Ethereum Mainnet, Namechain or any other supported L2, support for CCIP-read will be fundamental.
+ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or completely offchain using [CCIP Read (ERC-3668)](/learn/ccip-read). All the libraries mentioned above implement CCIP Read. However, not all integrations handle it properly.
+
+With ENSv2, you can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
 
 Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-read).
 
-### Test
+### Testing CCIP Read Support
 
-To test if an integration properly implements CCIP Read, one can simply try to resolve `test.offchaindemo.eth` which should return the address: `0x779981590E7Ccc0CFAe8040Ce7151324747cDb97`
+To test if your integration properly implements CCIP Read, try resolving `test.offchaindemo.eth`. It should return the address `0x779981590E7Ccc0CFAe8040Ce7151324747cDb97`.
 
 {/* ## DNS Resolution */}
