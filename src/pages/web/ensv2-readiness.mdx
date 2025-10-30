@@ -12,7 +12,7 @@ If you're using a supported library, it should handle everything automatically. 
 
 ## Universal Resolver
 
-Even though ENSv2 supports multi-chain, all resolution starts on Ethereum Mainnet. ENS deployed a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This resolver can be updated in the future if needed.
+Even though ENSv2 supports multi-chain, all resolution starts on Ethereum Mainnet. ENS deployed a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This resolver will be updated when ENSv2 launches.
 
 Your application needs to use this new Universal Resolver. As mentioned above, updating to the latest version of your library should handle this automatically.
 
@@ -67,3 +67,66 @@ This pattern correctly matches:
 - Subdomains like `ses.fkey.id`
 
 Learn more about [DNS integration here](/learn/dns).
+
+## Multichain Considerations
+
+Even if your application only operates on an L2 like Base, ENS resolution always starts on Ethereum Mainnet. This means you need to configure Mainnet alongside your L2 chain.
+
+### Configuring Both L2 and Mainnet
+
+Here's how to set up your application to use Base (or another L2) while ensuring ENS resolution works correctly by including Mainnet:
+
+:::code-group
+
+```ts [Viem]
+import { createPublicClient, http } from 'viem'
+import { base, mainnet } from 'viem/chains'
+
+// Client for Base transactions
+const baseClient = createPublicClient({
+  chain: base,
+  transport: http(),
+})
+
+// Client for ENS resolution on Mainnet
+const mainnetClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+})
+
+// Use mainnetClient for ENS resolution
+const ensAddress = await mainnetClient.getEnsAddress({
+  name: 'vitalik.eth',
+})
+```
+
+```tsx [Wagmi]
+import { createConfig, http } from 'wagmi'
+import { base, mainnet } from 'wagmi/chains'
+
+export const config = createConfig({
+  chains: [base, mainnet], // Include both your L2 and Mainnet
+  transports: {
+    [base.id]: http(),
+    [mainnet.id]: http(),
+  },
+})
+
+// ENS resolution will automatically use Mainnet
+```
+
+
+```ts [Ethers]
+import { ethers } from 'ethers'
+
+// Provider for Base
+const baseProvider = new ethers.getDefaultProvider('base')
+
+// Provider for ENS resolution on Mainnet
+const mainnetProvider = new ethers.getDefaultProvider('mainnet')
+
+// Use mainnetProvider for ENS lookups
+const address = await mainnetProvider.resolveName('vitalik.eth')
+```
+
+:::
