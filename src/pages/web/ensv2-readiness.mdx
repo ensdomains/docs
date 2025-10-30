@@ -1,0 +1,24 @@
+# Preparing for ENSv2 [Everything you need to know to prepare your application for ENSv2.]
+
+Preparing an application for [ENSv2](/contracts/ensv2/overview) should be as simple as updating to the latest version of a [supported library](/web/libraries). At the time of writing, not all libraries added support for ENSv2. Here is the current status:
+- [viem >= v2.35.0](https://github.com/wevm/viem/blob/main/src/CHANGELOG.md#2350)
+- ethers.js: Not published yet. [Work in progress on v6.16.0](https://github.com/ethers-io/ethers.js/tree/wip-v6.16.0-ens)
+- web3.js: Deprecated
+
+Following on this page are some integration-specific features of ENS that will be important to support in order to be ready for ENSv2:
+
+## Universal Resolver
+
+Although ENSv2 is designed with multi-chain in mind, resolution always starts on 
+Ethereum mainnet. In order to prepare for ENSv2, a new Universal Resolver [was deployed](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe)
+which acts as the canonical entry point and can be updated in the future if needed.
+
+Applications integrating ENS resolution need to switch over to the new Universal Resolver. As described above, this might be as simple as just update the according library to the latest version which supports Universal Resolver.
+
+Learn more about the [Universal Resolver here](/resolvers/universal) and about the [resolution process in general here](/resolution).
+
+### Test
+
+To test if an integration uses the Universal Resolver, one can simply try to resolve the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`
+
+## DNS Resolution
