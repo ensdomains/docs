@@ -34,4 +34,36 @@ Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-rea
 
 To test if your integration properly implements CCIP Read, try resolving `test.offchaindemo.eth`. It should return the address `0x779981590E7Ccc0CFAe8040Ce7151324747cDb97`.
 
-{/* ## DNS Resolution */}
+## DNS Resolution
+
+ENS supports importing DNS names into ENS, allowing traditional domain names to work alongside .eth names. It's important that your application correctly also detects DNS names to avoid false positives.
+
+### Common Mistake: Only Matching .eth
+
+Many integrations use a regex that only matches `.eth` domains:
+
+```regex
+^[a-zA-Z0-9-]+\.eth$
+```
+
+This is **incorrect** because it excludes DNS names imported into ENS (like `ensfairy.xyz`).
+
+### Correct Pattern: Match All Valid Domains
+
+Instead, your integration should match any valid domain name with a regex like this:
+
+```regex
+^(?:[\dA-Za-z-]+\.)+[A-Za-z]{2,}$
+```
+
+:::info
+The above regex is a simplification. An actual implementation is more complex. Use a library to detect an ENS name.
+:::
+
+This pattern correctly matches:
+
+- `.eth` names like `vitalik.eth`
+- DNS names like `ensfairy.xyz`
+- Subdomains like `ses.fkey.id`
+
+Learn more about [DNS integration here](/learn/dns).
