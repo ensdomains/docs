@@ -162,6 +162,10 @@ export default defineConfig({
           link: '/web/libraries',
         },
         {
+          text: 'ENSv2 Readiness',
+          link: '/web/ensv2-readiness',
+        },
+        {
           text: 'Web & Querying',
           items: [
             {

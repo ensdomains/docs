@@ -58,6 +58,7 @@ const navigation = [
       ['Name Wrapper', '/wrapper/overview'],
       ['Subgraph', '/web/subgraph'],
       ['Sign In With Ethereum (SIWE)', '/web/siwe'],
+      ['ENSv2 Readiness', '/web/ensv2-readiness'],
     ],
   },
 ]
