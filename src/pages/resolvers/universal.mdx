@@ -13,6 +13,13 @@ The Universal Resolver is a smart contract that simplifies the process of resolv
 
 Adopting the universal resolver will make the transition to [ENSv2](https://ens.domains/ensv2) seamless.
 
+## Test Case
+
+You might be asking yourself, "How do I know if my application is already using the Universal Resolver?"
+
+To answer that question, we've prepared a test case. If you're using the Universal Resolver, your app should resolve `ur.gtest.eth` to `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`. If it's not, it will resolve to `0x1111111111111111111111111111111111111111`.
+
+
 ## Implementation Guide
 
 The Universal Resolver should be treated as the canonical entrypoint to ENS for name resolution. `0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe` is the official deployment address on Ethereum Mainnet and testnets, which is a proxy contract owned by ENS DAO that will be upgraded to support [ENSv2](https://ens.domains/ensv2) in the future.
