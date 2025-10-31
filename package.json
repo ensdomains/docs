@@ -42,7 +42,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "vocs": "patches/vocs.patch"
+      "vocs@1.1.0": "patches/vocs@1.1.0.patch"
     }
   }
 }
