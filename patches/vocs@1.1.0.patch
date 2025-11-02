@@ -1,5 +1,5 @@
 diff --git a/_lib/vite/utils/search.js b/_lib/vite/utils/search.js
-index 2f120d050574cecfae452d746a025c89e31652f9..b580cd4364556d16b40828b894ba536b944f7f2a 100644
+index 2f120d050574cecfae452d746a025c89e31652f9..c0653118980cce351e08cabe8af50ac179b0e5f2 100644
 --- a/_lib/vite/utils/search.js
 +++ b/_lib/vite/utils/search.js
 @@ -27,7 +27,11 @@ export async function buildIndex({ baseDir, cacheDir }) {
@@ -15,3 +15,14 @@ index 2f120d050574cecfae452d746a025c89e31652f9..b580cd4364556d16b40828b894ba536b
          if (frontmatter.searchable === false) {
              cache.set(key, { mdx, document: [] });
              return [];
+@@ -41,8 +45,9 @@ export async function buildIndex({ baseDir, cacheDir }) {
+         const relFile = slash(relative(baseDir, fileId));
+         const href = relFile
+             .replace(relative(baseDir, resolve(baseDir, 'pages')), '')
+-            .replace(/\.(.*)/, '')
++            .replace(/\.(md|mdx)$/, '')
+             .replace(/\/index$/, '');
++
+         const document = sections.map((section) => ({
+             href: `${href}#${section.anchor}`,
+             html: section.html,
