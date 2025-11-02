@@ -17,15 +17,67 @@ Depending on your use case, there are a few ways to set a smart contract's prima
 If you want to be able to change the name later, you have two options:
 
 - **(Recommended)** Make the contract [Ownable](https://docs.openzeppelin.com/contracts/5.x/access-control) and set yourself as the owner.
-- Take ownership of the reverse node (`{address}.addr.reverse`) for the contract.
+- Take ownership of the reverse node (`{address}.addr.reverse`) for the contract. This only works for contracts on Ethereum Mainnet.
 
-The Ownable method is preferred since it's widely used and works well with Etherscan.
+The Ownable method is preferred since it doesn't require any additional code in many cases, and has the best Etherscan support.
 
-For contracts without admin permissions, you can set the reverse name in the constructor. This name can't be changed later.
+For immutable smart contracts (without an owner), you can set the reverse record directly in the constructor at the time of deployment.
 
 Let's look at a few examples.
 
-### ReverseClaimer.sol
+### Ownable (recommended)
+
+:::note
+An example of this is [ownable.contract.gtest.eth](https://etherscan.io/address/ownable.contract.gtest.eth#code)
+:::
+
+If you want to be able to change the name in the future, you can make your smart contract [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable).
+
+```solidity
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MyContract is Ownable {
+    constructor(address initialOwner) Ownable(initialOwner) {}
+}
+```
+
+[Reverse Registrars](/registry/reverse) on all supported chains understand the Ownable interface and will let the `owner()` of a contract set its reverse record without having to add any ENS-specific code.
+
+Once this contract is deployed, call `setNameForAddr()` on a Reverse Registrar from your authorized owner account on the relevant chain. Note that the arguments are slightly different on L1 and L2s.
+
+- The first address argument should be the address of your contract (both L1 and L2s)
+- The second address argument should be the owner of your smart contract (only L1)
+- The third address argument should be the `defaultResolver()` from the Reverse Registrar (only L1)
+- The last argument is the ENS name to set it to (both L1 and L2s)
+
+### Set a name in the constructor
+
+:::note
+An example of this [contract.gtest.eth](https://etherscan.io/address/contract.gtest.eth#code)
+:::
+
+If you don't want to be able to change the name in the future, you can call `setName()` on a Reverse Registrar directly from your contract's constructor. Your contract would look something like this:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+interface IReverseRegistrar {
+    function setName(string memory name) external returns (bytes32);
+}
+
+contract MyContract {
+    /// @param reverseRegistrar The address of the Reverse Registrar contract on the relevant chain to use.
+    /// @param name The reverse name to set for this contract's address.
+    constructor(address reverseRegistrar, string memory name) {
+        IReverseRegistrar(reverseRegistrar).setName(name);
+    }
+}
+```
+
+You can find the Reverse Registrar addresses [here](/registry/reverse#supported-chains).
+
+### ReverseClaimer.sol (L1 only)
 
 :::note
 While this method works perfectly at the ENS protocol level, Etherscan does not index the contract events correctly so it may not appear in their UI.
@@ -66,89 +118,16 @@ const node = getNodeFromParentNodeAndLabelhash(
 console.log(node)
 ```
 
-### Ownable (recommended)
-
-:::note
-An example of this is [ownable.contract.gtest.eth](https://etherscan.io/address/ownable.contract.gtest.eth#code)
-:::
-
-If you want to be able to change the name in the future, you can make your smart contract [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable).
-
-```solidity
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
-contract Contract is Ownable {
-    constructor(address initialOwner) Ownable(initialOwner) {}
-}
-```
-
-The [ReverseRegistrar](/registry/reverse) supports the Ownable interface and will let the `owner` of a contract set its primary name without having to add any ENS-specific code.
-
-Once this contract is deployed, call `setNameForAddr(address, address, address, string)` on the Reverse Registrar ([reverse.ens.eth](https://etherscan.io/address/reverse.ens.eth)) from your authorized owner account.
-
-- The first address argument is the address of your contract
-- The second address argument is the owner of your smart contract
-- The third address argument is the `defaultResolver()` from the Reverse Registrar
-- The fourth argument is the ENS name to set it to
-
-### Set a name in the constructor
-
-:::note
-An example of this [contract.gtest.eth](https://etherscan.io/address/contract.gtest.eth#code)
-:::
-
-If you don't want to be able to change the name in the future, you can inherit the following contract and assign an ENS name directly in the constructor.
-
-```solidity
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.21;
-
-interface ENS {
-    function owner(bytes32 node) external view returns (address);
-}
-
-interface IReverseRegistrar {
-    function setName(string memory name) external returns (bytes32);
-}
-
-// Variation of ReverseClaimer.sol from @ensdomains/ens-contracts that sets the reverse name directly.
-contract ReverseSetter {
-    /// @dev The ENS registry
-    ENS private constant ens = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
-
-    /// @dev Output of namehash("addr.reverse")
-    bytes32 private constant ADDR_REVERSE_NODE =
-        0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
-
-    /// @param name The reverse name to set for this contract's address.
-    constructor(string memory name) {
-        IReverseRegistrar reverseRegistrar = IReverseRegistrar(
-            ens.owner(ADDR_REVERSE_NODE)
-        );
-        reverseRegistrar.setName(name);
-    }
-}
-```
-
-Using this in your contract is as simple as:
-
-```solidity
-import {ReverseSetter} from "./ReverseSetter.sol";
-
-contract Contract is ReverseSetter {
-    constructor(string memory name) ReverseSetter(name) {}
-}
-```
-
 ## Existing Contracts
 
 If your contract is already deployed you might still be able to set a name for it.
-If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, read the section above.
+If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, [read the section above](#ownable-recommended).
 
 ### Safe, Multisig & DAO
 
-If your contract is a Safe, Multisig, DAO, or has a function that can send arbitrary ETH calls, you can use the [ReverseRegistrar](/registry/reverse) contract directly to set a name for it.
-You might even be able to use the [ENS Manager App](https://ens.app/) inside of your safe app to set a primary name.
+If your contract is a Safe, Multisig, DAO or otherwise has the ability to execute arbitrary calldata, you can use a [Reverse Registrar](/registry/reverse) contract directly to set a name for it.
+
+You might even be able to use the [ENS Manager App](https://app.ens.domains/) inside of your safe app to set a primary name.
 
 ## Naming Tools
 
@@ -161,7 +140,7 @@ These are 3rd party tools and not officially supported by ENS Labs.
 Enscribe simplifies what is otherwise a multi-step, error-prone process by offering:
 
 - Atomic contract deployment using `CREATE2`
-- Naming `Ownable`, `ERC173`, `ReverseClaimer` and `ReverseSetter` contracts as described above
+- Naming `Ownable`, `ERC173` and `ReverseClaimer` contracts as described above
 - ENS subname creation, forward resolution and reverse record assignment
 - Naming of existing contracts, with an easy way to locate contracts that you've already deployed
 
