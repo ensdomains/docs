@@ -1,0 +1,69 @@
+# Preparing for ENSv2 [Everything you need to know to prepare your application for ENSv2.]
+
+ENSv2 brings multi-chain support and improved architecture to ENS. While names can still be stored on Ethereum Mainnet, ENSv2 introduces Namechain as the primary Layer 2 for ENS, with support for additional L2s as well. To ensure your application works seamlessly with ENSv2, you'll need to make a few key updates.
+
+The good news? For most applications, preparing for ENSv2 is as simple as updating to the latest version of a [supported library](/web/libraries). At the time of writing, not all libraries have added ENSv2 support yet. Here's the current status:
+
+- [viem >= v2.35.0](https://github.com/wevm/viem/blob/main/src/CHANGELOG.md#2350)
+- ethers.js: Not published yet. [Work in progress on v6.16.0](https://github.com/ethers-io/ethers.js/tree/wip-v6.16.0-ens)
+- web3.js: Deprecated
+
+If you're using a supported library, it should handle everything automatically. The sections below explain what's happening under the hood and how to test that your integration is working correctly:
+
+## Universal Resolver
+
+Even though ENSv2 supports multi-chain, all resolution starts on Ethereum Mainnet. ENS deployed a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This resolver can be updated in the future if needed.
+
+Your application needs to use this new Universal Resolver. As mentioned above, updating to the latest version of your library should handle this automatically.
+
+Learn more about the [Universal Resolver here](/resolvers/universal) and about the [resolution process in general here](/resolution).
+
+### Testing Universal Resolver Support
+
+To test if your integration uses the Universal Resolver, try resolving the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`.
+
+## CCIP Read
+
+ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or completely offchain using [CCIP Read (ERC-3668)](/learn/ccip-read). All the libraries mentioned above implement CCIP Read. However, not all integrations handle it properly.
+
+With ENSv2, you can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
+
+Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-read).
+
+### Testing CCIP Read Support
+
+To test if your integration properly implements CCIP Read, try resolving `test.offchaindemo.eth`. It should return the address `0x779981590E7Ccc0CFAe8040Ce7151324747cDb97`.
+
+## DNS Resolution
+
+ENS supports importing DNS names into ENS, allowing traditional domain names to work alongside .eth names. It's important that your application correctly also detects DNS names to avoid false positives.
+
+### Common Mistake: Only Matching .eth
+
+Many integrations use a regex that only matches `.eth` domains:
+
+```regex
+^[a-zA-Z0-9-]+\.eth$
+```
+
+This is **incorrect** because it excludes DNS names imported into ENS (like `ensfairy.xyz`).
+
+### Correct Pattern: Match All Valid Domains
+
+Instead, your integration should match any valid domain name with a regex like this:
+
+```regex
+^(?:[\dA-Za-z-]+\.)+[A-Za-z]{2,}$
+```
+
+:::info
+The above regex is a simplification. An actual implementation is more complex. Use a library to detect an ENS name.
+:::
+
+This pattern correctly matches:
+
+- `.eth` names like `vitalik.eth`
+- DNS names like `ensfairy.xyz`
+- Subdomains like `ses.fkey.id`
+
+Learn more about [DNS integration here](/learn/dns).
