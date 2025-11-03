@@ -101,18 +101,12 @@ When you deploy your contract, the deployer account (`msg.sender`) will be given
 To find the reverse node for your contract address, you can use the following viem script:
 
 ```ts
-import { Hex, keccak256 } from 'viem'
 import { namehash } from 'viem/ens'
-
-function getNodeFromParentNodeAndLabelhash(parentNode: Hex, labelhash: Hex) {
-  return keccak256((parentNode + labelhash.split('0x')[1]) as Hex)
-}
 
 const myContractAddress = '0x...' // replace with your contract address
 
-const node = getNodeFromParentNodeAndLabelhash(
-  namehash('addr.reverse'),
-  labelhash(myContractAddress.slice(2).toLowerCase())
+const node = namehash(
+  `${myContractAddress.slice(2).toLowerCase()}.addr.reverse`
 )
 
 console.log(node)
