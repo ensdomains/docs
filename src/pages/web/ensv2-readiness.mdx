@@ -8,19 +8,23 @@ The good news? For most applications, preparing for ENSv2 is as simple as updati
 - ethers.js: Not published yet. [Work in progress on v6.16.0](https://github.com/ethers-io/ethers.js/tree/wip-v6.16.0-ens)
 - web3.js: Deprecated
 
-If you're using a supported library, it should handle everything automatically. The sections below explain what's happening under the hood and how to test that your integration is working correctly:
+:::info
+**Using a supported library? You're done!** Everything is handled automatically.
+
+The sections below are optional reading for those who want to understand the technical details or test their integration manually.
+:::
 
 ## Universal Resolver
 
-Even though ENSv2 supports multi-chain, all resolution starts on Ethereum Mainnet. ENS deployed a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This resolver will be updated when ENSv2 launches.
+Even though ENSv2 is designed for multi-chain, all resolution still starts on Ethereum Mainnet. There is a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This is an upgradable proxy contract, so its address won't change in the future if its implementation is changed.
 
-Your application needs to use this new Universal Resolver. As mentioned above, updating to the latest version of your library should handle this automatically.
+Your application needs to use this new Universal Resolver in order to be ready for ENSv2. As mentioned above, updating to the latest version of your supported web3 library handles this automatically.
 
 Learn more about the [Universal Resolver here](/resolvers/universal) and about the [resolution process in general here](/resolution).
 
 ### Testing Universal Resolver Support
 
-To test if your integration uses the Universal Resolver, try resolving the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`.
+To test if your integration uses the Universal Resolver, try resolving the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`. If it instead returns `0x1111111111111111111111111111111111111111`, you likely need to update your web3 library.
 
 ## CCIP Read
 
@@ -34,39 +38,40 @@ Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-rea
 
 To test if your integration properly implements CCIP Read, try resolving `test.offchaindemo.eth`. It should return the address `0x779981590E7Ccc0CFAe8040Ce7151324747cDb97`.
 
-## DNS Resolution
+## DNS Names and Name Detection
 
-ENS supports importing DNS names into ENS, allowing traditional domain names to work alongside .eth names. It's important that your application correctly also detects DNS names to avoid false positives.
+ENS supports importing DNS names into ENS, allowing legacy domain names to work alongside .eth names. It's important that your application correctly also detects DNS names.
 
 ### Common Mistake: Only Matching .eth
 
-Many integrations use a regex that only matches `.eth` domains:
+Many integrations check if the input ends with `.eth` in order to detect an ENS name:
 
-```regex
-^[a-zA-Z0-9-]+\.eth$
+```js
+if (input.endsWith('.eth') {
+  // ...
+}
 ```
 
 This is **incorrect** because it excludes DNS names imported into ENS (like `ensfairy.xyz`).
 
 ### Correct Pattern: Match All Valid Domains
 
-Instead, your integration should match any valid domain name with a regex like this:
+Instead, your integration should treat any dot-separated string with as a potential ENS name. For example, `a.co` should be treated as a potential ENS name.
 
-```regex
-^(?:[\dA-Za-z-]+\.)+[A-Za-z]{2,}$
+```js
+if (input.includes('.') && input.length > 2) {
+   // ...
+}
 ```
-
-:::info
-The above regex is a simplification. An actual implementation is more complex. Use a library to detect an ENS name.
-:::
 
 This pattern correctly matches:
 
 - `.eth` names like `vitalik.eth`
 - DNS names like `ensfairy.xyz`
 - Subdomains like `ses.fkey.id`
+- Emoji domains like `🦇️🔊️🦇️🔊️🦇️🔊️.eth`
 
-Learn more about [DNS integration here](/learn/dns).
+Learn more about [DNS integration here](/learn/dns). The full specification of name normalization is defined in [ENSIP-15](/ensip/15).
 
 ## Multichain Considerations
 
