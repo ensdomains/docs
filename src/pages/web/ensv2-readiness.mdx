@@ -32,7 +32,7 @@ ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or c
 
 With ENSv2, users can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
 
-In a nutshell, CCIP Read defers resolution to a gateway. Think of a gateway as an HTTP API. The response of the gateway can be verified with a read-call to the ENS contracts on Ethereum Mainnet (or Sepolia for testing). This means that your application needs to be able to send  HTTP requests as part of the ENS resolution process. As mentioned above, this is already handled by the web3 libraries in the background.
+In a nutshell, CCIP Read defers resolution to a gateway. Think of a gateway as an HTTP API. The response of the gateway can be verified with a read-call to the ENS contracts on Ethereum Mainnet (or Sepolia for testing). This means that your application needs to be able to send HTTP requests as part of the ENS resolution process. As mentioned above, this is already handled by the web3 libraries in the background.
 
 Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-read).
 
@@ -58,7 +58,7 @@ This is **incorrect** because it excludes DNS names imported into ENS (like `ens
 
 ### Correct Pattern: Match All Valid Domains
 
-Instead, your integration should treat any dot-separated string with as a potential ENS name. For example, `a.co` should be treated as a potential ENS name.
+Instead, your integration should treat any dot-separated string as a potential ENS name. For example, `a.co` should be treated as a potential ENS name.
 
 ```js
 if (input.includes('.') && input.length > 2) {
@@ -109,7 +109,8 @@ const baseAddress = await mainnetClient.getEnsAddress({
 ```
 
 ```tsx [Wagmi]
-import { createConfig, http, useEnsAddress, toCoinType } from 'wagmi'
+import { createConfig, http, useEnsAddress } from 'wagmi'
+import { toCoinType } from 'viem'
 import { base, mainnet } from 'wagmi/chains'
 
 export const config = createConfig({
@@ -153,5 +154,5 @@ It is possible to configure a different address per chain for the same name:
 From an application point of view it is important to be aware and always request the address for the correct chain, even on Ethereum Mainnet. All examples above explicitly set the `coinType` to Base, since they request the Base address for a given name.
 
 :::warning
-Omitting the cointype currently resolves the Ethereum Mainnet (or Sepolia on testnet) address. This address is not guaranteed to work on L2s. Always double check with your user when sending funds to such an address.
+Omitting the coinType currently resolves the Ethereum Mainnet (or Sepolia on testnet) address. This address is not guaranteed to work on L2s. Always double check with your user when sending funds to such an address.
 :::
