@@ -26,11 +26,13 @@ Learn more about the [Universal Resolver here](/resolvers/universal) and about t
 
 To test if your integration uses the Universal Resolver, try resolving the address for `ur.gtest.eth`. It should return `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE`. If it instead returns `0x1111111111111111111111111111111111111111`, you likely need to update your web3 library.
 
-## CCIP Read
+## Offchain and L2 Resolution with CCIP Read
 
 ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or completely offchain using [CCIP Read (ERC-3668)](/learn/ccip-read). All the libraries mentioned above implement CCIP Read. However, not all integrations handle it properly.
 
 With ENSv2, users can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
+
+In a nutshell, CCIP Read defers resolution to a gateway. Think of a gateway as an HTTP API. The response of the gateway can be verified with a read-call to the ENS contracts on Ethereum Mainnet (or Sepolia for testing). This means that your application needs to be able to send  HTTP requests as part of the ENS resolution process. As mentioned above, this is already handled by the web3 libraries in the background.
 
 Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-read).
 
