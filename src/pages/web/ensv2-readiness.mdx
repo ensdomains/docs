@@ -101,7 +101,7 @@ const mainnetClient = createPublicClient({
 
 // Get the Base address for this ENS name
 const baseAddress = await mainnetClient.getEnsAddress({
-  name: 'vitalik.eth',
+  name: 'test.ses.eth',
   coinType: toCoinType(base.id),
 })
 ```
@@ -127,13 +127,29 @@ function MyComponent() {
 }
 ```
 
+```ts [Ethers]
+import { ethers } from 'ethers'
 
+// Provider for Base
+const baseProvider = ethers.getDefaultProvider('base')
+
+// Provider for ENS resolution on Mainnet
+const mainnetProvider = ethers.getDefaultProvider('mainnet')
+
+// Get the Base address for this ENS name
+const resolver = await mainnetProvider.getResolver('test.ses.eth')
+const baseAddress = await resolver?.getAddress(8453) // Base chain ID
+```
 :::
 
-### Chain-Specific Addresses and Default Address
+### Chain-Specific Addresses
 
 It is possible to configure a different address per chain for the same name:
-- `test.ses.eth` resolves to `0x2B0F09F23193de2Fb66258a10886B9f06903276c` on Ethereum Mainnet, but
-- `test.ses.eth` resolves to `0x7d3a48269416507E6d207a9449E7800971823Ffa` on Base.
+- `test.ses.eth` resolves to `0x2B0F09F23193de2Fb66258a10886B9f06903276c` for Ethereum Mainnet, but
+- `test.ses.eth` resolves to `0x7d3a48269416507E6d207a9449E7800971823Ffa` for Base.
 
-From an application point of view it is important to be aware and always request the address for the correct chain, even on Ethereum Mainnet. All examples above explicitly set the `coinType` to Base, since they request the address on Base for a given name.
+From an application point of view it is important to be aware and always request the address for the correct chain, even on Ethereum Mainnet. All examples above explicitly set the `coinType` to Base, since they request the Base address for a given name.
+
+:::warning
+Omitting the cointype currently resolves the Ethereum Mainnet (or Sepolia on testnet) address. This address is not guaranteed to work on L2s. Always double check with your user when sending funds to such an address.
+:::
