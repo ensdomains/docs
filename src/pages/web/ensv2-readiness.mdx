@@ -30,7 +30,7 @@ To test if your integration uses the Universal Resolver, try resolving the addre
 
 ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or completely offchain using [CCIP Read (ERC-3668)](/learn/ccip-read). All the libraries mentioned above implement CCIP Read. However, not all integrations handle it properly.
 
-With ENSv2, you can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
+With ENSv2, users can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
 
 Learn more about [CCIP-Read, Offchain and L2 resolvers here](/resolvers/ccip-read).
 
@@ -75,7 +75,7 @@ Learn more about [DNS integration here](/learn/dns). The full specification of n
 
 ## Multichain Considerations
 
-Even if your application only operates on an L2 like Base, ENS resolution always starts on Ethereum Mainnet. This means you need to configure Mainnet alongside your L2 chain.
+Even if your application only operates on an L2 like Base, ENS resolution always starts on Ethereum Mainnet. This means you need to configure a Mainnet client alongside your L2 chain.
 
 ### Configuring Both L2 and Mainnet
 
@@ -84,7 +84,7 @@ Here's how to set up your application to use Base (or another L2) while ensuring
 :::code-group
 
 ```ts [Viem]
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, toCoinType } from 'viem'
 import { base, mainnet } from 'viem/chains'
 
 // Client for Base transactions
@@ -102,13 +102,12 @@ const mainnetClient = createPublicClient({
 // Get the Base address for this ENS name
 const baseAddress = await mainnetClient.getEnsAddress({
   name: 'vitalik.eth',
-  coinType: 8453, // Base chain ID
+  coinType: toCoinType(base.id),
 })
 ```
 
 ```tsx [Wagmi]
-import { createConfig, http } from 'wagmi'
-import { useEnsAddress } from 'wagmi'
+import { createConfig, http, useEnsAddress, toCoinType } from 'wagmi'
 import { base, mainnet } from 'wagmi/chains'
 
 export const config = createConfig({
@@ -119,29 +118,22 @@ export const config = createConfig({
   },
 })
 
-// In your component - ENS resolution automatically uses Mainnet
 function MyComponent() {
-  // Get Base address
   const { data: baseAddress } = useEnsAddress({
-    name: 'vitalik.eth',
-    chainId: base.id,
-  })
+    name: "test.ses.eth",
+    chainId: mainnet.id, // Always use mainnet for ENS resolution
+    coinType: toCoinType(base.id) // Always specify the coinType (chain)
+  });
 }
 ```
 
-```ts [Ethers]
-import { ethers } from 'ethers'
-
-// Provider for Base
-const baseProvider = new ethers.getDefaultProvider('base')
-
-// Provider for ENS resolution on Mainnet
-const mainnetProvider = new ethers.getDefaultProvider('mainnet')
-
-// Get the Base address for this ENS name
-const resolver = await mainnetProvider.getResolver('vitalik.eth')
-const baseAddress = await resolver?.getAddress(8453) // Base chain ID
-```
 
 :::
 
+### Chain-Specific Addresses and Default Address
+
+It is possible to configure a different address per chain for the same name:
+- `test.ses.eth` resolves to `0x2B0F09F23193de2Fb66258a10886B9f06903276c` on Ethereum Mainnet, but
+- `test.ses.eth` resolves to `0x7d3a48269416507E6d207a9449E7800971823Ffa` on Base.
+
+From an application point of view it is important to be aware and always request the address for the correct chain, even on Ethereum Mainnet. All examples above explicitly set the `coinType` to Base, since they request the address on Base for a given name.
