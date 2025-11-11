@@ -1,3 +1,5 @@
+import { Card } from '../../components/ui/Card'
+
 # Preparing for ENSv2 [Everything you need to know to prepare your application for ENSv2.]
 
 ENSv2 brings multi-chain support and improved architecture to ENS. While names can still be stored on Ethereum Mainnet, ENSv2 introduces Namechain as the primary Layer 2 for ENS, with support for additional L2s as well. To ensure your application works seamlessly with ENSv2, you'll need to make a few key updates.
@@ -156,3 +158,32 @@ From an application point of view it is important to be aware and always request
 :::warning
 Omitting the coinType currently resolves the Ethereum Mainnet (or Sepolia on testnet) address. This address is not guaranteed to work on L2s. Always double check with your user when sending funds to such an address.
 :::
+
+## Primary Names
+
+```mermaid
+graph LR
+    A[alice.eth] -.->|Forward Resolution| B[0x123...]
+    A <-->|Primary Name| B
+    B -.->|Reverse Resolution| A
+    E[eve.eth] -.->|Forward Resolution| B
+    F -.-> A
+    
+    style A fill:#C5DDCC
+    style B fill:#F8F6D6
+    style E fill:#F2C4DA
+```
+
+<Card className="flex items-center justify-center text-xl">
+  <div className="text-right font-bold">
+    <div className="opacity-20">eve.eth → <span className="font-mono">0x123...</span></div>
+    <div>alice<span className="text-blue">.eth</span> ↔ <span className="font-mono">0x123...</span></div>
+    <div className="opacity-20">alice.eth ← <span className="font-mono">0x789...</span></div>
+  </div>
+  <div className="text-left font-bold ml-4">
+    <div className="opacity-20">forward resolution</div>
+    <div>primary name</div>
+    <div className="opacity-20">reverse resolution</div>
+  </div>
+
+</Card>
