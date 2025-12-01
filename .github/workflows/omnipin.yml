@@ -2,7 +2,7 @@ name: Deploy with Omnipin
 
 on:
   push:
-    branches: main
+    branches: omnipin
 
 jobs:
   deploy:
