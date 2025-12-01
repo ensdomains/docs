@@ -20,6 +20,11 @@ jobs:
       - name: Install Omnipin
         run: pnpm i -g omnipin@1.6.2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+
       - name: Build website
         run: pnpm i && pnpm run build
 
