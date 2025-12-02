@@ -33,8 +33,8 @@ jobs:
         run: omnipin deploy src/dist --strict --ens ${{ vars.OMNIPIN_ENS }} --safe ${{ vars.OMNIPIN_SAFE }} --providers Storacha,Lighthouse
         env:
           # Storacha for uploads
-          STORACHA_TOKEN: ${{ secrets.OMNIPIN_STORACHA_TOKEN }}
-          STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
+          OMNIPIN_STORACHA_TOKEN: ${{ secrets.OMNIPIN_STORACHA_TOKEN }}
+          OMNIPIN_STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
 
           # Filebase for pinning
           # OMNIPIN_FILEBASE_TOKEN: ${{ secrets.OMNIPIN_FILEBASE_TOKEN }}
