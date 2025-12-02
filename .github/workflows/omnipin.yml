@@ -37,7 +37,8 @@ jobs:
           STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
 
           # Filebase for pinning
-          OMNIPIN_FILEBASE_TOKEN: ${{ secrets.OMNIPIN_FILEBASE_TOKEN }}
+          # OMNIPIN_FILEBASE_TOKEN: ${{ secrets.OMNIPIN_FILEBASE_TOKEN }}
+          # OMNIPIN_FILEBASE_BUCKET_NAME: ${{ secrets.OMNIPIN_FILEBASE_BUCKET_NAME }}
 
           # Wallet that proposes transactions to the Safe
           OMNIPIN_PK: ${{ secrets.OMNIPIN_PK }}
