@@ -2,7 +2,7 @@ name: Deploy with Omnipin
 
 on:
   push:
-    branches: master
+    branches: omnipin
 
 jobs:
   deploy:
@@ -35,6 +35,11 @@ jobs:
           # Storacha for uploads
           OMNIPIN_STORACHA_TOKEN: ${{ secrets.OMNIPIN_STORACHA_TOKEN }}
           OMNIPIN_STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
+
+          # Filecoin for uploads
+          OMNIPIN_FILECOIN_SP_URL: ${{ vars.OMNIPIN_FILECOIN_SP_URL }}
+          OMNIPIN_FILECOIN_SP_ADDRESS: ${{ vars.OMNIPIN_FILECOIN_SP_ADDRESS }}
+          OMNIPIN_FILECOIN_TOKEN: ${{ secrets.OMNIPIN_FILECOIN_TOKEN }}
 
           # Lighthouse for pinning
           OMNIPIN_LIGHTHOUSE_TOKEN: ${{ secrets.OMNIPIN_LIGHTHOUSE_TOKEN }}
