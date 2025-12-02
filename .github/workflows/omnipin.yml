@@ -37,8 +37,8 @@ jobs:
           OMNIPIN_STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
 
           # Filebase for pinning
-          # OMNIPIN_FILEBASE_TOKEN: ${{ secrets.OMNIPIN_FILEBASE_TOKEN }}
-          # OMNIPIN_FILEBASE_BUCKET_NAME: ${{ secrets.OMNIPIN_FILEBASE_BUCKET_NAME }}
+          OMNIPIN_FILEBASE_TOKEN: ${{ secrets.OMNIPIN_FILEBASE_TOKEN }}
+          OMNIPIN_FILEBASE_BUCKET_NAME: ${{ secrets.OMNIPIN_FILEBASE_BUCKET_NAME }}
 
           # Lighthouse for pinning
           OMNIPIN_LIGHTHOUSE_TOKEN: ${{ secrets.OMNIPIN_LIGHTHOUSE_TOKEN }}
