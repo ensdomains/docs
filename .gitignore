@@ -17,3 +17,4 @@ src/data/generated/*
 !src/data/generated/.keep
 
 .wrangler
+.claude
