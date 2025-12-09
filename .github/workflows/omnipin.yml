@@ -1,8 +1,11 @@
 name: Deploy with Omnipin
 
 on:
-  push:
-    branches: master
+  # Allow for manual triggering
+  workflow_dispatch:
+  # Automatically trigger at 9:30am UTC on the 1st of each month
+  schedule:
+    - cron: '30 9 1 * *'
 
 jobs:
   deploy:
