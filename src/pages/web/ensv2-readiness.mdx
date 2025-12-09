@@ -16,7 +16,7 @@ The sections below are optional reading for those who want to understand the tec
 
 ## Universal Resolver
 
-Even though ENSv2 is designed for multi-chain, all resolution still starts on Ethereum Mainnet. There is a [new Universal Resolver](https://eth.blockscout.com/address/0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe) that acts as the canonical entry point. This is an upgradable proxy contract, so its address won't change in the future if its implementation is changed.
+Even though ENSv2 is designed for multi-chain, all resolution still starts on Ethereum Mainnet. There is a [new Universal Resolver](/resolvers/universal) that acts as the canonical entry point. This is an upgradable proxy contract, owned be the ENS DAO, so its address won't change in the future if its implementation is changed.
 
 Your application needs to use this new Universal Resolver in order to be ready for ENSv2. As mentioned above, updating to the latest version of your supported web3 library handles this automatically.
 
