@@ -20,8 +20,13 @@ jobs:
       - name: Install bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install Omnipin
-        run: pnpm i -g omnipin@1.6.2
+      - name: Install Omnipin from fork
+        run: |
+          git clone -b patch-safe-proposal https://github.com/gskril/omnipin.git /tmp/omnipin
+          cd /tmp/omnipin
+          bun install
+          bun run build
+          pnpm i -g .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -44,8 +49,6 @@ jobs:
           OMNIPIN_STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
 
           # Filecoin for uploads
-          OMNIPIN_FILECOIN_SP_URL: ${{ vars.OMNIPIN_FILECOIN_SP_URL }}
-          OMNIPIN_FILECOIN_SP_ADDRESS: ${{ vars.OMNIPIN_FILECOIN_SP_ADDRESS }}
           OMNIPIN_FILECOIN_TOKEN: ${{ secrets.OMNIPIN_FILECOIN_TOKEN }}
 
           # Lighthouse for pinning
