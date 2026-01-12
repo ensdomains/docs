@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "generate": "bun scripts/run-plugins.ts",
-    "dev": "pnpm generate && vocs dev",
-    "build": "pnpm generate && vocs build",
+    "dev": "bun run generate && vocs dev",
+    "build": "bun run generate && vocs build",
     "preview": "vocs preview",
-    "deploy": "pnpm build && wrangler pages deploy"
+    "deploy": "bun run build && wrangler pages deploy"
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "0.1.2",
@@ -36,9 +36,9 @@
     "prettier-plugin-tailwindcss": "0.7.2",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "bun@1.2.8",
   "engines": {
     "node": ">=22",
-    "pnpm": ">=10"
+    "bun": ">=1.2.8"
   }
 }

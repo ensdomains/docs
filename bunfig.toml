@@ -1,0 +1,3 @@
+[install]
+# Wait 24 hours before using newly published packages (equivalent to pnpm minimumReleaseAge: 1440)
+minimumReleaseAge = 86400
