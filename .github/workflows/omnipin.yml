@@ -20,13 +20,8 @@ jobs:
       - name: Install bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install Omnipin from fork
-        run: |
-          git clone -b patch-safe-proposal https://github.com/gskril/omnipin.git /tmp/omnipin
-          cd /tmp/omnipin
-          bun install
-          bun run build
-          pnpm i -g .
+      - name: Install Omnipin
+        run: pnpm i -g omnipin@2.0.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,12 +33,10 @@ jobs:
         run: pnpm i && pnpm run build
 
       - name: Deploy the site
-        run: node /tmp/omnipin/dist/cli.js deploy src/dist \
+        run: omnipin deploy src/dist \
           --strict \
-          --verbose \
           --ens ${{ vars.OMNIPIN_ENS }} \
           --safe ${{ vars.OMNIPIN_SAFE }} \
-          --resolver-address ${{ vars.OMNIPIN_ENS_RESOLVER }}
         env:
           # Storacha for uploads
           OMNIPIN_STORACHA_TOKEN: ${{ secrets.OMNIPIN_STORACHA_TOKEN }}
