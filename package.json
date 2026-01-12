@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prebuild": "bun install --frozen-lockfile",
     "generate": "bun scripts/run-plugins.ts",
     "dev": "bun run generate && vocs dev",
     "build": "bun run generate && bunx vocs build",
