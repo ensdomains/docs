@@ -21,7 +21,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install Omnipin
-        run: pnpm i -g omnipin@2.0.1
+        run: pnpm i -g omnipin@2.0.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
