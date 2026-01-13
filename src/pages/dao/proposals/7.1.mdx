@@ -1,0 +1,95 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 7.1] Assign Ownership of the .kred TLD to Verified Multisig Controller
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                 |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/14510804444537789574755459676993085422296887570909724875059792580501615462793), [Tally](https://tally.ensdao.org/dao/proposal/14510804444537789574755459676993085422296887570909724875059792580501615462793) |
+
+# Assign Ownership of the `.kred` TLD to Verified Multisig Controller
+
+## **Abstract**
+
+This Executable Proposal requests that the ENS DAO assign ownership of the `.kred` top-level domain (TLD) to the multisig wallet:
+
+**0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9**
+
+The proposing entity already owns and operates the ICANN `.kred` TLD and has demonstrated authoritative control of the DNS registry by publishing the ENS verification TXT record:
+
+`_ens.nic.kred TXT "a=0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9"`
+
+This satisfies the ENS DNS-based proof-of-ownership mechanism and confirms legitimate authority over `.kred`.
+
+---
+
+## **Motivation**
+
+The `.kred` top-level domain is an active ICANN TLD. Establishing `.kred` within ENS via DNS-verified ownership expands ENS’s integration with traditional DNS namespaces and supports unified Web2 + Web3 identity infrastructure.
+
+Benefits include:
+
+- Cryptographic linkage between ICANN DNS and ENS
+- Unified namespace for identity services
+- Compliance with ENSIP-10 DNS integration standards
+- Reduced end‑user confusion via namespace alignment
+
+The target controller is a multisig wallet, ensuring secure and decentralized stewardship.
+
+---
+
+## **DNS Proof of Authority**
+
+The authoritative DNS TXT record published is:
+
+`_ens.nic.kred TXT "a=0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9"`
+
+This demonstrates:
+
+1. Control of the ICANN `.kred` zone
+2. Intent to bind `.kred` to the supplied wallet
+3. Compliance with ENS DNSSEC ownership‑verification standards
+
+---
+
+## **Specification**
+
+This proposal instructs the ENS Root contract to assign ownership of `.kred` to the verified multisig.
+
+setSubnodeOwner(
+&#x20; bytes32(0), // The root node
+&#x20; keccak256("kred"), // Label hash for .kred
+&#x20; 0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9 // Verified controller multisig
+);
+
+Effects:
+
+- Establishes `.kred` ENS ownership
+- Enables registrar/resolver configuration
+- Maintains continuity between DNS + ENS namespaces
+
+---
+
+## **Rationale**
+
+Assigning `.kred` to a multisig ensures secure long‑term stewardship and aligns with ENS precedent such as the `.ceo` TLD assignment.
+
+The proposer has demonstrated verified ICANN authority via DNS TXT record publication, meeting ENS governance expectations for TLD integration.
+
+---
+
+## **Security Considerations**
+
+- Multisig reduces key compromise risk
+- DNSSEC + TXT proof ensures strong ownership validation
+- No new systemic risks to ENS
+- DAO retains authority for future reassignment if required
+
+---
