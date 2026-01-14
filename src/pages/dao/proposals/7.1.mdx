@@ -5,34 +5,34 @@ proposal:
   type: 'executable'
 ---
 
-# [EP 7.1] Assign Ownership of the .kred TLD to Verified Multisig Controller
+# [EP 7.1] Assign Ownership of the .kred TLD to Verified Multisig Controller
 
 ::authors
 
 | **Status**            | Active                                                                                                                                                                                                                                                  |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                 |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21720/)                                                                                                                                                                                                           |
 | **Votes**             | [Agora](https://agora.ensdao.org/proposals/14510804444537789574755459676993085422296887570909724875059792580501615462793), [Tally](https://tally.ensdao.org/dao/proposal/14510804444537789574755459676993085422296887570909724875059792580501615462793) |
 
-# Assign Ownership of the `.kred` TLD to Verified Multisig Controller
+# Assign Ownership of the `.kred` TLD to Verified Multisig Controller
 
 ## **Abstract**
 
-This Executable Proposal requests that the ENS DAO assign ownership of the `.kred` top-level domain (TLD) to the multisig wallet:
+This Executable Proposal requests that the ENS DAO assign ownership of the `.kred` top-level domain (TLD) to the multisig wallet:
 
 **0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9**
 
-The proposing entity already owns and operates the ICANN `.kred` TLD and has demonstrated authoritative control of the DNS registry by publishing the ENS verification TXT record:
+The proposing entity already owns and operates the ICANN `.kred` TLD and has demonstrated authoritative control of the DNS registry by publishing the ENS verification TXT record:
 
 `_ens.nic.kred TXT "a=0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9"`
 
-This satisfies the ENS DNS-based proof-of-ownership mechanism and confirms legitimate authority over `.kred`.
+This satisfies the ENS DNS-based proof-of-ownership mechanism and confirms legitimate authority over `.kred`.
 
 ---
 
 ## **Motivation**
 
-The `.kred` top-level domain is an active ICANN TLD. Establishing `.kred` within ENS via DNS-verified ownership expands ENS’s integration with traditional DNS namespaces and supports unified Web2 + Web3 identity infrastructure.
+The `.kred` top-level domain is an active ICANN TLD. Establishing `.kred` within ENS via DNS-verified ownership expands ENS’s integration with traditional DNS namespaces and supports unified Web2 + Web3 identity infrastructure.
 
 Benefits include:
 
@@ -53,15 +53,15 @@ The authoritative DNS TXT record published is:
 
 This demonstrates:
 
-1. Control of the ICANN `.kred` zone
-2. Intent to bind `.kred` to the supplied wallet
+1. Control of the ICANN `.kred` zone
+2. Intent to bind `.kred` to the supplied wallet
 3. Compliance with ENS DNSSEC ownership‑verification standards
 
 ---
 
 ## **Specification**
 
-This proposal instructs the ENS Root contract to assign ownership of `.kred` to the verified multisig.
+This proposal instructs the ENS Root contract to assign ownership of `.kred` to the verified multisig.
 
 setSubnodeOwner(
 &#x20; bytes32(0), // The root node
@@ -71,7 +71,7 @@ setSubnodeOwner(
 
 Effects:
 
-- Establishes `.kred` ENS ownership
+- Establishes `.kred` ENS ownership
 - Enables registrar/resolver configuration
 - Maintains continuity between DNS + ENS namespaces
 
@@ -79,7 +79,7 @@ Effects:
 
 ## **Rationale**
 
-Assigning `.kred` to a multisig ensures secure long‑term stewardship and aligns with ENS precedent such as the `.ceo` TLD assignment.
+Assigning `.kred` to a multisig ensures secure long‑term stewardship and aligns with ENS precedent such as the `.ceo` TLD assignment.
 
 The proposer has demonstrated verified ICANN authority via DNS TXT record publication, meeting ENS governance expectations for TLD integration.
 
