@@ -1,0 +1,14 @@
+diff --git a/_lib/vite/plugins/remark/links.js b/_lib/vite/plugins/remark/links.js
+index c6ee3865f914acda281f8bfc3066d5fcc88c6793..391e6a77e5928ea4e7aa983d312cc0b19fe78928 100644
+--- a/_lib/vite/plugins/remark/links.js
++++ b/_lib/vite/plugins/remark/links.js
+@@ -21,6 +21,9 @@ export function remarkLinks() {
+             // TODO: handle hash links
+             if (node.url.startsWith('#'))
+                 return;
++            // Skip llms.txt files (static assets, not pages)
++            if (node.url === '/llms.txt' || node.url === '/llms-full.txt')
++                return;
+             const [url, after] = (node.url || '').split('#');
+             const baseDir = resolve(rootDir, './pages');
+             const pagePath = url.startsWith('.')

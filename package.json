@@ -42,5 +42,8 @@
   "engines": {
     "node": ">=22",
     "bun": ">=1.2.8"
+  },
+  "patchedDependencies": {
+    "vocs@1.4.1": "patches/vocs@1.4.1.patch"
   }
 }
