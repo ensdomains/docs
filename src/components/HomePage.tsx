@@ -8,7 +8,7 @@ const navigation = [
       ['Protocol Docs', '/learn/protocol'],
       ['Resolution', '/resolution'],
       ['Tools and Libraries', '/web/libraries'],
-      ['Layer 2 & Offchain', '/learn/ccip-read'],
+      ['Building with LLMs', '/building-with-llms'],
       ['ENSIPs', '/ensip'],
     ],
   },
