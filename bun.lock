@@ -33,9 +33,6 @@
       },
     },
   },
-  "patchedDependencies": {
-    "vocs@1.4.1": "patches/vocs@1.4.1.patch",
-  },
   "packages": {
     "@adraffy/ens-normalize": ["@adraffy/ens-normalize@1.10.0", "", {}, "sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q=="],
 
