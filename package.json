@@ -8,7 +8,8 @@
     "dev": "bun run generate && vocs dev",
     "build": "bun run generate && bunx vocs build",
     "preview": "vocs preview",
-    "deploy": "bun run build && bunx wrangler pages deploy"
+    "deploy": "bun run build && bunx wrangler pages deploy",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "0.1.2",

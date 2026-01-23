@@ -134,6 +134,10 @@ export default defineConfig({
               link: '/terminology',
             },
             {
+              text: 'Building with AI',
+              link: '/building-with-ai',
+            },
+            {
               text: 'Bug Bounties',
               link: '/bugs',
             },
