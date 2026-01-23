@@ -283,6 +283,10 @@ export default defineConfig({
               link: '/resolvers/universal',
             },
             {
+              text: 'Chain Registry-Resolver',
+              link: '/resolvers/chain-registry-resolver',
+            },
+            {
               text: 'Interface Reference',
               link: '/resolvers/interfaces',
             },
