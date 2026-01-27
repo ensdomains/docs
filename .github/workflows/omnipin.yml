@@ -14,38 +14,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Install bun
         uses: oven-sh/setup-bun@v2
 
       - name: Install Omnipin
-        run: pnpm i -g omnipin@1.6.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
+        run: bun add -g omnipin@2.0.3
 
       - name: Build website
-        run: pnpm i && pnpm run build
+        run: bun install && bun run build
 
       - name: Deploy the site
-        run: omnipin deploy src/dist \
-          --strict \
-          --ens ${{ vars.OMNIPIN_ENS }} \
-          --safe ${{ vars.OMNIPIN_SAFE }} \
-          --resolver-address ${{ vars.OMNIPIN_ENS_RESOLVER }}
+        run: omnipin deploy src/dist --strict --ens ${{ vars.OMNIPIN_ENS }} --safe ${{ vars.OMNIPIN_SAFE }}
         env:
           # Storacha for uploads
           OMNIPIN_STORACHA_TOKEN: ${{ secrets.OMNIPIN_STORACHA_TOKEN }}
           OMNIPIN_STORACHA_PROOF: ${{ secrets.OMNIPIN_STORACHA_PROOF }}
 
           # Filecoin for uploads
-          OMNIPIN_FILECOIN_SP_URL: ${{ vars.OMNIPIN_FILECOIN_SP_URL }}
-          OMNIPIN_FILECOIN_SP_ADDRESS: ${{ vars.OMNIPIN_FILECOIN_SP_ADDRESS }}
           OMNIPIN_FILECOIN_TOKEN: ${{ secrets.OMNIPIN_FILECOIN_TOKEN }}
 
           # Lighthouse for pinning

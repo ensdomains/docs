@@ -1,0 +1,121 @@
+---
+description: Tools and resources for building ENS integrations with LLMs and AI assistants
+---
+
+# Building with AI
+
+ENS provides tools and resources for developers building with large language models (LLMs) and AI assistants. Whether you're using AI to help write code, building agentic applications, or integrating ENS into AI-powered products, these resources will help.
+
+## Plain Text Documentation
+
+LLMs work best with plain text content that has fewer formatting tokens. ENS hosts machine-readable versions of this documentation following the emerging [llms.txt standard](https://llmstxt.org/).
+
+| File                                                     | Description                                      |
+| -------------------------------------------------------- | ------------------------------------------------ |
+| [/llms.txt](https://docs.ens.domains/llms.txt)           | Concise overview of ENS documentation with links |
+| [/llms-full.txt](https://docs.ens.domains/llms-full.txt) | Complete documentation in plain text format      |
+
+You can provide these URLs to AI assistants or include them in your RAG (Retrieval-Augmented Generation) pipelines to give your AI tools up-to-date knowledge about ENS.
+
+### Example Usage
+
+When working with an AI assistant, you can reference these files directly:
+
+```
+Please read https://docs.ens.domains/llms.txt to learn about ENS,
+then help me integrate ENS name resolution into my application.
+```
+
+## Context7 MCP
+
+[Context7](https://context7.com) provides a Model Context Protocol (MCP) server that gives your AI coding assistant access to up-to-date ENS documentation. Once installed, you can simply ask your AI to use Context7 when working on ENS integrations.
+
+### Installation
+
+Install the Context7 MCP in your preferred AI coding tool:
+
+:::code-group
+
+```bash [Claude Code]
+claude mcp add context7 -- npx -y @upstash/context7-mcp
+```
+
+```json [Cursor (~/.cursor/mcp.json)]
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+```json [Windsurf]
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+:::
+
+### Example Prompts
+
+Once Context7 is connected, you can use prompts like:
+
+```
+Add ENS name resolution to this address input field. Use context7.
+```
+
+```
+Show me how to fetch a user's avatar from their ENS name. Use context7 for ensdomains/docs.
+```
+
+```
+Help me implement reverse resolution to show ENS names instead of addresses. Use context7.
+```
+
+The key is adding "use context7" to your prompt, which tells your AI assistant to fetch the latest ENS documentation before responding.
+
+## AI Chat Assistant
+
+Every page in this documentation includes an AI-powered chat assistant in the bottom right corner. Powered by [Cookbook](https://ai.cookbook.dev/), this assistant can:
+
+- Answer questions about ENS concepts and implementation
+- Help you navigate the documentation
+- Provide code examples and explanations
+- Assist with debugging ENS integrations
+
+Click the chat icon in the bottom right corner of any page to get started.
+
+## Community MCP Servers
+
+The community has built additional MCP servers that may be useful for ENS and greater Ethereum ecosystem development:
+
+- **[ETHID MCP](https://ethidentitykit.com/docs/ai-tools/ethid-mcp)** - Tools for working with ENS and EFP
+- **[Ethereum MCP](https://github.com/gskril/ethereum-mcp)** - General-purpose EVM tools including ENS resolution, ABI parsing, and more
+
+These are independently maintained by community members. Check their documentation for installation instructions and available features.
+
+## Tips for AI-Assisted Development
+
+When building ENS integrations with AI assistance:
+
+1. **Use the full docs** - For comprehensive context, use `/llms-full.txt` in your prompts
+2. **Specify your stack** - Mention which library you're using ([viem](https://viem.sh), [ethers.js](https://docs.ethers.org/), [ENSjs](https://github.com/ensdomains/ensjs)) for more relevant code examples
+3. **Ensure ENSv2 readiness** - Point your AI to the [ENSv2 readiness guide](/web/ensv2-readiness) to make sure your integration is compatible
+
+## Get Help
+
+For human support, join the [ENS Developers Telegram group](https://t.me/+aLmF83si62ZhOGNh).
+
+## See Also
+
+- [Getting Started with ENS](/web) - Introduction to integrating ENS
+- [Preparing for ENSv2](/web/ensv2-readiness) - Ensure your app works with ENSv2
+- [Tools & Libraries](/web/libraries) - SDKs and libraries for ENS development
