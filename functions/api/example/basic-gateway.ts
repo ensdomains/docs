@@ -11,7 +11,7 @@ router.add({
 })
 
 router.add({
-  type: 'function addr(bytes32 node, uin256 coinType) external view returns (bytes)',
+  type: 'function addr(bytes32 node, uint256 coinType) external view returns (bytes)',
   handle: ([_node, _coinType]) => {
     // Always return the same address (offchain.integration-tests.eth)
     // https://github.com/ensdomains/resolution-tests
