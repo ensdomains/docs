@@ -1,0 +1,96 @@
+---
+authors:
+  - slobo.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.29] [Executable] Collective Working Group Funding Request (Oct 2025)
+
+::authors
+
+| **Status**            | Passed                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21781/)                                                                                                                                                                                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/77525093718307720477107269225240955392442633055266271196124066559357053541713), [Tally](https://tally.ensdao.org/dao/proposal/77525093718307720477107269225240955392442633055266271196124066559357053541713) |
+
+## Abstract
+
+This proposal executes all three Working Group funding requests for the October 2025 funding window, as approved in social proposals [**EP 6.24.1**](https://snapshot.box/#/s:ens.eth/proposal/0xc689edd77def6b9f6be6ca7fa1729e597c85ee12ae96e134d995a8b9fd78a21f), [**EP 6.24.2**](https://snapshot.box/#/s:ens.eth/proposal/0x9b3f5463e52aadc35155e686f8416297b24e6c7e30cb527747e61cf17b42a5f6), and [**EP 6.24.3**](https://snapshot.box/#/s:ens.eth/proposal/0x7b603c5ada65cfcdbdfec9a33352edf731615fe96fbcc09daa7aa97b327e15ce). Each was ratified via Snapshot and follows the ENS DAO’s standard funding process. This executable aggregates the transfers into a single transaction set.
+
+## Proposal Components
+
+| Working Group   | Destination (Multisig)                                                                                    | Amount                      |
+| --------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Meta-Governance | [ENS Meta-Gov Main Multisig](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b)     | 379,000 USDC (0 ETH, 0 ENS) |
+| Ecosystem       | [ENS Ecosystem Main Multisig](https://etherscan.io/address/0x2686A8919Df194aA7673244549E68D42C1685d03)    | 470,000 USDC (0 ETH, 0 ENS) |
+| Public Goods    | [ENS Public Goods Main Multisig](https://etherscan.io/address/0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d) | 110,000 USDC + 15 ETH       |
+
+Total requested: **959,000 USDC + 15 ETH**
+
+### Meta-Governance Working Group
+
+**Funding Request (EP 6.24.1):** The Meta-Governance Working Group requested **379,000 USDC** from the ENS DAO treasury to fund its operations through April 2026. This funding covers anticipated expenses for the term, including stewardship compensation, contract audits, DAO tooling, and discretionary initiatives, while maintaining a prudent reserve to ensure continuity if future funding is delayed.
+
+### Ecosystem Working Group
+
+**Funding Request (EP 6.24.2):** The Ecosystem Working Group requested **470,000 USDC** to support its operations through April 2026. The working group is responsible for growing and improving the ENS ecosystem by funding ENS-specific or ENS-centric builders and projects. The budget will support hackathons, grants, ecosystem support (including bug bounties), and community events to strengthen ENS tools and community growth.
+
+### Public Goods Working Group
+
+**Funding Request (EP 6.24.3):** The Public Goods Working Group requested **110,000 USDC and 15 ETH** from the ENS DAO treasury to fund its initiatives through April 2026. The funding will be used for strategic grants and builder grants that support impactful public goods, developer tools, and ecosystem projects aligned with ENS’s long-term vision. This allocation, combined with the working group’s existing balance, will cover expected expenses for the term while leaving a small reserve to ensure continuity if future funding is delayed.
+
+## Specification
+
+This proposal includes three USDC transfers via the `transfer(address,uint256)` function on the USDC token contract and one direct ETH transfer from the ENS DAO treasury.
+
+**Transfers:**
+
+1. **Meta-Gov Safe** – 379,000 USDC
+   `0x91c32893216dE3eA0a55ABb9851f581d4503d39b`
+2. **Ecosystem Safe** – 470,000 USDC
+   `0x2686A8919Df194aA7673244549E68D42C1685d03`
+3. **Public Goods Safe** – 110,000 USDC + 15 ETH
+   `0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d`
+
+## Calldata
+
+**Transaction 1 – Meta-Gov (379,000 USDC)**
+
+```json
+{
+  "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "value": 0,
+  "calldata": "0xa9059cbb00000000000000000000000091c32893216de3ea0a55abb9851f581d4503d39b000000000000000000000000000000000000000000000000000000583e290e00"
+}
+```
+
+**Transaction 2 – Ecosystem (470,000 USDC)**
+
+```json
+{
+  "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "value": 0,
+  "calldata": "0xa9059cbb0000000000000000000000002686a8919df194aa7673244549e68d42c1685d030000000000000000000000000000000000000000000000000000006d6e2edc00"
+}
+```
+
+**Transaction 3 – Public Goods (110,000 USDC)**
+
+```json
+{
+  "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "value": 0,
+  "calldata": "0xa9059cbb000000000000000000000000cd42b4c4d102cc22864e3a1341bb0529c17fd87d000000000000000000000000000000000000000000000000000000199c82cc00"
+}
+```
+
+**Transaction 4 – Public Goods (15 ETH)**
+
+```json
+{
+  "target": "0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d",
+  "value": 15000000000000000000,
+  "calldata": "0x"
+}
+```
