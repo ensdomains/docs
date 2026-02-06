@@ -1,6 +1,6 @@
 # Preparing for ENSv2 [Everything you need to know to prepare your application for ENSv2.]
 
-ENSv2 brings multi-chain support and improved architecture to ENS. While names can still be stored on Ethereum Mainnet, ENSv2 introduces Namechain as the primary Layer 2 for ENS, with support for additional L2s as well. To ensure your application works seamlessly with ENSv2, you'll need to make a few key updates.
+ENSv2 introduces a redesigned architecture and improved multi-chain interoperability. To ensure your application works seamlessly with ENSv2, you'll need to make a few key updates.
 
 The good news? For most applications, preparing for ENSv2 is as simple as updating to the latest version of a [supported library](/web/libraries). At the time of writing, not all libraries have added ENSv2 support yet. Here's the current status:
 
@@ -29,8 +29,6 @@ To test if your integration uses the Universal Resolver, try resolving the addre
 ## Offchain and L2 Resolution with CCIP Read
 
 ENSv1 already supports delegating resolution from Ethereum Mainnet to an L2 or completely offchain using [CCIP Read (ERC-3668)](/learn/ccip-read). All the libraries mentioned above implement CCIP Read. However, not all integrations handle it properly.
-
-With ENSv2, users can store names on Ethereum Mainnet, Namechain, or any other supported L2. This makes CCIP Read support essential for your integration to work correctly.
 
 In a nutshell, CCIP Read defers resolution to a gateway. Think of a gateway as an HTTP API. The response of the gateway can be verified with a read-call to the ENS contracts on Ethereum Mainnet (or Sepolia for testing). This means that your application needs to be able to send HTTP requests as part of the ENS resolution process. As mentioned above, this is already handled by the web3 libraries in the background.
 
@@ -62,7 +60,7 @@ Instead, your integration should treat any dot-separated string as a potential E
 
 ```js
 if (input.includes('.') && input.length > 2) {
-   // ...
+  // ...
 }
 ```
 
@@ -109,8 +107,8 @@ const baseAddress = await mainnetClient.getEnsAddress({
 ```
 
 ```tsx [Wagmi]
-import { createConfig, http, useEnsAddress } from 'wagmi'
 import { toCoinType } from 'viem'
+import { createConfig, http, useEnsAddress } from 'wagmi'
 import { base, mainnet } from 'wagmi/chains'
 
 export const config = createConfig({
@@ -123,10 +121,10 @@ export const config = createConfig({
 
 function MyComponent() {
   const { data: baseAddress } = useEnsAddress({
-    name: "test.ses.eth",
+    name: 'test.ses.eth',
     chainId: mainnet.id, // Always use mainnet for ENS resolution
-    coinType: toCoinType(base.id) // Always specify the coinType (chain)
-  });
+    coinType: toCoinType(base.id), // Always specify the coinType (chain)
+  })
 }
 ```
 
@@ -143,11 +141,13 @@ const mainnetProvider = ethers.getDefaultProvider('mainnet')
 const resolver = await mainnetProvider.getResolver('test.ses.eth')
 const baseAddress = await resolver?.getAddress(8453) // Base chain ID
 ```
+
 :::
 
 ### Chain-Specific Addresses
 
 It is possible to configure a different address per chain for the same name:
+
 - `test.ses.eth` resolves to `0x2B0F09F23193de2Fb66258a10886B9f06903276c` for Ethereum Mainnet, but
 - `test.ses.eth` resolves to `0x7d3a48269416507E6d207a9449E7800971823Ffa` for Base.
 
