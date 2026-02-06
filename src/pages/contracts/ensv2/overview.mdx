@@ -16,8 +16,7 @@ The information on this page is a work-in-progress. Expect updates as the design
 
 ## What's new in ENSv2?
 
-- **Native L2 Support** – contracts have been designed with [Namechain](https://ens.domains/ensv2) and other Layer 2 deployments
-  with cross-chain resolution in mind, building on existing [CCIP-Read support in ENSv1](/resolvers/ccip-read).
+- **Native L2 Support** – contracts have been designed with cross-chain resolution in mind, building on existing [CCIP-Read support in ENSv1](/resolvers/ccip-read).
 - **Hierarchical Registries** – while ENSv1 used a single flat registry for all
   names, ENSv2 allows each name to provide its own registry implementation for
   subnames. This provides name owners and developers with direct control over
@@ -25,7 +24,7 @@ The information on this page is a work-in-progress. Expect updates as the design
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
   in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2, using a new, highly flexible,
   role-based permissions model.
-- **No Grace Period** - The grace period is no longer a part of the ENS protocol, meaning names expire when they say they expire. Upon expiration, names immediately enter into the [temporary premium](/registry/eth#premium--auctions) period. The owner of a recently-expired name doesn't have to pay the premium fee during this period. 
+- **No Grace Period** - The grace period is no longer a part of the ENS protocol, meaning names expire when they say they expire. Upon expiration, names immediately enter into the [temporary premium](/registry/eth#premium--auctions) period. The owner of a recently-expired name doesn't have to pay the premium fee during this period.
 - **Contract Factories** - Rather than relying on large multi-user contracts such as
   the default public resolver, every name gets its own resolver, and every name
   with subnames gets its own registry contract. This is made possible by the low cost of
@@ -36,15 +35,13 @@ The information on this page is a work-in-progress. Expect updates as the design
 ## What hasn't changed?
 
 - **Resolvers** - while we have developed new resolver contracts to take advantage
-  of the changed environment enabled by ENSv2 and Namechain, the interface used
+  of the changed environment enabled by ENSv2, the interface used
   by resolvers remains the same, and all existing ENSv1 resolvers will continue
   to work seamlessly in ENSv2.
 - **True Ownership** - ENSv2 continues to prioritize trust minimization, enabling
   you to own your name fully, without having to worry about interference from
   centralized third-parties.
-- **Truly multi-chain** - Although ENSv2 hosts .eth names on Namechain by default,
-  ENS continues to support all L2s. Names can be 'ejected' from Namechain to L1,
-  and from there can either be managed directly on L1 or delegated to another L2.
+- **Truly multi-chain** - ENS continues to support all L2s.
 
 ## ENSv2 Registry Architecture
 
