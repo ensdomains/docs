@@ -82,9 +82,9 @@ flowchart TB
     root@{label: "<b>&lt;root></b><hr>owner: 0x0123...</b>"}
     eth@{label: "<b>eth</b><hr>owner: 0x1234..."}
     montoya@{label: "<b>montoya.eth</b><hr>owner: 0x5678..."}
-    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: doc}
     domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 90AB..."}
-    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: doc}
     root-- eth --> eth
     eth-- montoya --> montoya
     eth-- montoya --> montoyaResolver
@@ -115,9 +115,9 @@ flowchart TB
     eth@{label: "<b>eth</b><hr>owner: 0x1234..."}
     montoya@{label: "&nbsp;<hr>owner: 0x5678..."}
     newMontoya@{label: "<b>montoya.eth</b><hr>owner: 0xABCD..."}
-    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: doc}
     domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 90AB..."}
-    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: doc}
     eth ~~~ montoya
     eth-- montoya --> newMontoya
     eth-- montoya --> montoyaResolver
@@ -137,9 +137,9 @@ flowchart TB
     root@{label: "<b>Registry 1</b><hr>owner: 0x0123...</b>"}
     eth@{label: "<b>Registry 2</b><hr>owner: 0x1234..."}
     montoya@{label: "<b>Registry 3</b><hr>owner: 0x5678..."}
-    inigo@{label: "<b>Registry 4</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    inigo@{label: "<b>Registry 4</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: doc}
     domingo@{label: "<b>Registry 5</b><hr>owner: 90AB..."}
-    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: doc}
     root-- eth --> eth
     eth-- montoya --> montoya
     eth-- wallet --> montoya
@@ -177,6 +177,8 @@ Roles can also be granted for the registry contract as a whole, and an account m
 a role if it has the role granted for the specific name or on the contract as a whole. Some roles, such as
 creating new subnames, are available only as contract-wide roles.
 
+Typically the owner of a name will have some set of resource roles over the name in the registry it is defined in, and some set of root roles over the name in that name's subregistry. For example, the owner of a .eth name would have resource roles that allow setting subregistry and resolver addresses and transferring the name in the .eth registry, as well as root roles allowing all privileges in that name's subregistry.
+
 By selectively revoking roles, all the functionality of the [ENSv1 name wrapper](/wrapper/overview) can be replicated - for example,
 the owner of wallet.eth can grant a registrar contract the 'registrar' role on the wallet.eth registry,
 while revoking their own contract-wide 'set resolver' and 'set subregistry' roles and admin roles on the same
@@ -187,6 +189,127 @@ registry, they will no longer be able to modify wallet.eth subnames they don't o
 When a subname is transferred to a new owner, any roles that were granted to the previous owner are automatically
 transferred to the new owner, but roles granted to other accounts remain unmodified - so it is important that
 apps facilitating trading of names verify the set of roles granted to external accounts.
+
+**Permissioned Registry Roles**:
+Some roles are 'root-only'; this means that having such a role is meaningful only if granted as a root role.
+
+Some roles are 'admin-only'; this means that posession of the admin role confers a privilege but posession of the user role has no effect.
+
+ - **Registrar**: Allows creating new names in this registry. *Root-only.*
+ - **Renew**: Allows extending the expiration timestamp of a name.
+ - **Set Subregistry**: Allows changing the subregistry address of a name.
+ - **Set Resolver**: Allows changing the resolver address of a name.
+ - **Set Token Observer**: Allows changing the token observer address of a name.
+ - **Can Transfer**: Allows transferring the name using standard ERC-1155 transfers. *Admin-only.*
+ - **Burn**: Allows burning the name.
+
+{/*
+## Smart Contract Hierarchy
+```mermaid
+classDiagram
+    EjectionController <|-- L1BridgeController
+    L1LockedMigrationController
+    L1UnlockedMigrationController
+    PermissionedRegistry <|-- MigratedWrappedNameRegistry
+    ETHTLDResolver
+    EjectionController <|-- L2BridgeController
+    EnhancedAccessControl <|-- ETHRegistrar
+    StandardRentPriceOracle
+    PermissionedRegistry <|-- UserRegistry
+    EnhancedAccessControl <|-- EjectionController
+    ERC1155Singleton <|-- BaseRegistry
+    BaseRegistry <|-- PermissionedRegistry
+    EnhancedAccessControl <|-- PermissionedRegistry
+    RegistryDatastore
+    DedicatedResolver
+
+```
+*/}
+
+## Deployment Diagrams
+Names are depicted as follows:
+```mermaid
+flowchart
+    eth@{ shape: doc, label: ".eth" }
+```
+Each name represents the registry entry in the parent registry as well as the subregistry for that name (if present).
+
+Principals - addresses that own resources in ENS - are depicted as follows:
+
+```mermaid
+flowchart
+    dao@{ shape: card, label: "DAO"}
+```
+
+Roles are shown as a label on the edge, with each character representing a role that the principal has on the name. If the principal also owns the name, the edge is depicted in bold. Admin roles are in upper-case, and user roles are in lower case. By convention, if an account has the admin role, they also have the user role. Resource roles on the name's own registry are shown on the first line, and root roles on the subregistry are shown on the second line. The following characters are used:
+
+| Character | Meaning |
+| -- | -- |
+| R | Registrar. Omitted from the parent registry role mask. |
+| N | Renew |
+| S | Set Subregistry  |
+| E | Set Resolver |
+| O | Set Token Observer |
+| B | Burn |
+| T | Can Transfer. Omitted from the subregistry role mask. |
+| -- | -- |
+
+Thus, a principal with all rights over a name in both the parent registry and its subregistry would look like this:
+```
+NSEOBT
+RNSEOB
+```
+
+However, for succinctness an account that has all rights to a name is depicted with a simple `*`.
+
+It's important to understand the distinction between resource roles on the name's registry and root roles on a subregistry. If a principal has a role mask of `e|` on `example.eth`, they are allowed (only) to set the resolver for `example.eth`. In contrast if they have a role mask of `|e`, they are allowed to set the resolver on **any subdomain of `example.eth`**. The same logic applies for other roles.
+
+Note that if anyone has the right to set a name's subregistry, they can effectively delete or replace all subnames of that name - so any rights granted by the subregistry can be overriden by a principal with the 'set subregistry' role in the name's registry.
+
+```mermaid
+---
+config:
+  flowchart:
+    htmlLabels: false
+---
+flowchart
+    subgraph Principals
+        dao@{ shape: card, label: "DAO"}
+        registrar@{shape: card, label: ".eth Registrar"}
+        users@{ shape: card, label: "[Users]"}
+    end
+
+    subgraph Names
+        root@{ shape: doc, label: "."}
+        eth@{ shape: doc, label: ".eth"}
+        reverse@{shape: doc, label: ".reverse"}
+        dns@{shape: docs, label: "[DNS TLDs]"}
+        root --> eth
+        root --> reverse
+        root --> dns
+        user@{ shape: docs, label: "[.eth 2LDs]"}
+        eth --> user
+        addr_reverse@{shape: doc, label: ".addr.reverse"}
+        default_reverse@{shape: doc, label: ".default.reverse"}
+        chainid_reverse@{shape: docs, label: ".[chainid].reverse"}
+        reverse --> addr_reverse
+        reverse --> default_reverse
+        reverse --> chainid_reverse
+    end
+
+    dao == "RN" === root
+    dao == "NEOT
+    RN" === eth
+    dao == "#ast;" === reverse
+    dao == "#ast;" === addr_reverse
+    dao == "#ast;" === default_reverse
+    dao == "#ast;" === chainid_reverse
+
+    registrar -- "r" --- eth
+
+    users == "SEOBT
+    RNSEOB" === user
+```
 
 {/* ## Contract Packages
 
