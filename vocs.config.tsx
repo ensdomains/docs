@@ -1,6 +1,8 @@
 import { remarkMermaid } from '@theguild/remark-mermaid'
 import { defineConfig } from 'vocs'
 
+import { remarkIpfsGateway } from './src/lib/remark-ipfs-gateway'
+
 const ensipSidebarItems = new Array()
 try {
   ensipSidebarItems.push(...require('./src/data/generated/ensips-sidebar.json'))
@@ -72,7 +74,7 @@ export default defineConfig({
     },
   },
   markdown: {
-    remarkPlugins: [remarkMermaid],
+    remarkPlugins: [remarkMermaid, remarkIpfsGateway],
   },
   head() {
     // Plausible Analytics behind a proxy
