@@ -18,8 +18,8 @@ export function Table({ columns, rows }: Props) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((row) => (
-          <tr key={row.join('-')} className="vocs_TableRow">
+        {rows.map((row, rowIndex) => (
+          <tr key={rowIndex} className="vocs_TableRow">
             {row.map((cell, index) => (
               <td className="vocs_TableCell" key={index}>
                 {cell}

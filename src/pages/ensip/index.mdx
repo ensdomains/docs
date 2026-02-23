@@ -10,7 +10,7 @@ Improvement Proposals have included anything from new contract features, to text
 
 <Table
   columns={['Title', 'Status']}
-  rows={ensips.map((ensip) => [ensip.title, ensip.status])}
+  rows={ensips.map((ensip) => [<a href={ensip.link}>{ensip.title}</a>, ensip.status])}
 />
 
 ## Propose an ENSIP
