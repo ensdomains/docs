@@ -95,6 +95,7 @@ export async function ensips() {
       path.join(__dirname, '..', 'src/data/generated/ensips.json'),
       JSON.stringify(
         sortedSidebar.map((s) => ({
+          number: s.number,
           title: s.text,
           status: s.status.charAt(0).toUpperCase() + s.status.slice(1),
         })),
