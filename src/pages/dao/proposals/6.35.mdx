@@ -1,0 +1,203 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.35] [Executable] Replace DNSSEC oracle algorithms
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21910/)                                                                                                                                                                                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/28252712932062322633429808688780331957150867173093906455161078029287649387260), [Tally](https://tally.ensdao.org/dao/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260) |
+
+## Abstract
+
+This proposal replaces three DNSSEC oracle algorithms with newly deployed contracts to address the following two issues:
+
+- [feat: Replace EllipticCurve with EIP-7951 P-256 precompile for Algorithm 13](https://github.com/ensdomains/ens-contracts/pull/509)
+- [RSA Signature Forgery via Missing PKCS#1 v1.5 Padding Validation in ENS DNSSEC Oracle](https://github.com/ensdomains/ens-contracts-bug-62248-pr-509/blob/master/reports/REPORT.md)
+
+## Motivation
+
+### RSA Signature Forgery (Critical)
+
+The RSASHA256Algorithm and RSASHA1Algorithm contracts fail to validate PKCS#1 v1.5 padding structure when verifying RSA signatures. The contracts only check whether the last 32 (or 20) bytes of the decrypted signature match the expected hash, ignoring the required padding format defined in RFC 3447. This enables Bleichenbacher's 2006 signature forgery attack against DNS zones using RSA keys with low public exponents (e=3).
+
+Two ENS-supported TLDs — `.cc` and `.name` — use e=3 for their Key Signing Keys, allowing any domain under these TLDs to be fraudulently claimed on ENS without DNS ownership. The attack is permissionless, costs approximately 100k gas, and is difficult to detect as the forged proofs appear legitimate. Remediation requires governance intervention.
+
+This vulnerability class has resulted in critical CVEs in other systems (CVE-2006-4339 in OpenSSL, CVE-2014-1568 in NSS, CVE-2016-1494 in python-rsa).
+
+### P-256 Precompile Upgrade (Gas Optimization)
+
+The current P256SHA256Algorithm contract uses a Solidity-based EllipticCurve library for signature verification, consuming approximately 200,000+ gas per operation. EIP-7951 introduces a native P-256 precompile (at address `0x100`) which reduces this to approximately 3,500 gas — a ~98% reduction. This upgrade takes advantage of the precompile available after the Fusaka hardfork.
+
+## Specification
+
+### Description
+
+And newly deployed contract information is as follows
+
+- RSASHA1_ADDRESS = [0x58E0383E21f25DaB957F6664240445A514E9f5e8](https://etherscan.io/address/0x58E0383E21f25DaB957F6664240445A514E9f5e8)
+- RSASHA256_ADDRESS = [0xaee0E2c4d5AB2fc164C8b0Cc8D3118C1c752C95E](https://etherscan.io/address/0xaee0E2c4d5AB2fc164C8b0Cc8D3118C1c752C95E)
+- P256SHA256_ADDRESS = [0xB091C4F6FAc16eDDA5Ee1E0f4738f80011905878](https://etherscan.io/address/0xB091C4F6FAc16eDDA5Ee1E0f4738f80011905878)
+
+Steps overview are as follows
+
+- 1-3. DNSSECImpl: `setAlgorithm` of RSASHA1, RSASHA256 (RSA Signature Forgery patch), P256SHA256 (Using p-256 precompile) to newly deployed contracts
+- 4-5. Root: `setSubnodeOwner` of `cc` and `name` to 0
+- 6-7: DNSRegistrar: Call `enableNode` for .cc and .name to re-enable them for DNSSEC.
+
+DNSSEC_IMPL_ADDRESS = `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+ROOT_ADDRESS = `0xaB528d626EC275E3faD363fF1393A41F581c5897`
+DNS_REGISTRAR_ADDRESS = `0xB32cB5677a7C971689228EC835800432B339bA2B`
+
+### Transactions Summary
+
+This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelock.
+
+| #   | Contract     | Function          | Description                                |
+| --- | ------------ | ----------------- | ------------------------------------------ |
+| 1   | DNSSECImpl   | `setAlgorithm`    | Set Algorithm of RSASHA1 to new address    |
+| 2   | DNSSECImpl   | `setAlgorithm`    | Set Algorithm of RSASHA256 to new address  |
+| 3   | DNSSECImpl   | `setAlgorithm`    | Set Algorithm of P256SHA256 to new address |
+| 4   | Root         | `setSubnodeOwner` | Set owner of `cc` to 0                     |
+| 5   | Root         | `setSubnodeOwner` | Set owner of `name` to 0                   |
+| 6   | DNSRegistrar | `enableNode`      | Re-enable `cc` for DNSSEC                  |
+| 7   | DNSRegistrar | `enableNode`      | Re-enable `name` for DNSSEC                |
+
+## Detailed Transaction Information
+
+### Transaction 1: Set Algorithm of RSASHA1 to new address
+
+**Target:** DNSSECImpl
+
+**Address:** `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+
+**Function:** `setAlgorithm`
+
+**Parameters:**
+
+- `id` : 5
+- `algo`: `0x58E0383E21f25DaB957F6664240445A514E9f5e8`
+
+**Encoded Calldata:**
+
+```
+0x020ed8d3000000000000000000000000000000000000000000000000000000000000000500000000000000000000000058e0383e21f25dab957f6664240445a514e9f5e8
+```
+
+### Transaction 2: Set Algorithm of RSASHA256 to new address
+
+**Target:** DNSSECImpl
+
+**Address:** `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+
+**Function:** `setAlgorithm`
+
+**Parameters:**
+
+- `id` : 8
+- `algo`: `0xaee0E2c4d5AB2fc164C8b0Cc8D3118C1c752C95E`
+
+**Encoded Calldata:**
+
+```
+0x020ed8d30000000000000000000000000000000000000000000000000000000000000008000000000000000000000000aee0e2c4d5ab2fc164c8b0cc8d3118c1c752c95e
+```
+
+### Transaction 3: Set Algorithm of P256SHA256 to new address
+
+**Target:** DNSSECImpl
+
+**Address:** `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+
+**Function:** `setAlgorithm`
+
+**Parameters:**
+
+- `id` : 13
+- `algo`: `0xB091C4F6FAc16eDDA5Ee1E0f4738f80011905878`
+
+**Encoded Calldata:**
+
+```
+0x020ed8d3000000000000000000000000000000000000000000000000000000000000000d000000000000000000000000b091c4f6fac16edda5ee1e0f4738f80011905878
+```
+
+### Transaction 4: setSubnodeOwner of `cc` to 0
+
+**Target:** Root
+
+**Address:** `0xaB528d626EC275E3faD363fF1393A41F581c5897`
+
+**Function:** `setSubnodeOwner`
+
+**Parameters:**
+
+- `label` : `0x68ce0763ca729318b714b0cf33478e4e228e19f58aeaf12cfa1535c9d4bbcaf9`
+- `owner`: `0x0000000000000000000000000000000000000000`
+
+**Encoded Calldata:**
+
+```
+0x8cb8ecec68ce0763ca729318b714b0cf33478e4e228e19f58aeaf12cfa1535c9d4bbcaf90000000000000000000000000000000000000000000000000000000000000000
+```
+
+### Transaction 5: setSubnodeOwner of `name` back to DNS_REGISTRAR_ADDRESS
+
+**Target:** Root
+
+**Address:** `0xaB528d626EC275E3faD363fF1393A41F581c5897`
+
+**Function:** `setSubnodeOwner`
+
+**Parameters:**
+
+- `label` : `0x2361458367e696363fbcc70777d07ebbd2394e89fd0adcaf147faccd1d294d60`
+- `owner`: `0x0000000000000000000000000000000000000000`
+
+**Encoded Calldata:**
+
+```
+0x8cb8ecec2361458367e696363fbcc70777d07ebbd2394e89fd0adcaf147faccd1d294d600000000000000000000000000000000000000000000000000000000000000000
+```
+
+### Transaction 6: Re-enable `cc` for DNSSEC
+
+**Target:** DNSRegistrar
+
+**Address:** `0xB32cB5677a7C971689228EC835800432B339bA2B`
+
+**Function:** `enableNode`
+
+**Parameters:**
+
+- `domain` : `0x02636300`
+
+**Encoded Calldata:**
+
+```
+0x6f951221000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000040263630000000000000000000000000000000000000000000000000000000000
+```
+
+### Transaction 7: Re-enable `name` for DNSSEC
+
+**Target:** DNSRegistrar
+
+**Address:** `0xB32cB5677a7C971689228EC835800432B339bA2B`
+
+**Function:** `enableNode`
+
+**Parameters:**
+
+- `domain` : `0x046e616d6500`
+
+**Encoded Calldata:**
+
+```
+0x6f95122100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006046e616d65000000000000000000000000000000000000000000000000000000
+```
