@@ -11,7 +11,7 @@ proposal:
 
 | **Status**            | Active                                                                                                                                                                                                                                                  |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                 |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21910/)                                                                                                                                                                                                           |
 | **Votes**             | [Agora](https://agora.ensdao.org/proposals/28252712932062322633429808688780331957150867173093906455161078029287649387260), [Tally](https://tally.ensdao.org/dao/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260) |
 
 ## Abstract
@@ -51,9 +51,9 @@ Steps overview are as follows
 - 4-5. Root: `setSubnodeOwner` of `cc` and `name` to 0
 - 6-7: DNSRegistrar: Call `enableNode` for .cc and .name to re-enable them for DNSSEC.
 
-DNSSEC_IMPL_ADDRESS=0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5
-ROOT_ADDRESS=0xaB528d626EC275E3faD363fF1393A41F581c5897
-DNS_REGISTRAR_ADDRESS = 0xB32cB5677a7C971689228EC835800432B339bA2B
+DNSSEC_IMPL_ADDRESS = `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+ROOT_ADDRESS = `0xaB528d626EC275E3faD363fF1393A41F581c5897`
+DNS_REGISTRAR_ADDRESS = `0xB32cB5677a7C971689228EC835800432B339bA2B`
 
 ### Transactions Summary
 
@@ -76,6 +76,7 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 **Target:** DNSSECImpl
 
 **Address:** `0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`
+
 **Function:** `setAlgorithm`
 
 **Parameters:**
@@ -83,7 +84,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 - `id` : 5
 - `algo`: `0x58E0383E21f25DaB957F6664240445A514E9f5e8`
 
-**Encoded Calldata:** `0x020ed8d3000000000000000000000000000000000000000000000000000000000000000500000000000000000000000058e0383e21f25dab957f6664240445a514e9f5e8`
+**Encoded Calldata:**
+
+```
+0x020ed8d3000000000000000000000000000000000000000000000000000000000000000500000000000000000000000058e0383e21f25dab957f6664240445a514e9f5e8
+```
 
 ### Transaction 2: Set Algorithm of RSASHA256 to new address
 
@@ -98,7 +103,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 - `id` : 8
 - `algo`: `0xaee0E2c4d5AB2fc164C8b0Cc8D3118C1c752C95E`
 
-**Encoded Calldata:** `0x020ed8d30000000000000000000000000000000000000000000000000000000000000008000000000000000000000000aee0e2c4d5ab2fc164c8b0cc8d3118c1c752c95e`
+**Encoded Calldata:**
+
+```
+0x020ed8d30000000000000000000000000000000000000000000000000000000000000008000000000000000000000000aee0e2c4d5ab2fc164c8b0cc8d3118c1c752c95e
+```
 
 ### Transaction 3: Set Algorithm of P256SHA256 to new address
 
@@ -113,7 +122,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 - `id` : 13
 - `algo`: `0xB091C4F6FAc16eDDA5Ee1E0f4738f80011905878`
 
-**Encoded Calldata:** `0x020ed8d3000000000000000000000000000000000000000000000000000000000000000d000000000000000000000000b091c4f6fac16edda5ee1e0f4738f80011905878`
+**Encoded Calldata:**
+
+```
+0x020ed8d3000000000000000000000000000000000000000000000000000000000000000d000000000000000000000000b091c4f6fac16edda5ee1e0f4738f80011905878
+```
 
 ### Transaction 4: setSubnodeOwner of `cc` to 0
 
@@ -128,7 +141,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 - `label` : `0x68ce0763ca729318b714b0cf33478e4e228e19f58aeaf12cfa1535c9d4bbcaf9`
 - `owner`: `0x0000000000000000000000000000000000000000`
 
-**Encoded Calldata:** `0x8cb8ecec68ce0763ca729318b714b0cf33478e4e228e19f58aeaf12cfa1535c9d4bbcaf90000000000000000000000000000000000000000000000000000000000000000`
+**Encoded Calldata:**
+
+```
+0x8cb8ecec68ce0763ca729318b714b0cf33478e4e228e19f58aeaf12cfa1535c9d4bbcaf90000000000000000000000000000000000000000000000000000000000000000
+```
 
 ### Transaction 5: setSubnodeOwner of `name` back to DNS_REGISTRAR_ADDRESS
 
@@ -143,7 +160,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 - `label` : `0x2361458367e696363fbcc70777d07ebbd2394e89fd0adcaf147faccd1d294d60`
 - `owner`: `0x0000000000000000000000000000000000000000`
 
-**Encoded Calldata:** `0x8cb8ecec2361458367e696363fbcc70777d07ebbd2394e89fd0adcaf147faccd1d294d600000000000000000000000000000000000000000000000000000000000000000`
+**Encoded Calldata:**
+
+```
+0x8cb8ecec2361458367e696363fbcc70777d07ebbd2394e89fd0adcaf147faccd1d294d600000000000000000000000000000000000000000000000000000000000000000
+```
 
 ### Transaction 6: Re-enable `cc` for DNSSEC
 
@@ -157,7 +178,11 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 
 - `domain` : `0x02636300`
 
-**Encoded Calldata:** `0x6f951221000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000040263630000000000000000000000000000000000000000000000000000000000`
+**Encoded Calldata:**
+
+```
+0x6f951221000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000040263630000000000000000000000000000000000000000000000000000000000
+```
 
 ### Transaction 7: Re-enable `name` for DNSSEC
 
@@ -171,4 +196,8 @@ This proposal contains **7** transaction(s) to be executed by the ENS DAO Timelo
 
 - `domain` : `0x046e616d6500`
 
-**Encoded Calldata:** `0x6f95122100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006046e616d65000000000000000000000000000000000000000000000000000000`
+**Encoded Calldata:**
+
+```
+0x6f95122100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006046e616d65000000000000000000000000000000000000000000000000000000
+```
