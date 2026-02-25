@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@config "../tailwind.config.cjs";
+@config '../tailwind.config.cjs';
 
 :root {
   --ens-blue-active: #003685;
@@ -158,4 +158,9 @@ th.vocs_TableHeader > code.vocs_Code {
   margin-bottom: var(--vocs-space_16) !important;
   padding-bottom: 0 !important;
   border-bottom: none !important;
+}
+
+/* Remove link icon on the page header */
+.vocs_Content .vocs_H1 > a.vocs_Anchor {
+  display: none;
 }
