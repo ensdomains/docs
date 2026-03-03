@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@config "../tailwind.config.cjs";
+@config '../tailwind.config.cjs';
 
 :root {
   --ens-blue-active: #003685;
@@ -158,4 +158,10 @@ th.vocs_TableHeader > code.vocs_Code {
   margin-bottom: var(--vocs-space_16) !important;
   padding-bottom: 0 !important;
   border-bottom: none !important;
+}
+
+/* Prevent code snippets and links in DAO proposals from overflowing */
+.vocs_Paragraph > .vocs_Code,
+.vocs_ListItem > .vocs_Anchor {
+  word-break: break-word;
 }
