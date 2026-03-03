@@ -96,6 +96,7 @@ export async function ensips() {
       JSON.stringify(
         sortedSidebar.map((s) => ({
           title: s.text,
+          link: s.link,
           status: s.status.charAt(0).toUpperCase() + s.status.slice(1),
         })),
         null,

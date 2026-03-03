@@ -27,8 +27,7 @@ The information on this page is a work-in-progress. Expect updates as the design
 - **No Grace Period** - The grace period is no longer a part of the ENS protocol, meaning names expire when they say they expire. Upon expiration, names immediately enter into the [temporary premium](/registry/eth#premium--auctions) period. The owner of a recently-expired name doesn't have to pay the premium fee during this period.
 - **Contract Factories** - Rather than relying on large multi-user contracts such as
   the default public resolver, every name gets its own resolver, and every name
-  with subnames gets its own registry contract. This is made possible by the low cost of
-  L2 transactions, and simplifies the contracts significantly, while offering users
+  with subnames gets its own registry contract. This simplifies the contracts significantly, while offering users
   new functionality such as the possibility of 'aliasing' multiple domains to
   the same records.
 
@@ -83,7 +82,7 @@ flowchart TB
     eth@{label: "<b>eth</b><hr>owner: 0x1234..."}
     montoya@{label: "<b>montoya.eth</b><hr>owner: 0x5678..."}
     inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
-    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 90AB..."}
+    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 0x90AB..."}
     montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
     root-- eth --> eth
     eth-- montoya --> montoya
@@ -101,8 +100,8 @@ define records to resolve for that name or its subnames.
 
 Resolution follows a process that conceptually mirrors the process from ENSv1: first, we find the resolver
 responsible for the name being resolved, which is the resolver that covers the longest available suffix
-of the name. In the example above, `inigo.montoya.eth` is resolved by Resolver 1, while `domingo.montoya.eth`
-and any other subdomains of `montoya.eth` that are not present in the tree are resolved by Resolver 2. After
+of the name. In the example above, `inigo.montoya.eth` is resolved by Resolver 2, while `domingo.montoya.eth`
+and any other subdomains of `montoya.eth` that are not present in the tree are resolved by Resolver 1. After
 the resolver responsible for a name is found, it is queried for the desired record.
 
 One consequence of this tree structure is that it becomes possible to delete or reassign entire subtrees in a
@@ -116,7 +115,7 @@ flowchart TB
     montoya@{label: "&nbsp;<hr>owner: 0x5678..."}
     newMontoya@{label: "<b>montoya.eth</b><hr>owner: 0xABCD..."}
     inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
-    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 90AB..."}
+    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 0x90AB..."}
     montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
     eth ~~~ montoya
     eth-- montoya --> newMontoya
@@ -137,8 +136,8 @@ flowchart TB
     root@{label: "<b>Registry 1</b><hr>owner: 0x0123...</b>"}
     eth@{label: "<b>Registry 2</b><hr>owner: 0x1234..."}
     montoya@{label: "<b>Registry 3</b><hr>owner: 0x5678..."}
-    inigo@{label: "<b>Registry 4</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
-    domingo@{label: "<b>Registry 5</b><hr>owner: 90AB..."}
+    inigo@{label: "<b>Resolver 4</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    domingo@{label: "<b>Registry 5</b><hr>owner: 0x90AB..."}
     montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
     root-- eth --> eth
     eth-- montoya --> montoya

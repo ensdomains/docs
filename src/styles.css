@@ -160,8 +160,7 @@ th.vocs_TableHeader > code.vocs_Code {
   border-bottom: none !important;
 }
 
-/* Prevent code snippets and links in DAO proposals from overflowing */
-.vocs_Paragraph > .vocs_Code,
-.vocs_ListItem > .vocs_Anchor {
-  word-break: break-word;
+/* Remove link icon on the page header */
+.vocs_Content .vocs_H1 > a.vocs_Anchor {
+  display: none;
 }
