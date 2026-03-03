@@ -5,16 +5,16 @@ proposal:
   type: 'executable'
 ---
 
-# [EP 6.36] [EP 6.36][Executable] Register on.eth to the ENS DAO wallet and set the resolver
+# [EP 6.36] [Executable] Register on.eth to the ENS DAO wallet and set the resolver
 
 ::authors
 
 | **Status**            | Active                                                                                                                                                                                                                                                  |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                 |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21894/6)                                                                                                                                                                                                          |
 | **Votes**             | [Agora](https://agora.ensdao.org/proposals/31038548146097859834078018568437840147798885401616129864120868194533406456350), [Tally](https://tally.ensdao.org/dao/proposal/31038548146097859834078018568437840147798885401616129864120868194533406456350) |
 
-# Previous Context
+## Previous Context
 
 This proposal passed as [EP 6.34](https://www.tally.xyz/gov/ens/proposal/69304512515872868228453463730257567312488838925636819022683533220991373699419 'EP 6.34') and was queued for execution. Unfortunately, that proposal cannot be executed on-chain in its current form.
 
@@ -28,25 +28,25 @@ This proposal is the updated proposal with calldata that gives appropriate consi
 
 **There are no material changes.**
 
-# Description
+## Description
 
 This proposal registers the \`on.eth\` ENS name to the ENS DAO wallet (`0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7`) and sets the resolver to an on-chain registry-resolver contract (`0x2a9B5787207863cf2d63d20172ed1F7bB2c9487A`).
 
-# Motivation
+## Motivation
 
 The Chain Registry-Resolver is a smart contract that acts as a **canonical, on-chain registry** for blockchain metadata. It serves as the resolver for the `on.eth` namespace and enables applications and users to retrieve metadata for **any** blockchain using a single human-readable identifier, such as \`base\` or \`solana\`.
 
 Historically, blockchain metadata has been stored in centralized, fragmented repositories maintained by third parties. The Chain Registry-Resolver brings this metadata on-chain into a single, extensible registry, where control and update authority are delegated to the relevant chain operators.
 
-# Specification
+## Specification
 
-## Additional Relevant Contracts
+### Additional Relevant Contracts
 
 - `RegistrarSecurityController` • `0x7dd4d97653A67C2FD7fbA0a84825eC09524D4E1b` • [Etherscan](https://etherscan.io/address/0x7dd4d97653A67C2FD7fbA0a84825eC09524D4E1b#code)
 
 Please see [https://discuss.ens.domains/t/executable-enable-root-and-registrar-security-controllers/21872](https://discuss.ens.domains/t/executable-enable-root-and-registrar-security-controllers/21872) for additional context.
 
-## Updated Proposal
+### Updated Proposal
 
 This proposal includes four components.
 
@@ -90,7 +90,7 @@ Simulation: [https://www.tdly.co/shared/simulation/aaa4c105-0efb-4f5a-92a0-bfea8
 
 Simulation: [https://www.tdly.co/shared/simulation/264b8117-23a3-47e4-b84e-be49d8ffc4b4](https://www.tdly.co/shared/simulation/264b8117-23a3-47e4-b84e-be49d8ffc4b4)
 
-## Notes
+### Notes
 
 - For complete clarity, what differentiates this updated proposal from the original is that transactions 1, and 4 target **the RegistrarSecurityController**. The new security model for the \`BaseRegistrarImplementation\` proxies the addition and removal of controllers through this contract.
 - Explicit consideration has been given to other ongoing executable proposals. The only current proposal is [https://www.tally.xyz/gov/ens/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260](https://www.tally.xyz/gov/ens/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260) which does not modify any dependencies on which this proposal relies.
