@@ -30,7 +30,7 @@ export async function daoProposalsSidebar() {
     parsedFiles.push({ filename: filenameWithoutExtension, term, proposal })
   }
 
-  const reversedTerms = Array.from(terms).reverse()
+  const reversedTerms = Array.from(terms).sort((a, b) => b - a)
   for (const term of reversedTerms) {
     sidebar.push({
       text: `Proposals - Term ${term}`,
