@@ -87,6 +87,9 @@ export function HomePage() {
           <p>Build applications with decentralized self-sovereign identity.</p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button href="/web/quickstart">Get Started</Button>
+            <Button variant="outline" href="/building-with-ai">
+              Build with AI
+            </Button>
             <Button variant="outline" href="/learn/protocol">
               Learn about ENS
             </Button>
