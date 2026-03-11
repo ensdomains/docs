@@ -1,0 +1,60 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.37] [Executable] Transfer 900,000 USDC from Endowment to wallet.ensdao.eth
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21948/)                                                                                                                                                                                                           |
+| **Votes**             | [Agora](https://agora.ensdao.org/proposals/14831140174897720265958605023745728013789151926234669357340635631180294168431), [Tally](https://tally.ensdao.org/dao/proposal/14831140174897720265958605023745728013789151926234669357340635631180294168431) |
+
+## Abstract
+
+The ENS DAO timelock (`wallet.ensdao.eth`) currently holds insufficient USDC to cover stream payments claimable by ENS Labs. This proposal requests a **one-time withdrawal of 900,000 USDC** from the ENS Endowment's stablecoin runway to cover that shortfall, bridging operations while the DAO works through more automated solutions such as [Treasury Flow Automation](https://discuss.ens.domains/t/executable-treasury-flow-automation/21923) proposal by @blockful.
+
+No new budget or funding program is created by this proposal.
+
+## Motivation
+
+The ENS DAO timelock (`wallet.ensdao.eth`) currently holds insufficient USDC to cover stream payments claimable by ENS Labs.
+
+A transfer of **900,000 USDC** is sufficient to cover what is currently claimable by ENS Labs, enabling execution of previously approved governance decisions and maintaining operational continuity. No new budget or funding program is created by this proposal.
+
+> **Note:** The root cause of these recurring shortfalls is being addressed structurally through the [Treasury Flow Automation](https://discuss.ens.domains/t/executable-treasury-flow-automation/21923/6) proposal, which aims to automate USDC top-ups from the Endowment and eliminate the need for one-off transfers like this one.
+
+## Specification
+
+Transfer **900,000 USDC** from the **ENS Endowment Safe** to **wallet.ensdao.eth (Timelock)**.
+
+**Addresses**
+
+| Label                        | Address                                      |
+| ---------------------------- | -------------------------------------------- |
+| wallet.ensdao.eth (Timelock) | `0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7` |
+| ENS Endowment Safe           | `0x4F2083f5fBede34C2714aFfb3105539775f7FE64` |
+
+**Transaction simulation:** [Tenderly](https://dashboard.tenderly.co/public/tallyxyz/project/simulator/41ec6e27-0532-4efd-8377-ad130b2982cc)
+**Transaction parameters:**
+
+```
+to: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,
+value: 0,
+data: 0xa9059cbb000000000000000000000000fe89cc7abb2c4183683ab71653c4cdc9b02d44b7000000000000000000000000000000000000000000000000000000d18c2e2800,
+operation: 0,
+safeTxGas: 0,
+baseGas: 0,
+gasPrice: 0,
+gasToken: 0x0000000000000000000000000000000000000000,
+refundReceiver: 0x0000000000000000000000000000000000000000,
+signatures: 0x000000000000000000000000fe89cc7abb2c4183683ab71653c4cdc9b02d44b7000000000000000000000000000000000000000000000000000000000000000001
+```
+
+## Next Steps
+
+Pending review from Blockful and no revisions following the discussion in during the meta-gov call, this proposal will progress to an on-chain executable vote.
