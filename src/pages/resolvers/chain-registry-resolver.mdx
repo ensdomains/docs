@@ -37,7 +37,7 @@ The contract owner can:
 
 When an address is registered by the contract owner, an administrator address is specified. This is an address provided by the chain operators.
 
-The chain admin address  can:
+The chain admin address can:
 
 - Modify text, data, contenthash, and address records for their chain
 - Transfer admin rights to another address
@@ -58,7 +58,7 @@ on.eth (root namespace)
 ```
 
 :::note
-The `reverse.on.eth` name is reserved to allow for the conversion of an [ERC-7930](https://eips.ethereum.org/EIPS/eip-7930) _Interoperable Address_  to a chain label.
+The `reverse.on.eth` name is reserved to allow for the conversion of an [ERC-7930](https://eips.ethereum.org/EIPS/eip-7930) _Interoperable Address_ to a chain label.
 :::
 
 ### Resolver Profiles
@@ -76,7 +76,7 @@ All established ENS Resolver profiles are implemented by the contract to allow f
 For a given chain, the `interoperable-address` data key is set upon chain registration, and is immutable. 
 It references the [ERC-7930](https://eips.ethereum.org/EIPS/eip-7930) _Interoperable Address_ for the chain in question. 
 
-As an example, for `optimism.on.eth` the value is set to `0x00010000010a`.
+As an example, for `optimism.on.eth` the value is set to `0x00010000010a00`.
 
 ### Aliasing
 
@@ -186,7 +186,7 @@ Calling `supportedTextKeys` for a given chain e.g. `optimism.on.eth` will return
 
 ### Resolving Chain Metadata
 
-As the resolver is set on the `on.eth` name, resolution for subnames are subject to the resolution process outlined in [ENSIP-10: Wildcard Resolution](/ensip/10).
+As the resolver is set on the `on.eth` name, resolution for subnames is subject to the resolution process outlined in [ENSIP-10: Wildcard Resolution](/ensip/10).
 
 The calldata that you will pass to the `resolve` method of the `IExtendedResolver` interface is dependent on whether the metadata that you are fetching is stored as a data record or a text record.
 
@@ -490,7 +490,7 @@ The default contenthash for the `on.eth` namespace references a simple decentral
 
 Using a service like eth.limo, you can interface with the registry by visiting [on.eth.limo](https://on.eth.limo).
 
-The metadata for a specific chain can be viewed through this userinterface by accessing the specific subname directly. For example [base.on.eth.limo](https://base.on.eth.limo), or [optimism.on.eth.limo](https://base.on.eth.limo).
+The metadata for a specific chain can be viewed through this user interface by accessing the specific subname directly. For example [base.on.eth.limo](https://base.on.eth.limo), or [optimism.on.eth.limo](https://optimism.on.eth.limo).
 
 ![Optimism Chain Metadata](/img/optimism-on-eth-contenthash-website.png)
 
