@@ -8,18 +8,6 @@ Historically, blockchain metadata has been stored in centralized, fragmented rep
   
 ## Architecture
 
-### Ownership
-
-The contract implements the `OwnableUpgradeable` interface from [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/release-v5.5/contracts/access/OwnableUpgradeable.sol). It is owned by a **3-of-5 multisig**, requiring approval from at least three signers for any owner-level operations.
-
-The signers are:
-
-- Josh Rudolf (Ethereum Foundation)
-- Thomas Clowes (Unruggable)
-- ?? (ENS Labs)
-- TBD
-- TBD
-
 ### Authorization Model
 
 The Chain Registry-Resolver uses a two-tier authorization model:
@@ -70,9 +58,8 @@ All established ENS Resolver profiles are implemented by the contract to allow f
 - Addresses ([ENSIP-9](/ensip/9) / [ENSIP-11](/ensip/11))
 - Arbitrary Data ([ENSIP-24](/ensip/24))
 
-### Immutable Values
+### Immutable Records
 
-#### Data records
 For a given chain, the `interoperable-address` data key is set upon chain registration, and is immutable. 
 It references the [ERC-7930](https://eips.ethereum.org/EIPS/eip-7930) _Interoperable Address_ for the chain in question. 
 
@@ -243,6 +230,10 @@ For text records (e.g. fetching an X handle), use the `text(bytes32 node, string
 ```ts
 const textAbi = parseAbi([
   'function text(bytes32 node, string key) view returns (string)',
+])
+
+const resolveAbi = parseAbi([
+  'function resolve(bytes name, bytes data) view returns (bytes)',
 ])
 
 const name = 'optimism.on.eth'
@@ -484,7 +475,7 @@ interface IChainResolverAdmin {
 }
 ```
 
-## Explorer
+## Browsing Chain Metadata
 
 The default contenthash for the `on.eth` namespace references a simple decentralized website that resolves data from the on-chain registry-resolver.
 
