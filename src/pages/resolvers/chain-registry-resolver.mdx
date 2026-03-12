@@ -87,7 +87,9 @@ The registry is fully enumerable, allowing applications to discover all register
 Enumerating all chains is an O(n) operation, which may become expensive as the registry grows to hundreds or thousands of chains. Applications are expected to perform a full enumeration once, cache the results locally, and then use `chainCount()` to detect new registrations for incremental updates.
 :::
 
-```solidity
+:::code-group
+
+```solidity [Solidity]
 interface IChainResolver {
     function chainCount() external view returns (uint256);
     function getChainAtIndex(uint256 index) external view returns (
@@ -98,7 +100,7 @@ interface IChainResolver {
 }
 ```
 
-```ts
+```ts [Typescript]
 const discoveryAbi = [
   {
     name: 'chainCount',
@@ -138,6 +140,8 @@ for (let i = 0; i < count; i++) {
   console.log(`${label}: ${name} (${interopAddr})`)
 }
 ```
+
+:::
 
 ### Chain Metadata Discovery
 
@@ -277,7 +281,9 @@ interface IChainResolver {
 
 For other record types, use the generic getters:
 
-```solidity
+:::code-group
+
+```solidity [Solidity]
 interface IChainResolver {
     function getText(string calldata label, string calldata key) external view returns (string memory);
     function getData(string calldata label, string calldata key) external view returns (bytes memory);
@@ -286,7 +292,7 @@ interface IChainResolver {
 }
 ```
 
-```ts
+```ts [Typescript]
 const directGetterAbi = [
   {
     name: 'interoperableAddress',
@@ -342,6 +348,8 @@ const xHandle = await client.readContract({
 // Returns: "https://x.com/optimism"
 ```
 
+:::
+
 ### Reverse Resolution
 
 Reverse resolution maps an [ERC-7930](https://eips.ethereum.org/EIPS/eip-7930) _Interoperable Address_ back to its human-readable chain label.
@@ -385,13 +393,15 @@ const label = decodeFunctionResult({
 
 The resolver exposes a helper function to achieve the same result.
 
-```solidity
+:::code-group
+
+```solidity [Solidity]
 interface IChainResolver {
     function chainLabel(bytes calldata interoperableAddress) external view returns (string memory);
 }
 ```
 
-```ts
+```ts [Typescript]
 const chainLabelAbi = [
   {
     name: 'chainLabel',
@@ -412,12 +422,21 @@ const label = await client.readContract({
 // Returns: "optimism"
 ```
 
+:::
+
 ## Interface Reference
 
 ### Core Resolution
 
 ```solidity
 interface IChainResolver {
+
+    // Container for canonical label information
+    struct CanonicalLabelInfo {
+        string label;
+        bytes32 labelhash;
+    }
+
     // Forward resolution
     function interoperableAddress(string calldata label) external view returns (bytes memory);
     function chainName(string calldata label) external view returns (string memory);
@@ -440,7 +459,7 @@ interface IChainResolver {
     function getContenthash(string calldata label) external view returns (bytes memory);
 
     // Alias resolution
-    function canonicalLabelInfo(bytes32 labelhash) external view returns (string memory label, bytes32 canonicalLabelhash);
+    function getCanonicalLabel(string calldata _label) external view returns (CanonicalLabelInfo memory info);
 
     // ENSIP-10 wildcard resolution
     function resolve(bytes calldata name, bytes calldata data) external view returns (bytes memory);
