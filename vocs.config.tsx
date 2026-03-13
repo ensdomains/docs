@@ -285,7 +285,7 @@ export default defineConfig({
               link: '/resolvers/universal',
             },
             {
-              text: 'Chain Registry-Resolver',
+              text: 'Chain Registry-Resolver (on.eth)',
               link: '/resolvers/chain-registry-resolver',
             },
             {
