@@ -359,6 +359,10 @@ export default defineConfig({
               text: 'Overview',
               link: '/contracts/ensv2/overview',
             },
+            {
+              text: 'Access control',
+              link: '/contracts/ensv2/access-control',
+            },
             // {
             //   text: 'Registries',
             //   link: '/contracts/ensv2/registries',
