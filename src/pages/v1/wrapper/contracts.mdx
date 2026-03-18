@@ -64,7 +64,7 @@ If you are wrapping an existing .eth 2LD, then you can pass in the owner-control
 
 For other existing wrapped names, you can burn fuses with either the `setFuses` or `setChildFuses` methods.
 
-The `setFuses` method is used for a name that you own, but you do not necessarily own the parent of. You have the ability to burn any [Owner-Controlled Fuses](/wrapper/fuses#owner-controlled-fuses) you want. Note that your name must first be [Emancipated](/wrapper/states#emancipated) in order for you to be able to burn any owner-controlled fuses. All .eth 2LDs are automatically emancipated upon wrapping.
+The `setFuses` method is used for a name that you own, but you do not necessarily own the parent of. You have the ability to burn any [Owner-Controlled Fuses](/v1/wrapper/fuses#owner-controlled-fuses) you want. Note that your name must first be [Emancipated](/v1/wrapper/states#emancipated) in order for you to be able to burn any owner-controlled fuses. All .eth 2LDs are automatically emancipated upon wrapping.
 
 When burning owner-controlled fuses, at a minimum you must burn the **`CANNOT_UNWRAP`** fuse (if it has not already been burned).
 
@@ -78,7 +78,7 @@ setFuses(
 )
 ```
 
-The `setChildFuses` method is used for a subname that you own the parent of. As long as the subname has not yet been [Emancipated](/wrapper/states#emancipated), you can burn whatever [Parent-Controlled Fuses](/wrapper/fuses#parent-controlled-fuses) and [Owner-Controlled Fuses](/wrapper/fuses#owner-controlled-fuses) you want. At the same time, you must set an expiry for those fuses, if one is not already set. Note that your name must first be [Locked](/wrapper/states#locked) in order for you to burn fuses on any subnames.
+The `setChildFuses` method is used for a subname that you own the parent of. As long as the subname has not yet been [Emancipated](/v1/wrapper/states#emancipated), you can burn whatever [Parent-Controlled Fuses](/v1/wrapper/fuses#parent-controlled-fuses) and [Owner-Controlled Fuses](/v1/wrapper/fuses#owner-controlled-fuses) you want. At the same time, you must set an expiry for those fuses, if one is not already set. Note that your name must first be [Locked](/v1/wrapper/states#locked) in order for you to burn fuses on any subnames.
 
 If you are only burning parent-controlled fuses, then there are no further restrictions. However, if you are burning owner-controlled fuses, then you must at a minimum burn both **`PARENT_CANNOT_CONTROL`** and **`CANNOT_UNWRAP`** on the subname to lock it at the same time.
 

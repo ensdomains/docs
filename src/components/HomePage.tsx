@@ -23,10 +23,9 @@ const navigation = [
     ],
   },
   {
-    title: 'Registries',
+    title: 'Architecture',
     links: [
-      ['ENS Registrar', '/registry/ens'],
-      ['ETH Registrar', '/registry/eth'],
+      ['Architecture', '/contracts/architecture'],
       ['DNS Registrar', '/registry/dns'],
       ['Reverse Registrar', '/registry/reverse'],
     ],
@@ -55,10 +54,10 @@ const navigation = [
     links: [
       ['Naming Smart Contracts', '/web/naming-contracts'],
       // ["Issuing Subdomains", "/web/subdomains"],
-      ['Name Wrapper', '/wrapper/overview'],
+      ['Name Wrapper (v1)', '/v1/wrapper/overview'],
       ['Subgraph', '/web/subgraph'],
       ['Sign In With Ethereum (SIWE)', '/web/siwe'],
-      ['ENSv2 Readiness', '/web/ensv2-readiness'],
+      ['Upgrading from v1', '/web/ensv2-readiness'],
     ],
   },
 ]

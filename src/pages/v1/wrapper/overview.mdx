@@ -1,4 +1,4 @@
-import { Card } from '../../components/ui/Card'
+import { Card } from '../../../components/ui/Card'
 
 # Name Wrapper Overview
 
@@ -34,7 +34,7 @@ Before the Name Wrapper, only .eth 2LDs (second-level domains, like `ens.eth`) h
 
 **Parent-Controlled Fuses:**
 
-- [Fuses](/wrapper/fuses) that only the parent owner can burn
+- [Fuses](/v1/wrapper/fuses) that only the parent owner can burn
 - "Perks" that can be given to the owner of a name
 
 **Example:** By burning `CAN_EXTEND_EXPIRY`, you allow the owner to
@@ -42,7 +42,7 @@ extend/renew their own subname
 
 **Owner-Controlled Fuses:**
 
-- [Fuses](/wrapper/fuses) that either the owner or parent owner can burn
+- [Fuses](/v1/wrapper/fuses) that either the owner or parent owner can burn
 - "Permissions" that can be revoked on a name
 
 **Example:** By burning `CANNOT_TRANSFER`, the wrapped NFT can no longer be

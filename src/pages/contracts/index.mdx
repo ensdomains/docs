@@ -1,5 +1,5 @@
 ---
-description: The Ethereum Name Service Smart Contracts Overview
+description: ENS Smart Contracts Overview
 ---
 
 import { EmbedLink } from '../../components/EmbedLink'
@@ -7,8 +7,15 @@ import { Repository } from '../../components/Repository'
 
 # Smart Contracts
 
-The Ethereum Name Service is made up of a set of smart contracts.
-These smart contracts are responsible for storing and managing information associated with names.
+The Ethereum Name Service is built on a set of smart contracts that store and manage information associated with names. ENS v2 introduces hierarchical registries, native L2 support, and a flexible role-based permissions model.
+
+## Architecture
+
+<EmbedLink
+  title="Architecture"
+  description="Deep dive into the ENS v2 contract architecture, registry hierarchy, and permissions model"
+  href="/contracts/architecture"
+/>
 
 ## Resolution
 
@@ -34,21 +41,17 @@ There are various resolvers to choose from, such as the [Public Resolver](/resol
   href="/resolvers/quickstart"
 />
 
-## Registry & Registrars
-
-The smart contracts can be found on github at [ensdomains/ens-contracts](https://github.com/ensdomains/ens-contracts).
+## Registrars
 
 <div>
   <div className="grid grid-cols-3 gap-4">
     {[
-      ['The Registry', '/registry/ens'],
-      ['ETH Registrar', '/registry/eth'],
       ['DNS Registrar', '/registry/dns'],
       ['Reverse Registrar', '/registry/reverse'],
     ].map((list) => (
       <EmbedLink
         title={list[0]}
-        description="The resolution process"
+        description=""
         href={list[1]}
         key={list[1]}
         className="p-4"
@@ -59,19 +62,17 @@ The smart contracts can be found on github at [ensdomains/ens-contracts](https:/
 
 ## Source Code
 
-The code for the ENS Smart Contracts as well as information around the latest deploys, tests, and more can be found on github.
-
 <div>
   <Repository
+    src="ensdomains/namechain"
+    description="ENS v2 Smart Contracts"
+  />
+  <Repository
     src="ensdomains/ens-contracts"
-    description="Ethereum Name Service Contracts"
+    description="ENS v1 Smart Contracts (legacy)"
   />
 </div>
 
-## ENSv2
+---
 
-<EmbedLink
-  title="ENSv2"
-  description="Overview of the ENSv2 smart contracts"
-  href="/contracts/ensv2/overview"
-/>
+Looking for v1 documentation? See [Legacy (v1)](/v1).

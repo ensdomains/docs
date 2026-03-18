@@ -168,7 +168,7 @@ export default defineConfig({
           link: '/web/libraries',
         },
         {
-          text: 'ENSv2 Readiness',
+          text: 'Upgrading from v1',
           link: '/web/ensv2-readiness',
         },
         {
@@ -245,6 +245,10 @@ export default defineConfig({
           link: '/contracts',
         },
         {
+          text: 'Architecture',
+          link: '/contracts/architecture',
+        },
+        {
           text: 'Resolution',
           items: [
             {
@@ -295,16 +299,8 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Registries',
+          text: 'Registrars',
           items: [
-            {
-              text: 'The Registry',
-              link: '/registry/ens',
-            },
-            {
-              text: 'ETH Registrar',
-              link: '/registry/eth',
-            },
             {
               text: 'DNS Registrar',
               link: '/registry/dns',
@@ -319,54 +315,55 @@ export default defineConfig({
             },
           ],
         },
+      ],
+    },
+    {
+      text: 'Legacy (v1)',
+      collapsed: true,
+      items: [
         {
-          text: 'Namewrapper',
+          text: 'Overview',
+          link: '/v1',
+        },
+        {
+          text: 'The Registry',
+          link: '/v1/registry',
+        },
+        {
+          text: 'ETH Registrar',
+          link: '/v1/eth-registrar',
+        },
+        {
+          text: 'Name Wrapper',
           items: [
             {
               text: 'Overview',
-              link: '/wrapper/overview',
+              link: '/v1/wrapper/overview',
             },
             {
               text: 'Wrapped States',
-              link: '/wrapper/states',
+              link: '/v1/wrapper/states',
             },
             {
               text: 'Fuses',
-              link: '/wrapper/fuses',
+              link: '/v1/wrapper/fuses',
             },
             {
               text: 'Expiry',
-              link: '/wrapper/expiry',
+              link: '/v1/wrapper/expiry',
             },
             {
               text: 'Contract Details',
-              link: '/wrapper/contracts',
+              link: '/v1/wrapper/contracts',
             },
             {
               text: 'Use-Cases',
-              link: '/wrapper/usecases',
+              link: '/v1/wrapper/usecases',
             },
             {
               text: 'Creating a Subname Registrar',
-              link: '/wrapper/creating-subname-registrar',
+              link: '/v1/wrapper/creating-subname-registrar',
             },
-          ],
-        },
-        {
-          text: 'ENSv2',
-          items: [
-            {
-              text: 'Overview',
-              link: '/contracts/ensv2/overview',
-            },
-            // {
-            //   text: 'Registries',
-            //   link: '/contracts/ensv2/registries',
-            // },
-            // {
-            //   text: 'Resolvers',
-            //   link: '/contracts/ensv2/resolvers',
-            // },
           ],
         },
       ],

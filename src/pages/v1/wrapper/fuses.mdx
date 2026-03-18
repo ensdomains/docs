@@ -20,7 +20,7 @@ Only the owner of the parent name can burn one of these fuses on a name. These c
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`PARENT_CANNOT_CONTROL`** | Allows a parent owner to **Emancipate** a child name. After this is burned, the parent will no longer be able to burn any further fuses, and will no longer be able to replace/delete the child name. This fuse must be burned in order for any owner-controlled fuses to be burned on the name. |
 | **`IS_DOT_ETH`**            | This fuse cannot be burned by users of the Name Wrapper, it is only set internally when a .eth 2LD is wrapped.                                                                                                                                                                                   |
-| **`CAN_EXTEND_EXPIRY`**     | The owner of the child name will be able to extend their own expiry. Normally, only the parent owner can extend the expiry of a child name. See the [Expiry](/wrapper/expiry) section for more information.                                                                                      |
+| **`CAN_EXTEND_EXPIRY`**     | The owner of the child name will be able to extend their own expiry. Normally, only the parent owner can extend the expiry of a child name. See the [Expiry](/v1/wrapper/expiry) section for more information.                                                                                      |
 | **Custom Fuses**            | There are 13 other parent-controlled fuses that are not reserved, and can be used in any custom way you want!                                                                                                                                                                                    |
 
 ## Owner-Controlled Fuses
@@ -40,7 +40,7 @@ Either the owner of the name or the owner of the parent name can burn one of the
 
 ## The Emancipated and Locked States
 
-This is also covered in the [Wrapped States](/wrapper/states) section, but here is a quick recap:
+This is also covered in the [Wrapped States](/v1/wrapper/states) section, but here is a quick recap:
 
 All .eth second-level names (like `name.eth`) are automatically placed into the Emancipated state when wrapped.
 

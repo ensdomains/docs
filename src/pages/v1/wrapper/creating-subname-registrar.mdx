@@ -1,14 +1,14 @@
 # Creating a Subname Registrar
 
-In the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do.
+In the [Use Cases](/v1/wrapper/usecases#sell-or-rent-subnames) section, we talked about the ability to stand up your own "registrar" to allow other people to register/claim subnames automatically. Maybe you want to give wrapped subnames out for free, or maybe you want to charge for them. Maybe you want to apply specific rules to the subnames, such as only allowing alphanumeric names. All of this is possible, and this article will break down what you need to do.
 
-It's recommended to first read the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section to get an overview of the decisions you'll need to make.
+It's recommended to first read the [Use Cases](/v1/wrapper/usecases#sell-or-rent-subnames) section to get an overview of the decisions you'll need to make.
 
 ## Prerequisites
 
 This guide assumes that your parent name (such as `myname.eth`) is already wrapped. If you're not sure whether your name is wrapped, look at the "More" tab on the Manager app. If the name is unwrapped, it will say so, and it will show you a "Wrap Name" button.
 
-If you want to issue [Emancipated](/wrapper/states#emancipated) subnames, or subnames with [any other fuses](/wrapper/fuses) burned, then your parent name must first be [Locked](/wrapper/states#locked). You can do this on the Permissions tab in the ENS manager app.
+If you want to issue [Emancipated](/v1/wrapper/states#emancipated) subnames, or subnames with [any other fuses](/v1/wrapper/fuses) burned, then your parent name must first be [Locked](/v1/wrapper/states#locked). You can do this on the Permissions tab in the ENS manager app.
 
 :::warning
 Locking your name (in other words revoking the permission to unwrap) is an **irreversible** change. After you lock the name, you will no longer be able to unwrap it. This is a security guarantee for the holders of all subnames. It ensures that the owner of the parent name cannot get around the security guarantees of the Name Wrapper.
@@ -57,7 +57,7 @@ Then under the hood, your contract will call `setSubnodeRecord` and fill in the 
 - owner: Typically the caller account, `msg.sender`
 - resolver: Typically the default public resolver, `resolver.eth`
 - ttl: 0
-- fuses: Up to you and your goals. See the [Use Cases](/wrapper/usecases#sell-or-rent-subnames) section for a discussion on this. Typically 65536 for an enamcipated rental subname, or 327680 for an emancipated "forever" name.
+- fuses: Up to you and your goals. See the [Use Cases](/v1/wrapper/usecases#sell-or-rent-subnames) section for a discussion on this. Typically 65536 for an enamcipated rental subname, or 327680 for an emancipated "forever" name.
 - expiry: Up to you and your goals. If you are renting subnames for a particular length of time, this expiry would reflect that. If you are allowing registration of "forever" names, then you can just set the expiry equal to the parent name's current expiry.
 
 Of course, if you want to give the registrant more power/convenience, you could allow some of those parameters to be passed in to your public register function as well.
@@ -100,7 +100,7 @@ Once you have a parent name ready and a subname registrar contract deployed, the
 
 ### (If needed) Call setupDomain on your contract
 
-This will only apply to you if you have a specific `setupDomain` method or something similar on your contract, such as the [reference implementation](/wrapper/creating-subname-registrar#reference-implementation) contracts do.
+This will only apply to you if you have a specific `setupDomain` method or something similar on your contract, such as the [reference implementation](/v1/wrapper/creating-subname-registrar#reference-implementation) contracts do.
 
 Calling this method will "enable" a specific parent name in your subname registrar. It can also allow you to set or update the pricing terms or beneficiary account, if needed.
 

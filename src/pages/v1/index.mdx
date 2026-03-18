@@ -1,0 +1,42 @@
+---
+description: Legacy ENS v1 smart contract documentation
+---
+
+import { EmbedLink } from '../../components/EmbedLink'
+
+# Legacy (v1)
+
+This section contains documentation for the ENS v1 smart contracts deployed on L1 Ethereum. These contracts are still deployed and functional, but ENS v2 is the current architecture. For the latest contract documentation, see [Smart Contracts](/contracts).
+
+## Registry & Registrar
+
+<div className="grid grid-cols-2 gap-4">
+  <EmbedLink
+    title="The Registry"
+    description="The core v1 registry contract"
+    href="/v1/registry"
+  />
+  <EmbedLink
+    title="ETH Registrar"
+    description="The .eth TLD registrar"
+    href="/v1/eth-registrar"
+  />
+</div>
+
+## Name Wrapper
+
+The Name Wrapper is a v1 contract that wraps ENS names into ERC-1155 NFTs, enabling a permission system through fuses.
+
+<div className="grid grid-cols-2 gap-4">
+  {[
+    ['Overview', '/v1/wrapper/overview'],
+    ['Wrapped States', '/v1/wrapper/states'],
+    ['Fuses', '/v1/wrapper/fuses'],
+    ['Expiry', '/v1/wrapper/expiry'],
+    ['Contract Details', '/v1/wrapper/contracts'],
+    ['Use-Cases', '/v1/wrapper/usecases'],
+    ['Creating a Subname Registrar', '/v1/wrapper/creating-subname-registrar'],
+  ].map(([title, href]) => (
+    <EmbedLink title={title} href={href} key={href} />
+  ))}
+</div>

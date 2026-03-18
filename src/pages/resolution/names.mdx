@@ -152,7 +152,7 @@ You **MUST** [normalize](#normalize) a name before you attempt to create a label
 
 Labelhash is the Keccak-256 hash of a single label (e.g. `name` in `name.eth`), used in places that don't require the full name.
 
-One example of where labelhash is used is in the [BaseRegistar](/registry/eth), since it only supports registering 2LDs (second-level domains, like `name.eth`) and not 3LDs+ (e.g. `sub.name.eth`). The token ID of a second-level .eth name in the BaseRegistar is the uint256 of the labelhash.
+One example of where labelhash is used is in the [BaseRegistar](/v1/eth-registrar), since it only supports registering 2LDs (second-level domains, like `name.eth`) and not 3LDs+ (e.g. `sub.name.eth`). The token ID of a second-level .eth name in the BaseRegistar is the uint256 of the labelhash.
 
 :::code-group
 
@@ -189,7 +189,7 @@ don't, then when you pass those DNS-encoded bytes into a contract method,
 incorrect namehashes/labelhashes may be derived.
 :::
 
-This is a binary format for domain names, which encodes the length of each label along with the label itself. It is used by some of the ENS contracts, such as when wrapping names in the [Name Wrapper](/wrapper/overview) or resolving data with [ENSIP-10](/ensip/10).
+This is a binary format for domain names, which encodes the length of each label along with the label itself. It is used by some of the ENS contracts, such as when wrapping names in the [Name Wrapper](/v1/wrapper/overview) or resolving data with [ENSIP-10](/ensip/10).
 
 :::code-group
 
@@ -259,5 +259,5 @@ For example, to DNS-encode `my.name.eth`:
 Final result: `0x026d79046e616d650365746800`
 
 :::note
-Since the length of each label is stored in a single byte, that means that with this DNS-encoding scheme, each label is limited to being 255 UTF-8 encoded bytes in length. Because of this, names with longer labels cannot be wrapped in the [Name Wrapper](/wrapper/overview), as that contract uses the DNS-encoded name.
+Since the length of each label is stored in a single byte, that means that with this DNS-encoding scheme, each label is limited to being 255 UTF-8 encoded bytes in length. Because of this, names with longer labels cannot be wrapped in the [Name Wrapper](/v1/wrapper/overview), as that contract uses the DNS-encoded name.
 :::

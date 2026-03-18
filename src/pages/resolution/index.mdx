@@ -12,7 +12,7 @@ Here is a diagram of some of the contracts involved when resolving a name.
   />
 </Card>
 
-The resolution process involves multiple parts. Most notably the [Registry](/registry/ens), multiple Registrars ([ETH Registrar](/registry/eth), [DNS Registrar](/registry/dns), [Reverse Registrar](/registry/reverse), etc)
+The resolution process involves multiple parts. Most notably the [Registry](/v1/registry), multiple Registrars ([ETH Registrar](/v1/eth-registrar), [DNS Registrar](/registry/dns), [Reverse Registrar](/registry/reverse), etc)
 and the concept of a [Resolver](/resolvers/quickstart).
 
 ## How to resolve
@@ -22,7 +22,7 @@ Here is a little peek at what happens under the hood of your favourite library w
 ### 1. Find the Resolver
 
 Every name has a "resolver". A resolver is simply a contract that implements the [resolver specification](/resolvers/quickstart) and can be queried for information about a name.
-To get the resolver responsible for a name, you can query [The Registry](/registry/ens) for the `resolver` of a name.
+To get the resolver responsible for a name, you can query [The Registry](/v1/registry) for the `resolver` of a name.
 
 :::code-group
 
