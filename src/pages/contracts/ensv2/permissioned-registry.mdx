@@ -4,7 +4,7 @@ description: Permissioned Registry
 
 # Permissioned Registry
 
-The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an ERC1155 token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an `ERC1155` token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
 
 :::note
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -17,7 +17,7 @@ Each name in the registry is identified by its **labelhash** (the `keccak256` ha
 - **Subregistry**: pointer to a child registry (for managing subnames)
 - **Resolver**: address of the resolver contract
 - **Expiry**: timestamp after which the name is considered expired (`block.timestamp >= expiry`)
-- **Version counters**: two internal counters used for permission isolation and token identity (see [Versioning](#versioning))
+- **Versioning**: internal counters that isolate permissions between registrations and prevent stale token approvals (see [Versioning](#versioning))
 
 ## Name Lifecycle
 
@@ -26,20 +26,20 @@ Names exist in one of three states:
 ```mermaid
 stateDiagram-v2
     [*] --> AVAILABLE
-    AVAILABLE --> REGISTERED: register()\nROLE_REGISTRAR
-    AVAILABLE --> RESERVED: register() with owner=0\nROLE_REGISTRAR
-    RESERVED --> REGISTERED: register()\nROLE_REGISTER_RESERVED
-    REGISTERED --> AVAILABLE: unregister()\nor expiry
-    RESERVED --> AVAILABLE: unregister()\nor expiry
+    AVAILABLE --> REGISTERED: register()
+    AVAILABLE --> RESERVED: register() with owner=0
+    RESERVED --> REGISTERED: register()
+    REGISTERED --> AVAILABLE: unregister() or expiry
+    RESERVED --> AVAILABLE: unregister() or expiry
 ```
 
-- **AVAILABLE**: never registered or expired. Open for registration.
-- **RESERVED**: placeholder with no owner and no token. Useful for pre-allocating names before assigning them.
-- **REGISTERED**: has an owner, a token, and active permissions.
+- `AVAILABLE`: never registered or expired. Open for registration.
+- `RESERVED`: placeholder with no owner and no token. Useful for pre-allocating names before assigning them.
+- `REGISTERED`: has an owner, a token, and active permissions.
 
 **State transitions:**
 
-| From | To | Required role | Scope |
+| From | To | Required role | [Scope](/contracts/ensv2/enhanced-access-control#resources) |
 |------|----|---------------|-------|
 | AVAILABLE | REGISTERED | `ROLE_REGISTRAR` | root |
 | AVAILABLE | RESERVED | `ROLE_REGISTRAR` | root |
@@ -48,33 +48,35 @@ stateDiagram-v2
 
 ### Registration
 
-`register()` accepts a `label` (string), `owner`, `registry` (subregistry), `resolver`, `roleBitmap` (initial roles granted to the owner), and `expiry`. If `owner` is `address(0)`, the name is reserved instead of registered, and `roleBitmap` must be `0`.
+`register()` accepts a `label` (string), `owner`, `registry` (subregistry), `resolver`, `roleBitmap` (initial roles granted to the owner), and `expiry`. Labels are validated for size before registration. If `owner` is `address(0)`, the name is reserved instead of registered, and `roleBitmap` must be `0`.
 
-When promoting a RESERVED name to REGISTERED, if `expiry` is `0` the current expiry is preserved.
+A non-expired registered name cannot be re-registered directly — it must be unregistered first. Similarly, a reserved name cannot be re-reserved; it can only be promoted to registered.
+
+When promoting a `RESERVED` name to `REGISTERED`, if `expiry` is `0` the current expiry is preserved.
 
 Re-registering an expired name that had a previous owner burns the old token and increments both version counters, ensuring stale permissions and token approvals don't carry over.
 
 ### Unregistration
 
-`unregister()` sets the name's expiry to `block.timestamp`, making it immediately available. If the name was REGISTERED (has an owner), the token is burned and both version counters are incremented.
+`unregister()` sets the name's expiry to `block.timestamp`, making it immediately available. If the name was `REGISTERED` (has an owner), the token is burned and both version counters are incremented.
 
 ### Renewal
 
-`renew()` extends a name's expiry but cannot reduce it. Both REGISTERED and RESERVED names can be renewed. Expired names cannot be renewed — they must be re-registered.
+`renew()` extends a name's expiry but cannot reduce it. Both `REGISTERED` and `RESERVED` names can be renewed. Expired names cannot be renewed — they must be re-registered.
 
 ## anyId Polymorphism
 
-Most functions accept an `anyId` parameter that can be a **labelhash**, **tokenId**, or **resource** interchangeably. Internally, `_entry()` zeroes the version bits to find the canonical storage slot for the name. This means you can pass whichever identifier you have on hand — the registry resolves it to the same underlying entry.
+Most functions accept an `anyId` parameter that can be a `labelhash`, `tokenId`, or `resource` interchangeably. Internally, `_entry()` zeroes the version bits to find the canonical storage slot for the name. This means you can pass whichever identifier you have on hand — the registry resolves it to the same underlying entry.
 
 This applies to `setSubregistry()`, `setResolver()`, `renew()`, `unregister()`, `getExpiry()`, `getStatus()`, `getState()`, `getTokenId()`, `getResource()`, and all EAC role functions (`grantRoles()`, `revokeRoles()`, `roles()`, etc.).
 
 ## Ownership
 
-Each registered name is an ERC1155 token with exactly one owner (singleton, not fungible). The token ID encodes both the labelhash and a version counter, so it changes when the name is re-registered or roles change (see [Versioning](#versioning)).
+Each registered name is an `ERC1155` token with exactly one owner (singleton, not fungible). The token ID changes when the name is re-registered or when roles change (see [Versioning](#versioning)).
 
 `ownerOf()` returns `address(0)` for:
 - Expired names — ownership is time-bounded
-- Stale token IDs — after a version bump, old token IDs are no longer valid
+- Stale token IDs — after versioning changes, old token IDs are no longer valid
 
 `latestOwnerOf()` returns the owner regardless of expiry or version staleness — useful for historical queries or determining who last held a name.
 
@@ -100,21 +102,19 @@ All roles use [Enhanced Access Control](/contracts/ensv2/enhanced-access-control
 
 ## Transfers
 
-Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an **admin role on the token owner** (not the operator — operator approval via ERC1155 is a separate check).
+Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an **admin role on the token owner** (not the operator — operator approval via `ERC1155` is a separate check).
 
 When a token transfers, all roles automatically move from the old owner to the new owner. Without `ROLE_CAN_TRANSFER_ADMIN`, the name is effectively non-transferable — similar to the `CANNOT_TRANSFER` fuse in the Name Wrapper.
 
 ## Versioning
 
-Each name maintains two independent version counters:
+The registry uses internal versioning to provide two security guarantees:
 
-**`eacVersionId`** — incremented on unregistration and re-registration. Creates a fresh permission scope so that roles from a previous registration don't carry over to a new owner.
+**Permission isolation across registrations** — when a name is unregistered and later re-registered, all roles from the previous registration are invalidated. The new owner starts with a clean permission scope, preventing any stale grants from carrying over.
 
-**`tokenVersionId`** — incremented on unregistration, re-registration, **and** whenever roles change. Creates a new token ID each time. Role changes trigger a burn+mint cycle (`_regenerateToken`), emitting `TokenRegenerated(oldTokenId, newTokenId)` — the owner stays the same but gets a new token ID.
+**Preventing transfer griefing** — when roles are granted or revoked via `grantRoles()` / `revokeRoles()`, the token ID changes (the owner stays the same but receives a new token via a burn+mint cycle). This invalidates any pending `ERC1155` transfer approvals tied to the old token ID, preventing an attack where someone approves a transfer and then has their roles revoked — without this, the approved party could race to transfer the token before the revocation takes effect. During normal transfers, roles move to the new owner without changing the token ID.
 
-Why does `tokenVersionId` change on role changes? It prevents an attack where someone approves a token transfer, then has their roles revoked — the old token ID becomes invalid, so the pending transfer fails. Without this, a revoked operator could race to transfer the token before the revocation settles.
-
-Expired names automatically receive a fresh resource scope (computed as `eacVersionId + 1`), so stale permissions from a lapsed registration can't be used even before the name is re-registered.
+**Expiry enforcement** — expired names retain their permissions, but all mutating operations check expiry first and revert if the name has lapsed, preventing stale permissions from being exercised. On re-registration, version counters increment to create a fresh scope that invalidates any prior grants.
 
 ## Registry Hierarchy
 
