@@ -39,7 +39,7 @@ jobs:
           OMNIPIN_FILECOIN_TOKEN: ${{ secrets.OMNIPIN_FILECOIN_TOKEN }}
 
           # Lighthouse for pinning
-          OMNIPIN_LIGHTHOUSE_TOKEN: ${{ secrets.OMNIPIN_LIGHTHOUSE_TOKEN }}
+          # OMNIPIN_LIGHTHOUSE_TOKEN: ${{ secrets.OMNIPIN_LIGHTHOUSE_TOKEN }}
 
           # Wallet that proposes transactions to the Safe
           OMNIPIN_PK: ${{ secrets.OMNIPIN_PK }}
