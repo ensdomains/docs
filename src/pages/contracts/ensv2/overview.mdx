@@ -23,7 +23,7 @@ The information on this page is a work-in-progress. Expect updates as the design
   the ownership and transfer rules for names and subnames.
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
   in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2, using a new, highly flexible,
-  role-based permissions model.
+  [role-based permissions model](/contracts/ensv2/enhanced-access-control).
 - **No Grace Period** - The grace period is no longer a part of the ENS protocol, meaning names expire when they say they expire. Upon expiration, names immediately enter into the [temporary premium](/registry/eth#premium--auctions) period. The owner of a recently-expired name doesn't have to pay the premium fee during this period.
 - **Contract Factories** - Rather than relying on large multi-user contracts such as
   the default public resolver, every name gets its own resolver, and every name
@@ -161,7 +161,7 @@ at all!
 ### Token Representation and permissions
 
 Although it's not required by the ENSv2 registry interface specification, typically registries are
-implemented as ERC1155 token contracts, and standardized tooling is likely to expect as much. Each registry
+implemented as `ERC1155` token contracts, and standardized tooling is likely to expect as much. Each registry
 has an overall owner, who is responsible for the registry itself, as well as owners for individual subnames,
 which are represented as tokens. Because of the hierarchical nature of the registry structure as demonstrated
 above, merely owning a subname token on a registry does not guarantee anything in isolation: to be meaningful,

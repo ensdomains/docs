@@ -359,6 +359,14 @@ export default defineConfig({
               text: 'Overview',
               link: '/contracts/ensv2/overview',
             },
+            {
+              text: 'Enhanced Access Control',
+              link: '/contracts/ensv2/enhanced-access-control',
+            },
+            {
+              text: 'Permissioned Registry',
+              link: '/contracts/ensv2/permissioned-registry',
+            },
             // {
             //   text: 'Registries',
             //   link: '/contracts/ensv2/registries',
