@@ -104,7 +104,7 @@ All roles use [Enhanced Access Control](/contracts/ensv2/enhanced-access-control
 
 Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an **admin role on the token owner** (not the operator — operator approval via `ERC1155` is a separate check).
 
-When a token transfers, all roles automatically move from the old owner to the new owner. Without `ROLE_CAN_TRANSFER_ADMIN`, the name is effectively non-transferable — similar to the `CANNOT_TRANSFER` fuse in the Name Wrapper.
+When a token transfers, all roles are atomically moved from the old owner to the new owner — the old owner's roles are revoked first (freeing assignee slots), then granted to the new owner. Roles granted to other accounts on the same name are unaffected. Without `ROLE_CAN_TRANSFER_ADMIN`, the name is effectively non-transferable — similar to the `CANNOT_TRANSFER` fuse in the Name Wrapper.
 
 ## Versioning
 
@@ -115,6 +115,16 @@ The registry uses internal versioning to provide two security guarantees:
 **Preventing transfer griefing** — when roles are granted or revoked via `grantRoles()` / `revokeRoles()`, the token ID changes (the owner stays the same but receives a new token via a burn+mint cycle). This invalidates any pending `ERC1155` transfer approvals tied to the old token ID, preventing an attack where someone approves a transfer and then has their roles revoked — without this, the approved party could race to transfer the token before the revocation takes effect. During normal transfers, roles move to the new owner without changing the token ID.
 
 **Expiry enforcement** — expired names retain their permissions, but all mutating operations check expiry first and revert if the name has lapsed, preventing stale permissions from being exercised. On re-registration, version counters increment to create a fresh scope that invalidates any prior grants.
+
+## EAC Hook Overrides
+
+The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv2/enhanced-access-control#callback-hooks) to enforce registry-specific invariants:
+
+**Token regeneration on role changes** — when roles are granted or revoked via `grantRoles()` / `revokeRoles()`, the `_onRolesGranted` and `_onRolesRevoked` hooks trigger a token regeneration (burn + mint with a new token ID). This invalidates any pending ERC1155 transfer approvals tied to the old token ID, preventing an attacker from racing to transfer a token after their roles have been revoked.
+
+**Admin role restriction on names** — `_getSettableRoles` is overridden so that admin roles on individual names can only be assigned at registration time. After registration, only regular (non-admin) roles can be granted on a name. On `ROOT_RESOURCE`, admin roles work normally. This prevents a name owner from escalating their own permissions after registration.
+
+**No role changes on unregistered names** — both `_getSettableRoles` and `_getRevokableRoles` return `0` for names that are `AVAILABLE` or `RESERVED`, blocking all role operations until the name is fully registered.
 
 ## Registry Hierarchy
 

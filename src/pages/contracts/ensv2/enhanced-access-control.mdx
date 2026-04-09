@@ -63,12 +63,32 @@ For example, the admin role for "set resolver" controls who is allowed to grant 
 
 Roles are managed through four functions:
 
-- `grantRoles` / `revokeRoles` - manage roles on a specific resource (name)
-- `grantRootRoles` / `revokeRootRoles` - manage roles on `ROOT_RESOURCE` (contract-wide)
+- `grantRoles` / `revokeRoles` — manage roles on a specific resource (name)
+- `grantRootRoles` / `revokeRootRoles` — manage roles on `ROOT_RESOURCE` (contract-wide)
 
-The caller must hold the admin role for every role being granted or revoked. Admin role holders can also revoke the admin role itself - including from themselves.
+The caller must hold the admin role for every role being granted or revoked. Admin role holders can also revoke the admin role itself — including from themselves.
 
-Contracts can hook into role changes by overriding `_onRolesGranted` and `_onRolesRevoked` to run custom logic whenever permissions change.
+As a safety guardrail, `grantRoles` and `revokeRoles` reject `ROOT_RESOURCE` — you must use `grantRootRoles` / `revokeRootRoles` explicitly for contract-wide permissions. This prevents accidental global grants.
+
+All four functions return `true` if the account's roles actually changed, or `false` if the roles were already in the desired state.
+
+## Callback Hooks
+
+EAC provides four internal hooks that contracts can override to customize permission behavior:
+
+### Role Change Callbacks
+
+- **`_onRolesGranted(resource, account, oldRoles, newRoles, roleBitmap)`** — called after roles are successfully granted. Receives the account's role bitmap before and after the change, plus the specific roles that were newly added.
+- **`_onRolesRevoked(resource, account, oldRoles, newRoles, roleBitmap)`** — called after roles are successfully revoked. Same parameters, with `roleBitmap` containing the roles that were actually removed.
+
+Both are no-ops in the base implementation. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides these to regenerate ERC1155 tokens when roles change, invalidating stale transfer approvals.
+
+### Grant/Revoke Restriction Hooks
+
+- **`_getSettableRoles(resource, account)`** — returns which roles the account is allowed to grant on a given resource. By default, an account can grant any role for which it holds the corresponding admin role. Contracts override this to impose additional restrictions.
+- **`_getRevokableRoles(resource, account)`** — returns which roles the account is allowed to revoke on a given resource. Same default behavior as settable roles.
+
+The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides both to prevent admin role escalation on individual names after registration and to block all role changes on unregistered or reserved names.
 
 ## Bitmap Layout
 
