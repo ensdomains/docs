@@ -1,0 +1,58 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.40] [EP 6.40] [Executable] Update DNSSEC Algorithm 7
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                                       |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/93339540979084434403669350155813124666788975924280943502320960019054315770244), [Anticapture](https://app.anticapture.com/ens/governance/proposal/93339540979084434403669350155813124666788975924280943502320960019054315770244) |
+
+## Abstract
+
+This proposal updates DNSSECImpl's algorithm 7 (RSASHA1-NSEC3-SHA1) to point to the same patched RSASHA1Algorithm contract that already serves algorithm 5. This was inadvertently omitted from the [previous proposal](https://discuss.ens.domains/t/executable-replace-dnssec-oracle-algorithms/21910) which patched algorithms 5, 8, and 13.
+
+## Motivation
+
+The ENS deploy script ([`10_deploy_oracle.ts`](https://github.com/ensdomains/ens-contracts/blob/91c966febd7b55494269df830fc6775f040b927b/deploy/dnssec-oracle/10_deploy_oracle.ts#L64-L68)) maps both algorithm 5 and algorithm 7 to the same `RSASHA1Algorithm` contract, as they share identical RSA+SHA1 verification logic. When the [previous proposal](https://discuss.ens.domains/t/executable-replace-dnssec-oracle-algorithms/21910) was executed, `setAlgorithm` was called for algorithms 5, 8, and 13, but algorithm 7 was missed.
+
+Algorithm 7 currently still points to the pre-patch contract at [`0x6ca8624Bc207F043D140125486De0f7E624e37A1`](https://etherscan.io/address/0x6ca8624Bc207F043D140125486De0f7E624e37A1), which lacks PKCS#1 v1.5 padding validation.
+
+**Current impact is negligible** — no TLD in the ENS ecosystem currently uses algorithm 7. The TLDs affected by the original vulnerability (`.cc`, `.name`) used algorithm 8, which was patched in the previous proposal. However, this should be corrected to match the intended configuration and to close the gap left by the previous deployment.
+
+## Specification
+
+A single `setAlgorithm` call on DNSSECImpl ([`0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5`](https://etherscan.io/address/0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5)):
+
+| Algorithm ID           | Contract                   | Address                                                                                                                 |
+| ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 7 (RSASHA1-NSEC3-SHA1) | RSASHA1Algorithm (patched) | [`0x58E0383E21f25DaB957F6664240445A514E9f5e8`](https://etherscan.io/address/0x58E0383E21f25DaB957F6664240445A514E9f5e8) |
+
+No new contract deployment is needed — this reuses the same patched contract already serving algorithm 5.
+
+## Transaction
+
+| #   | Contract   | Function                      | Parameters                                        |
+| --- | ---------- | ----------------------------- | ------------------------------------------------- |
+| 1   | DNSSECImpl | `setAlgorithm(uint8,address)` | `7`, `0x58E0383E21f25DaB957F6664240445A514E9f5e8` |
+
+Calldata:
+
+```
+cast calldata "setAlgorithm(uint8,address)" 7 0x58E0383E21f25DaB957F6664240445A514E9f5e8
+```
+
+## Verification
+
+After execution, confirm:
+
+```
+cast call 0x0fc3152971714E5ed7723FAFa650F86A4BaF30C5 "algorithms(uint8)(address)" 7
+# Expected: 0x58E0383E21f25DaB957F6664240445A514E9f5e8
+```
