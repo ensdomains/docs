@@ -41,6 +41,8 @@ Up to 15 accounts can hold the same role on the same resource, enabling shared m
 
 **How role checks work:** when a contract checks whether an account has a role on a specific name, it looks in two places - the name itself and `ROOT_RESOURCE` - and allows the action if the role is found in either. This is how the master key effect works.
 
+The account being checked is the sender as resolved by [Hidden Contract Accounts](/contracts/ensv2/hca), not raw `msg.sender` — smart-account proxies are transparently mapped to their owner before the role lookup runs.
+
 ## Admin Roles
 
 Every role has a corresponding **admin role** that controls who can manage it. If you hold the admin role, you can:
@@ -116,17 +118,17 @@ EAC replaces the one-way [fuse system](/wrapper/fuses) from the Name Wrapper. Ke
 
 The [Permissioned Registry](/contracts/ensv2/permissioned-registry) defines the following roles for managing name ownership and lifecycle:
 
-| Role | Scope | Purpose |
-|------|-------|---------|
-| `ROLE_REGISTRAR` | root | Register or reserve names |
-| `ROLE_REGISTER_RESERVED` | root | Promote reserved names to registered |
-| `ROLE_SET_PARENT` | root | Set parent registry |
-| `ROLE_UNREGISTER` | root or name | Unregister names |
-| `ROLE_RENEW` | root or name | Extend expiry |
-| `ROLE_SET_SUBREGISTRY` | root or name | Set child registry |
-| `ROLE_SET_RESOLVER` | root or name | Set resolver |
-| `ROLE_CAN_TRANSFER_ADMIN` | root or name (admin only) | Authorize token transfers |
-| `ROLE_UPGRADE` | root | Authorize proxy upgrades |
+| Role                      | Scope                     | Purpose                              |
+| ------------------------- | ------------------------- | ------------------------------------ |
+| `ROLE_REGISTRAR`          | root                      | Register or reserve names            |
+| `ROLE_REGISTER_RESERVED`  | root                      | Promote reserved names to registered |
+| `ROLE_SET_PARENT`         | root                      | Set parent registry                  |
+| `ROLE_UNREGISTER`         | root or name              | Unregister names                     |
+| `ROLE_RENEW`              | root or name              | Extend expiry                        |
+| `ROLE_SET_SUBREGISTRY`    | root or name              | Set child registry                   |
+| `ROLE_SET_RESOLVER`       | root or name              | Set resolver                         |
+| `ROLE_CAN_TRANSFER_ADMIN` | root or name (admin only) | Authorize token transfers            |
+| `ROLE_UPGRADE`            | root                      | Authorize proxy upgrades             |
 
 "Root" scope means the role operates on `ROOT_RESOURCE` only. "Root or name" means it can be granted on either scope, and the two compose — a root grant applies to all names.
 
@@ -136,26 +138,26 @@ Admin roles on individual names can only be granted at registration time. They c
 
 The Permissioned Resolver is the per-name resolver used in ENSv2. Each name gets its own resolver instance deployed via a factory, and all permissions are managed through EAC.
 
-| Role | Scope | Purpose |
-|------|-------|---------|
-| `ROLE_SET_ADDR` | root or name | Set address records (e.g. ETH, BTC addresses) |
-| `ROLE_SET_TEXT` | root or name | Set text records (e.g. avatar, email) |
-| `ROLE_SET_CONTENTHASH` | root or name | Set contenthash record |
-| `ROLE_SET_PUBKEY` | root or name | Set SECP256k1 public key record |
-| `ROLE_SET_ABI` | root or name | Set ABI data |
-| `ROLE_SET_INTERFACE` | root or name | Set interface implementer record |
-| `ROLE_SET_NAME` | root or name | Set reverse name record |
-| `ROLE_SET_ALIAS` | root | Set alias targets for name rewriting |
-| `ROLE_CLEAR` | root or name | Clear all records for a node (version bump) |
-| `ROLE_UPGRADE` | root | Authorize proxy upgrades |
+| Role                   | Scope        | Purpose                                       |
+| ---------------------- | ------------ | --------------------------------------------- |
+| `ROLE_SET_ADDR`        | root or name | Set address records (e.g. ETH, BTC addresses) |
+| `ROLE_SET_TEXT`        | root or name | Set text records (e.g. avatar, email)         |
+| `ROLE_SET_CONTENTHASH` | root or name | Set contenthash record                        |
+| `ROLE_SET_PUBKEY`      | root or name | Set SECP256k1 public key record               |
+| `ROLE_SET_ABI`         | root or name | Set ABI data                                  |
+| `ROLE_SET_INTERFACE`   | root or name | Set interface implementer record              |
+| `ROLE_SET_NAME`        | root or name | Set reverse name record                       |
+| `ROLE_SET_ALIAS`       | root         | Set alias targets for name rewriting          |
+| `ROLE_CLEAR`           | root or name | Clear all records for a node (version bump)   |
+| `ROLE_UPGRADE`         | root         | Authorize proxy upgrades                      |
 
 ### Fine-Grained Permissions
 
 `ROLE_SET_ADDR` and `ROLE_SET_TEXT` support an additional level of scoping beyond name-level. Permissions can be restricted to a specific coin type or text key using a **part** identifier, creating a two-dimensional permission grid:
 
-|  | Any record | Specific record |
-|--|------------|-----------------|
-| **Any name** | `resource(0, 0)` | `resource(0, part)` |
+|                   | Any record              | Specific record            |
+| ----------------- | ----------------------- | -------------------------- |
+| **Any name**      | `resource(0, 0)`        | `resource(0, part)`        |
 | **Specific name** | `resource(namehash, 0)` | `resource(namehash, part)` |
 
 When checking permissions, the resolver looks across all four resource combinations and allows the action if any of them grant the required role.

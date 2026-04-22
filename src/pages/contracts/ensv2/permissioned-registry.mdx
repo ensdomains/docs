@@ -39,12 +39,12 @@ stateDiagram-v2
 
 **State transitions:**
 
-| From | To | Required role | [Scope](/contracts/ensv2/enhanced-access-control#resources) |
-|------|----|---------------|-------|
-| AVAILABLE | REGISTERED | `ROLE_REGISTRAR` | root |
-| AVAILABLE | RESERVED | `ROLE_REGISTRAR` | root |
-| RESERVED | REGISTERED | `ROLE_REGISTER_RESERVED` | root |
-| REGISTERED / RESERVED | AVAILABLE | `ROLE_UNREGISTER` | root or name |
+| From                  | To         | Required role            | [Scope](/contracts/ensv2/enhanced-access-control#resources) |
+| --------------------- | ---------- | ------------------------ | ----------------------------------------------------------- |
+| AVAILABLE             | REGISTERED | `ROLE_REGISTRAR`         | root                                                        |
+| AVAILABLE             | RESERVED   | `ROLE_REGISTRAR`         | root                                                        |
+| RESERVED              | REGISTERED | `ROLE_REGISTER_RESERVED` | root                                                        |
+| REGISTERED / RESERVED | AVAILABLE  | `ROLE_UNREGISTER`        | root or name                                                |
 
 ### Registration
 
@@ -75,26 +75,33 @@ This applies to `setSubregistry()`, `setResolver()`, `renew()`, `unregister()`, 
 Each registered name is an `ERC1155` token with exactly one owner (singleton, not fungible). The token ID changes when the name is re-registered or when roles change (see [Versioning](#versioning)).
 
 `ownerOf()` returns `address(0)` for:
+
 - Expired names — ownership is time-bounded
 - Stale token IDs — after versioning changes, old token IDs are no longer valid
 
 `latestOwnerOf()` returns the owner regardless of expiry or version staleness — useful for historical queries or determining who last held a name.
 
+Operator approvals and transfer checks resolve the caller through [Hidden Contract Accounts](/contracts/ensv2/hca), so smart-account proxies are attributed to their owner.
+
+## Token Metadata
+
+The registry exposes ERC-1155 `uri(tokenId)` by delegating to a swappable [Registry Metadata](/contracts/ensv2/registry-metadata) provider set at construction. The provider decides the URI format — per-token URIs, a single shared base URI, or any custom strategy.
+
 ## Roles
 
 All roles use [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) mechanics for role-based access control.
 
-| Role | Scope | Purpose |
-|------|-------|---------|
-| `ROLE_REGISTRAR` | root | Register or reserve names |
-| `ROLE_REGISTER_RESERVED` | root | Promote reserved names to registered |
-| `ROLE_SET_PARENT` | root | Set parent registry |
-| `ROLE_UNREGISTER` | root or name | Unregister names |
-| `ROLE_RENEW` | root or name | Extend expiry |
-| `ROLE_SET_SUBREGISTRY` | root or name | Set child registry |
-| `ROLE_SET_RESOLVER` | root or name | Set resolver |
-| `ROLE_CAN_TRANSFER_ADMIN` | root or name (admin only) | Authorize token transfers |
-| `ROLE_UPGRADE` | root | Authorize proxy upgrades |
+| Role                      | Scope                     | Purpose                              |
+| ------------------------- | ------------------------- | ------------------------------------ |
+| `ROLE_REGISTRAR`          | root                      | Register or reserve names            |
+| `ROLE_REGISTER_RESERVED`  | root                      | Promote reserved names to registered |
+| `ROLE_SET_PARENT`         | root                      | Set parent registry                  |
+| `ROLE_UNREGISTER`         | root or name              | Unregister names                     |
+| `ROLE_RENEW`              | root or name              | Extend expiry                        |
+| `ROLE_SET_SUBREGISTRY`    | root or name              | Set child registry                   |
+| `ROLE_SET_RESOLVER`       | root or name              | Set resolver                         |
+| `ROLE_CAN_TRANSFER_ADMIN` | root or name (admin only) | Authorize token transfers            |
+| `ROLE_UPGRADE`            | root                      | Authorize proxy upgrades             |
 
 "Root" scope means the role only works on `ROOT_RESOURCE`. "Root or name" means it can be granted on either scope, and the two compose — a root grant applies to all names.
 
@@ -141,11 +148,11 @@ The registry also stores its own parent via `setParent()` / `getParent()`, which
 
 ## View Functions
 
-| Function | Returns |
-|----------|---------|
-| `getState(anyId)` | Complete state: status, expiry, latest owner, tokenId, resource |
-| `getStatus(anyId)` | `AVAILABLE`, `RESERVED`, or `REGISTERED` |
-| `getExpiry(anyId)` | Expiry timestamp |
-| `getTokenId(anyId)` | Current token ID for the name |
-| `getResource(anyId)` | Current EAC resource ID for the name |
+| Function                 | Returns                                                            |
+| ------------------------ | ------------------------------------------------------------------ |
+| `getState(anyId)`        | Complete state: status, expiry, latest owner, tokenId, resource    |
+| `getStatus(anyId)`       | `AVAILABLE`, `RESERVED`, or `REGISTERED`                           |
+| `getExpiry(anyId)`       | Expiry timestamp                                                   |
+| `getTokenId(anyId)`      | Current token ID for the name                                      |
+| `getResource(anyId)`     | Current EAC resource ID for the name                               |
 | `latestOwnerOf(tokenId)` | Owner regardless of expiry/version (useful for historical queries) |
