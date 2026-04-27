@@ -18,8 +18,3 @@ src/data/generated/*
 
 .wrangler
 .claude
-ENSv2-DOCS-TRANSITION-PLAN.md
-ENSv2-IDs.md
-claims.md
-ensv2-docs-audit.md
-ensv2-transition-timeline.png
