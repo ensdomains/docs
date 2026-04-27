@@ -1,0 +1,104 @@
+---
+description: ERC1155Singleton - a gas-optimized ERC1155 variant with exactly one owner per token
+---
+
+# ERC1155Singleton
+
+ENSv2 represents names as tokens using a modified ERC1155 implementation called **ERC1155Singleton**. Unlike standard ERC1155 where tokens can be fungible (multiple owners holding quantities of the same token), each ERC1155Singleton token has exactly one owner - combining the ownership semantics of ERC721 with the batching and interface compatibility of ERC1155.
+
+:::note
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+:::
+
+## Why Not ERC721?
+
+ENSv1 used ERC721 for `.eth` names via the BaseRegistrar. ENSv2 switched to a modified ERC1155 for several reasons:
+
+- **Batch operations**: ERC1155 natively supports batch transfers and balance queries, which is useful when operating on multiple names at once
+- **Interface compatibility**: the ERC1155 interface is well-supported by wallets, marketplaces, and indexers
+- **Gas efficiency**: ERC1155Singleton removes the balance tracking overhead of standard ERC1155 while keeping a simpler ownership model than ERC721's dual approval system
+
+## Key Differences from Standard ERC1155
+
+| Feature                  | Standard ERC1155                | ERC1155Singleton                        |
+| ------------------------ | ------------------------------- | --------------------------------------- |
+| Tokens per ID            | 0 to N (fungible)               | 0 or 1 (singleton)                      |
+| `ownerOf(id)`            | Not available                   | Returns the single owner                |
+| `balanceOf(account, id)` | Returns quantity held           | Returns `1` (owner) or `0`              |
+| Balance tracking         | Mapping of balances per account | Flat `id -> address` mapping            |
+| Transfer value           | Any amount                      | Must be exactly `1` (reverts otherwise) |
+
+## Ownership Model
+
+ERC1155Singleton provides a simple ownership model:
+
+```solidity
+// Returns the owner of a token, or address(0) if it doesn't exist
+function ownerOf(uint256 id) external view returns (address)
+
+// Returns 1 if `account` owns `id`, 0 otherwise
+function balanceOf(address account, uint256 id) external view returns (uint256)
+```
+
+Under the hood, ownership is stored in a flat mapping from token ID to owner address. There's no separate balance counter - `balanceOf` simply checks whether the queried account matches the stored owner.
+
+## Gas Optimization
+
+The key gas saving comes from eliminating balance accounting. In a standard ERC1155, every transfer requires:
+
+1. Decrement sender's balance
+2. Increment receiver's balance
+3. Update any approval state
+
+In ERC1155Singleton, a transfer is just a single storage write: updating the `id -> owner` mapping. This makes transfers noticeably cheaper.
+
+## HCA Support
+
+ERC1155Singleton integrates with the [Hidden Contract Account (HCA)](/contracts/ensv2/hca) system. When resolving `msg.sender`, the contract checks whether the caller is a registered HCA (a smart contract wallet) and, if so, uses the HCA's owner address instead.
+
+This means that if you interact with an ENSv2 registry through a smart contract wallet that is registered as an HCA, the registry recognizes you as the owner rather than the wallet contract. This is particularly important for:
+
+- Smart contract wallets (e.g., Safe, ERC-4337 accounts) that hold names
+- Proxy contracts that act on behalf of users
+
+## Integration with the Registry
+
+The [Permissioned Registry](/contracts/ensv2/permissioned-registry) inherits from ERC1155Singleton. Every registered name becomes a singleton token:
+
+- **Minting** happens when a name is registered via `register()`
+- **Burning** happens when a name is unregistered via `unregister()`, or when it expires and is re-registered
+- **Token regeneration** happens when roles change on a name - the old token is burned and a new one is minted to the same owner with a new ID (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids))
+
+The singleton constraint means that standard ERC1155 operations like `safeTransferFrom` work as expected, but attempting to transfer a value greater than `1` will revert.
+
+## Marketplace Compatibility
+
+Because ERC1155Singleton implements the full `IERC1155` interface, names are compatible with standard NFT marketplaces and tools:
+
+- **Marketplaces** (OpenSea, Blur, etc.) can list and trade names
+- **Wallets** display names alongside other ERC1155 tokens
+- **Indexers** track ownership changes through standard `TransferSingle` and `TransferBatch` events
+
+One important caveat: because [token IDs can change](/contracts/ensv2/mutable-token-ids) when roles are updated, marketplace listings tied to an old token ID will become invalid. This is by design - it prevents an attack where a seller changes the name's permissions after listing it for sale.
+
+## Interface
+
+`IERC1155Singleton` extends the standard `IERC1155` with a single addition, `ownerOf`, analogous to ERC721's function of the same name:
+
+```solidity
+/// @dev Interface selector: 0x6352211e
+interface IERC1155Singleton is IERC1155 {
+    /// Returns the owner of a token, or address(0) if it doesn't exist.
+    function ownerOf(uint256 id) external view returns (address owner);
+}
+```
+
+Internally, the contract replaces the standard ERC1155 nested balance mapping (`id → address → balance`) with a flat `id → address` ownership mapping. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides `ownerOf` to add expiry and version validation on top of raw ownership, returning `address(0)` for expired names or stale token IDs.
+
+The contract emits all standard ERC1155 events:
+
+| Event            | When                                          |
+| ---------------- | --------------------------------------------- |
+| `TransferSingle` | Name registered, transferred, or unregistered |
+| `TransferBatch`  | Batch operations on multiple names            |
+| `ApprovalForAll` | Operator approval set or revoked              |

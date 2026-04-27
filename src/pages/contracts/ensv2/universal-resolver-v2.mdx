@@ -1,0 +1,92 @@
+---
+description: ENSv2's Universal Resolver - the single entry point for resolving names across the registry hierarchy
+---
+
+# Universal Resolver V2
+
+The Universal Resolver is the primary public entry point for ENS name resolution. In ENSv1, it queried a flat registry to find resolvers. In ENSv2, it traverses the [hierarchical registry tree](/contracts/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name.
+
+:::note
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+:::
+
+## What's Inherited from ENSv1
+
+`UniversalResolverV2` extends the ENSv1 `AbstractUniversalResolver`, which provides:
+
+- **`resolve(name, data)`**: resolve a single record for a name, with [CCIP-Read](/resolvers/ccip-read) support
+- **`resolve(name, data[])`**: batch-resolve multiple records in one call
+- **`reverse(addr, coinType)`**: reverse resolution (address → name)
+- All CCIP-Read gateway batching infrastructure
+
+These work identically to ENSv1. The only difference is that the underlying resolver lookup now traverses the registry hierarchy instead of querying a flat registry.
+
+## New Functions
+
+ENSv2 adds functions for navigating and verifying the registry hierarchy. All are `public view`.
+
+### findResolver
+
+```solidity
+function findResolver(bytes memory name) public view returns (address resolver, bytes32 node, uint256 offset)
+```
+
+Overrides the ENSv1 abstract method. Walks down the registry tree from the root, following `getSubregistry()` at each level, and returns the resolver that covers the longest matching suffix of the name. See [Resolution](/contracts/ensv2/registry-hierarchy#resolution) for a step-by-step walkthrough.
+
+This is the function that powers `resolve()` and `reverse()`. It's also used internally by other ENSv2 contracts. The DNS resolvers (`DNSAliasResolver`, `DNSTLDResolver`) and `ENSV2Resolver` use the same algorithm via `LibRegistry` to resolve names through the registry hierarchy.
+
+### findCanonicalName
+
+```solidity
+function findCanonicalName(IRegistry registry) external view returns (bytes memory)
+```
+
+Given a registry address, reconstructs its full DNS-encoded name by walking **up** the hierarchy via `getParent()`. At each step, it verifies that the parent's `getSubregistry(label)` actually points back to the child registry. Returns empty bytes if any link in the chain is broken.
+
+### findCanonicalRegistry
+
+```solidity
+function findCanonicalRegistry(bytes calldata name) external view returns (IRegistry)
+```
+
+Given a DNS-encoded name, finds its registry and verifies it is **canonical**, meaning the registry hierarchy is consistent in both directions. It first walks **down** from root via `getSubregistry()` to find the registry, then calls `findCanonicalName()` on the result (which walks **up**) and checks that the reconstructed name matches the input. Returns `address(0)` if the registry doesn't exist or isn't canonical.
+
+This bidirectional verification is important because registries can be shared (the same registry can be a subregistry of multiple parents). `findCanonicalRegistry` ensures you're looking at the registry through its intended parent chain, not an alias.
+
+### findExactRegistry
+
+```solidity
+function findExactRegistry(bytes calldata name) external view returns (IRegistry)
+```
+
+Walks down from root to find the registry for a name, without the canonicality verification that `findCanonicalRegistry` performs. Returns `address(0)` if no registry exists at that position in the tree.
+
+Use `findExactRegistry` when you need to quickly locate a registry and already trust the hierarchy (e.g., reading state from a known deployment). Use `findCanonicalRegistry` when trust matters, for example in a marketplace contract that needs to verify a registry is legitimate before executing a trade.
+
+### findRegistries
+
+```solidity
+function findRegistries(bytes calldata name) external view returns (IRegistry[] memory)
+```
+
+Returns all registries in a name's ancestry, in label order (innermost first):
+
+- `findRegistries("sub.nick.eth")` → `[<sub>, <nick>, <eth>, <root>]`
+- `findRegistries("nick.eth")` → `[<nick>, <eth>, <root>]`
+- `findRegistries("eth")` → `[<eth>, <root>]`
+
+If a name doesn't have a subregistry at some level, that position in the array will be `address(0)`. For example, if `sub.nick.eth` doesn't have its own subregistry: `[null, <nick>, <eth>, <root>]`.
+
+## Verifying Name Ownership
+
+In ENSv1, verifying name ownership was a single call: check `ownerOf(namehash)` on one contract. In ENSv2, a name like `sub.nick.eth` is a chain of entries across multiple registries (see [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)), so verification requires confirming the full chain from root to the name's registry.
+
+`findCanonicalRegistry` is designed for this purpose. To verify that a specific account owns a name:
+
+1. Call `findCanonicalRegistry(name)` to get the verified registry
+2. If non-zero, query the registry for the name's token ownership
+
+The bidirectional check ensures that:
+- The registry is actually reachable from the root (downward walk)
+- The registry considers itself to be at that position in the hierarchy (upward walk via `getParent()`)
+- No aliasing or stale references are being exploited

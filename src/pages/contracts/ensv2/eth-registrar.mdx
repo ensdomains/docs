@@ -1,0 +1,288 @@
+---
+description: The ENSv2 ETH Registrar - commit-reveal registration, flexible pricing, and multi-token payments for .eth names
+---
+
+# ETH Registrar
+
+The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registrations) while introducing new parameters, multi-token payments, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
+
+:::note
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+:::
+
+## What Changed from ENSv1
+
+| Feature              | ENSv1                               | ENSv2                                                                                 |
+| -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
+| Grace period         | 90-day grace period after expiry    | **No grace period** — names expire immediately                                        |
+| Payment              | ETH only                            | ERC20 tokens via `safeTransferFrom`                                                   |
+| Pricing              | StablePriceOracle (USD-denominated) | StandardRentPriceOracle with duration discounts and expiry premiums                   |
+| Name ownership       | ERC721 token on BaseRegistrar       | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
+| Permissions          | Owner-only                          | Fixed role set via [EAC](/contracts/ensv2/enhanced-access-control)                    |
+| `makeCommitment`     | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `referrer`; roles are fixed internally |
+| `register`           | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `paymentToken`, `referrer`             |
+
+## Registering a Name
+
+Like [ENSv1](/registry/eth#registering-a-name), the ETH Registrar uses a commit-reveal scheme to prevent front-running registrations. You first call `commit` with an opaque commitment hash, wait at least `MIN_COMMITMENT_AGE` (60 seconds), then call `register` to reveal the parameters and complete registration.
+
+### Commit-Reveal
+
+Generate a commitment hash using `makeCommitment`:
+
+```solidity
+ETHRegistrar.makeCommitment(
+    label string,        // "alice" for alice.eth (label only, not full name)
+    owner address,       // The address that will own the name
+    secret bytes32,      // A randomly generated 32-byte secret
+    subregistry IRegistry, // Child registry to set (or address(0) for none)
+    resolver address,    // Resolver contract to set
+    duration uint64,     // Registration duration in seconds
+    referrer bytes32     // Referral identifier (or bytes32(0))
+)
+
+// For example
+makeCommitment(
+    "alice",
+    0x1234...,
+    0xabcd...,           // Random secret — generate off-chain
+    address(0),          // No subregistry
+    0x5678...,           // Resolver address
+    31536000,            // 1 year in seconds
+    bytes32(0)           // No referrer
+);
+```
+
+Once you have calculated the commitment hash, submit it on-chain:
+
+```solidity
+ETHRegistrar.commit(commitment bytes32)
+```
+
+After committing, wait at least `MIN_COMMITMENT_AGE` (60 seconds) before calling `register`. The commitment expires after `MAX_COMMITMENT_AGE` (typically 24 hours).
+
+### Registering
+
+Before initiating registration, ensure that:
+
+- `isAvailable(label)` returns `true`
+- `duration` >= `MIN_REGISTER_DURATION`
+- The commitment is between `MIN_COMMITMENT_AGE` and `MAX_COMMITMENT_AGE` old
+- The payment token is approved for `base + premium` (query via `rentPrice`)
+
+```solidity
+ETHRegistrar.register(
+    label string,          // Same label used in makeCommitment
+    owner address,         // Same owner used in makeCommitment
+    secret bytes32,        // Same secret used in makeCommitment
+    subregistry IRegistry, // Same subregistry used in makeCommitment
+    resolver address,      // Same resolver used in makeCommitment
+    duration uint64,       // Same duration used in makeCommitment
+    paymentToken IERC20,   // ERC20 token to pay with (must be approved)
+    referrer bytes32       // Same referrer used in makeCommitment
+) returns (uint256 tokenId)
+
+// For example
+register(
+    "alice",
+    0x1234...,
+    0xabcd...,             // Same secret as in commit step
+    address(0),
+    0x5678...,
+    31536000,
+    0x9abc...,             // USDC token address
+    bytes32(0)
+);
+```
+
+The registration grants the owner a fixed set of roles: `ROLE_SET_SUBREGISTRY`, `ROLE_SET_RESOLVER`, and `ROLE_CAN_TRANSFER_ADMIN` (plus their admin counterparts). Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar.
+
+## Pricing
+
+The **StandardRentPriceOracle** provides flexible, configurable pricing:
+
+**Base rate**: names are priced by character count, with shorter names costing more. Query via `rentPrice(label, owner, duration, paymentToken)` which returns `(base, premium)`.
+
+**Duration discounts**: longer registrations receive discounts through a piecewise-linear curve. The discount points are DAO-configurable.
+
+**Expiry premium**: since ENSv2 has no grace period, recently-expired names enter a temporary premium period to prevent sniping. The premium starts high and decreases over time. The previous owner can re-register during the premium period **without paying the premium**.
+
+## Multi-Token Payments
+
+Unlike ENSv1 which only accepted ETH, the ENSv2 registrar supports payment in multiple ERC20 tokens. The `StandardRentPriceOracle` maintains exchange rate ratios for each accepted token. Check accepted tokens via `isPaymentToken(token)`.
+
+Payment is collected via `safeTransferFrom` to an immutable beneficiary address. The caller must approve the registrar for the payment token before calling `register()` or `renew()`.
+
+## Renewing a Name
+
+Any account can renew any name, not just the owner. Renewal extends the expiry without changing ownership or permissions. Only the base rate is charged (no premium).
+
+```solidity
+ETHRegistrar.renew(
+    label string,        // The label to renew
+    duration uint64,     // Duration to extend by (in seconds)
+    paymentToken IERC20, // ERC20 token to pay with (must be approved)
+    referrer bytes32     // Referral identifier
+)
+```
+
+## BatchRegistrar
+
+The **BatchRegistrar** is a companion contract used during migration. It allows the deployer to batch-register or batch-renew names in a single transaction:
+
+- For `AVAILABLE` names: registers them as `RESERVED` (no owner)
+- For `RESERVED` names with a shorter expiry: extends the expiry via `renew()`
+
+This contract is owner-only and intended for pre-migration use, not for general public registration.
+
+## Reference
+
+### Write Functions
+
+| Function | Description |
+|----------|-------------|
+| `commit(commitment)` | Record a commitment hash on-chain |
+| `register(label, owner, secret, subregistry, resolver, duration, paymentToken, referrer)` | Register a name (consumes commitment) |
+| `renew(label, duration, paymentToken, referrer)` | Extend a name's expiry |
+| `setRentPriceOracle(oracle)` | Change the pricing oracle (requires `ROLE_SET_ORACLE`) |
+
+### View Functions
+
+| Function | Returns |
+|----------|---------|
+| `makeCommitment(label, owner, secret, subregistry, resolver, duration, referrer)` | Commitment hash for the given parameters |
+| `rentPrice(label, owner, duration, paymentToken)` | `(base, premium)` price in the specified token |
+| `isAvailable(label)` | Whether the name can be registered |
+| `isValid(label)` | Whether the name meets validity requirements |
+| `isPaymentToken(token)` | Whether a token is accepted for payment |
+| `commitmentAt(commitment)` | Timestamp when a commitment was recorded |
+| `REGISTRY` | The Permissioned Registry this registrar writes to |
+| `BENEFICIARY` | Address that receives payments |
+| `MIN_COMMITMENT_AGE` | Minimum seconds before a commitment can be used |
+| `MAX_COMMITMENT_AGE` | Maximum seconds before a commitment expires |
+| `MIN_REGISTER_DURATION` | Shortest allowed registration duration |
+| `rentPriceOracle` | Current pricing oracle |
+
+### Events
+
+| Event | Emitted when |
+|-------|-------------|
+| `CommitmentMade(commitment)` | Commitment submitted |
+| `NameRegistered(tokenId, label, owner, subregistry, resolver, duration, paymentToken, referrer, base, premium)` | Name registered |
+| `NameRenewed(tokenId, label, duration, newExpiry, paymentToken, referrer, base)` | Name renewed |
+| `RentPriceOracleChanged(oracle)` | Pricing oracle updated |
+
+## Code Examples
+
+### Full Registration Flow
+
+```ts [Viem]
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  keccak256,
+  toHex,
+} from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+const label = 'alice'
+const owner = '0x...' // Your address
+const duration = 31536000n // 1 year in seconds
+const secret = keccak256(toHex(crypto.randomUUID())) // Random secret
+const resolver = '0x...' // Resolver address
+const subregistry = '0x0000000000000000000000000000000000000000'
+const paymentToken = '0x...' // ERC20 token address
+const referrer = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+// 1. Check availability
+const available = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'isAvailable',
+  args: [label],
+})
+
+if (!available) throw new Error('Name not available')
+
+// 2. Get the price
+const [base, premium] = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'rentPrice',
+  args: [label, owner, duration, paymentToken],
+})
+
+// 3. Approve the registrar to spend the payment token
+const totalCost = base + premium
+await wallet.writeContract({
+  address: paymentToken,
+  abi: erc20Abi,
+  functionName: 'approve',
+  args: [ethRegistrarAddress, totalCost],
+})
+
+// 4. Create and submit commitment
+const commitment = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'makeCommitment',
+  args: [label, owner, secret, subregistry, resolver, duration, referrer],
+})
+
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'commit',
+  args: [commitment],
+})
+
+// 5. Wait at least MIN_COMMITMENT_AGE (e.g., 60 seconds)
+// ... wait ...
+
+// 6. Register
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'register',
+  args: [
+    label,
+    owner,
+    secret,
+    subregistry,
+    resolver,
+    duration,
+    paymentToken,
+    referrer,
+  ],
+})
+```
+
+### Renewing a Name
+
+```ts [Viem]
+const [renewPrice] = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'rentPrice',
+  args: [label, owner, duration, paymentToken],
+})
+
+// Approve the registrar to spend the payment token
+await wallet.writeContract({
+  address: paymentToken,
+  abi: erc20Abi,
+  functionName: 'approve',
+  args: [ethRegistrarAddress, renewPrice],
+})
+
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'renew',
+  args: [label, duration, paymentToken, referrer],
+})
+```

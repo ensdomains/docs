@@ -1,0 +1,78 @@
+---
+description: How PermissionedRegistry serves as a unified, extensible template for all ENSv2 registries
+---
+
+# Registry Template
+
+In ENSv1, different parts of the namespace used different registry contracts: the root ENS Registry, the Name Wrapper, and dedicated subname registrars were all separate, incompatible implementations. ENSv2 unifies this with a single extensible base: **PermissionedRegistry**.
+
+:::note
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+:::
+
+## One Registry to Rule Them All
+
+[PermissionedRegistry](/contracts/ensv2/permissioned-registry) is not just the contract that manages `.eth` names. It's the template that every registry in the ENSv2 hierarchy is built from. Whether it's the root `.eth` registry, a project running a subdomain service, or a DAO managing community names, they all use the same base contract.
+
+This means every registry in the tree shares the same:
+
+- **[ERC1155Singleton](/contracts/ensv2/erc1155-singleton)** token model: each name is an NFT with a single owner
+- **[Enhanced Access Control](/contracts/ensv2/enhanced-access-control)** permission system: roles, admin roles, resource scoping
+- **[Mutable Token IDs](/contracts/ensv2/mutable-token-ids)**: version counters that protect against stale permissions and transfer griefing
+- **[anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism)**: accept labelhash, tokenId, or resource interchangeably
+- **Name lifecycle**: the same AVAILABLE → RESERVED → REGISTERED state machine
+
+## Customizing via Inheritance
+
+To create a custom registry, you inherit from `PermissionedRegistry` and override the behaviors you need. The base contract is designed with virtual functions at the key extension points.
+
+ENSv2 itself ships two derived registries:
+
+### UserRegistry
+
+A UUPS-upgradeable proxy designed for user-owned subdomain registries. It adds:
+
+- Proxy-based deployment via `VerifiableFactory` (cheap per-name deployments)
+- An `initialize()` function that grants initial roles to the admin
+- Upgrade authorization gated by `ROLE_UPGRADE`
+
+```solidity
+contract UserRegistry is Initializable, PermissionedRegistry, UUPSUpgradeable {
+    function initialize(address admin, uint256 roleBitmap) public initializer {
+        _grantRoles(ROOT_RESOURCE, roleBitmap, admin, false);
+    }
+}
+```
+
+This is the registry that gets deployed when someone creates subnames under their name. Each child namespace gets its own `UserRegistry` proxy instance.
+
+### WrapperRegistry
+
+A specialized registry used during [migration](/contracts/ensv2/migration) from ENSv1. It extends PermissionedRegistry with:
+
+- Integration with the ENSv1 Name Wrapper for migrating wrapped names
+- Blocking `register()` for names that must go through the migration path instead
+- Falling back to the ENSv1 resolver for not-yet-migrated children
+
+```solidity
+contract WrapperRegistry is PermissionedRegistry, LockedWrapperReceiver, ... {
+    function register(...) public override returns (uint256 tokenId) {
+        if (_isMigratableChild(label)) {
+            revert LibMigration.NameRequiresMigration();
+        }
+        return super.register(label, owner, registry, resolver, roleBitmap, expiry);
+    }
+}
+```
+
+## Building Your Own Registry
+
+To build a custom registry for your project, extend `PermissionedRegistry` and override what you need. Common customization points include:
+
+| Override | Purpose | Example |
+| -------- | ------- | ------- |
+| `register()` | Custom registration logic | Add allowlists, custom pricing, or validation |
+| `getResolver()` / `getSubregistry()` | Custom resolution behavior | Fallback to external data sources |
+| `_authorizeUpgrade()` | Upgrade control | Gate upgrades behind a multisig or governance |
+
+All of the inherited infrastructure (EAC roles, ERC1155 tokens, anyId polymorphism, the name lifecycle state machine) works out of the box. You only override the parts you want to change.
