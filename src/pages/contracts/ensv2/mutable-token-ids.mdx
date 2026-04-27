@@ -3,15 +3,16 @@ description: How ENSv2's mutable token ID system protects against permission lea
 ---
 
 import { Card } from '../../../components/ui/Card'
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { IdExplorer } from '../../../components/ensv2/IdExplorer'
 
 # Mutable Token IDs
 
 Names in the [Permissioned Registry](/contracts/ensv2/permissioned-registry) are represented as [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) tokens, where each registered name is a token with exactly one owner. ENSv2's [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) system allows name owners to delegate fine-grained permissions to multiple accounts. This flexibility requires a mechanism to keep permissions in sync with a name's lifecycle, for example invalidating delegated roles when a name changes hands or expires. ENSv2 solves this with **mutable token IDs** that change in response to security-relevant events, providing automatic protection against two attack vectors: stale permissions and transfer griefing.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## The Problem
 

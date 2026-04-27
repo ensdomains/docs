@@ -2,15 +2,17 @@
 description: Enhanced Access Control
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Enhanced Access Control
 
 Enhanced Access Control (EAC) is the permission system used throughout ENSv2. It controls who is allowed to do what, and on which names. EAC supports up to 2^256 independent resources (e.g., individual names), 64 roles per resource (32 regular + 32 admin), and up to 15 accounts per role.
 
 Think of it like a building where each room has its own set of locks: you can give someone a key to one room, or a master key that opens every room. EAC works the same way, but with ENS names and on-chain permissions.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## Resources
 
@@ -162,65 +164,4 @@ Each ENSv2 contract defines its own roles and its own resource scheme. See the E
 |-------|-------------|
 | `EACRolesChanged(resource, account, oldRoleBitmap, newRoleBitmap)` | Roles granted or revoked for an account on a resource |
 
-## Code Examples
-
-### Checking Roles
-
-```ts [Viem]
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
-
-const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
-
-// Check if an account has ROLE_SET_RESOLVER on a specific name
-const hasRole = await client.readContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'hasRoles',
-  args: [tokenId, ROLE_SET_RESOLVER, accountAddress],
-})
-```
-
-### Granting Roles
-
-```ts [Viem]
-import { createWalletClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
-
-const wallet = createWalletClient({
-  chain: mainnet,
-  transport: http(),
-})
-
-// Grant ROLE_SET_RESOLVER to an operator on a specific name
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'grantRoles',
-  args: [tokenId, ROLE_SET_RESOLVER, operatorAddress],
-})
-
-// Grant multiple roles at once using bitwise OR
-const roles = ROLE_SET_RESOLVER | ROLE_SET_SUBREGISTRY
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'grantRoles',
-  args: [tokenId, roles, operatorAddress],
-})
-```
-
-### Revoking Roles
-
-```ts [Viem]
-// Revoke ROLE_CAN_TRANSFER_ADMIN from yourself to make a name non-transferable
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'revokeRoles',
-  args: [tokenId, ROLE_CAN_TRANSFER_ADMIN, myAddress],
-})
-```
+For code examples of granting and revoking roles, see the [Permissioned Registry](/contracts/ensv2/permissioned-registry#code-examples) and [Permissioned Resolver](/contracts/ensv2/permissioned-resolver#code-examples) pages.

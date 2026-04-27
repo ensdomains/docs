@@ -2,15 +2,17 @@
 description: How DNS domain names are resolved through the ENSv2 protocol
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # DNS Name Resolution
 
 ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) through the ENS protocol. This builds on the [DNS on ENS](/learn/dns) functionality from ENSv1, replacing the single `OffchainDNSResolver` ([ENSIP-17](/ensip/17)) with a pipeline of three specialized contracts.
 
 Users don't interact with these contracts directly. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) handles the entire flow transparently. This page explains what happens internally and how to configure DNS records for ENS resolution.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## How It Works
 
@@ -55,13 +57,15 @@ ENS1 dnstxt.ens.eth a[60]=0x1234... t[avatar]=https://example.com/pic.png
 
 Supported record formats:
 
-| Prefix   | Record type                               | Example                 |
-| -------- | ----------------------------------------- | ----------------------- |
-| `a[60]`  | Ethereum address                          | `a[60]=0x1234...`       |
-| `a[e0]`  | EVM chain address ([ENSIP-19](/ensip/19)) | `a[e0:8453]=0x5678...`  |
-| `t[key]` | Text record                               | `t[avatar]=https://...` |
-| `c`      | Content hash                              | `c=ipfs://...`          |
-| `xy`     | Public key (x,y coordinates)              | `xy=0x...,0x...`        |
+| Prefix            | Record type                                      | Example                 |
+| ----------------- | ------------------------------------------------ | ----------------------- |
+| `a[60]`           | Ethereum address ([ENSIP-1](/ensip/1))            | `a[60]=0x1234...`       |
+| `a[e0]`           | Default EVM address, any chain ([ENSIP-19](/ensip/19)) | `a[e0]=0x1234...`  |
+| `a[e<chainId>]`   | EVM chain address by chain ID ([ENSIP-19](/ensip/19))  | `a[e8453]=0x5678...` |
+| `a[<coinType>]`   | Non-EVM address by SLIP-44 coin type ([ENSIP-9](/ensip/9)) | `a[0]=0x00...`  |
+| `t[key]`          | Text record                                      | `t[avatar]=https://...` |
+| `c`               | Content hash ([ENSIP-7](/ensip/7))                | `c=ipfs://...`          |
+| `xy`              | Public key (x,y coordinates)                     | `xy=0x...,0x...`        |
 
 This is the simplest approach: all record data lives in the DNS TXT record itself, with no on-chain registration required.
 

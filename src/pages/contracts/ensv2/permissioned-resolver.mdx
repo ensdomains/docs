@@ -3,6 +3,7 @@ description: Per-name resolver with role-based access control, record aliasing, 
 ---
 
 import { Card } from '../../../components/ui/Card'
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { ResourceCalculator } from '../../../components/ensv2/ResourceCalculator'
 import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
 
@@ -10,9 +11,9 @@ import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer
 
 In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each name gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. This gives name owners fine-grained control over who can set which records, and enables new features like record aliasing.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## What Changed from ENSv1
 
@@ -86,9 +87,9 @@ All four functions take a DNS-encoded name (`bytes`) as the first parameter. For
 
 ### Resource Scheme
 
-:::note
+<FrenCallout fren="bittu" variant="tip" title="Developer tip">
 This section explains how [EAC resources](/contracts/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. The `authorize*` functions handle resource computation automatically.
-:::
+</FrenCallout>
 
 Unlike the registry's labelhash-based resources, resolver resources are opaque hashes with no version structure, and the [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) used in the registry does not apply here. The resolver computes each EAC resource as a hash of the name's namehash and a record-type identifier:
 

@@ -2,13 +2,15 @@
 description: Migrating ENS names from v1 to v2 - locked, unlocked, and unwrapped paths
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Migration
 
 ENSv2 provides a comprehensive migration framework for transitioning ENSv1 names to the new system. The migration is designed to be safe, preserving existing permissions, and supporting all name types: locked wrapped names, unlocked wrapped names, and unwrapped BaseRegistrar names.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## Overview
 

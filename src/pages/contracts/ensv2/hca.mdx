@@ -2,13 +2,15 @@
 description: Hidden Contract Accounts
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Hidden Contract Accounts
 
 Hidden Contract Accounts (HCAs) let smart-account proxies act on behalf of their owners while still being attributed to the owner. ENSv2 wires HCA-aware sender resolution into every layer of the stack. When a user controls a name through an HCA proxy, the protocol records the owner as the actor for permission checks, ownership reads, and event indexing.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## The Problem
 

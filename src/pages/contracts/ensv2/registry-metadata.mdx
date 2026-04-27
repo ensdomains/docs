@@ -2,13 +2,15 @@
 description: Registry Metadata
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Registry Metadata
 
 Registries in ENSv2 delegate ERC-1155 metadata to a swappable provider. The registry holds ownership state; the provider decides what `uri()` returns. This separates presentation concerns (image, name, description for marketplaces and indexers) from ownership logic, and lets a single registry serve many metadata strategies.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## How the Pieces Fit
 

@@ -2,8 +2,30 @@
 description: Frequently asked questions about ENSv2
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # ENSv2 FAQ
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 This page is under construction. Questions and answers will be added as the ENSv2 launch approaches.
-:::
+</FrenCallout>
+
+<FrenCallout fren="earl" variant="note" title="Did you know?">
+ENSv2 replaces the single flat registry from ENSv1 with a hierarchical model where each name can have its own registry and resolver. Check out the [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) page to learn more.
+</FrenCallout>
+
+<FrenCallout fren="bittu" variant="tip" title="Developer tip">
+You don't need to compute EAC resources manually. The `authorize*` functions on the [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) and `grantRoles`/`revokeRoles` on the [Permissioned Registry](/contracts/ensv2/permissioned-registry) handle it for you.
+</FrenCallout>
+
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+Token IDs in ENSv2 are mutable. Don't cache them! Use the labelhash instead and call `getTokenId(anyId)` when you need the current token ID. See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for details.
+</FrenCallout>
+
+<FrenCallout fren="lili" variant="note">
+Each name in ENSv2 gets its own resolver instance, deployed as a UUPS proxy. This means you can grant fine-grained permissions per record type, and even per individual text key or coin type.
+</FrenCallout>
+
+<FrenCallout fren="peanut" variant="tip" title="New to ENS?">
+Start with the [Overview](/contracts/ensv2/overview) page for a high-level introduction, then explore the [Architecture](/contracts/ensv2/registry-hierarchy) section to understand the core design.
+</FrenCallout>

@@ -2,6 +2,8 @@
 description: Overview of the ENSv2 Smart Contracts
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # ENSv2 Smart Contracts Overview
 
 Welcome to the next evolution of the Ethereum Name Service!
@@ -10,9 +12,9 @@ ENSv2 introduces a suite of upgraded smart-contracts designed to make the protoc
 more scalable, modular and future-proof. This section will outline the high-level
 architecture, guiding principles and migration strategy for ENSv2.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The information on this page is a work-in-progress. Expect updates as the design is finalised and audits are completed.
-:::
+</FrenCallout>
 
 ## What's new in ENSv2?
 
@@ -48,22 +50,27 @@ ENSv2 replaces ENSv1's single flat registry with a **hierarchical model** where 
 
 See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full explanation with diagrams, including subtree operations, namespace aliasing, token representation, and the permissions model.
 
-## Core Concepts
+## Architecture
 
-| Concept                                                             | Description                                                                    |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)           | Hierarchical registry model — tree structure, resolution, namespace aliasing   |
-| [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) | Role-based permission system replacing ENSv1 fuses                             |
-| [ERC1155Singleton](/contracts/ensv2/erc1155-singleton)              | Gas-optimized token standard with single ownership per token                   |
-| [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)             | Dynamic token IDs that protect against permission leaks and griefing           |
+| Page                                                                | Description                                                                  |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)           | Hierarchical registry model, tree structure, resolution, namespace aliasing  |
+| [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) | Role-based permission system replacing ENSv1 fuses                           |
+| [ERC1155Singleton](/contracts/ensv2/erc1155-singleton)              | Gas-optimized token standard with single ownership per token                 |
+| [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)             | Dynamic token IDs that protect against permission leaks and griefing         |
+| [Hidden Contract Accounts](/contracts/ensv2/hca)                    | Smart-account attribution for HCA proxy wallets                              |
+| [Verifiable Factory](/contracts/ensv2/verifiable-factory)           | Deterministic CREATE2 proxy deployment with on-chain verification            |
 
-## Contract Reference
+## Contracts
 
-| Contract                                                        | Description                                                        |
+| Page                                                            | Description                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------ |
 | [Permissioned Registry](/contracts/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
 | [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) | Per-name resolver with per-record roles and record aliasing        |
 | [ETH Registrar](/contracts/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
+| [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) | Single entry point for name resolution across the hierarchy        |
+| [Registry Metadata](/contracts/ensv2/registry-metadata)         | ERC-1155 metadata providers for registries                         |
+| [DNS Name Resolution](/contracts/ensv2/dns-resolvers)           | Resolving DNS domain names through the ENS protocol                |
 
 ## Deployments (Sepolia)
 
@@ -91,10 +98,13 @@ See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full expla
 | ETHReverseRegistrar | `TBD` |
 | ETHReverseResolver | `TBD` |
 
-## Migration & Tutorials
+## Guides
 
-| Page                                                                     | Description                                                           |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Page                                                                     | Description                                                            |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | [Migration](/contracts/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
-| [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                          |
-| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Hands-on guide for direct smart contract interaction                  |
+| [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                           |
+| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Hands-on guide for direct smart contract interaction                   |
+| [Registry Template](/contracts/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation       |
+| [Indexing](/contracts/ensv2/indexing)                                     | Events and functions for building indexers and subgraphs               |
+| [FAQ](/contracts/ensv2/faq)                                              | Frequently asked questions about ENSv2                                 |

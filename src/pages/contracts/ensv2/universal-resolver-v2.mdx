@@ -2,13 +2,15 @@
 description: ENSv2's Universal Resolver - the single entry point for resolving names across the registry hierarchy
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Universal Resolver V2
 
 The Universal Resolver is the primary public entry point for ENS name resolution. In ENSv1, it queried a flat registry to find resolvers. In ENSv2, it traverses the [hierarchical registry tree](/contracts/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## What's Inherited from ENSv1
 

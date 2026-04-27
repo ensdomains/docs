@@ -352,9 +352,12 @@ export default defineConfig({
             },
           ],
         },
-        {
-          text: 'ENSv2',
-          items: [
+      ],
+    },
+    {
+      text: 'ENSv2',
+      collapsed: true,
+      items: [
             {
               text: 'Overview',
               link: '/contracts/ensv2/overview',
@@ -446,8 +449,6 @@ export default defineConfig({
               text: 'FAQ',
               link: '/contracts/ensv2/faq',
             },
-          ],
-        },
       ],
     },
     {

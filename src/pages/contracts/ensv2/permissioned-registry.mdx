@@ -3,15 +3,16 @@ description: Permissioned Registry
 ---
 
 import { Card } from '../../../components/ui/Card'
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
 
 # Permissioned Registry
 
 The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## Names
 
@@ -138,9 +139,9 @@ The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv
 
 ### Resource Scheme
 
-:::note
+<FrenCallout fren="bittu" variant="tip" title="Developer tip">
 This section explains how [EAC resources](/contracts/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. `grantRoles` and `revokeRoles` handle resource computation automatically via [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism).
-:::
+</FrenCallout>
 
 The registry derives each EAC resource from the name's labelhash and its current `eacVersionId`, so permissions are scoped per-name and automatically invalidated on re-registration:
 
@@ -163,6 +164,14 @@ When a token transfers, all roles are atomically moved from the old owner to the
 ## Versioning
 
 The registry uses [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) to provide two security guarantees: **permission isolation** (roles from a previous registration don't carry over after re-registration) and **transfer griefing protection** (role changes invalidate pending marketplace approvals by changing the token ID). Expired names retain their storage but all mutating operations check expiry first and revert.
+
+## Emancipation
+
+A registry is **emancipated** when the root-level admin roles for dangerous operations (`ROLE_UNREGISTER`, `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY` and their admin counterparts) have been permanently revoked. Since revoking an admin role is irreversible (you need the admin role to grant the admin role), emancipation is a one-way guarantee: once achieved, the registry operator can never regain control over individual names.
+
+The `.eth` registry is emancipated by design: the ETH Registrar holds only `ROLE_REGISTRAR` and `ROLE_RENEW` at root, which don't overlap with the token owner's roles. You can verify emancipation for any registry by calling `getAssigneeCount(ROOT_RESOURCE)` and checking that the dangerous role counts are zero.
+
+See [Registry Template: Configuration Patterns](/contracts/ensv2/registry-template#configuration-patterns) for a full explanation of emancipation, including how it applies across the registry hierarchy.
 
 ## Registry Hierarchy
 

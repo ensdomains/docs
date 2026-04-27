@@ -2,13 +2,15 @@
 description: How ENSv2's hierarchical registry model works - tree structure, resolution, subtree operations, and namespace aliasing
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # Registry Hierarchy
 
 ENSv2 replaces ENSv1's single flat registry with a hierarchical model where each name can have its own registry for managing subnames. This page explains the tree structure, how resolution works within it, and the implications for name ownership.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## From Flat to Hierarchical
 

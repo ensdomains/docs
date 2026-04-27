@@ -2,13 +2,15 @@
 description: ERC1155Singleton - a gas-optimized ERC1155 variant with exactly one owner per token
 ---
 
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
 # ERC1155Singleton
 
 ENSv2 represents names as tokens using a modified ERC1155 implementation called **ERC1155Singleton**. Unlike standard ERC1155 where tokens can be fungible (multiple owners holding quantities of the same token), each ERC1155Singleton token has exactly one owner - combining the ownership semantics of ERC721 with the batching and interface compatibility of ERC1155.
 
-:::note
+<FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-:::
+</FrenCallout>
 
 ## Why Not ERC721?
 
