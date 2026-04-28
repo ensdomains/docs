@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { FaJava, FaReact, FaRust } from 'react-icons/fa'
-import { SiDelphi, SiKotlin, SiNuget, SiPython } from 'react-icons/si'
+import { SiDelphi, SiNuget, SiPython } from 'react-icons/si'
 import { TbBrandGolang, TbBrandJavascript } from 'react-icons/tb'
 
 type Language = {
@@ -99,18 +99,6 @@ const ensLibraries: Language[] = [
     ],
   },
   {
-    name: 'Kotlin',
-    logo: <SiKotlin />,
-    libraries: [
-      {
-        href: 'https://github.com/komputing/KEthereum',
-        name: 'KEthereum',
-        description: '',
-        logo: '/img/libraries/kethereum.png',
-      },
-    ],
-  },
-  {
     name: 'Java',
     logo: <FaJava />,
     libraries: [
@@ -126,12 +114,6 @@ const ensLibraries: Language[] = [
     name: 'Go',
     logo: <TbBrandGolang />,
     libraries: [
-      {
-        href: 'https://github.com/wealdtech/go-ens',
-        name: 'go-ens',
-        description: '',
-        logo: '/img/libraries/go.svg',
-      },
       {
         href: 'https://github.com/wealdtech/ethereal',
         name: 'ethereal',

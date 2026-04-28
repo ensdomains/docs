@@ -1,0 +1,88 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.39] [Executable] Treasury Flow Automation
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21923/)                                                                                                                                                                                                                                   |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/103727552069485114370289118760519929157657207659236887832122369454255184795333), [Anticapture](https://app.anticapture.com/ens/governance/proposal/103727552069485114370289118760519929157657207659236887832122369454255184795333) |
+
+## Abstract
+
+ENS protocol revenue currently requires three separate steps to move from registrar controllers to productive use in the endowment and fund operations. This proposal introduces a Registrar Manager contract that takes ownership of all registrar controllers and enables permissionless withdrawals directly to the endowment. It also configures a Zodiac module permission on the endowment to allow the treasury manager to send ETH and USDC to the timelock without a proposal, following a two-year stablecoin runway policy consistent with the current Investment Policy Statement.
+
+The result is zero proposals for routine treasury operations, faster yield on collected revenue, permissionless withdrawals, and increased income for the DAO. A conservative estimate suggests that since January 2024, approximately $1 million in yield was missed due to idle capital in registrar controllers and the timelock.
+
+![](https://discuss.ens.domains/uploads/db9688/original/2X/3/398d621d97bf4820a875d790f220cab125667c48.png)
+
+## Specification
+
+### Problem
+
+ENS protocol revenue requires three steps to move from collection to productive use.
+Registrar controllers collect ETH from .eth registrations and renewals, and the current controller (controller.ens.eth) already sends withdrawn ETH to the timelock. However, the old registrar controller at 0x283Af0B28c62C092C9727F1Ee09c02CA627eb7F5 holds roughly 772 ETH that requires a dedicated proposal just to withdraw.
+
+Once ETH reaches the timelock, sending it to the endowment (endowment.ensdao.eth) for investment requires another proposal. Capital can sit idle in the timelock for several months before it starts earning yield.
+
+When the DAO needs to fund operational expenses like ENS Labs, the Service Provider Program, or Working Groups, yet another proposal is needed to transfer from the endowment back to the timelock or to execute operations with [twap.ensdao.eth](https://etherscan.io/address/0x02D61347e5c6EA5604f3f814C5b5498421cEBdEB). For context, [EP 6.32](https://discuss.ens.domains/t/ep-6-32-executable-transfer-2-5m-usdc-from-endowment-to-wallet-ensdao-eth/21882) proposed a $2.5M USDC transfer from the endowment to the timelock just to cover Working Group budgets that had already been approved.
+
+On top of that, there is currently roughly 4,148 ETH sitting in the timelock that could be earning yield in the endowment. The operational funding process today is reactive and not smooth. Each transfer requires a full governance cycle, and capital that could be generating yield sits idle throughout.
+
+#### Key Addresses
+
+• Timelock: 0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7 (wallet.ensdao.eth)
+• Current Registrar Controller: 0x253553366Da8546fC250F225fE3d25d0C782303b (controller.ens.eth)
+• Old Registrar Controller (~772 ETH): 0x283Af0B28c62C092C9727F1Ee09c02CA627eb7F5
+• Endowment: 0x4F2083f5fBede34C2714aFfb3105539775f7FE64 (endowment.ensdao.eth)
+• Governor: 0x323A76393544d5ecca80cd6ef2A560C6a395b7E3 (governor.ensdao.eth)
+• TWAP safe: 0x02D61347e5c6EA5604f3f814C5b5498421cEBdEB (twap.ensdao.eth)
+
+### Solution
+
+This proposal introduces two components that eliminate all three bottlenecks: a Registrar Manager and an Endowment Zodiac Module permission.
+
+#### Registrar Manager
+
+The Registrar Manager is a contract that becomes the owner of all registrar controllers. Its key properties:
+
+a) Exposes a permissionless withdraw() function that anyone can call. When called, it pulls ETH from each controller and routes it directly to the endowment.
+
+b) The destination address is configurable by the DAO through the timelock, so governance can redirect the flow at any time.
+
+c) Acts as a pass-through for governance calls, meaning the DAO retains full control over controller parameters.
+
+d) New controllers can be added over time.
+
+e) Never holds funds.
+
+[Source code of Registrar Manager contract.](https://github.com/blockful/dao-proposals/blob/ep-registrar-manager-endowment/src/ens/proposals/ep-registrar-manager-endowment/contracts/RegistrarManager.sol)
+
+#### Endowment Zodiac Module
+
+The Zodiac module is already part of how the endowment is managed. This proposal adds a scoped permission that allows the treasury manager (Karpatkey) to send ETH and USDC to wallet.ensdao.eth without a proposal. It cannot send to any other address or use any other token. All other endowment operations remain unchanged.
+
+### Funding Policy
+
+This is the current suggestion for the funding policy.
+
+The timelock maintains a 6 months runway in USDC (~$8M at current spending). Each quarter, Karpatkey calculates the current runway on the timelock. If it falls below 6 months, the endowment sends the shortfall. If it exceeds 6 months, no transfer is needed and the excess stays invested in the endowment. If an additional governance proposal requiring capital is approved, this may trigger an earlier runway evaluation and transfer, consistent with this policy.
+
+The initial policy is included in this executable proposal, so no separate vote is needed to get started.
+Any future changes to the funding policy require a social vote. This establishes clear expectations about responsibilities and decision-making: the treasury manager handles routine rebalancing within the policy, and the community sets the policy itself.
+
+This proposal remains aligned with the IPS. The required three-year stablecoin runway is calculated at the Endowment level, including stablecoins held and deployed there, as is currently done. The expansion guidelines reference transferring 33% of protocol revenue to the Endowment. This proposal modifies that mechanism by routing revenue directly to the Endowment to improve operational efficiency and capital deployment.
+
+### Impact
+
+The operational funding process is reactive, requiring a full governance cycle for each transfer. Meanwhile, capital that could be earning yield sits idle in controllers and the timelock for several months at a time.
+
+With this proposal, capital flows from registrars to the endowment as soon as anyone calls withdraw(). The endowment begins generating yield immediately rather than after several months of governance overhead. Operational funding follows a clear quarterly process based on the two-year runway target, removing the need for ad-hoc proposals.
+
+To put this in perspective: looking at the period from January 2024 until now, and considering ETH staking yields if this capital had been allocated to the endowment, a conservative estimate of $1 million in yield was left on the table. This is based on the balances held in the [timelock](https://etherscan.io/address/0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7#analytics), the [current registrar controller](https://etherscan.io/address/0x253553366Da8546fC250F225fE3d25d0C782303b#analytics), and the [old registrar controller](https://etherscan.io/address/0x283Af0B28c62C092C9727F1Ee09c02CA627eb7F5#analytics) (which still have a relevant number of registrations). Going forward, every ETH collected will begin earning yield within days, compounding the DAO's income over time.

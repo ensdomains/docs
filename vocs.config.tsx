@@ -426,15 +426,7 @@ export default defineConfig({
             },
             {
               text: 'Snapshot',
-              link: 'https://snapshot.org/#/ens.eth',
-            },
-            {
-              text: 'Tally',
-              link: 'https://www.tally.xyz/gov/ens',
-            },
-            {
-              text: 'Agora',
-              link: 'https://agora.ensdao.org',
+              link: 'https://vote.ensdao.org',
             },
           ],
         },
