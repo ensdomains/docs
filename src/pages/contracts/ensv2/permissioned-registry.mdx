@@ -14,6 +14,21 @@ The Permissioned Registry is the tokenized registry at the heart of ENSv2 name m
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
 </FrenCallout>
 
+## What Changed from ENSv1
+
+In ENSv1, name management was split across three separate contracts: the ENS Registry (flat mapping of all names), the BaseRegistrar (ERC721 tokens for .eth), and the Name Wrapper (ERC1155 wrapping + fuses). ENSv2 replaces all three with a single unified contract.
+
+| Feature         | ENSv1                                           | ENSv2 Permissioned Registry                                                  |
+| --------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| Architecture    | Single flat registry for all names              | [Hierarchical](/contracts/ensv2/registry-hierarchy): each name can have its own registry |
+| Token standard  | ERC721 (BaseRegistrar) or ERC1155 (Name Wrapper)| [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) with single ownership  |
+| Permissions     | One-way fuse burning (Name Wrapper)             | Reversible role-based [EAC](/contracts/ensv2/enhanced-access-control)         |
+| Token IDs       | Fixed (derived from namehash/labelhash)         | [Mutable](/contracts/ensv2/mutable-token-ids): change on role updates and re-registration |
+| Subname control | Requires Name Wrapper + fuse configuration      | Built-in via subregistry pointer + per-name roles                            |
+| Upgradeability  | Not upgradeable                                 | UUPS proxy pattern (for [UserRegistry](/contracts/ensv2/registry-template#userregistry)) |
+| Grace period    | 90-day grace period after expiry                | No grace period; names expire immediately                                    |
+| Name states     | Registered or not                               | Three states: AVAILABLE, RESERVED, REGISTERED                                |
+
 ## Names
 
 Each name in the registry is identified by its **labelhash** (the `keccak256` hash of the label string). The on-chain data for a name is stored in an `Entry` struct:
