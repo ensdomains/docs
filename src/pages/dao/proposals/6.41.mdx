@@ -1,0 +1,62 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.41] [EP 6.41] [Executable] Endowment permissions to KPK - Update #9
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                                       |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/39893466662181856279242827854933926689925858494049650894234231038376231891860), [Anticapture](https://app.anticapture.com/ens/governance/proposal/39893466662181856279242827854933926689925858494049650894234231038376231891860) |
+
+## Abstract
+
+This proposal introduces a routine update to the permissions for the Endowment Manager. This update expands access to liquid staking and restaking protocols on Ethereum, adds exposure to Morpho USDT vaults, and extends CoW Swap routing to include weETH and eETH.
+
+## Motivation
+
+The update opens positions in Stader and Ether.fi, two liquid staking and restaking protocols that allow the endowment to earn yield on ETH while preserving the ability to exit via standard or express unstaking paths. Adding Morpho's KPK USDT Prime vaults (v1 and v2) provides additional yield opportunities on stablecoin holdings consistent with the Investment Policy Statement (IPS). Extending CoW Swap permissions to cover weETH and eETH supports efficient token management across the expanded position set. These changes are additive and consistent with prior endowment strategy.
+
+## Specification
+
+This proposal adds the following contracts:
+
+### Additions
+
+#### 1. Liquid Staking & Restaking
+
+| Protocol / Contract                 | Description                                                | Contract Address (Mainnet)                 |
+| ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| Stader / UserWithdrawalManager      | Allows unstaking ETHx to receive ETH                       | 0x9F0491B32DBce587c50c4C43AB303b06478193A7 |
+| Ether.fi / LiquidityPool            | Allows staking ETH/WETH/stETH/wstETH/eETH to receive weETH | 0x308861A430be4cce5502d0A12724771Fc6DaF216 |
+| Ether.fi / WithdrawRequestNFT       | Allows unstaking eETH/weETH to receive ETH (Standard)      | 0x7d5706f6ef3F89B3951E23e557CDFBC3239D4E2c |
+| Ether.fi / EtherFiRedemptionManager | Allows unstaking eETH/weETH to receive ETH (Express)       | 0xdadef1ffbfeaab4f68a9fd181395f68b4e4e7ae0 |
+
+#### &#xA;2\. Morpho Lending Markets
+
+| Market              | Description                                 | Vault Contract Address (Mainnet)           |
+| ------------------- | ------------------------------------------- | ------------------------------------------ |
+| kpk USDT Prime      | Allows approvals, deposits, and withdrawals | 0xdaD4e51d64c3B65A9d27aD9F3185B09449712065 |
+| kpk USDT Prime (v2) | Allows approvals, deposits, and withdrawals | 0x870F0BF29A25A40E7CC087cD5C53e70C11F2C8A8 |
+
+#### 3. Other
+
+| Protocol / Contract             | Description                                    | Contract Address (Mainnet)                 |
+| ------------------------------- | ---------------------------------------------- | ------------------------------------------ |
+| CoW Swap / Cowswap Order Signer | Expands swap routing to include weETH and eETH | 0x23dA9AdE38E4477b23770DeD512fD37b12381FAB |
+
+## Reviewing Zodiac Roles Modifier Permissions Policy
+
+To review, the following resources are below:
+
+- **Payload:** [client-configs/clients/ens-dao/mainnet/payloads/ensPermissionsUpdate9.json](https://github.com/karpatkey/client-configs/blob/main/clients/ens-dao/mainnet/payloads/ensPermissionsUpdate9.json)
+- **Tenderly Simulation:** [https://dashboard.tenderly.co/public/tallyxyz/project/simulator/59b3d7f8-3196-475f-bd87-097e8ef672c6](https://dashboard.tenderly.co/public/tallyxyz/project/simulator/59b3d7f8-3196-475f-bd87-097e8ef672c6)
+
+## Next Steps
+
+The proposal will be introduced in the next meta-governance call. Pending review from Blockful and no revisions following discussion during the meta-gov call, this proposal will progress to an on-chain executable vote.
