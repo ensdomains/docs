@@ -64,7 +64,11 @@ Each record type has its own role, allowing you to delegate specific record-sett
 
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_TEXT_ADMIN = (1 << 4) << 128`). In TypeScript, use `1n << 4n` for the bigint equivalent.
 
-Use the tool below to compose a role bitmap:
+#### Role Bitmap Composer
+
+<FrenCallout fren="peanut" variant="tip">
+Select roles to compose a bitmap value for use with `authorizeNameRoles`.
+</FrenCallout>
 
 <Card>
   <RoleBitmapComposer contract="resolver" />
@@ -115,7 +119,11 @@ When checking permissions, the resolver looks across four combinations of `node`
 
 `authorizeNameRoles` sets the role on `resource(namehash, 0)` (second row, first column), while `authorizeTextRoles` with a specific key sets it on `resource(namehash, partHash(key))` (second row, second column). A role granted at `ROOT_RESOURCE` covers all four cells.
 
-Use the tool below to compute the resource for any name and record type:
+#### Resource Calculator
+
+<FrenCallout fren="peanut" variant="tip">
+Compute the EAC resource for any name and record type.
+</FrenCallout>
 
 <Card>
   <ResourceCalculator />

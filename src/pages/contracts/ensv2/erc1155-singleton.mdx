@@ -46,11 +46,7 @@ Under the hood, ownership is stored in a flat mapping from token ID to owner add
 
 ## Gas Optimization
 
-The key gas saving comes from eliminating balance accounting. In a standard ERC1155, every transfer requires:
-
-1. Decrement sender's balance
-2. Increment receiver's balance
-3. Update any approval state
+The key gas saving comes from eliminating balance accounting. In a standard ERC1155, every transfer requires two storage writes: decrement the sender's balance and increment the receiver's balance.
 
 In ERC1155Singleton, a transfer is just a single storage write: updating the `id -> owner` mapping. This makes transfers noticeably cheaper.
 
@@ -97,10 +93,6 @@ interface IERC1155Singleton is IERC1155 {
 
 Internally, the contract replaces the standard ERC1155 nested balance mapping (`id → address → balance`) with a flat `id → address` ownership mapping. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides `ownerOf` to add expiry and version validation on top of raw ownership, returning `address(0)` for expired names or stale token IDs.
 
-The contract emits all standard ERC1155 events:
+Unlike the standard ERC1155 which has a `_uri` storage variable, ERC1155Singleton makes `uri()` abstract with no built-in storage. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) delegates `uri()` to an external [metadata provider](/contracts/ensv2/registry-metadata) via the `MetadataMixin` pattern.
 
-| Event            | When                                          |
-| ---------------- | --------------------------------------------- |
-| `TransferSingle` | Name registered, transferred, or unregistered |
-| `TransferBatch`  | Batch operations on multiple names            |
-| `ApprovalForAll` | Operator approval set or revoked              |
+The contract emits all standard ERC1155 events (`TransferSingle`, `TransferBatch`, `ApprovalForAll`, `URI`).
