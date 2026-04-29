@@ -103,7 +103,14 @@ module.exports = {
         disabled: 'var(--ens-text-disabled)',
       },
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['ABCMonumentGrotesk', 'Inter', 'sans-serif'],
+        serif: ['ABCMarist', 'Inter', 'serif'],
+        mono: ['ABCMonumentGroteskMono', 'Inter', 'monospace'],
+        'semi-mono': ['ABCMonumentGroteskSemiMono', 'Inter', 'monospace'],
+      },
+    },
   },
   plugins: [],
 }
