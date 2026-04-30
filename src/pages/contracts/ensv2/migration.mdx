@@ -1,169 +1,279 @@
 ---
-description: Migrating ENS names from v1 to v2 - locked, unlocked, and unwrapped paths
+description: Migrating ENS names from v1 to v2 - premigration, migration paths, fuse conversion, and ENSv1 continuity
 ---
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # Migration
 
-ENSv2 provides a comprehensive migration framework for transitioning ENSv1 names to the new system. The migration is designed to be safe, preserving existing permissions, and supporting all name types: locked wrapped names, unlocked wrapped names, and unwrapped BaseRegistrar names.
+ENSv2 provides a migration framework for transitioning ENSv1 `.eth` names to the new system. Migration is a two-phase process: **premigration** reserves all existing names in v2 automatically, then **migration** lets owners claim their names by transferring their v1 tokens to a migration controller.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
 </FrenCallout>
 
-## Overview
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+This page is under active development. The migration contracts are being finalized and details may change. Check back for updates.
+</FrenCallout>
 
-ENSv1 names can exist in three states, each with its own migration path:
+## Overview
 
 ```mermaid
 flowchart TB
-    subgraph ENSv1
-        locked["Locked Names\n(CANNOT_UNWRAP burned)"]
-        unlocked["Unlocked Wrapped Names\n(NameWrapper, no CANNOT_UNWRAP)"]
-        unwrapped["Unwrapped Names\n(BaseRegistrar ERC-721)"]
+    subgraph Phase 1: Premigration
+        batch["BatchRegistrar reserves all\nunexpired v1 names in v2"]
+        reserved["RESERVED in ETH Registry\n(expiry = v1 + 90 days, no owner)"]
+        batch --> reserved
     end
 
-    subgraph Controllers
-        lmc["LockedMigrationController"]
-        umc["UnlockedMigrationController"]
+    subgraph Phase 2: Migration
+        transfer["Owner transfers v1 token\nto migration controller"]
+        registered["REGISTERED in ETH Registry\n(owner, resolver, subregistry set)"]
+        graveyard["v1 token sent to Graveyard"]
+        transfer --> registered
+        transfer --> graveyard
     end
 
-    subgraph ENSv2
-        registry["Permissioned Registry\n(ERC1155Singleton)"]
-    end
-
-    locked -->|"ERC1155 transfer"| lmc
-    unlocked -->|"ERC1155 transfer"| umc
-    unwrapped -->|"ERC721 transfer"| umc
-    lmc -->|"register as RESERVED"| registry
-    umc -->|"register as RESERVED"| registry
+    reserved -.->|"owner initiates"| transfer
 ```
 
-All migration paths result in the name being registered as `RESERVED` in the ENSv2 [Permissioned Registry](/contracts/ensv2/permissioned-registry), preserving the existing expiry. The name is then promoted to `REGISTERED` when the owner claims it.
+### ENSv1 Token Types
+
+Migration supports all `.eth` descendants. The migration path depends on the token type:
+
+| Type | Token Standard | Description |
+|------|---------------|-------------|
+| **Unwrapped** | BaseRegistrar ERC-721 | 2LD only |
+| **Unlocked** | NameWrapper ERC-1155 | Without `CANNOT_UNWRAP` (2LD only) |
+| **Locked** | NameWrapper ERC-1155 | With `CANNOT_UNWRAP` (2LD and 3LD+) |
+| **Detached** | NameWrapper ERC-1155 | Emancipated (`PARENT_CANNOT_CONTROL`) child of a locked parent, without `CANNOT_UNWRAP` (3LD+ only) |
+
+### Key Definitions
+
+- **RESERVED**: a v2 registry slot with an expiry and resolver but no owner. Created during premigration.
+- **REGISTERED**: a v2 registry slot with an owner. Created when a user migrates their v1 token.
+- **Graveyard**: the burn address for migrated v1 tokens. Also cleans up stale v1 registry entries.
+
+## Premigration
+
+Before users can migrate, every unexpired v1 name is batch-reserved in the v2 ETH Registry by the `BatchRegistrar`. This happens automatically and does not require any user action.
+
+For each name:
+- **Status**: set to `RESERVED`
+- **Expiry**: `expiryV1 + 90 days` (the v1 grace period is added as a bonus to avoid premature expiration)
+- **Resolver**: set to `ENSV1Resolver`, which performs wildcard fallback to the v1 ENS registry
+- **Owner**: not set (RESERVED names have no owner)
+
+After premigration, new v1 `.eth` registrations are disabled. Names continue to resolve through v1 during this phase because `ENSV1Resolver` mirrors v1 resolution.
 
 ## Migration Paths
 
-### Locked Names (LockedMigrationController)
+Migration is initiated by the name owner transferring their v1 token to the appropriate controller. The controller promotes the pre-existing RESERVED slot to REGISTERED, setting the owner, resolver, subregistry, and role bitmap. The v1 token is forwarded to the Graveyard.
 
-Locked names are those with the `CANNOT_UNWRAP` [fuse](/wrapper/fuses) burned in the ENSv1 [Name Wrapper](/wrapper/overview). These names have irrevocable restrictions that must be preserved in ENSv2.
+The v2 owner specified during migration **does not need to match** the v1 owner. This allows migrating directly to a new wallet or smart account.
 
-**How it works:**
+### Unwrapped Names
 
-1. The name owner transfers their wrapped ERC1155 token to the `LockedMigrationController`
-2. The controller validates:
-   - The name is actually locked (`CANNOT_UNWRAP` is burned)
-   - The name data matches the expected node and owner
-3. The controller converts ENSv1 fuses to ENSv2 roles (see [Fuse-to-Role Conversion](#fuse-to-role-conversion))
-4. If the name has subnames, a `WrapperRegistry` is created for the child registry
-5. The name is registered as `RESERVED` in the ENSv2 registry with the converted role bitmap
-6. If the name had an ENSv1 resolver, it is preserved
+Unwrapped 2LD names (BaseRegistrar ERC-721 tokens) are migrated via the `UnlockedMigrationController`.
 
-**Key behavior:** locked names that are migrated retain their restriction semantics. A fuse that was burned in ENSv1 maps to a revoked role in ENSv2, maintaining the same guarantees.
+1. Transfer the ERC-721 token via `safeTransferFrom` with an encoded data payload specifying: label, new owner, resolver, and subregistry
+2. The controller reclaims the token on the BaseRegistrar and clears the v1 resolver
+3. The token is sent to the Graveyard
+4. The name is promoted from RESERVED to REGISTERED in the v2 ETH Registry with the provided parameters
+5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/contracts/ensv2/eth-registrar#eac-integration))
 
-### Unlocked and Unwrapped Names (UnlockedMigrationController)
+### Unlocked Wrapped Names
 
-The `UnlockedMigrationController` handles two types of names:
+Unlocked 2LD names (NameWrapper ERC-1155 tokens without `CANNOT_UNWRAP`) are also migrated via the `UnlockedMigrationController`.
 
-**Unlocked wrapped names** (NameWrapper ERC1155 tokens without `CANNOT_UNWRAP`):
+1. Transfer the ERC-1155 token via `safeTransferFrom` (or batch via `safeBatchTransferFrom`) with an encoded data payload
+2. The controller verifies the name is NOT locked (reverts `NameIsLocked` otherwise)
+3. The token is unwrapped to the Graveyard and the v1 resolver is cleared
+4. The name is promoted from RESERVED to REGISTERED with the provided parameters
+5. Token roles are the same as `ETHRegistrar.register()`
 
-1. The owner transfers their wrapped ERC1155 token to the controller
-2. The controller validates the name is NOT locked
-3. The controller clears the ENSv1 resolver
-4. The name is registered as `RESERVED` in ENSv2
+:::note
+Unlocked 3LD+ names cannot be migrated through this path. They must be registered directly in v2 once their parent has a v2 registry.
+:::
 
-**Unwrapped names** (BaseRegistrar ERC721 tokens):
+### Locked Names
 
-1. The owner transfers their ERC721 token to the controller via `safeTransferFrom`
-2. The controller's `onERC721Received` handler processes the migration
-3. The name is registered as `RESERVED` in ENSv2
+Locked names (NameWrapper ERC-1155 tokens with `CANNOT_UNWRAP`) have irrevocable restrictions that must be preserved. The migration path depends on the name level:
 
-In both cases, the `UnlockedMigrationController` requires `ROLE_REGISTER_RESERVED` permission on the ETH registry.
+- **2LD**: transfer to `LockedMigrationController`
+- **3LD+**: transfer to the parent name's `WrapperRegistry` (the parent must have migrated first)
+
+The migration flow:
+
+1. Transfer the ERC-1155 token to the appropriate receiver
+2. The controller verifies the token is emancipated (locked or detached)
+3. If the token has a non-null `getApproved()` and `CANNOT_APPROVE` is set, migration reverts (`FrozenTokenApproval`)
+4. ENSv1 [fuses](/wrapper/fuses) are converted to ENSv2 roles (see [Fuse-to-Role Conversion](#fuse-to-role-conversion))
+5. A `WrapperRegistry` is always deployed as the subregistry, replicating the v1 fuse-based access control using v2's [EAC](/contracts/ensv2/enhanced-access-control) system
+6. The resolver is cleared, **unless** `CANNOT_SET_RESOLVER` is burned, in which case the existing v1 resolver is preserved. If the preserved resolver is a known `PublicResolver`, it is replaced with `PublicResolverV2`
+7. The token is **not unwrapped** and stays in the controller until expiry
+8. The name is promoted from RESERVED to REGISTERED (for 2LD) or registered directly (for 3LD+) with the converted roles
+
+### Detached Names
+
+Detached names are emancipated children of locked parents that don't have `CANNOT_UNWRAP` set (3LD+ only). They are migrated via the parent's `WrapperRegistry`.
+
+1. Transfer the ERC-1155 token to the parent's WrapperRegistry
+2. The token is unwrapped to the Graveyard and the resolver is cleared
+3. The name is registered with the same token roles as `ETHRegistrar.register()`
 
 ## Fuse-to-Role Conversion
 
-When migrating locked names, ENSv1 fuses are converted to ENSv2 roles. The key principle is: **a burned fuse becomes a revoked role**.
+When migrating locked names, ENSv1 fuses are converted to ENSv2 roles. The key principle: a burned fuse that restricts an action means the corresponding role is **not granted**.
 
-### Owner-Controlled Fuses
+Admin roles (the `<< 128` shifted counterparts) are only granted when `CANNOT_BURN_FUSES` is **not** set. If fuses are frozen, only regular roles are granted, preventing any further permission changes in v2.
 
-| ENSv1 Fuse                | ENSv2 Equivalent                 | Notes                                                              |
-| ------------------------- | -------------------------------- | ------------------------------------------------------------------ |
-| `CANNOT_TRANSFER`         | Revoke `ROLE_CAN_TRANSFER_ADMIN` | Name becomes non-transferable                                      |
-| `CANNOT_SET_RESOLVER`     | Revoke `ROLE_SET_RESOLVER`       | Resolver is locked                                                 |
-| `CANNOT_UNWRAP`           | N/A                              | No "unwrapping" concept in ENSv2 - names are always ERC1155 tokens |
-| `CANNOT_BURN_FUSES`       | Revoke all admin roles           | Prevents further permission changes                                |
-| `CANNOT_CREATE_SUBDOMAIN` | Revoke `ROLE_REGISTRAR`          | No new subnames can be created                                     |
-| `CANNOT_SET_TTL`          | N/A                              | TTL is not stored in ENSv2 registries                              |
+### Token Roles
 
-### Parent-Controlled Fuses
+| ENSv1 Fuse | ENSv2 Role | Granted when fuse is... |
+|------------|-----------|------------------------|
+| `CAN_EXTEND_EXPIRY` | `ROLE_RENEW` | Set (enabled) |
+| `CANNOT_SET_RESOLVER` | `ROLE_SET_RESOLVER` | Not set (not burned) |
+| `CANNOT_TRANSFER` | `ROLE_CAN_TRANSFER_ADMIN` | Not set (not burned) |
+| `CANNOT_BURN_FUSES` | Admin counterparts of above | Not set (not frozen) |
+| `CANNOT_SET_TTL` | N/A | Ignored (no TTL in v2) |
 
-| ENSv1 Fuse              | ENSv2 Equivalent                              | Notes                                    |
-| ----------------------- | --------------------------------------------- | ---------------------------------------- |
-| `PARENT_CANNOT_CONTROL` | Revoke parent's admin roles on the child name | Parent loses ability to modify the child |
-| `CAN_EXTEND_EXPIRY`     | Grant `ROLE_RENEW` on the child name          | Child owner can extend their own expiry  |
+### Subregistry Roles (WrapperRegistry ROOT_RESOURCE)
 
-The conversion is handled by `_subregistryRoleBitmapFromFuses()` and `_tokenRoleBitmapFromFuses()` in the migration contracts.
+| ENSv1 Fuse | ENSv2 Role | Granted when fuse is... |
+|------------|-----------|------------------------|
+| `CANNOT_CREATE_SUBDOMAIN` | `ROLE_REGISTRAR` | Not set (not burned) |
+| `CANNOT_BURN_FUSES` | Admin counterparts of above | Not set (not frozen) |
+| (always) | `ROLE_RENEW` + `ROLE_RENEW_ADMIN` | Always granted |
 
-## WrapperRegistry
+## Graveyard
 
-The **WrapperRegistry** acts as a bridge between ENSv1's [Name Wrapper](/wrapper/overview) and ENSv2's registry system. It wraps the Name Wrapper as an ENSv2-compatible registry, enabling a gradual migration where:
+The `Graveyard` contract is the burn address for migrated v1 tokens. It receives ERC-721 tokens (from unwrapped migration) and ERC-1155 tokens (from unlocked/detached migration) and holds them until expiry.
 
-- Already-migrated names are managed by ENSv2 directly
-- Not-yet-migrated children continue to resolve through the ENSv1 Name Wrapper
+Beyond holding tokens, the Graveyard can actively clean up the v1 registry:
 
-Key behaviors:
+```solidity
+// Anyone can call this to clean up v1 registry entries for migrated names
+Graveyard.clear(names)
+```
 
-- **Prevents double registration**: migratable children (those still in the Name Wrapper) cannot be registered directly in the WrapperRegistry
-- **Resolver passthrough**: `getResolver()` returns the ENSv1 resolver for children that haven't migrated yet
-- **Name data access**: `getWrappedName()` and `getWrappedNode()` expose the original wrapped name data
+The `clear()` function recursively walks the v1 namespace hierarchy for each name, clearing resolvers and subnode records. This prevents stale v1 resolution for names that have been migrated to v2. It handles:
+- **Owned names**: clears resolver and subnode records
+- **Locked names** (still in NameWrapper): validates ownership by the Graveyard
+- **Expired names**: reclaims via the v1 BaseRegistrar, then clears
 
-This allows the registry tree to include both migrated and unmigrated names seamlessly.
+## ENSv1 Continuity
 
-## Subname Migration
+Not all names will migrate immediately. ENSv2 provides mechanisms to keep unmigrated names functional.
 
-When a parent name is migrated, its subnames don't migrate automatically. Instead:
+### ETHRenewerV1
 
-1. The parent's migration creates a `WrapperRegistry` (for locked names) that acts as the child registry
-2. The WrapperRegistry allows ENSv1 subnames to continue resolving normally
-3. Each subname can be individually migrated when its owner is ready
-4. Once migrated, the subname is managed entirely by ENSv2
+The `ETHRenewerV1` contract renews RESERVED (premigrated but not yet migrated) names using v2 pricing logic, and syncs the expiry back to the v1 BaseRegistrar:
 
-This approach ensures:
+```solidity
+// Renew a RESERVED name (syncs v1 expiry automatically)
+ETHRenewerV1.renew(label, duration, paymentToken, referrer)
 
-- No forced migration for subname owners
-- Continued resolution during the transition period
-- Each owner migrates at their own pace
+// Batch-sync NameWrapper expiry with BaseRegistrar
+ETHRenewerV1.syncWrapper(labels)
+```
+
+**Key invariants:**
+- A RESERVED v2 name is always in sync with its v1 Registered or Grace state
+- The v2 `ETHRegistrar` cannot register RESERVED names (it lacks `ROLE_REGISTER_RESERVED`), so unmigrated names are protected until they expire
+- `ENSV1Resolver` continues resolving unmigrated names until the v2 reservation expires
+
+### Unmigratable Names
+
+Some names are structurally unable to migrate (see [Restrictions](#restrictions)). These names remain fully functional on v1:
+
+- Resolution continues via `ENSV1Resolver` as long as the v2 reservation is active
+- Renewals work via `ETHRenewerV1`, keeping the v1 and v2 expiries in sync
+- v1 fuses, resolver, and ownership remain unchanged
+
+The only v2 features unavailable to unmigratable names are per-record permissions, aliasing, and the new resolver. Once the name expires in both v1 and v2, the `Graveyard` can clear its v1 namespace and the name becomes available for fresh registration in v2.
+
+### What Happens to Unmigrated Names
+
+Names that *could* migrate but don't will eventually expire. Their v1 tokens expire, leaving the v1 registry state frozen (resolver, owner, fuses all unchanged). The v2 RESERVED slot also expires. Once both have expired, the name becomes available for fresh registration in v2 via the `ETHRegistrar`.
+
+## Scenarios
+
+### Migrate with time to spare
+
+*A name with 100 days remaining is migrated, then the owner forgets about it.*
+
+The premigrated reservation has 190 days left (100 + 90 day bonus). The owner migrates, promoting the name to REGISTERED. Both the v1 token and the v2 registration expire at the same time. The name becomes available for registration in v2 after the v2 grace period (28 days).
+
+### In grace period, wants to migrate
+
+*A name has 1 day left in the v1 grace period.*
+
+The RESERVED slot has 1 day left. The owner uses `ETHRenewerV1` to renew out of the grace period (must renew for > 89 days so the v1 token exits grace). After renewal, the token can be transferred and migrated normally.
+
+### Renews but forgets to migrate
+
+*A name has 1 day in grace. The owner renews via ETHRenewerV1 but never migrates.*
+
+The reservation is extended. The v1 token and v2 reservation stay in sync. The name continues resolving through v1 via `ENSV1Resolver`. Eventually both expire and the name becomes immediately available for registration in v2 (no v2 grace period for expired reservations).
+
+### NameWrapper expiry out of sync
+
+*The NameWrapper shows an expired name but the BaseRegistrar still has it as registered.*
+
+Use `ETHRenewerV1.syncWrapper(labels)` to batch-sync the NameWrapper expiry with the BaseRegistrar expiry.
 
 ## What Users Need to Do
 
 ### .eth Name Owners
 
-If you own a `.eth` name, you can migrate it to ENSv2 by transferring it to the appropriate migration controller:
+<FrenCallout fren="lili" variant="tip">
+If you just own a `.eth` name and aren't a developer, you don't need to understand the technical details below. A frontend migration tool will be available when the time comes that handles everything for you.
+</FrenCallout>
 
-- **Wrapped and locked**: transfer your NameWrapper ERC1155 token to the `LockedMigrationController`
-- **Wrapped and unlocked**: transfer your NameWrapper ERC1155 token to the `UnlockedMigrationController`
-- **Unwrapped**: transfer your BaseRegistrar ERC721 token to the `UnlockedMigrationController`
+Premigration happens automatically. To migrate your name to v2:
 
-After migration, your name will appear as `RESERVED` in ENSv2. You can then claim full ownership by promoting it to `REGISTERED`.
+1. Transfer your v1 token to the appropriate migration controller:
+   - **Unwrapped or unlocked**: `UnlockedMigrationController`
+   - **Locked**: `LockedMigrationController`
+2. Specify the new v2 owner, resolver, and subregistry in the transfer data
+3. The v2 owner can be a different address than the v1 owner (e.g., migrating to a smart account)
+
+If your name is in the v1 grace period, use `ETHRenewerV1` to renew it first.
 
 :::note
-Migration is **not required** immediately. ENSv1 names will continue to function through the WrapperRegistry bridge. However, migrating gives you access to ENSv2 features like per-record permissions, aliasing, and the new resolver.
+Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/contracts/ensv2/permissioned-resolver#eac-integration), [aliasing](/contracts/ensv2/permissioned-resolver#aliasing), and the new resolver.
 :::
 
 ### Subname Owners
 
-If you own a subname (e.g., `sub.alice.eth`), your migration depends on the parent:
+If you own a locked subname (3LD+), your parent must migrate first. Once the parent has migrated, transfer your token to the parent's `WrapperRegistry`.
 
-- If the parent has migrated, you can migrate your subname independently
-- If the parent has not migrated, your subname continues to work through ENSv1
+Unlocked 3LD+ subnames cannot be migrated through the migration controllers. They must be registered directly in v2 once their parent has a v2 registry.
 
 ### What Happens to Records
 
-- **Locked names**: the ENSv1 resolver is preserved during migration. Your records continue to resolve.
-- **Unlocked names**: the ENSv1 resolver is cleared during migration. You'll need to set up a new resolver in ENSv2.
+- **Locked names with `CANNOT_SET_RESOLVER`**: the v1 resolver is preserved. If it's a known `PublicResolver`, it's replaced with `PublicResolverV2` (records may need to be copied separately).
+- **All other names**: the v1 resolver is cleared during migration. Set up a new resolver in v2.
 
-## What App Developers Need to Do
+## Restrictions
 
-For most application developers, ENSv2 migration is transparent. If you use a supported library (viem >= 2.35.0, ethers with ENS patch), resolution handles both v1 and v2 names automatically.
+Migration is not possible in the following cases:
 
-See the [ENSv2 Readiness](/web/ensv2-readiness) guide and the [App Developer Tutorial](/contracts/ensv2/tutorial-app-developers) for details on ensuring your application works with both ENSv1 and ENSv2 names.
+- The v1 token is not transferable (owner or approval restrictions)
+- Locked names with `CANNOT_TRANSFER` burned
+- Locked names with `CANNOT_APPROVE` burned and a non-null `getApproved()` (reverts `FrozenTokenApproval`)
+- 3LD+ subnames whose parent has not migrated yet
+
+## Contracts
+
+| Contract | Purpose |
+|----------|---------|
+| `BatchRegistrar` | Batch-reserves v1 names in v2 during premigration |
+| `UnlockedMigrationController` | Migrates unwrapped and unlocked 2LD names |
+| `LockedMigrationController` | Migrates locked 2LD names |
+| `WrapperRegistry` | Migrates locked/detached 3LD+ names; replicates fuse-based access control in v2 |
+| `Graveyard` | Burn address for migrated tokens; cleans up v1 registry |
+| `ETHRenewerV1` | Renews RESERVED names; syncs v1 expiry |
+| `ENSV1Resolver` | Wildcard fallback resolver for premigrated names |
+| `PublicResolverV2` | Replacement for v1 PublicResolver that respects v2 ownership |
