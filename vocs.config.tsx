@@ -418,6 +418,10 @@ export default defineConfig({
                   text: 'DNS Name Resolution',
                   link: '/contracts/ensv2/dns-resolvers',
                 },
+                {
+                  text: 'Reverse Resolution',
+                  link: '/contracts/ensv2/reverse-resolution',
+                },
               ],
             },
             {

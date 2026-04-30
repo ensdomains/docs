@@ -3,6 +3,7 @@ description: Enhanced Access Control
 ---
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
 
 # Enhanced Access Control
 
@@ -139,29 +140,149 @@ Each ENSv2 contract defines its own roles and its own resource scheme. See the E
 
 ### Write Functions
 
-| Function | Description |
-|----------|-------------|
-| `grantRoles(resource, roleBitmap, account)` | Grant roles on a specific resource (rejects `ROOT_RESOURCE`) |
-| `revokeRoles(resource, roleBitmap, account)` | Revoke roles on a specific resource (rejects `ROOT_RESOURCE`) |
-| `grantRootRoles(roleBitmap, account)` | Grant roles on `ROOT_RESOURCE` (contract-wide) |
-| `revokeRootRoles(roleBitmap, account)` | Revoke roles on `ROOT_RESOURCE` (contract-wide) |
+<ContractReference functions={[
+  {
+    name: 'grantRoles',
+    description: 'Grant roles on a specific resource. Reverts if resource is ROOT_RESOURCE.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to grant roles on' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+      { name: 'account', type: 'address', description: 'Account to grant roles to' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'revokeRoles',
+    description: 'Revoke roles on a specific resource. Reverts if resource is ROOT_RESOURCE.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to revoke roles on' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to revoke' },
+      { name: 'account', type: 'address', description: 'Account to revoke roles from' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'grantRootRoles',
+    description: 'Grant roles on ROOT_RESOURCE (contract-wide).',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+      { name: 'account', type: 'address', description: 'Account to grant roles to' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'revokeRootRoles',
+    description: 'Revoke roles on ROOT_RESOURCE (contract-wide).',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to revoke' },
+      { name: 'account', type: 'address', description: 'Account to revoke roles from' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+]} />
 
 ### View Functions
 
-| Function | Returns |
-|----------|---------|
-| `roles(resource, account)` | Full role bitmap for account on resource |
-| `roleCount(resource)` | Assignee count bitmap (nybble per role) |
-| `hasRoles(resource, roleBitmap, account)` | Whether account has all specified roles (checks resource + ROOT) |
-| `hasRootRoles(roleBitmap, account)` | Whether account has all specified roles on `ROOT_RESOURCE` |
-| `hasAssignees(resource, roleBitmap)` | Whether any accounts hold the specified roles |
-| `getAssigneeCount(resource, roleBitmap)` | Per-role assignee counts and mask |
-| `ROOT_RESOURCE` | The root resource constant (`0`) |
+<ContractReference functions={[
+  {
+    name: 'roles',
+    description: 'Get the full role bitmap for an account on a resource.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to query' },
+      { name: 'account', type: 'address', description: 'The account to query' },
+    ],
+    returns: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Full role bitmap' },
+    ],
+  },
+  {
+    name: 'roleCount',
+    description: 'Get the assignee count bitmap for a resource (nybble per role).',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to query' },
+    ],
+    returns: [
+      { name: 'counts', type: 'uint256', description: 'Packed assignee counts' },
+    ],
+  },
+  {
+    name: 'hasRoles',
+    description: 'Check whether an account has all specified roles. Checks both the resource and ROOT_RESOURCE.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to check' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+      { name: 'account', type: 'address', description: 'The account to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if account holds all specified roles' },
+    ],
+  },
+  {
+    name: 'hasRootRoles',
+    description: 'Check whether an account has all specified roles on ROOT_RESOURCE only.',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+      { name: 'account', type: 'address', description: 'The account to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if account holds all specified roles on ROOT' },
+    ],
+  },
+  {
+    name: 'hasAssignees',
+    description: 'Check whether any accounts hold the specified roles on a resource.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to check' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if any account holds the roles' },
+    ],
+  },
+  {
+    name: 'getAssigneeCount',
+    description: 'Get per-role assignee counts for the specified roles.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource to query' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to count' },
+    ],
+    returns: [
+      { name: 'counts', type: 'uint256', description: 'Packed per-role assignee counts' },
+      { name: 'mask', type: 'uint256', description: 'Mask indicating which nybbles are relevant' },
+    ],
+  },
+]} />
+
+### Constants
+
+<ContractReference functions={[
+  {
+    name: 'ROOT_RESOURCE',
+    description: 'The root resource constant (0). Roles on ROOT_RESOURCE apply to all resources.',
+  },
+]} />
 
 ### Events
 
-| Event | Emitted when |
-|-------|-------------|
-| `EACRolesChanged(resource, account, oldRoleBitmap, newRoleBitmap)` | Roles granted or revoked for an account on a resource |
+<ContractReference functions={[
+  {
+    name: 'EACRolesChanged',
+    description: 'Roles granted or revoked for an account on a resource.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The resource affected' },
+      { name: 'account', type: 'address', description: 'The account whose roles changed' },
+      { name: 'oldRoleBitmap', type: 'uint256', description: 'Previous role bitmap' },
+      { name: 'newRoleBitmap', type: 'uint256', description: 'New role bitmap' },
+    ],
+  },
+]} />
 
 For code examples of granting and revoking roles, see the [Permissioned Registry](/contracts/ensv2/permissioned-registry#code-examples) and [Permissioned Resolver](/contracts/ensv2/permissioned-resolver#code-examples) pages.

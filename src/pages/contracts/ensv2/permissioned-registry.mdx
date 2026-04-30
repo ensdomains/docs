@@ -5,6 +5,7 @@ description: Permissioned Registry
 import { Card } from '../../../components/ui/Card'
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
 
 # Permissioned Registry
 
@@ -209,50 +210,316 @@ The registry also stores its own parent via `setParent()` / `getParent()`, which
 
 ### Write Functions
 
-| Function | Description |
-|----------|-------------|
-| `register(label, owner, registry, resolver, roleBitmap, expiry)` | Register or reserve a name |
-| `unregister(anyId)` | Unregister a name, making it available |
-| `renew(anyId, newExpiry)` | Extend a name's expiry |
-| `setSubregistry(anyId, registry)` | Set the child registry for a name (pointing two names to the same registry creates a [namespace alias](/contracts/ensv2/registry-hierarchy#namespace-aliasing)) |
-| `setResolver(anyId, resolver)` | Set the resolver for a name |
-| `setParent(parent, label)` | Set this registry's canonical parent |
-| `grantRoles(anyId, roleBitmap, account)` | Grant roles on a name |
-| `revokeRoles(anyId, roleBitmap, account)` | Revoke roles on a name |
-| `grantRootRoles(roleBitmap, account)` | Grant contract-wide roles |
-| `revokeRootRoles(roleBitmap, account)` | Revoke contract-wide roles |
+<ContractReference functions={[
+  {
+    name: 'register',
+    description: 'Register or reserve a name. Pass owner as address(0) to reserve without an owner.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to register (e.g. "alice" for alice.eth)' },
+      { name: 'owner', type: 'address', description: 'Owner address, or address(0) to reserve' },
+      { name: 'registry', type: 'IRegistry', description: 'Child subregistry to set, or address(0)' },
+      { name: 'resolver', type: 'address', description: 'Resolver to set, or address(0)' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Initial roles to grant the owner' },
+      { name: 'expiry', type: 'uint64', description: 'Expiry timestamp in seconds' },
+    ],
+    returns: [
+      { name: 'tokenId', type: 'uint256', description: 'The token ID of the registered name' },
+    ],
+  },
+  {
+    name: 'unregister',
+    description: 'Unregister a name, making it available. Requires ROLE_UNREGISTER.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+    ],
+  },
+  {
+    name: 'renew',
+    description: 'Extend a name\'s expiry. Cannot reduce the current expiry. Requires ROLE_RENEW.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+      { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp (must be >= current)' },
+    ],
+  },
+  {
+    name: 'setSubregistry',
+    description: 'Set the child registry for a name. Pointing two names to the same registry creates a namespace alias.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+      { name: 'registry', type: 'IRegistry', description: 'Child registry address' },
+    ],
+  },
+  {
+    name: 'setResolver',
+    description: 'Set the resolver for a name. Requires ROLE_SET_RESOLVER.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+      { name: 'resolver', type: 'address', description: 'Resolver address' },
+    ],
+  },
+  {
+    name: 'setParent',
+    description: 'Set this registry\'s canonical parent. Requires ROLE_SET_PARENT on ROOT_RESOURCE.',
+    params: [
+      { name: 'parent', type: 'IRegistry', description: 'Parent registry address' },
+      { name: 'label', type: 'string', description: 'This registry\'s label within the parent' },
+    ],
+  },
+  {
+    name: 'grantRoles',
+    description: 'Grant roles on a name. Triggers token regeneration.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+      { name: 'account', type: 'address', description: 'Account to grant roles to' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'revokeRoles',
+    description: 'Revoke roles on a name. Triggers token regeneration.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to revoke' },
+      { name: 'account', type: 'address', description: 'Account to revoke roles from' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'grantRootRoles',
+    description: 'Grant contract-wide roles on ROOT_RESOURCE.',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+      { name: 'account', type: 'address', description: 'Account to grant roles to' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'revokeRootRoles',
+    description: 'Revoke contract-wide roles on ROOT_RESOURCE.',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to revoke' },
+      { name: 'account', type: 'address', description: 'Account to revoke roles from' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+]} />
 
 ### View Functions
 
 Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry-interface) interface (`getSubregistry`, `getResolver`, `getParent`) take label strings. All other functions accept `anyId`.
 
-| Function | Returns |
-|----------|---------|
-| `getState(anyId)` | Complete state: status, expiry, latestOwner, tokenId, resource |
-| `getStatus(anyId)` | `AVAILABLE`, `RESERVED`, or `REGISTERED` |
-| `getExpiry(anyId)` | Expiry timestamp |
-| `getTokenId(anyId)` | Current token ID |
-| `getResource(anyId)` | Current EAC resource ID |
-| `latestOwnerOf(tokenId)` | Owner regardless of expiry/version |
-| `ownerOf(tokenId)` | Owner, or `address(0)` if expired or stale tokenId |
-| `getSubregistry(label)` | Child registry address |
-| `getResolver(label)` | Resolver address |
-| `getParent()` | Parent registry and label |
-| `hasRoles(anyId, roleBitmap, account)` | Whether account holds the specified roles |
-| `roles(anyId, account)` | Full role bitmap for account on a name |
+<ContractReference functions={[
+  {
+    name: 'getState',
+    description: 'Complete state for a name: status, expiry, latestOwner, tokenId, resource.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'state', type: 'State', description: 'Struct with status, expiry, latestOwner, tokenId, resource' },
+    ],
+  },
+  {
+    name: 'getStatus',
+    description: 'Get the registration status of a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'status', type: 'Status', description: 'AVAILABLE, RESERVED, or REGISTERED' },
+    ],
+  },
+  {
+    name: 'getExpiry',
+    description: 'Get the expiry timestamp of a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'expiry', type: 'uint64', description: 'Expiry timestamp in seconds' },
+    ],
+  },
+  {
+    name: 'getTokenId',
+    description: 'Get the current token ID of a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'tokenId', type: 'uint256', description: 'Current ERC1155 token ID' },
+    ],
+  },
+  {
+    name: 'getResource',
+    description: 'Get the current EAC resource ID of a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'resource', type: 'uint256', description: 'Current EAC resource ID' },
+    ],
+  },
+  {
+    name: 'latestOwnerOf',
+    description: 'Get the owner of a token regardless of expiry or version validity.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'The token ID to query' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Owner address' },
+    ],
+  },
+  {
+    name: 'ownerOf',
+    description: 'Get the owner of a token, or address(0) if expired or stale token ID.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'The token ID to query' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Owner address, or address(0)' },
+    ],
+  },
+  {
+    name: 'getSubregistry',
+    description: 'Get the child registry for a label. Returns address(0) if expired.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to query' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Child registry address' },
+    ],
+  },
+  {
+    name: 'getResolver',
+    description: 'Get the resolver for a label. Returns address(0) if expired.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to query' },
+    ],
+    returns: [
+      { name: 'resolver', type: 'address', description: 'Resolver address' },
+    ],
+  },
+  {
+    name: 'getParent',
+    description: 'Get this registry\'s canonical parent registry and label.',
+    returns: [
+      { name: 'parent', type: 'IRegistry', description: 'Parent registry address' },
+      { name: 'label', type: 'string', description: 'This registry\'s label within the parent' },
+    ],
+  },
+  {
+    name: 'hasRoles',
+    description: 'Check whether an account holds the specified roles on a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+      { name: 'account', type: 'address', description: 'Account to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if account holds all specified roles' },
+    ],
+  },
+  {
+    name: 'roles',
+    description: 'Get the full role bitmap for an account on a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+      { name: 'account', type: 'address', description: 'Account to query' },
+    ],
+    returns: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Full role bitmap' },
+    ],
+  },
+]} />
 
 ### Events
 
-| Event | Emitted when |
-|-------|-------------|
-| `LabelRegistered(tokenId, labelHash, label, owner, expiry, sender)` | Name registered with an owner |
-| `LabelReserved(tokenId, labelHash, label, expiry, sender)` | Name reserved (no owner) |
-| `LabelUnregistered(tokenId, sender)` | Name unregistered |
-| `ExpiryUpdated(tokenId, newExpiry, sender)` | Expiry extended via `renew()` |
-| `SubregistryUpdated(tokenId, subregistry, sender)` | Child registry changed |
-| `ResolverUpdated(tokenId, resolver, sender)` | Resolver address changed |
-| `TokenRegenerated(oldTokenId, newTokenId)` | Token ID changed due to role update |
-| `ParentUpdated(parent, label, sender)` | Canonical parent reference changed |
+<ContractReference functions={[
+  {
+    name: 'LabelRegistered',
+    description: 'Name registered with an owner.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the registered name' },
+      { name: 'labelHash', type: 'bytes32', description: 'Hash of the registered label' },
+      { name: 'label', type: 'string', description: 'The registered label' },
+      { name: 'owner', type: 'address', description: 'Owner of the name' },
+      { name: 'expiry', type: 'uint64', description: 'Expiry timestamp' },
+      { name: 'sender', type: 'address', description: 'Caller that triggered the registration' },
+    ],
+  },
+  {
+    name: 'LabelReserved',
+    description: 'Name reserved without an owner.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the reserved name' },
+      { name: 'labelHash', type: 'bytes32', description: 'Hash of the reserved label' },
+      { name: 'label', type: 'string', description: 'The reserved label' },
+      { name: 'expiry', type: 'uint64', description: 'Expiry timestamp' },
+      { name: 'sender', type: 'address', description: 'Caller that triggered the reservation' },
+    ],
+  },
+  {
+    name: 'LabelUnregistered',
+    description: 'Name unregistered.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the unregistered name' },
+      { name: 'sender', type: 'address', description: 'Caller that triggered unregistration' },
+    ],
+  },
+  {
+    name: 'ExpiryUpdated',
+    description: 'Expiry extended via renew().',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
+      { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp' },
+      { name: 'sender', type: 'address', description: 'Caller that triggered the renewal' },
+    ],
+  },
+  {
+    name: 'SubregistryUpdated',
+    description: 'Child registry changed.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
+      { name: 'subregistry', type: 'IRegistry', description: 'New child registry address' },
+      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+    ],
+  },
+  {
+    name: 'ResolverUpdated',
+    description: 'Resolver address changed.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
+      { name: 'resolver', type: 'address', description: 'New resolver address' },
+      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+    ],
+  },
+  {
+    name: 'TokenRegenerated',
+    description: 'Token ID changed due to role update.',
+    params: [
+      { name: 'oldTokenId', type: 'uint256', description: 'Previous token ID' },
+      { name: 'newTokenId', type: 'uint256', description: 'New token ID' },
+    ],
+  },
+  {
+    name: 'ParentUpdated',
+    description: 'Canonical parent reference changed.',
+    params: [
+      { name: 'parent', type: 'IRegistry', description: 'New parent registry' },
+      { name: 'label', type: 'string', description: 'Label within the parent' },
+      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+    ],
+  },
+]} />
 
 ## Code Examples
 

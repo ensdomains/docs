@@ -6,6 +6,7 @@ import { Card } from '../../../components/ui/Card'
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { ResourceCalculator } from '../../../components/ensv2/ResourceCalculator'
 import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
 
 # Permissioned Resolver
 
@@ -186,56 +187,425 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
 
 ### Write Functions
 
-| Function | Description |
-|----------|-------------|
-| `setText(node, key, value)` | Set a text record |
-| `setAddr(node, coinType, addressBytes)` | Set a multichain address record |
-| `setAddr(node, addr)` | Set the ETH address record |
-| `setContenthash(node, hash)` | Set the content hash |
-| `setName(node, name)` | Set the reverse name |
-| `setPubkey(node, x, y)` | Set the SECP256k1 public key |
-| `setABI(node, contentType, data)` | Set ABI data |
-| `setInterface(node, interfaceId, implementer)` | Set an interface implementer |
-| `setAlias(fromName, toName)` | Set a name alias (DNS-encoded, root-only) |
-| `clearRecords(node)` | Clear all records for a node (version bump) |
-| `authorizeNameRoles(name, roleBitmap, account, grant)` | Grant/revoke roles on a name |
-| `authorizeTextRoles(name, key, account, grant)` | Grant/revoke `ROLE_SET_TEXT` for a specific text key |
-| `authorizeDataRoles(name, key, account, grant)` | Grant/revoke `ROLE_SET_DATA` for a specific data key |
-| `authorizeAddrRoles(name, coinType, account, grant)` | Grant/revoke `ROLE_SET_ADDR` for a specific coin type |
+<ContractReference functions={[
+  {
+    name: 'setText',
+    description: 'Set a text record. Requires ROLE_SET_TEXT.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The text record key' },
+      { name: 'value', type: 'string', description: 'The text record value' },
+    ],
+  },
+  {
+    name: 'setAddr',
+    description: 'Set a multichain address record. Requires ROLE_SET_ADDR.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type (e.g. 60 for Ethereum)' },
+      { name: 'addressBytes', type: 'bytes', description: 'The encoded address' },
+    ],
+  },
+  {
+    name: 'setAddr',
+    description: 'Set the ETH address record (convenience overload for coin type 60).',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'addr', type: 'address', description: 'The Ethereum address' },
+    ],
+  },
+  {
+    name: 'setContenthash',
+    description: 'Set the content hash. Requires ROLE_SET_CONTENTHASH.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'hash', type: 'bytes', description: 'The content hash' },
+    ],
+  },
+  {
+    name: 'setName',
+    description: 'Set the reverse name. Requires ROLE_SET_NAME.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'name', type: 'string', description: 'The primary name' },
+    ],
+  },
+  {
+    name: 'setPubkey',
+    description: 'Set the SECP256k1 public key. Requires ROLE_SET_PUBKEY.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'x', type: 'bytes32', description: 'X coordinate of the public key' },
+      { name: 'y', type: 'bytes32', description: 'Y coordinate of the public key' },
+    ],
+  },
+  {
+    name: 'setABI',
+    description: 'Set ABI data. Requires ROLE_SET_ABI.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'contentType', type: 'uint256', description: 'ABI content type (must be a power of 2)' },
+      { name: 'value', type: 'bytes', description: 'The ABI data' },
+    ],
+  },
+  {
+    name: 'setInterface',
+    description: 'Set an interface implementer. Requires ROLE_SET_INTERFACE.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+      { name: 'implementer', type: 'address', description: 'Contract implementing the interface' },
+    ],
+  },
+  {
+    name: 'setData',
+    description: 'Set an arbitrary data record. Requires ROLE_SET_DATA.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The data key' },
+      { name: 'value', type: 'bytes', description: 'The data value' },
+    ],
+  },
+  {
+    name: 'setAlias',
+    description: 'Set a name alias (DNS-encoded). Requires ROLE_SET_ALIAS on ROOT_RESOURCE.',
+    params: [
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
+    ],
+  },
+  {
+    name: 'clearRecords',
+    description: 'Clear all records for a node by bumping the version. Requires ROLE_CLEAR.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+  },
+  {
+    name: 'authorizeNameRoles',
+    description: 'Grant or revoke roles on a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to authorize for' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant or revoke' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeTextRoles',
+    description: 'Grant or revoke ROLE_SET_TEXT for a specific text key.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'key', type: 'string', description: 'The text key to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeDataRoles',
+    description: 'Grant or revoke ROLE_SET_DATA for a specific data key.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'key', type: 'string', description: 'The data key to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeAddrRoles',
+    description: 'Grant or revoke ROLE_SET_ADDR for a specific coin type.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+]} />
 
 ### View Functions
 
-| Function | Returns |
-|----------|---------|
-| `addr(node)` | ETH address |
-| `addr(node, coinType)` | Multichain address bytes |
-| `text(node, key)` | Text record value |
-| `contenthash(node)` | Content hash |
-| `name(node)` | Reverse name |
-| `pubkey(node)` | Public key (x, y) |
-| `ABI(node, contentTypes)` | ABI data (contentType, data) |
-| `interfaceImplementer(node, interfaceId)` | Interface implementer address |
-| `hasAddr(node, coinType)` | Whether an address record exists |
-| `getAlias(name)` | Alias target (DNS-encoded) |
-| `recordVersions(node)` | Current record version number |
+<ContractReference functions={[
+  {
+    name: 'addr',
+    description: 'Get the ETH address for a node.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'addr', type: 'address payable', description: 'Ethereum address' },
+    ],
+  },
+  {
+    name: 'addr',
+    description: 'Get the multichain address for a node.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to query' },
+    ],
+    returns: [
+      { name: 'addressBytes', type: 'bytes', description: 'Encoded address bytes' },
+    ],
+  },
+  {
+    name: 'text',
+    description: 'Get a text record value.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The text record key' },
+    ],
+    returns: [
+      { name: 'value', type: 'string', description: 'Text record value' },
+    ],
+  },
+  {
+    name: 'contenthash',
+    description: 'Get the content hash.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'hash', type: 'bytes', description: 'Content hash' },
+    ],
+  },
+  {
+    name: 'name',
+    description: 'Get the reverse name.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'name', type: 'string', description: 'Primary name' },
+    ],
+  },
+  {
+    name: 'pubkey',
+    description: 'Get the SECP256k1 public key.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'x', type: 'bytes32', description: 'X coordinate' },
+      { name: 'y', type: 'bytes32', description: 'Y coordinate' },
+    ],
+  },
+  {
+    name: 'ABI',
+    description: 'Get ABI data.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'contentTypes', type: 'uint256', description: 'Bitmask of accepted content types' },
+    ],
+    returns: [
+      { name: 'contentType', type: 'uint256', description: 'Matched content type' },
+      { name: 'value', type: 'bytes', description: 'ABI data' },
+    ],
+  },
+  {
+    name: 'data',
+    description: 'Get an arbitrary data record.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The data key' },
+    ],
+    returns: [
+      { name: 'value', type: 'bytes', description: 'Data value' },
+    ],
+  },
+  {
+    name: 'interfaceImplementer',
+    description: 'Get the interface implementer address.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+    ],
+    returns: [
+      { name: 'implementer', type: 'address', description: 'Implementer address' },
+    ],
+  },
+  {
+    name: 'hasAddr',
+    description: 'Check whether an address record exists.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to check' },
+    ],
+    returns: [
+      { name: 'exists', type: 'bool', description: 'True if a non-empty address record is set' },
+    ],
+  },
+  {
+    name: 'getAlias',
+    description: 'Get the alias target for a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded source name' },
+    ],
+    returns: [
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name, or empty if no alias' },
+    ],
+  },
+  {
+    name: 'recordVersions',
+    description: 'Get the current record version number.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'version', type: 'uint64', description: 'Current version number' },
+    ],
+  },
+]} />
 
 ### Events
 
-| Event | Emitted when |
-|-------|-------------|
-| `AddrChanged(node, addr)` | ETH address changed |
-| `AddressChanged(node, coinType, addressBytes)` | Multichain address changed |
-| `TextChanged(node, indexedKey, key, value)` | Text record changed |
-| `ContenthashChanged(node, hash)` | Content hash changed |
-| `NameChanged(node, name)` | Reverse name changed |
-| `PubkeyChanged(node, x, y)` | Public key changed |
-| `ABIChanged(node, contentType)` | ABI data changed |
-| `InterfaceChanged(node, interfaceId, implementer)` | Interface implementer changed |
-| `VersionChanged(node, version)` | Records cleared (version bumped) |
-| `AliasChanged(fromName, toName, indexedFromName, indexedToName)` | Alias set or removed |
-| `NamedResource(resource, name)` | EAC resource linked to a name |
-| `NamedTextResource(resource, name, keyHash, key)` | EAC resource linked to a text key |
-| `NamedAddrResource(resource, name, coinType)` | EAC resource linked to a coin type |
+<ContractReference functions={[
+  {
+    name: 'AddrChanged',
+    description: 'ETH address changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'addr', type: 'address', description: 'New ETH address' },
+    ],
+  },
+  {
+    name: 'AddressChanged',
+    description: 'Multichain address changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'Coin type' },
+      { name: 'addressBytes', type: 'bytes', description: 'New encoded address' },
+    ],
+  },
+  {
+    name: 'TextChanged',
+    description: 'Text record changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'key', type: 'string', description: 'The text key' },
+      { name: 'value', type: 'string', description: 'New text value' },
+    ],
+  },
+  {
+    name: 'DataChanged',
+    description: 'Data record changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'key', type: 'string', description: 'The data key' },
+      { name: 'indexedData', type: 'bytes', description: 'Indexed copy of the data value' },
+    ],
+  },
+  {
+    name: 'ContenthashChanged',
+    description: 'Content hash changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'hash', type: 'bytes', description: 'New content hash' },
+    ],
+  },
+  {
+    name: 'NameChanged',
+    description: 'Reverse name changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'name', type: 'string', description: 'New primary name' },
+    ],
+  },
+  {
+    name: 'PubkeyChanged',
+    description: 'Public key changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'x', type: 'bytes32', description: 'New X coordinate' },
+      { name: 'y', type: 'bytes32', description: 'New Y coordinate' },
+    ],
+  },
+  {
+    name: 'ABIChanged',
+    description: 'ABI data changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'contentType', type: 'uint256', description: 'The content type that changed' },
+    ],
+  },
+  {
+    name: 'InterfaceChanged',
+    description: 'Interface implementer changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+      { name: 'implementer', type: 'address', description: 'New implementer address' },
+    ],
+  },
+  {
+    name: 'VersionChanged',
+    description: 'Records cleared (version bumped).',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'version', type: 'uint64', description: 'New version number' },
+    ],
+  },
+  {
+    name: 'AliasChanged',
+    description: 'Alias set or removed.',
+    params: [
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
+      { name: 'indexedFromName', type: 'bytes', description: 'Indexed copy of source name' },
+      { name: 'indexedToName', type: 'bytes', description: 'Indexed copy of target name' },
+    ],
+  },
+  {
+    name: 'NamedResource',
+    description: 'EAC resource linked to a name.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+  },
+  {
+    name: 'NamedTextResource',
+    description: 'EAC resource linked to a text key.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'keyHash', type: 'bytes32', description: 'Hash of the text key' },
+      { name: 'key', type: 'string', description: 'The text key' },
+    ],
+  },
+  {
+    name: 'NamedDataResource',
+    description: 'EAC resource linked to a data key.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'keyHash', type: 'bytes32', description: 'Hash of the data key' },
+      { name: 'key', type: 'string', description: 'The data key' },
+    ],
+  },
+  {
+    name: 'NamedAddrResource',
+    description: 'EAC resource linked to a coin type.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type' },
+    ],
+  },
+]} />
 
 ## Code Examples
 

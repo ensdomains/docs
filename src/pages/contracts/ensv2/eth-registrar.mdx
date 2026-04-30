@@ -3,6 +3,7 @@ description: The ENSv2 ETH Registrar - commit-reveal registration, flexible pric
 ---
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
 
 # ETH Registrar
 
@@ -16,7 +17,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 | Feature              | ENSv1                               | ENSv2                                                                                 |
 | -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
-| Grace period         | 90-day grace period after expiry    | **No grace period** — names expire immediately                                        |
+| Grace period         | 90-day grace period after expiry    | **No grace period**, names expire immediately                                        |
 | Payment              | ETH only                            | ERC20 tokens via `safeTransferFrom`                                                   |
 | Pricing              | StablePriceOracle (USD-denominated) | StandardRentPriceOracle with duration discounts and expiry premiums                   |
 | Name ownership       | ERC721 token on BaseRegistrar       | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
@@ -47,7 +48,7 @@ ETHRegistrar.makeCommitment(
 makeCommitment(
     "alice",
     0x1234...,
-    0xabcd...,           // Random secret — generate off-chain
+    0xabcd...,           // Random secret, generate off-chain
     address(0),          // No subregistry
     0x5678...,           // Resolver address
     31536000,            // 1 year in seconds
@@ -97,7 +98,15 @@ register(
 );
 ```
 
-The registration grants the owner a fixed set of roles: `ROLE_SET_SUBREGISTRY`, `ROLE_SET_RESOLVER`, and `ROLE_CAN_TRANSFER_ADMIN` (plus their admin counterparts). Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar.
+The registration grants the owner a fixed set of roles defined by `REGISTRATION_ROLE_BITMAP`:
+
+- `ROLE_SET_SUBREGISTRY`: change the name's child registry
+- `ROLE_SET_SUBREGISTRY_ADMIN`: delegate `ROLE_SET_SUBREGISTRY` to others
+- `ROLE_SET_RESOLVER`: change the name's resolver
+- `ROLE_SET_RESOLVER_ADMIN`: delegate `ROLE_SET_RESOLVER` to others
+- `ROLE_CAN_TRANSFER_ADMIN`: controls whether the token owner can transfer the name (admin-only; there is no non-admin `ROLE_CAN_TRANSFER`)
+
+Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar. See [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) for details on the role system.
 
 ## Pricing
 
@@ -137,42 +146,230 @@ The **BatchRegistrar** is a companion contract used during migration. It allows 
 
 This contract is owner-only and intended for pre-migration use, not for general public registration.
 
+## EAC Integration
+
+The ETH Registrar participates in the [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) system at two levels.
+
+### Registrar's Own EAC
+
+The ETH Registrar inherits from `EnhancedAccessControl` and defines one role for its own governance:
+
+| Role | Nybble | Description |
+|------|--------|-------------|
+| `ROLE_SET_ORACLE` | 0 | Authorizes calling `setRentPriceOracle()` to change the pricing oracle |
+
+The deployer receives all roles on `ROOT_RESOURCE` at construction. Only root-level roles are used; there are no per-name resources on the registrar itself.
+
+### Roles on the ETH Registry
+
+To register and renew names, the ETH Registrar needs roles on the `.eth` [Permissioned Registry](/contracts/ensv2/permissioned-registry). At deployment it is granted two [registry roles](/contracts/ensv2/permissioned-registry#roles) on `ROOT_RESOURCE`:
+
+| Role | Purpose |
+|------|---------|
+| [`ROLE_REGISTRAR`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `register()` to create new `.eth` names |
+| [`ROLE_RENEW`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `renew()` on any `.eth` name |
+
+Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [OR-combines](/contracts/ensv2/enhanced-access-control#resources) root and token-level roles). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
+
 ## Reference
 
 ### Write Functions
 
-| Function | Description |
-|----------|-------------|
-| `commit(commitment)` | Record a commitment hash on-chain |
-| `register(label, owner, secret, subregistry, resolver, duration, paymentToken, referrer)` | Register a name (consumes commitment) |
-| `renew(label, duration, paymentToken, referrer)` | Extend a name's expiry |
-| `setRentPriceOracle(oracle)` | Change the pricing oracle (requires `ROLE_SET_ORACLE`) |
+<ContractReference functions={[
+  {
+    name: 'commit',
+    description: 'Record a commitment hash on-chain.',
+    params: [
+      { name: 'commitment', type: 'bytes32', description: 'The commitment hash from makeCommitment' },
+    ],
+  },
+  {
+    name: 'register',
+    description: 'Register a name (consumes a prior commitment).',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to register (e.g. "alice")' },
+      { name: 'owner', type: 'address', description: 'Address that will own the name' },
+      { name: 'secret', type: 'bytes32', description: 'Secret used in the commitment' },
+      { name: 'subregistry', type: 'IRegistry', description: 'Child registry to set, or address(0)' },
+      { name: 'resolver', type: 'address', description: 'Resolver to set' },
+      { name: 'duration', type: 'uint64', description: 'Registration duration in seconds' },
+      { name: 'paymentToken', type: 'IERC20', description: 'ERC20 token to pay with' },
+      { name: 'referrer', type: 'bytes32', description: 'Referral identifier, or bytes32(0)' },
+    ],
+    returns: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the registered name' },
+    ],
+  },
+  {
+    name: 'renew',
+    description: "Extend a name's expiry. Any account can renew any name.",
+    params: [
+      { name: 'label', type: 'string', description: 'The label to renew' },
+      { name: 'duration', type: 'uint64', description: 'Duration to extend by in seconds' },
+      { name: 'paymentToken', type: 'IERC20', description: 'ERC20 token to pay with' },
+      { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
+    ],
+  },
+  {
+    name: 'setRentPriceOracle',
+    description: 'Change the pricing oracle. Requires ROLE_SET_ORACLE.',
+    params: [
+      { name: 'oracle', type: 'IRentPriceOracle', description: 'New pricing oracle' },
+    ],
+  },
+]} />
 
 ### View Functions
 
-| Function | Returns |
-|----------|---------|
-| `makeCommitment(label, owner, secret, subregistry, resolver, duration, referrer)` | Commitment hash for the given parameters |
-| `rentPrice(label, owner, duration, paymentToken)` | `(base, premium)` price in the specified token |
-| `isAvailable(label)` | Whether the name can be registered |
-| `isValid(label)` | Whether the name meets validity requirements |
-| `isPaymentToken(token)` | Whether a token is accepted for payment |
-| `commitmentAt(commitment)` | Timestamp when a commitment was recorded |
-| `REGISTRY` | The Permissioned Registry this registrar writes to |
-| `BENEFICIARY` | Address that receives payments |
-| `MIN_COMMITMENT_AGE` | Minimum seconds before a commitment can be used |
-| `MAX_COMMITMENT_AGE` | Maximum seconds before a commitment expires |
-| `MIN_REGISTER_DURATION` | Shortest allowed registration duration |
-| `rentPriceOracle` | Current pricing oracle |
+<ContractReference functions={[
+  {
+    name: 'makeCommitment',
+    description: 'Compute a commitment hash for the given parameters (pure, no state read).',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to register' },
+      { name: 'owner', type: 'address', description: 'Address that will own the name' },
+      { name: 'secret', type: 'bytes32', description: 'Random secret for front-running protection' },
+      { name: 'subregistry', type: 'IRegistry', description: 'Child registry to set, or address(0)' },
+      { name: 'resolver', type: 'address', description: 'Resolver to set' },
+      { name: 'duration', type: 'uint64', description: 'Registration duration in seconds' },
+      { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
+    ],
+    returns: [
+      { name: 'commitment', type: 'bytes32', description: 'Commitment hash' },
+    ],
+  },
+  {
+    name: 'rentPrice',
+    description: 'Get the registration or renewal price.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to price' },
+      { name: 'owner', type: 'address', description: 'Owner address (affects premium waiver for re-registration)' },
+      { name: 'duration', type: 'uint64', description: 'Duration in seconds' },
+      { name: 'paymentToken', type: 'IERC20', description: 'Token to price in' },
+    ],
+    returns: [
+      { name: 'base', type: 'uint256', description: 'Base price' },
+      { name: 'premium', type: 'uint256', description: 'Premium for recently expired names' },
+    ],
+  },
+  {
+    name: 'isAvailable',
+    description: 'Check whether a name can be registered.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to check' },
+    ],
+    returns: [
+      { name: 'available', type: 'bool', description: 'True if the name can be registered' },
+    ],
+  },
+  {
+    name: 'isValid',
+    description: 'Check whether a name meets validity requirements.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to check' },
+    ],
+    returns: [
+      { name: 'valid', type: 'bool', description: 'True if the name is valid' },
+    ],
+  },
+  {
+    name: 'isPaymentToken',
+    description: 'Check whether a token is accepted for payment.',
+    params: [
+      { name: 'paymentToken', type: 'IERC20', description: 'Token to check' },
+    ],
+    returns: [
+      { name: 'accepted', type: 'bool', description: 'True if the token is accepted' },
+    ],
+  },
+  {
+    name: 'commitmentAt',
+    description: 'Get the timestamp when a commitment was recorded.',
+    params: [
+      { name: 'commitment', type: 'bytes32', description: 'The commitment hash' },
+    ],
+    returns: [
+      { name: 'commitTime', type: 'uint64', description: 'Timestamp, or 0 if not found' },
+    ],
+  },
+]} />
+
+### Constants
+
+<ContractReference functions={[
+  {
+    name: 'REGISTRY',
+    description: 'The Permissioned Registry this registrar writes to.',
+  },
+  {
+    name: 'BENEFICIARY',
+    description: 'Address that receives all registration and renewal payments.',
+  },
+  {
+    name: 'MIN_COMMITMENT_AGE',
+    description: 'Minimum seconds before a commitment can be used.',
+  },
+  {
+    name: 'MAX_COMMITMENT_AGE',
+    description: 'Maximum seconds before a commitment expires.',
+  },
+  {
+    name: 'MIN_REGISTER_DURATION',
+    description: 'Shortest allowed registration duration.',
+  },
+  {
+    name: 'rentPriceOracle',
+    description: 'Current pricing oracle.',
+  },
+]} />
 
 ### Events
 
-| Event | Emitted when |
-|-------|-------------|
-| `CommitmentMade(commitment)` | Commitment submitted |
-| `NameRegistered(tokenId, label, owner, subregistry, resolver, duration, paymentToken, referrer, base, premium)` | Name registered |
-| `NameRenewed(tokenId, label, duration, newExpiry, paymentToken, referrer, base)` | Name renewed |
-| `RentPriceOracleChanged(oracle)` | Pricing oracle updated |
+<ContractReference functions={[
+  {
+    name: 'CommitmentMade',
+    description: 'Commitment submitted.',
+    params: [
+      { name: 'commitment', type: 'bytes32', description: 'The commitment hash' },
+    ],
+  },
+  {
+    name: 'NameRegistered',
+    description: 'Name registered.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the registered name' },
+      { name: 'label', type: 'string', description: 'The registered label' },
+      { name: 'owner', type: 'address', description: 'Owner of the name' },
+      { name: 'subregistry', type: 'IRegistry', description: 'Child registry set' },
+      { name: 'resolver', type: 'address', description: 'Resolver set' },
+      { name: 'duration', type: 'uint64', description: 'Registration duration' },
+      { name: 'paymentToken', type: 'IERC20', description: 'Token used for payment' },
+      { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
+      { name: 'base', type: 'uint256', description: 'Base price paid' },
+      { name: 'premium', type: 'uint256', description: 'Premium paid' },
+    ],
+  },
+  {
+    name: 'NameRenewed',
+    description: 'Name renewed.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
+      { name: 'label', type: 'string', description: 'The renewed label' },
+      { name: 'duration', type: 'uint64', description: 'Duration extended by' },
+      { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp' },
+      { name: 'paymentToken', type: 'IERC20', description: 'Token used for payment' },
+      { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
+      { name: 'base', type: 'uint256', description: 'Base price paid' },
+    ],
+  },
+  {
+    name: 'RentPriceOracleChanged',
+    description: 'Pricing oracle updated.',
+    params: [
+      { name: 'oracle', type: 'IRentPriceOracle', description: 'New pricing oracle' },
+    ],
+  },
+]} />
 
 ## Code Examples
 
