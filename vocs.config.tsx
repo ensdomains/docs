@@ -359,6 +359,26 @@ export default defineConfig({
               text: 'Overview',
               link: '/contracts/ensv2/overview',
             },
+            {
+              text: 'Enhanced Access Control',
+              link: '/contracts/ensv2/enhanced-access-control',
+            },
+            {
+              text: 'Permissioned Registry',
+              link: '/contracts/ensv2/permissioned-registry',
+            },
+            {
+              text: 'Registry Metadata',
+              link: '/contracts/ensv2/registry-metadata',
+            },
+            {
+              text: 'Verifiable Factory',
+              link: '/contracts/ensv2/verifiable-factory',
+            },
+            {
+              text: 'Hidden Contract Accounts',
+              link: '/contracts/ensv2/hca',
+            },
             // {
             //   text: 'Registries',
             //   link: '/contracts/ensv2/registries',
