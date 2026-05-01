@@ -22,13 +22,13 @@ This page is under active development. The migration contracts are being finaliz
 flowchart TB
     subgraph Phase 1: Premigration
         batch["BatchRegistrar reserves all\nunexpired v1 names in v2"]
-        reserved["RESERVED in ETH Registry\n(expiry = v1 + 90 days, no owner)"]
+        reserved["RESERVED in v2 ETH Registry\n(expiry = v1 + 62 days, no owner)"]
         batch --> reserved
     end
 
     subgraph Phase 2: Migration
         transfer["Owner transfers v1 token\nto migration controller"]
-        registered["REGISTERED in ETH Registry\n(owner, resolver, subregistry set)"]
+        registered["REGISTERED in v2 ETH Registry\n(owner, resolver, subregistry set)"]
         graveyard["v1 token sent to Graveyard"]
         transfer --> registered
         transfer --> graveyard
@@ -54,13 +54,21 @@ Migration supports all `.eth` descendants. The migration path depends on the tok
 - **REGISTERED**: a v2 registry slot with an owner. Created when a user migrates their v1 token.
 - **Graveyard**: the burn address for migrated v1 tokens. Also cleans up stale v1 registry entries.
 
+### Time Constants
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `GRACE_PERIOD_V1` | 90 days | Post-expiry window in ENSv1 where the owner can still renew |
+| `GRACE_PERIOD_V2` | 28 days | Post-expiry window in ENSv2 where the owner can still renew via the [ETH Registrar](/contracts/ensv2/eth-registrar) |
+| `BONUS_PERIOD` | 62 days | `GRACE_PERIOD_V1 - GRACE_PERIOD_V2`. Added to v1 expiry during premigration so that a name becomes available in v2 no earlier than in v1 |
+
 ## Premigration
 
 Before users can migrate, every unexpired v1 name is batch-reserved in the v2 ETH Registry by the `BatchRegistrar`. This happens automatically and does not require any user action.
 
 For each name:
 - **Status**: set to `RESERVED`
-- **Expiry**: `expiryV1 + 90 days` (the v1 grace period is added as a bonus to avoid premature expiration)
+- **Expiry**: `expiryV1 + BONUS_PERIOD`
 - **Resolver**: set to `ENSV1Resolver`, which performs wildcard fallback to the v1 ENS registry
 - **Owner**: not set (RESERVED names have no owner)
 
@@ -107,11 +115,11 @@ The migration flow:
 
 1. Transfer the ERC-1155 token to the appropriate receiver
 2. The controller verifies the token is emancipated (locked or detached)
-3. If the token has a non-null `getApproved()` and `CANNOT_APPROVE` is set, migration reverts (`FrozenTokenApproval`)
+3. If `getApproved()` is non-null after transfer, migration reverts (`FrozenTokenApproval`). Note: if `CANNOT_APPROVE` is not set, approval is automatically cleared during transfer, so this only triggers for tokens with `CANNOT_APPROVE` burned and an existing approval.
 4. ENSv1 [fuses](/wrapper/fuses) are converted to ENSv2 roles (see [Fuse-to-Role Conversion](#fuse-to-role-conversion))
 5. A `WrapperRegistry` is always deployed as the subregistry, replicating the v1 fuse-based access control using v2's [EAC](/contracts/ensv2/enhanced-access-control) system
 6. The resolver is cleared, **unless** `CANNOT_SET_RESOLVER` is burned, in which case the existing v1 resolver is preserved. If the preserved resolver is a known `PublicResolver`, it is replaced with `PublicResolverV2`
-7. The token is **not unwrapped** and stays in the controller until expiry
+7. The token is **not unwrapped** and stays in the receiver until expiry (the `LockedMigrationController` for 2LD, or the parent's `WrapperRegistry` for 3LD+)
 8. The name is promoted from RESERVED to REGISTERED (for 2LD) or registered directly (for 3LD+) with the converted roles
 
 ### Detached Names
@@ -138,7 +146,9 @@ Admin roles (the `<< 128` shifted counterparts) are only granted when `CANNOT_BU
 | `CANNOT_BURN_FUSES` | Admin counterparts of above | Not set (not frozen) |
 | `CANNOT_SET_TTL` | N/A | Ignored (no TTL in v2) |
 
-### Subregistry Roles (WrapperRegistry ROOT_RESOURCE)
+### Subregistry Roles
+
+These roles are granted to the name owner on the WrapperRegistry's `ROOT_RESOURCE`, giving them contract-wide authority over the subregistry.
 
 | ENSv1 Fuse | ENSv2 Role | Granted when fuse is... |
 |------------|-----------|------------------------|
@@ -199,23 +209,23 @@ Names that *could* migrate but don't will eventually expire. Their v1 tokens exp
 
 ## Scenarios
 
-### Migrate with time to spare
+### 100 days remaining
 
-*A name with 100 days remaining is migrated, then the owner forgets about it.*
+*A name with 100 days left in v1 is premigrated.*
 
-The premigrated reservation has 190 days left (100 + 90 day bonus). The owner migrates, promoting the name to REGISTERED. Both the v1 token and the v2 registration expire at the same time. The name becomes available for registration in v2 after the v2 grace period (28 days).
+The RESERVED slot has 162 days left (100 + 62 day bonus). ENSv1 expires after 100 days and becomes available after 190 days (100 + 90 day grace). ENSv2 expires after 162 days and becomes available after 190 days (162 + 28 day grace). Both systems make the name available at the same time.
 
-### In grace period, wants to migrate
+### Migrates then renews
 
-*A name has 1 day left in the v1 grace period.*
+*A name with 50 days remaining is premigrated, migrated, then renewed for 50 days.*
 
-The RESERVED slot has 1 day left. The owner uses `ETHRenewerV1` to renew out of the grace period (must renew for > 89 days so the v1 token exits grace). After renewal, the token can be transferred and migrated normally.
+The RESERVED slot has 112 days (50 + 62). The owner migrates, promoting to REGISTERED. The v1 token goes to the Graveyard with 50 days left. The owner renews via `ETHRegistrar` for 50 days, extending the v2 registration to 162 days. ENSv1 becomes available after 140 days (50 + 90), ENSv2 after 190 days (162 + 28).
 
-### Renews but forgets to migrate
+### In grace period, renews out of grace
 
-*A name has 1 day in grace. The owner renews via ETHRenewerV1 but never migrates.*
+*A name has 29 days left in the v1 grace period (i.e., -61 days remaining).*
 
-The reservation is extended. The v1 token and v2 reservation stay in sync. The name continues resolving through v1 via `ENSV1Resolver`. Eventually both expire and the name becomes immediately available for registration in v2 (no v2 grace period for expired reservations).
+The RESERVED slot has 1 day left (-61 + 62). The owner uses `ETHRenewerV1` to renew for 62 days. ENSv1 expires after 1 day (-61 + 62) and becomes available after 91 days. ENSv2 expires after 63 days (-61 + 62 + 62) and becomes available after 91 days. The token can now be transferred and migrated.
 
 ### NameWrapper expiry out of sync
 
