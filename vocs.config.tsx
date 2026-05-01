@@ -23,6 +23,7 @@ export default defineConfig({
   title: 'ENS Documentation',
   titleTemplate: '%s | ENS Docs',
   rootDir: 'src',
+  css: './src/styles.css',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
@@ -48,11 +49,12 @@ export default defineConfig({
       link: 'https://t.me/+aLmF83si62ZhOGNh',
     },
   ],
-  font: {
-    google: 'Inter',
-  },
   theme: {
     variables: {
+      fontFamily: {
+        default: "'ABCMonumentGrotesk', Inter, sans-serif",
+        mono: "'ABCMonumentGroteskMono', monospace",
+      },
       color: {
         background: {
           light: 'var(--ens-background)',

@@ -3,7 +3,8 @@
 
 @font-face {
   font-family: 'ABCMarist';
-  src: url('/fonts/Marist/ABCMarist-Book.woff2') format('woff2'),
+  src:
+    url('/fonts/Marist/ABCMarist-Book.woff2') format('woff2'),
     url('/fonts/Marist/ABCMarist-Book.woff') format('woff');
   font-weight: 400;
   font-style: normal;
@@ -12,7 +13,8 @@
 
 @font-face {
   font-family: 'ABCMarist';
-  src: url('/fonts/Marist/ABCMarist-BookItalic.woff2') format('woff2'),
+  src:
+    url('/fonts/Marist/ABCMarist-BookItalic.woff2') format('woff2'),
     url('/fonts/Marist/ABCMarist-BookItalic.woff') format('woff');
   font-weight: 400;
   font-style: italic;
@@ -21,8 +23,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGrotesk';
-  src: url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff2') format('woff2'),
-    url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff') format('woff');
+  src:
+    url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff')
+      format('woff');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -30,7 +35,8 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskSemiMono';
-  src: url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Regular.woff2')
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Regular.woff2')
       format('woff2'),
     url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Regular.woff')
       format('woff');
@@ -41,7 +47,8 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskSemiMono';
-  src: url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-RegularItalic.woff2')
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-RegularItalic.woff2')
       format('woff2'),
     url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-RegularItalic.woff')
       format('woff');
@@ -52,9 +59,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskSemiMono';
-  src: url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff2')
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff2')
       format('woff2'),
-    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff') format('woff');
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff')
+      format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -62,7 +71,8 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskSemiMono';
-  src: url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-MediumItalic.woff2')
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-MediumItalic.woff2')
       format('woff2'),
     url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-MediumItalic.woff')
       format('woff');
@@ -73,8 +83,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskMono';
-  src: url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff2') format('woff2'),
-    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff') format('woff');
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff')
+      format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -82,9 +95,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskMono';
-  src: url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff2')
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff2')
       format('woff2'),
-    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff') format('woff');
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff')
+      format('woff');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -92,8 +107,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskMono';
-  src: url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff2') format('woff2'),
-    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff') format('woff');
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff')
+      format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -101,9 +119,11 @@
 
 @font-face {
   font-family: 'ABCMonumentGroteskMono';
-  src: url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff2')
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff2')
       format('woff2'),
-    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff') format('woff');
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff')
+      format('woff');
   font-weight: 500;
   font-style: italic;
   font-display: swap;
@@ -179,6 +199,14 @@
   --ens-text: var(--ens-grey-active);
   --ens-text-secondary: var(--ens-grey-dim);
   --ens-text-disabled: var(--ens-grey-bright);
+
+  /* ABC Monument Grotesk / Mono (Dinamo): ss01 → single-storey “a”. Pass to font-feature-settings; ignored by Inter fallback. */
+  --ens-font-feature-monument-a-alt: 'ss01' 1;
+}
+
+/* Applies the Monument alternate “a” anywhere the stack resolves to ABC Monument (site default + Tailwind font-sans). */
+html {
+  font-feature-settings: var(--ens-font-feature-monument-a-alt);
 }
 
 .dark {
