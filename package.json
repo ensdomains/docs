@@ -5,9 +5,9 @@
   "scripts": {
     "prebuild": "bun install --frozen-lockfile",
     "generate": "bun scripts/run-plugins.ts",
-    "dev": "bun run generate && vocs dev",
+    "dev": "bun run generate && bunx vocs dev",
     "build": "bun run generate && bunx vocs build",
-    "preview": "vocs preview",
+    "preview": "bunx vocs preview",
     "deploy": "bun run build && bunx wrangler pages deploy",
     "format": "prettier --write ."
   },
