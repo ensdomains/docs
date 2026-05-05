@@ -1,0 +1,237 @@
+---
+description: The Universal Resolver V2 - single entry point for resolving names and navigating the ENSv2 registry hierarchy
+---
+
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
+
+# Universal Resolver V2
+
+The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/contracts/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. It also provides functions for navigating and verifying the registry hierarchy itself.
+
+<FrenCallout fren="lili" variant="tip">
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+</FrenCallout>
+
+## Architecture
+
+`UniversalResolverV2` extends `AbstractUniversalResolver`, a shared base contract that implements all resolution logic: forward resolution, reverse resolution, [CCIP-Read](/resolvers/ccip-read) gateway batching, and callback chaining. The only function the base leaves abstract is `findResolver()`, which each version overrides with its own registry traversal strategy:
+
+- **URv1** walks a flat ENS registry
+- **URv2** walks the hierarchical registry tree via `getSubregistry()` at each level
+
+This means `resolve()`, `reverse()`, and all CCIP-Read infrastructure work identically across both versions. The `LibRegistry` library that powers the hierarchy traversal is also used directly by other contracts including `DNSAliasResolver`, `DNSTLDResolver`, and `ENSV2Resolver`.
+
+## Registry Navigation
+
+ENSv2 adds functions for navigating and verifying the registry hierarchy. All walk **down** from root except `findCanonicalName` which walks **up** via `getParent()`, and `findCanonicalRegistry` which does both.
+
+`findResolver` is the core function that powers `resolve()` and `reverse()` internally. It walks down the registry tree, following `getSubregistry()` at each label, and returns the resolver covering the longest matching suffix of the name. See [Resolution](/contracts/ensv2/registry-hierarchy#resolution) for a step-by-step walkthrough.
+
+`findExactRegistry` and `findRegistries` locate registries by walking down from root. Use `findExactRegistry` when you need a single registry and trust the hierarchy; use `findRegistries` to get the full ancestry:
+
+- `findRegistries("sub.nick.eth")` returns `[<sub>, <nick>, <eth>, <root>]`
+- If `sub.nick.eth` has no subregistry: `[address(0), <nick>, <eth>, <root>]`
+
+`findCanonicalName` reconstructs a registry's DNS-encoded name by walking **up** via `getParent()`, verifying each link. Returns empty bytes if any registry in the chain hasn't called [`setParent()`](/contracts/ensv2/permissioned-registry#hierarchy). `findCanonicalRegistry` combines both directions: it walks down to find the registry, then up to verify the name matches, ensuring no aliasing or stale references are exploited.
+
+## Verifying Name Ownership
+
+In ENSv1, verifying name ownership was a single call: check `ownerOf(namehash)` on one contract. In ENSv2, a name like `sub.nick.eth` is a chain of entries across multiple registries (see [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)), so verification requires confirming the full chain from root to the name's registry.
+
+`findCanonicalRegistry` is designed for this purpose. To verify that a specific account owns a name:
+
+1. Call `findCanonicalRegistry(name)` to get the verified registry
+2. If non-zero, query the registry for the name's token ownership
+
+The bidirectional check ensures that:
+- The registry is actually reachable from the root (downward walk)
+- The registry considers itself to be at that position in the hierarchy (upward walk via `getParent()`)
+- No aliasing or stale references are being exploited
+
+## Reference
+
+### View Functions
+
+<ContractReference functions={[
+  {
+    name: 'resolve',
+    description: 'Forward-resolve a single record for a DNS-encoded name. For batch resolution, encode data as multicall(bytes[]).',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to resolve' },
+      { name: 'data', type: 'bytes', description: 'ABI-encoded resolver calldata' },
+    ],
+    returns: [
+      { name: 'result', type: 'bytes', description: 'ABI-encoded response' },
+      { name: 'resolver', type: 'address', description: 'The resolver that was used' },
+    ],
+  },
+  {
+    name: 'resolveWithGateways',
+    description: 'Same as resolve, but with custom CCIP-Read gateway URLs.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to resolve' },
+      { name: 'data', type: 'bytes', description: 'ABI-encoded resolver calldata' },
+      { name: 'gateways', type: 'string[]', description: 'Custom CCIP-Read batch gateway URLs' },
+    ],
+    returns: [
+      { name: 'result', type: 'bytes', description: 'ABI-encoded response' },
+      { name: 'resolver', type: 'address', description: 'The resolver that was used' },
+    ],
+  },
+  {
+    name: 'resolveWithResolver',
+    description: 'Resolve using a specific resolver address, bypassing the findResolver lookup.',
+    params: [
+      { name: 'resolver', type: 'address', description: 'Resolver address to use directly' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'data', type: 'bytes', description: 'ABI-encoded resolver calldata' },
+      { name: 'gateways', type: 'string[]', description: 'CCIP-Read batch gateway URLs' },
+    ],
+    returns: [
+      { name: 'result', type: 'bytes', description: 'ABI-encoded response' },
+    ],
+  },
+  {
+    name: 'reverse',
+    description: 'Reverse resolution per ENSIP-19: look up the primary name for an address, then verify via forward resolution.',
+    params: [
+      { name: 'lookupAddress', type: 'bytes', description: 'Byte-encoded address to look up' },
+      { name: 'coinType', type: 'uint256', description: 'Coin type of the address (e.g. 60 for Ethereum)' },
+    ],
+    returns: [
+      { name: 'primary', type: 'string', description: 'Verified primary name, or empty if not set' },
+      { name: 'resolver', type: 'address', description: 'Forward resolver for the primary name' },
+      { name: 'reverseResolver', type: 'address', description: 'Reverse resolver that provided the name' },
+    ],
+  },
+  {
+    name: 'reverseWithGateways',
+    description: 'Same as reverse, but with custom CCIP-Read gateway URLs.',
+    params: [
+      { name: 'lookupAddress', type: 'bytes', description: 'Byte-encoded address to look up' },
+      { name: 'coinType', type: 'uint256', description: 'Coin type of the address' },
+      { name: 'gateways', type: 'string[]', description: 'Custom CCIP-Read batch gateway URLs' },
+    ],
+    returns: [
+      { name: 'primary', type: 'string', description: 'Verified primary name, or empty if not set' },
+      { name: 'resolver', type: 'address', description: 'Forward resolver for the primary name' },
+      { name: 'reverseResolver', type: 'address', description: 'Reverse resolver that provided the name' },
+    ],
+  },
+  {
+    name: 'findResolver',
+    description: 'Find the resolver for a name by walking down the registry hierarchy.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to search' },
+    ],
+    returns: [
+      { name: 'resolver', type: 'address', description: 'Resolver covering the longest suffix, or address(0)' },
+      { name: 'node', type: 'bytes32', description: 'Namehash of the full name' },
+      { name: 'offset', type: 'uint256', description: 'Byte offset into name where the resolver was found (0 = exact match)' },
+    ],
+  },
+  {
+    name: 'findExactRegistry',
+    description: "Find the registry at a name's position by walking down from root.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Registry at that position, or address(0) if not found' },
+    ],
+  },
+  {
+    name: 'findRegistries',
+    description: "Return all registries in a name's ancestry, innermost first.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registries', type: 'IRegistry[]', description: 'Array in label order, e.g. [<nick>, <eth>, <root>] for nick.eth' },
+    ],
+  },
+  {
+    name: 'findCanonicalName',
+    description: "Reconstruct a registry's DNS-encoded name by walking up via getParent().",
+    params: [
+      { name: 'registry', type: 'IRegistry', description: 'The registry to name' },
+    ],
+    returns: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name, or empty if not canonical' },
+    ],
+  },
+  {
+    name: 'findCanonicalRegistry',
+    description: 'Find the registry for a name, verified canonical via bidirectional walk.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Canonical registry, or address(0) if not found or not canonical' },
+    ],
+  },
+]} />
+
+### Constants
+
+<ContractReference functions={[
+  {
+    name: 'ROOT_REGISTRY',
+    description: 'The ENSv2 root registry. All hierarchy traversal starts from this address.',
+  },
+  {
+    name: 'batchGatewayProvider',
+    description: 'Default gateway provider for CCIP-Read batching.',
+  },
+]} />
+
+### Errors
+
+<ContractReference functions={[
+  {
+    name: 'ResolverNotFound',
+    description: 'No resolver found for the name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'The DNS-encoded name that failed to resolve' },
+    ],
+  },
+  {
+    name: 'ResolverNotContract',
+    description: 'Resolver address has no deployed code.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'The DNS-encoded name' },
+      { name: 'resolver', type: 'address', description: 'The resolver address that has no code' },
+    ],
+  },
+  {
+    name: 'UnsupportedResolverProfile',
+    description: "Resolver doesn't support the requested function.",
+    params: [
+      { name: 'selector', type: 'bytes4', description: 'The unsupported function selector' },
+    ],
+  },
+  {
+    name: 'ResolverError',
+    description: 'Resolver reverted during resolution.',
+    params: [
+      { name: 'errorData', type: 'bytes', description: 'The raw error data from the resolver' },
+    ],
+  },
+  {
+    name: 'ReverseAddressMismatch',
+    description: "Forward resolution of the primary name doesn't match the original address.",
+    params: [
+      { name: 'primary', type: 'string', description: 'The primary name that was looked up' },
+      { name: 'primaryAddress', type: 'bytes', description: 'The address the primary name resolved to' },
+    ],
+  },
+  {
+    name: 'HttpError',
+    description: 'HTTP error from a CCIP-Read gateway.',
+    params: [
+      { name: 'status', type: 'uint16', description: 'HTTP status code' },
+      { name: 'message', type: 'string', description: 'Error message from the gateway' },
+    ],
+  },
+]} />

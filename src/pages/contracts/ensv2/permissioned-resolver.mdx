@@ -1,0 +1,738 @@
+---
+description: Per-name resolver with role-based access control, record aliasing, and DNS resolution
+---
+
+import { Card } from '../../../components/ui/Card'
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { ResourceCalculator } from '../../../components/ensv2/ResourceCalculator'
+import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
+import { ContractReference } from '../../../components/ensv2/ContractReference'
+
+# Permissioned Resolver
+
+In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each name gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. This gives name owners fine-grained control over who can set which records, and enables new features like record aliasing.
+
+<FrenCallout fren="lili" variant="tip">
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+</FrenCallout>
+
+## What Changed from ENSv1
+
+| Feature         | ENSv1 Public Resolver      | ENSv2 Permissioned Resolver                                               |
+| --------------- | -------------------------- | ------------------------------------------------------------------------- |
+| Deployment      | Single shared contract     | Per-name proxy instances                                                  |
+| Permissions     | Owner controls all records | Per-record-type roles via [EAC](/contracts/ensv2/enhanced-access-control) |
+| Aliasing        | Not supported              | Built-in name aliasing with cycle protection                              |
+| Record clearing | `clearRecords()` by owner  | Profile versioning                                                        |
+| Upgradeability  | Not upgradeable            | UUPS proxy pattern                                                        |
+
+## Supported Record Types
+
+The Permissioned Resolver supports all standard ENS record types:
+
+| Record               | Getter                                  | Setter                                      | Standard                                            |
+| -------------------- | --------------------------------------- | ------------------------------------------- | --------------------------------------------------- |
+| Address (ETH)        | `addr(bytes32 node)`                    | `setAddr(bytes32 node, address)`            | [ENSIP-1](/ensip/1)                                 |
+| Address (multichain) | `addr(bytes32 node, uint256 coinType)`  | `setAddr(bytes32 node, uint256, bytes)`     | [ENSIP-9](/ensip/9)                                 |
+| Text                 | `text(bytes32 node, string key)`        | `setText(bytes32 node, string, string)`     | [ENSIP-5](/ensip/5)                                 |
+| Content hash         | `contenthash(bytes32 node)`             | `setContenthash(bytes32 node, bytes)`       | [ENSIP-7](/ensip/7)                                 |
+| Name (reverse)       | `name(bytes32 node)`                    | `setName(bytes32 node, string)`             | [EIP-181](https://eips.ethereum.org/EIPS/eip-181)   |
+| Public key           | `pubkey(bytes32 node)`                  | `setPubkey(bytes32 node, bytes32, bytes32)` | [EIP-619](https://eips.ethereum.org/EIPS/eip-619)   |
+| ABI                  | `ABI(bytes32 node, uint256)`            | `setABI(bytes32 node, uint256, bytes)`      | [EIP-205](https://eips.ethereum.org/EIPS/eip-205)   |
+| Interface            | `interfaceImplementer(bytes32, bytes4)` | `setInterface(bytes32, bytes4, address)`    | [EIP-2544](https://eips.ethereum.org/EIPS/eip-2544) |
+
+## EAC Integration
+
+All permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+
+### Roles
+
+Each record type has its own role, allowing you to delegate specific record-setting permissions to different accounts:
+
+| Role                   | Value      | Scope                  | Purpose                  |
+| ---------------------- | ---------- | ---------------------- | ------------------------ |
+| `ROLE_SET_ADDR`        | `1 << 0`   | root, name, or record  | Set address records      |
+| `ROLE_SET_TEXT`        | `1 << 4`   | root, name, or record  | Set text records         |
+| `ROLE_SET_CONTENTHASH` | `1 << 8`   | root or name           | Set content hash         |
+| `ROLE_SET_PUBKEY`      | `1 << 12`  | root or name           | Set public key           |
+| `ROLE_SET_ABI`         | `1 << 16`  | root or name           | Set ABI data             |
+| `ROLE_SET_INTERFACE`   | `1 << 20`  | root or name           | Set interface records    |
+| `ROLE_SET_NAME`        | `1 << 24`  | root or name           | Set reverse name         |
+| `ROLE_SET_ALIAS`       | `1 << 28`  | root                   | Set name aliases         |
+| `ROLE_CLEAR`           | `1 << 32`  | root or name           | Clear all records        |
+| `ROLE_SET_DATA`        | `1 << 36`  | root, name, or record  | Set data records         |
+| `ROLE_UPGRADE`         | `1 << 124` | root                   | Authorize proxy upgrades |
+
+Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_TEXT_ADMIN = (1 << 4) << 128`). In TypeScript, use `1n << 4n` for the bigint equivalent.
+
+### Role Bitmap Composer
+
+<FrenCallout fren="peanut" variant="tip" title="Interactive Widget">
+Select roles to compose a bitmap value for use with `authorizeNameRoles`.
+</FrenCallout>
+
+<Card>
+  <RoleBitmapComposer contract="resolver" />
+</Card>
+
+### Granting and Revoking Roles
+
+Both `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver. Instead, all role management goes through `authorize*` functions that take a `bool grant` parameter: pass `true` to grant, `false` to revoke.
+
+| Function | Scope | Grants/revokes |
+|----------|-------|----------------|
+| `authorizeNameRoles(name, roleBitmap, account, grant)` | Name-level | Any role(s) on a specific name |
+| `authorizeTextRoles(name, key, account, grant)` | Record-level | `ROLE_SET_TEXT` for a specific text key |
+| `authorizeDataRoles(name, key, account, grant)` | Record-level | `ROLE_SET_DATA` for a specific data key |
+| `authorizeAddrRoles(name, coinType, account, grant)` | Record-level | `ROLE_SET_ADDR` for a specific coin type |
+
+All four functions take a DNS-encoded name (`bytes`) as the first parameter. For example, `authorizeNameRoles(name, ROLE_SET_TEXT, account, true)` grants the account permission to set any text key on that name, while `authorizeTextRoles(name, "avatar", account, true)` restricts it to only the `avatar` key. To revoke either, make the same call with `false`.
+
+`ROLE_SET_ADDR`, `ROLE_SET_TEXT`, and `ROLE_SET_DATA` support both levels of scoping. A name-level grant (via `authorizeNameRoles`) covers all keys or coin types on that name. A record-level grant (via `authorizeTextRoles`, `authorizeDataRoles`, or `authorizeAddrRoles`) covers only the specific key or coin type. When checking permissions, the resolver allows the action if the account has the role at either scope, so a name-level grant is a superset of any record-level grant.
+
+### Resource Scheme
+
+<FrenCallout fren="bittu" variant="tip" title="Developer tip">
+This section explains how [EAC resources](/contracts/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. The `authorize*` functions handle resource computation automatically.
+</FrenCallout>
+
+Unlike the registry's labelhash-based resources, resolver resources are opaque hashes with no version structure, and the [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) used in the registry does not apply here. The resolver computes each EAC resource as a hash of the name's namehash and a record-type identifier:
+
+```solidity
+resource = keccak256(node, part)
+```
+
+Where `node` is the namehash of the full name (e.g., `namehash("alice.eth")`) and `part` is computed via `partHash`:
+
+| Record type | Part computation |
+|-------------|-----------------|
+| Name-level (any record) | `bytes32(0)` |
+| Text key | `partHash(key)` = `keccak256(bytes(key))` |
+| Data key | `partHash(key)` = `keccak256(bytes(key))` |
+| Coin type | `partHash(coinType)` = `keccak256(abi.encode(coinType))` |
+
+When checking permissions, the resolver looks across four combinations of `node` and `part` and allows the action if any grant the required role. Using the shorthand `resource(node, part)` for `keccak256(node, part)`:
+
+|                   | Any record                                         | Specific record            |
+| ----------------- | -------------------------------------------------- | -------------------------- |
+| **Any name**      | `ROOT_RESOURCE` (when both node and part are zero) | `resource(0, part)`        |
+| **Specific name** | `resource(namehash, 0)`                            | `resource(namehash, part)` |
+
+`authorizeNameRoles` sets the role on `resource(namehash, 0)` (second row, first column), while `authorizeTextRoles` with a specific key sets it on `resource(namehash, partHash(key))` (second row, second column). A role granted at `ROOT_RESOURCE` covers all four cells.
+
+### Resource Calculator
+
+<FrenCallout fren="peanut" variant="tip" title="Interactive Widget">
+Compute the EAC resource for any name and record type.
+</FrenCallout>
+
+<Card>
+  <ResourceCalculator />
+</Card>
+
+## Aliasing
+
+One of the most powerful new features in ENSv2 is **record aliasing**. You can make one name's records point to another name's records, so they always resolve identically without duplicating data.
+
+```mermaid
+flowchart LR
+    from["wallet.eth\n(alias)"]
+    to["alice.eth\n(canonical)"]
+    from -->|"resolves to"| to
+    query["Query: addr(wallet.eth)"]
+    result["Result: addr(alice.eth)"]
+    query -.-> from
+    to -.-> result
+```
+
+### Setting an Alias
+
+```solidity
+// Make wallet.eth resolve to the same records as alice.eth
+resolver.setAlias(
+    dnsEncode("wallet.eth"),  // from: the alias name
+    dnsEncode("alice.eth")    // to: the canonical name
+);
+```
+
+The `setAlias` function requires `ROLE_SET_ALIAS`, which is a root-only role. This ensures only the resolver's admin can set up aliases.
+
+### Cycle Protection
+
+The resolver includes built-in cycle detection. If you try to create a chain of aliases that loops back on itself (e.g., A -> B -> C -> A), the resolution will detect the cycle and stop. This prevents infinite loops during resolution.
+
+### Use Cases
+
+- **Multiple domains, same records**: point `wallet.eth`, `brand.eth`, and `company.eth` all to the same set of records
+- **Name migration**: alias an old name to a new one so existing references continue to work
+- **Shared infrastructure**: multiple names can share resolver records managed by a single entity
+
+Note that aliasing at the resolver level is different from [subregistry aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
+
+## Multi-Profile Support
+
+The resolver supports profile versioning. The `clearRecords(node)` function increments the version, effectively clearing all records at once without individual delete calls. This is useful when you want a clean slate, for example when transferring a name to a new owner.
+
+## UUPS Upgradeability
+
+Each resolver instance is a UUPS proxy pointing to a shared implementation contract. The `ROLE_UPGRADE` (root-only) controls who can upgrade the implementation. This means:
+
+- All resolver instances share the same logic, keeping deployment costs low
+- The implementation can be upgraded to support new record types in the future
+- Individual name owners can upgrade their resolver if they hold the upgrade role
+
+See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver proxies are deployed.
+
+## Reference
+
+### Write Functions
+
+<ContractReference functions={[
+  {
+    name: 'setText',
+    description: 'Set a text record. Requires ROLE_SET_TEXT.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The text record key' },
+      { name: 'value', type: 'string', description: 'The text record value' },
+    ],
+  },
+  {
+    name: 'setAddr',
+    description: 'Set a multichain address record. Requires ROLE_SET_ADDR.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type (e.g. 60 for Ethereum)' },
+      { name: 'addressBytes', type: 'bytes', description: 'The encoded address' },
+    ],
+  },
+  {
+    name: 'setAddr',
+    description: 'Set the ETH address record (convenience overload for coin type 60).',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'addr', type: 'address', description: 'The Ethereum address' },
+    ],
+  },
+  {
+    name: 'setContenthash',
+    description: 'Set the content hash. Requires ROLE_SET_CONTENTHASH.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'hash', type: 'bytes', description: 'The content hash' },
+    ],
+  },
+  {
+    name: 'setName',
+    description: 'Set the reverse name. Requires ROLE_SET_NAME.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'name', type: 'string', description: 'The primary name' },
+    ],
+  },
+  {
+    name: 'setPubkey',
+    description: 'Set the SECP256k1 public key. Requires ROLE_SET_PUBKEY.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'x', type: 'bytes32', description: 'X coordinate of the public key' },
+      { name: 'y', type: 'bytes32', description: 'Y coordinate of the public key' },
+    ],
+  },
+  {
+    name: 'setABI',
+    description: 'Set ABI data. Requires ROLE_SET_ABI.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'contentType', type: 'uint256', description: 'ABI content type (must be a power of 2)' },
+      { name: 'value', type: 'bytes', description: 'The ABI data' },
+    ],
+  },
+  {
+    name: 'setInterface',
+    description: 'Set an interface implementer. Requires ROLE_SET_INTERFACE.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+      { name: 'implementer', type: 'address', description: 'Contract implementing the interface' },
+    ],
+  },
+  {
+    name: 'setData',
+    description: 'Set an arbitrary data record. Requires ROLE_SET_DATA.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The data key' },
+      { name: 'value', type: 'bytes', description: 'The data value' },
+    ],
+  },
+  {
+    name: 'setAlias',
+    description: 'Set a name alias (DNS-encoded). Requires ROLE_SET_ALIAS on ROOT_RESOURCE.',
+    params: [
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
+    ],
+  },
+  {
+    name: 'clearRecords',
+    description: 'Clear all records for a node by bumping the version. Requires ROLE_CLEAR.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+  },
+  {
+    name: 'authorizeNameRoles',
+    description: 'Grant or revoke roles on a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to authorize for' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant or revoke' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeTextRoles',
+    description: 'Grant or revoke ROLE_SET_TEXT for a specific text key.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'key', type: 'string', description: 'The text key to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeDataRoles',
+    description: 'Grant or revoke ROLE_SET_DATA for a specific data key.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'key', type: 'string', description: 'The data key to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'authorizeAddrRoles',
+    description: 'Grant or revoke ROLE_SET_ADDR for a specific coin type.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to authorize' },
+      { name: 'account', type: 'address', description: 'Account to modify roles for' },
+      { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
+    ],
+    returns: [
+      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+]} />
+
+### View Functions
+
+<ContractReference functions={[
+  {
+    name: 'addr',
+    description: 'Get the ETH address for a node.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'addr', type: 'address payable', description: 'Ethereum address' },
+    ],
+  },
+  {
+    name: 'addr',
+    description: 'Get the multichain address for a node.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to query' },
+    ],
+    returns: [
+      { name: 'addressBytes', type: 'bytes', description: 'Encoded address bytes' },
+    ],
+  },
+  {
+    name: 'text',
+    description: 'Get a text record value.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The text record key' },
+    ],
+    returns: [
+      { name: 'value', type: 'string', description: 'Text record value' },
+    ],
+  },
+  {
+    name: 'contenthash',
+    description: 'Get the content hash.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'hash', type: 'bytes', description: 'Content hash' },
+    ],
+  },
+  {
+    name: 'name',
+    description: 'Get the reverse name.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'name', type: 'string', description: 'Primary name' },
+    ],
+  },
+  {
+    name: 'pubkey',
+    description: 'Get the SECP256k1 public key.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'x', type: 'bytes32', description: 'X coordinate' },
+      { name: 'y', type: 'bytes32', description: 'Y coordinate' },
+    ],
+  },
+  {
+    name: 'ABI',
+    description: 'Get ABI data.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'contentTypes', type: 'uint256', description: 'Bitmask of accepted content types' },
+    ],
+    returns: [
+      { name: 'contentType', type: 'uint256', description: 'Matched content type' },
+      { name: 'value', type: 'bytes', description: 'ABI data' },
+    ],
+  },
+  {
+    name: 'data',
+    description: 'Get an arbitrary data record.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'key', type: 'string', description: 'The data key' },
+    ],
+    returns: [
+      { name: 'value', type: 'bytes', description: 'Data value' },
+    ],
+  },
+  {
+    name: 'interfaceImplementer',
+    description: 'Get the interface implementer address.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+    ],
+    returns: [
+      { name: 'implementer', type: 'address', description: 'Implementer address' },
+    ],
+  },
+  {
+    name: 'hasAddr',
+    description: 'Check whether an address record exists.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type to check' },
+    ],
+    returns: [
+      { name: 'exists', type: 'bool', description: 'True if a non-empty address record is set' },
+    ],
+  },
+  {
+    name: 'getAlias',
+    description: 'Get the alias target for a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded source name' },
+    ],
+    returns: [
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name, or empty if no alias' },
+    ],
+  },
+  {
+    name: 'recordVersions',
+    description: 'Get the current record version number.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
+    ],
+    returns: [
+      { name: 'version', type: 'uint64', description: 'Current version number' },
+    ],
+  },
+]} />
+
+### Events
+
+<ContractReference functions={[
+  {
+    name: 'AddrChanged',
+    description: 'ETH address changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'addr', type: 'address', description: 'New ETH address' },
+    ],
+  },
+  {
+    name: 'AddressChanged',
+    description: 'Multichain address changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'coinType', type: 'uint256', description: 'Coin type' },
+      { name: 'addressBytes', type: 'bytes', description: 'New encoded address' },
+    ],
+  },
+  {
+    name: 'TextChanged',
+    description: 'Text record changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'key', type: 'string', description: 'The text key' },
+      { name: 'value', type: 'string', description: 'New text value' },
+    ],
+  },
+  {
+    name: 'DataChanged',
+    description: 'Data record changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'key', type: 'string', description: 'The data key' },
+      { name: 'indexedData', type: 'bytes', description: 'Indexed copy of the data value' },
+    ],
+  },
+  {
+    name: 'ContenthashChanged',
+    description: 'Content hash changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'hash', type: 'bytes', description: 'New content hash' },
+    ],
+  },
+  {
+    name: 'NameChanged',
+    description: 'Reverse name changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'name', type: 'string', description: 'New primary name' },
+    ],
+  },
+  {
+    name: 'PubkeyChanged',
+    description: 'Public key changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'x', type: 'bytes32', description: 'New X coordinate' },
+      { name: 'y', type: 'bytes32', description: 'New Y coordinate' },
+    ],
+  },
+  {
+    name: 'ABIChanged',
+    description: 'ABI data changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'contentType', type: 'uint256', description: 'The content type that changed' },
+    ],
+  },
+  {
+    name: 'InterfaceChanged',
+    description: 'Interface implementer changed.',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+      { name: 'implementer', type: 'address', description: 'New implementer address' },
+    ],
+  },
+  {
+    name: 'VersionChanged',
+    description: 'Records cleared (version bumped).',
+    params: [
+      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'version', type: 'uint64', description: 'New version number' },
+    ],
+  },
+  {
+    name: 'AliasChanged',
+    description: 'Alias set or removed.',
+    params: [
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
+      { name: 'indexedFromName', type: 'bytes', description: 'Indexed copy of source name' },
+      { name: 'indexedToName', type: 'bytes', description: 'Indexed copy of target name' },
+    ],
+  },
+  {
+    name: 'NamedResource',
+    description: 'EAC resource linked to a name.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+  },
+  {
+    name: 'NamedTextResource',
+    description: 'EAC resource linked to a text key.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'keyHash', type: 'bytes32', description: 'Hash of the text key' },
+      { name: 'key', type: 'string', description: 'The text key' },
+    ],
+  },
+  {
+    name: 'NamedDataResource',
+    description: 'EAC resource linked to a data key.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'keyHash', type: 'bytes32', description: 'Hash of the data key' },
+      { name: 'key', type: 'string', description: 'The data key' },
+    ],
+  },
+  {
+    name: 'NamedAddrResource',
+    description: 'EAC resource linked to a coin type.',
+    params: [
+      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'coinType', type: 'uint256', description: 'The coin type' },
+    ],
+  },
+]} />
+
+## Code Examples
+
+### Delegating a Single Text Key
+
+A name owner can grant a dApp permission to set only a specific text record, for example allowing it to update the `avatar` key without giving access to any other records:
+
+```ts [Viem]
+import { createWalletClient, http, namehash, toHex } from 'viem'
+import { packetToBytes } from 'viem/ens'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+// authorize* functions take DNS-encoded names; record setters take namehashes
+const dnsName = toHex(packetToBytes('alice.eth'))
+const node = namehash('alice.eth')
+
+// Grant a dApp permission to set ONLY the "avatar" text key on alice.eth
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeTextRoles',
+  args: [dnsName, 'avatar', dappAddress, true],
+})
+
+// The dApp can now set the avatar record...
+await dappWallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setText',
+  args: [node, 'avatar', 'https://example.com/avatar.png'],
+})
+
+// ...but attempting to set any other key will revert
+// setText(node, 'description', '...') → reverts with EACUnauthorizedAccountRoles
+```
+
+To grant access to all text keys on a name (not just one), use `authorizeNameRoles` with `ROLE_SET_TEXT`:
+
+```ts [Viem]
+const ROLE_SET_TEXT = 1n << 4n
+
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeNameRoles',
+  args: [dnsName, ROLE_SET_TEXT, dappAddress, true],
+})
+```
+
+### Revoking Permissions
+
+To revoke a permission, call the same `authorize*` function with `false` as the last argument:
+
+```ts [Viem]
+// Revoke the dApp's permission to set the "avatar" text key
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeTextRoles',
+  args: [dnsName, 'avatar', dappAddress, false],
+})
+
+// Revoke name-level ROLE_SET_TEXT (all text keys)
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeNameRoles',
+  args: [dnsName, ROLE_SET_TEXT, dappAddress, false],
+})
+```
+
+### Resolving Through an Alias
+
+When a name is aliased, records are resolved through the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2). The alias rewrite happens during the `resolve()` call, not when reading records directly from the resolver:
+
+```ts [Viem]
+import {
+  createPublicClient,
+  decodeFunctionResult,
+  encodeFunctionData,
+  http,
+  namehash,
+  parseAbi,
+  toHex,
+} from 'viem'
+import { packetToBytes } from 'viem/ens'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+
+const resolverAbi = parseAbi([
+  'function addr(bytes32 node) view returns (address)',
+  'function text(bytes32 node, string key) view returns (string)',
+])
+
+const universalResolverAbi = parseAbi([
+  'function resolve(bytes name, bytes data) view returns (bytes, address)',
+])
+
+// Suppose wallet.eth is aliased to alice.eth.
+// Resolving wallet.eth via the Universal Resolver returns alice.eth's records:
+const calldata = encodeFunctionData({
+  abi: resolverAbi,
+  functionName: 'addr',
+  args: [namehash('wallet.eth')],
+})
+
+const [resultData] = await client.readContract({
+  address: universalResolverAddress,
+  abi: universalResolverAbi,
+  functionName: 'resolve',
+  args: [toHex(packetToBytes('wallet.eth')), calldata],
+})
+
+const address = decodeFunctionResult({
+  abi: resolverAbi,
+  functionName: 'addr',
+  data: resultData,
+})
+// address === alice.eth's address
+
+// Subname aliasing works too: sub.wallet.eth resolves to sub.alice.eth's records
+// without any additional configuration.
+```
+
+:::note
+Aliasing only works through the Universal Resolver's `resolve()` function. Calling `addr()` or `text()` directly on the resolver contract with an aliased name's namehash will return empty results, because the alias rewrite is part of the extended resolver resolution flow.
+:::

@@ -1,0 +1,110 @@
+---
+description: How PermissionedRegistry serves as a unified, extensible template for all ENSv2 registries
+---
+
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
+# Registry Template
+
+In ENSv1, different parts of the namespace used different registry contracts: the root ENS Registry, the Name Wrapper, and dedicated subname registrars were all separate, incompatible implementations. ENSv2 unifies this with a single extensible base: **PermissionedRegistry**.
+
+<FrenCallout fren="lili" variant="tip">
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+</FrenCallout>
+
+## One Registry to Rule Them All
+
+[PermissionedRegistry](/contracts/ensv2/permissioned-registry) is not just the contract that manages `.eth` names. It's the template that every registry in the ENSv2 hierarchy is built from. Whether it's the root `.eth` registry, a project running a subdomain service, or a DAO managing community names, they all use the same base contract.
+
+This means every registry in the tree shares the same:
+
+- **[ERC1155Singleton](/contracts/ensv2/erc1155-singleton)** token model: each name is an NFT with a single owner
+- **[Enhanced Access Control](/contracts/ensv2/enhanced-access-control)** permission system: roles, admin roles, resource scoping
+- **[Mutable Token IDs](/contracts/ensv2/mutable-token-ids)**: version counters that protect against stale permissions and transfer griefing
+- **[anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism)**: accept labelhash, tokenId, or resource interchangeably
+- **Name lifecycle**: the same AVAILABLE → RESERVED → REGISTERED state machine
+
+## Customizing via Inheritance
+
+To create a custom registry, you inherit from `PermissionedRegistry` and override the behaviors you need. The base contract is designed with virtual functions at the key extension points.
+
+ENSv2 itself ships two derived registries:
+
+### UserRegistry
+
+A UUPS-upgradeable proxy designed for user-owned subdomain registries. It adds:
+
+- Proxy-based deployment via `VerifiableFactory` (cheap per-name deployments)
+- An `initialize()` function that grants initial roles to the admin
+- Upgrade authorization gated by `ROLE_UPGRADE`
+
+```solidity
+contract UserRegistry is Initializable, PermissionedRegistry, UUPSUpgradeable {
+    function initialize(address admin, uint256 roleBitmap) public initializer {
+        _grantRoles(ROOT_RESOURCE, roleBitmap, admin, false);
+    }
+}
+```
+
+This is the registry that gets deployed when someone creates subnames under their name. Each child namespace gets its own `UserRegistry` proxy instance.
+
+### WrapperRegistry
+
+A specialized registry used during [migration](/contracts/ensv2/migration) from ENSv1. It extends PermissionedRegistry with:
+
+- Integration with the ENSv1 Name Wrapper for migrating wrapped names
+- Blocking `register()` for names that must go through the migration path instead
+- Falling back to the ENSv1 resolver for not-yet-migrated children
+
+```solidity
+contract WrapperRegistry is PermissionedRegistry, LockedWrapperReceiver, ... {
+    function register(...) public override returns (uint256 tokenId) {
+        if (_isMigratableChild(label)) {
+            revert LibMigration.NameRequiresMigration();
+        }
+        return super.register(label, owner, registry, resolver, roleBitmap, expiry);
+    }
+}
+```
+
+## Configuration Patterns
+
+While every registry uses the same base contract, the way roles are configured determines the trust model. In practice, most registries will follow one of three patterns:
+
+### Fully Controlled (Managed)
+
+The registry operator keeps all roles at `ROOT_RESOURCE`. Tokens also receive the full role set. Both the operator and the token owner have full control. This is suitable for trusted setups where the operator needs administrative access, such as a company managing internal subnames or a protocol that needs to update names programmatically.
+
+### Reservation-Only (Gas-Efficient)
+
+Names are registered as `RESERVED` (no owner, no token minted, no roles granted). This skips the ERC1155 mint entirely for maximum gas efficiency. Useful when names just need to exist and resolve without individual ownership, for example when bulk-importing DNS zone data or when a protocol assigns names programmatically.
+
+### Emancipated (ETH-like)
+
+The registry operator grants only specific root roles to the registrar (`ROLE_REGISTRAR`, `ROLE_RENEW`) and gives tokens the standard role set (`ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, `ROLE_CAN_TRANSFER` + admin counterparts). These two sets don't overlap. The operator then revokes their own admin roles at root, making the separation permanent.
+
+This is how the `.eth` registry works. The [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` at root (so it can register and renew names), while each name owner holds the standard set defined by [`REGISTRATION_ROLE_BITMAP`](https://github.com/ensdomains/contracts-v2/blob/main/contracts/src/registrar/ETHRegistrar.sol#L19-L25). Since the operator has revoked its admin roles, this emancipation is irreversible: once root gives up a role, no one can re-grant it (you need the admin role to grant the admin role).
+
+### Emancipation as a Property of the Ancestry
+
+Emancipation at one level is not sufficient if a higher level can still interfere. If the `.eth` registry is emancipated but the root registry is not, root could swap the `.eth` subregistry pointer. True emancipation requires the entire chain from root down to be secured:
+
+- **Root registry**: governed by ENS governance (trusted by design)
+- **.eth registry**: emancipated (ETH Registrar holds only REGISTER + RENEW at root)
+- **2LD registries** (e.g., alice.eth): depends on the 2LD owner's configuration
+
+For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke dangerous root roles) and optionally lock the canonical parent by revoking `ROLE_SET_PARENT` (so the registry can't be re-mounted elsewhere in the hierarchy).
+
+You can verify emancipation on-chain by calling `getAssigneeCount(ROOT_RESOURCE)` on the registry and checking that the dangerous roles (`ROLE_UNREGISTER`, `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY` and their admin counterparts) have zero assignees at root. See the [Permissioned Registry](/contracts/ensv2/permissioned-registry#eac-integration) page for the full role table.
+
+## Building Your Own Registry
+
+To build a custom registry for your project, extend `PermissionedRegistry` and override what you need. Common customization points include:
+
+| Override | Purpose | Example |
+| -------- | ------- | ------- |
+| `register()` | Custom registration logic | Add allowlists, custom pricing, or validation |
+| `getResolver()` / `getSubregistry()` | Custom resolution behavior | Fallback to external data sources |
+| `_authorizeUpgrade()` | Upgrade control | Gate upgrades behind a multisig or governance |
+
+All of the inherited infrastructure (EAC roles, ERC1155 tokens, anyId polymorphism, the name lifecycle state machine) works out of the box. You only override the parts you want to change.

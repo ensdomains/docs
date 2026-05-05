@@ -1,0 +1,118 @@
+---
+description: Primary names and reverse resolution in ENSv2, including multi-chain support and signature-based claims
+---
+
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
+# Reverse Resolution
+
+Reverse resolution maps an address back to an ENS name (the "primary name"). In ENSv1, this was handled by a single L1 Reverse Registrar. ENSv2 redesigns reverse resolution with native multi-chain support, signature-based claims, and a standalone architecture detached from the registry hierarchy.
+
+<FrenCallout fren="lili" variant="tip">
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+</FrenCallout>
+
+## At Launch
+
+At launch, the reverse namespace (`addr.reverse`, `default.reverse`) stays on v1 infrastructure. The v2 `ReverseRegistry` holds entries for these names, but resolution is handled by v1 contracts. Existing primary names continue to work without any user action.
+
+**`addr.reverse`**: Registered in the `ReverseRegistry` with `ENSV1Resolver` as its resolver. This mirrors resolution through the v1 ENS registry, so existing v1 reverse records are automatically visible in v2. Users update their reverse record via the v1 `ReverseRegistrar.claimForAddr()`.
+
+**`default.reverse`**: Uses the v1 `DefaultReverseRegistrar`, which stores primary names directly and resolves them via wildcard resolution on-contract. Users set their name via `DefaultReverseRegistrar.setNameForAddr()`.
+
+### HCA Adapters
+
+Smart contract wallets ([HCAs](/contracts/ensv2/hca)) can't interact directly with v1 reverse registrars because those contracts check `msg.sender`. Two adapter contracts bridge HCA support by being added as controllers on the v1 registrars:
+
+| Adapter | Method | Forwards to |
+|---------|--------|-------------|
+| `ReverseRegistrarHCAAdapter` | `claimForAddr(resolver)` | `ReverseRegistrar.claimForAddr()` |
+| `DefaultReverseRegistrarHCAAdapter` | `setNameForAddr(name)` | `DefaultReverseRegistrar.setNameForAddr()` |
+
+Both adapters resolve the caller's HCA identity via `HCAEquivalence`, then forward the call with the resolved address. The `addr` and `owner` parameters are derived from the resolved `msg.sender` internally.
+
+### Migration to v2-native
+
+The reverse namespace will be migrated to v2-native infrastructure post-launch. The same migration pattern applies to both testnet and mainnet. The full multi-chain reverse resolution system described below will be rolled out as L2 partner integrations are completed.
+
+## Multi-Chain Reverse Resolution (Upcoming)
+
+ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chain individually. Each deployment stores the mapping from addresses to their primary names for that chain. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) resolves reverse lookups via the inherited `reverse(addr, coinType)` function, which queries the appropriate reverse registrar based on the coin type.
+
+### Setting a Primary Name
+
+The L2ReverseRegistrar provides four methods for setting a primary name, covering different authorization models:
+
+| Method | Authorization | Use case |
+|--------|--------------|----------|
+| `setName(name)` | `msg.sender` only | EOA setting its own primary name |
+| `setNameForAddr(addr, name)` | Caller must be the address | Setting from a different caller context |
+| `setNameForAddrWithSignature(claim, signature)` | ERC-191 signature from the address | Gasless or cross-chain claims for EOAs |
+| `setNameForOwnableWithSignature(claim, owner, signature)` | Ownable pattern + ERC-1271/6492 signature | Smart contract wallets (Safe, ERC-4337) |
+
+### Signature-Based Claims
+
+For gasless or cross-chain primary name claims, the signature methods accept a `NameClaim` struct:
+
+```solidity
+struct NameClaim {
+    string name;       // The ENS name to set as primary
+    address addr;      // The address to set it for
+    uint256[] chainIds; // Chain IDs where this claim applies
+    uint256 signedAt;  // Timestamp for replay protection
+}
+```
+
+The `chainIds` array allows a single signature to set the primary name across multiple chains simultaneously. Chain IDs must be in strictly ascending order.
+
+### Signature Format
+
+Signatures use ERC-191 plaintext format:
+
+```
+You are setting your ENS primary name to:
+{name}
+
+Address: {address}
+Chains: {chainList}
+Signed At: {signedAt}
+```
+
+Where `{chainList}` is a comma-separated list of chain IDs and `{signedAt}` is an ISO 8601 UTC datetime string.
+
+For smart contract wallets (via `setNameForOwnableWithSignature`), the format includes an additional `Owner` field:
+
+```
+You are setting the ENS primary name for a contract you own to:
+{name}
+
+Contract Address: {address}
+Owner: {owner}
+Chains: {chainList}
+Signed At: {signedAt}
+```
+
+### Replay Protection
+
+Signature-based methods use an **inception timestamp** system. Each address has a stored inception timestamp on-chain. For a signature to be valid:
+
+1. The signature's `signedAt` must be strictly greater than the current inception for that address
+2. The `signedAt` must not be in the future (`signedAt <= block.timestamp`)
+
+When a valid signature is used, the inception is updated to the `signedAt` value. This ensures each signature can only be used once per chain, and newer signatures always supersede older ones. Query the current inception via `inceptionOf(address)`.
+
+### Contract Name Sync
+
+The L2ReverseRegistrar also supports `syncName(addr)` for contracts that implement the `IContractName` interface. This allows anyone to sync a contract's primary name without requiring a signature, using the name the contract itself declares.
+
+## Contracts
+
+| Contract | Status | Purpose |
+|----------|--------|---------|
+| `ReverseRegistry` | Deployed at launch | PermissionedRegistry for the `.reverse` TLD |
+| `ENSV1Resolver` | Deployed at launch | Mirrors v1 reverse resolution for `addr.reverse` |
+| `ReverseRegistrarHCAAdapter` | Deployed at launch | HCA adapter for `addr.reverse` claims |
+| `DefaultReverseRegistrarHCAAdapter` | Deployed at launch | HCA adapter for `default.reverse` name setting |
+| `L2ReverseRegistrar` | Upcoming | Per-chain reverse registrar with signature-based claims |
+| `StandaloneReverseRegistrar` | Upcoming | Abstract base for L2ReverseRegistrar |
+| `L2ReverseRegistrarWithMigration` | Upcoming | Variant supporting migration from older reverse registrar deployments |

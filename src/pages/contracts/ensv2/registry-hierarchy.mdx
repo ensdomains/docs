@@ -1,0 +1,338 @@
+---
+description: How ENSv2's hierarchical registry model works - tree structure, resolution, subtree operations, and namespace aliasing
+---
+
+import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+
+# Registry Hierarchy
+
+ENSv2 replaces ENSv1's single flat registry with a hierarchical model where each name can have its own registry for managing subnames. This page explains the tree structure, how resolution works within it, and the implications for name ownership.
+
+<FrenCallout fren="lili" variant="tip">
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
+</FrenCallout>
+
+## From Flat to Hierarchical
+
+ENSv1 used a simple architecture, where a single flat registry maintained a mapping
+from all names to their owner and resolver addresses. Hierarchical ownership was enforced
+through the use of [namehash](/resolution/names#namehash) to calculate IDs for subnames. This has the advantage of simplicity,
+but means that ownership rules are enforced by a single, non-upgradeable contract, and
+changes in the status of a parent name do not automatically ripple down to affect
+subnames.
+
+```mermaid
+---
+title: ENSv1 Structure
+---
+flowchart LR
+    subgraph Registry
+        direction LR
+        root["<b>&lt;root></b><hr>owner: 0x0123..."]
+        eth["<b>eth</b><hr>owner: 0x1234..."]
+        montoya["<b>montoya.eth</b><hr>owner: 0x5678...<br/>• resolver: 0x6789..."]
+        inigo["<b>inigo.montoya.eth</b><hr>owner: 0x7890...<br/>• resolver: 0x890A..."]
+        domingo["<b>domingo.montoya.eth</b><hr>owner: 0x90AB...<br/>• resolver: 0x0ABC..."]
+    end
+
+    resolvers@{label: "Resolvers", shape: processes}
+    Registry --> resolvers
+```
+
+In ENSv2, registries are hierarchical: each name can have a resolver and a subregistry:
+
+```mermaid
+---
+title: ENSv2 Structure
+---
+flowchart TB
+    root@{label: "<b>&lt;root></b><hr>owner: 0x0123...</b>"}
+    eth@{label: "<b>eth</b><hr>owner: 0x1234..."}
+    montoya@{label: "<b>montoya.eth</b><hr>owner: 0x5678..."}
+    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 0x90AB..."}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    root-- eth --> eth
+    eth-- montoya --> montoya
+    eth-- montoya --> montoyaResolver
+    montoya-- inigo --> inigo
+    montoya-- domingo --> domingo
+```
+
+Here, registries are shown as rectangles, while resolvers are shown as notched rectangles.
+Note that the registry for `.eth` has both a subregistry and a resolver defined for `montoya.eth`.
+Note also that there's a resolver defined for `inigo.montoya.eth` but no subregistry, while
+`domingo.montoya.eth` has a subregistry but no resolver. A name only needs to have a subregistry
+defined if it wants the ability to create subnames, and it only needs a resolver defined if it wants to
+define records to resolve for that name or its subnames.
+
+## Names as Chains of Entries
+
+A full name like `inigo.montoya.eth` does not exist as a single on-chain object. Instead, it's a chain of entries across registries: `inigo` is an entry in the `montoya.eth` registry, `montoya` is an entry in the `.eth` registry, and these are linked by the `subregistry` field on each entry. This means that on-chain, a "name" always refers to a single label within a specific registry. The full name is reconstructed by walking up the registry hierarchy.
+
+## The IRegistry Interface
+
+Every registry in the hierarchy, whether it's the root registry, a TLD registry like `.eth`, or a user's subname registry, must implement the `IRegistry` interface:
+
+```solidity
+interface IRegistry is IRegistryEvents {
+    /// Returns the child registry for a label, or address(0) if none exists.
+    function getSubregistry(string calldata label) external view returns (IRegistry);
+
+    /// Returns the resolver for a label, or address(0) if none exists.
+    function getResolver(string calldata label) external view returns (address);
+
+    /// Returns this registry's parent and the label it's registered under.
+    function getParent() external view returns (IRegistry parent, string memory label);
+}
+```
+
+These three functions are what enable the hierarchical model:
+
+- **`getSubregistry(label)`**: links a name to its child registry. This is how the tree is traversed downward during resolution.
+- **`getResolver(label)`**: links a name to its resolver contract. This is how records are found during resolution.
+- **`getParent()`**: links a registry back to its parent. This is how the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) verifies canonical registry chains.
+
+`IRegistry` is deliberately minimal. It says nothing about tokens, permissions, or name lifecycle. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) is the standard implementation that adds [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) tokenization, [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), expiry management, and [mutable token IDs](/contracts/ensv2/mutable-token-ids). But a custom registry could implement `IRegistry` with entirely different ownership and access models.
+
+### IRegistryEvents
+
+`IRegistry` inherits `IRegistryEvents`, which defines the events any registry is expected to emit:
+
+| Event | Emitted when |
+|-------|-------------|
+| `LabelRegistered` | A name is registered with an owner |
+| `LabelReserved` | A name is reserved (no owner) |
+| `LabelUnregistered` | A name is unregistered |
+| `ExpiryUpdated` | Expiry extended via `renew()` |
+| `SubregistryUpdated` | Child registry pointer changed |
+| `ResolverUpdated` | Resolver address changed |
+| `TokenRegenerated` | Token ID changed due to role update |
+| `ParentUpdated` | Canonical parent reference changed |
+
+## Resolution
+
+The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) resolves names by walking down the registry tree from the root, looking for the **deepest resolver** along the path. At each level, it calls `getResolver(label)` on the current registry. If a resolver exists, it's remembered. Then it calls `getSubregistry(label)` to descend to the next level. The resolver that covers the longest matching suffix of the name wins.
+
+Using the structure from the diagram above, here are two examples showing how `findResolver()` walks the tree:
+
+### Example 1
+
+Resolving `inigo.montoya.eth`: the walk descends from root, checking for resolvers at each level:
+
+```mermaid
+flowchart LR
+    subgraph s1 [" "]
+        direction TB
+        r1@{label: "<b>&lt;root&gt;</b>"}
+        e1@{label: "<b>eth</b>"}
+        m1@{label: "<b>montoya.eth</b>"}
+        i1@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d1@{label: "<b>domingo.montoya.eth</b>"}
+        mr1@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r1-- eth --> e1
+        e1-- montoya --> m1
+        e1-- montoya --> mr1
+        m1-- inigo --> i1
+        m1-- domingo --> d1
+        style r1 fill:#0080BC,stroke:#011A25,color:#fff
+        style e1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style m1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+    end
+    subgraph s2 [" "]
+        direction TB
+        r2@{label: "<b>&lt;root&gt;</b>"}
+        e2@{label: "<b>eth</b>"}
+        m2@{label: "<b>montoya.eth</b>"}
+        i2@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d2@{label: "<b>domingo.montoya.eth</b>"}
+        mr2@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r2-- eth --> e2
+        e2-- montoya --> m2
+        e2-- montoya --> mr2
+        m2-- inigo --> i2
+        m2-- domingo --> d2
+        style r2 fill:#0080BC,stroke:#011A25,color:#fff
+        style e2 fill:#0080BC,stroke:#011A25,color:#fff
+        style m2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    subgraph s3 [" "]
+        direction TB
+        r3@{label: "<b>&lt;root&gt;</b>"}
+        e3@{label: "<b>eth</b>"}
+        m3@{label: "<b>montoya.eth</b>"}
+        i3@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d3@{label: "<b>domingo.montoya.eth</b>"}
+        mr3@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r3-- eth --> e3
+        e3-- montoya --> m3
+        e3-- montoya --> mr3
+        m3-- inigo --> i3
+        m3-- domingo --> d3
+        style r3 fill:#0080BC,stroke:#011A25,color:#fff
+        style e3 fill:#0080BC,stroke:#011A25,color:#fff
+        style m3 fill:#0080BC,stroke:#011A25,color:#fff
+        style i3 fill:#011A25,stroke:#0080BC,color:#fff
+        style d3 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr3 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    style s1 fill:none,stroke:none
+    style s2 fill:none,stroke:none
+    style s3 fill:none,stroke:none
+    s1 ~~~ s2 ~~~ s3
+```
+
+Resolver 1 is found at the .eth level, but Resolver 2 is found one level deeper at montoya.eth. **Resolver 2 wins** because it covers the longest matching suffix, in this case the full name `inigo.montoya.eth`.
+
+### Example 2
+
+Resolving `domingo.montoya.eth`: the walk follows the same path, but `domingo` has no resolver:
+
+```mermaid
+flowchart LR
+    subgraph s1 [" "]
+        direction TB
+        r1@{label: "<b>&lt;root&gt;</b>"}
+        e1@{label: "<b>eth</b>"}
+        m1@{label: "<b>montoya.eth</b>"}
+        i1@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d1@{label: "<b>domingo.montoya.eth</b>"}
+        mr1@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r1-- eth --> e1
+        e1-- montoya --> m1
+        e1-- montoya --> mr1
+        m1-- inigo --> i1
+        m1-- domingo --> d1
+        style r1 fill:#0080BC,stroke:#011A25,color:#fff
+        style e1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style m1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+    end
+    subgraph s2 [" "]
+        direction TB
+        r2@{label: "<b>&lt;root&gt;</b>"}
+        e2@{label: "<b>eth</b>"}
+        m2@{label: "<b>montoya.eth</b>"}
+        i2@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d2@{label: "<b>domingo.montoya.eth</b>"}
+        mr2@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r2-- eth --> e2
+        e2-- montoya --> m2
+        e2-- montoya --> mr2
+        m2-- inigo --> i2
+        m2-- domingo --> d2
+        style r2 fill:#0080BC,stroke:#011A25,color:#fff
+        style e2 fill:#0080BC,stroke:#011A25,color:#fff
+        style m2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    subgraph s3 [" "]
+        direction TB
+        r3@{label: "<b>&lt;root&gt;</b>"}
+        e3@{label: "<b>eth</b>"}
+        m3@{label: "<b>montoya.eth</b>"}
+        i3@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d3@{label: "<b>domingo.montoya.eth</b>"}
+        mr3@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r3-- eth --> e3
+        e3-- montoya --> m3
+        e3-- montoya --> mr3
+        m3-- inigo --> i3
+        m3-- domingo --> d3
+        style r3 fill:#0080BC,stroke:#011A25,color:#fff
+        style e3 fill:#0080BC,stroke:#011A25,color:#fff
+        style m3 fill:#0080BC,stroke:#011A25,color:#fff
+        style i3 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d3 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style mr3 fill:#011A25,stroke:#0080BC,color:#fff
+    end
+    style s1 fill:none,stroke:none
+    style s2 fill:none,stroke:none
+    style s3 fill:none,stroke:none
+    s1 ~~~ s2 ~~~ s3
+```
+
+Resolver 1 is found at the .eth level, but `domingo` has no resolver set. **Resolver 1 wins** as the longest-suffix match, covering `montoya.eth`. Any subname of `montoya.eth` without its own resolver will fall back to Resolver 1 the same way.
+
+### The Algorithm
+
+This "longest-suffix match" behavior is implemented by [`findResolver()`](/contracts/ensv2/universal-resolver-v2#findresolver) in the Universal Resolver V2. It recursively descends from the root, and at each level:
+
+1. Calls `getResolver(label)`. If non-zero, overwrites the previously remembered resolver.
+2. Calls `getSubregistry(label)`. If non-zero, continues descending into the child registry.
+
+The final remembered resolver is the one used for the actual record query. This is the same conceptual approach as ENSv1 (find the longest matching suffix), but instead of looking up a flat mapping, it walks a tree of registry contracts.
+
+## Subtree Operations
+
+One consequence of this tree structure is that it becomes possible to delete or reassign entire subtrees in a
+single operation. For example, suppose `montoya.eth` is transferred to a new owner, who wants to
+configure his own set of subdomains; he can simply replace the subregistry responsible for subnames of
+`montoya.eth` with his own new subregistry:
+
+```mermaid
+flowchart TB
+    eth@{label: "<b>eth</b><hr>owner: 0x1234..."}
+    montoya@{label: "&nbsp;<hr>owner: 0x5678..."}
+    newMontoya@{label: "<b>montoya.eth</b><hr>owner: 0xABCD..."}
+    inigo@{label: "<b>Resolver 2</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    domingo@{label: "<b>domingo.montoya.eth</b><hr>owner: 0x90AB..."}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    eth ~~~ montoya
+    eth-- montoya --> newMontoya
+    eth-- montoya --> montoyaResolver
+    montoya-- inigo --> inigo
+    montoya-- domingo --> domingo
+```
+
+All resolvers and subregistries previously associated with `montoya.eth` are thus removed in a single operation!
+The new owner will still need to replace the resolver for `montoya.eth` if he wishes to change how the bare
+name itself is resolved, however.
+
+## Namespace Aliasing
+
+This hierarchical structure need not be limited to trees, either; by reusing the same subregistry for more
+than one name, entire namespaces can be aliased to each other:
+
+```mermaid
+flowchart TB
+    root@{label: "<b>Registry 1</b><hr>owner: 0x0123...</b>"}
+    eth@{label: "<b>Registry 2</b><hr>owner: 0x1234..."}
+    montoya@{label: "<b>Registry 3</b><hr>owner: 0x5678..."}
+    inigo@{label: "<b>Resolver 4</b><hr>owner: 0x7890...<br>addr(60): 0x7890...", shape: notch-rect}
+    domingo@{label: "<b>Registry 5</b><hr>owner: 0x90AB..."}
+    montoyaResolver@{label: "<b>Resolver 1</b><hr>owner: 0x5678...<br>addr(60): 0x5678...", shape: notch-rect}
+    root-- eth --> eth
+    eth-- montoya --> montoya
+    eth-- wallet --> montoya
+    eth-- montoya --> montoyaResolver
+    montoya-- inigo --> inigo
+    montoya-- domingo --> domingo
+```
+
+In this example, both `inigo.montoya.eth` and `inigo.wallet.eth` resolve identically, as would any other
+subnames with resolvers set. Notably, `domingo.montoya.eth` will resolve using Resolver 1, while
+`domingo.wallet.eth` will not resolve at all - there are no resolvers set anywhere in its hierarchy! If we
+set a resolver for `domingo` in Registry 3, both names would resolve identically using it, just as they do
+for `inigo`.
+
+This example also exposes one other crucial fact about ENSv2: registries have no individual concept of 'their name'.
+In earlier diagrams we labelled each registry with a name for convenience, but as these examples demonstrate,
+there's no requirement that a registry have exactly one name associated with it - it can have thousands, or none
+at all!
+
+## Token Representation and Permissions
+
+Registries in ENSv2 are typically implemented as [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token contracts, where each subname is an NFT with exactly one owner. Because of the hierarchical structure, merely owning a subname token does not guarantee anything in isolation: the registry must be referenced by a parent registry, and so on up to the root. Client authors must take care in how they represent names to users. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) provides `findCanonicalRegistry()` to verify a registry's position in the hierarchy.
+
+Permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), a role-based system where each name has its own set of grantable and revokable roles. By selectively revoking roles, all the functionality of the [ENSv1 Name Wrapper](/wrapper/overview) can be replicated. See the [Permissioned Registry](/contracts/ensv2/permissioned-registry) page for the full role table, transfer behavior, and code examples.
