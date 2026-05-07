@@ -26,7 +26,9 @@ export async function ensips() {
       'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
     )
     if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
-    const files = (await ensipsRepoRes.json()) as DirectoryContents
+    const files = ((await ensipsRepoRes.json()) as DirectoryContents).filter(
+      (f) => f.name.endsWith('.md')
+    )
     const sidebar = new Array<
       SidebarItem & { number: number; status: string }
     >()
@@ -37,9 +39,12 @@ export async function ensips() {
         if (!res.ok) throw new Error('Failed to fetch ENSIP')
         const mdFile = await res.text()
         const parsedMd = matter(mdFile)
-        const rawBody = parsedMd.content
-        const rawFrontmatter = parsedMd.matter
         const ensipNumber = Number(file.name.split('.')[0])
+        const rawBody = await inlineSubdirectoryFiles(
+          parsedMd.content,
+          ensipNumber
+        )
+        const rawFrontmatter = parsedMd.matter
         const titleLength = getFirstHeadingToken(mdFile)!.raw.length
 
         const parsedFrontMatter = parsedMd.data as {
@@ -133,4 +138,28 @@ function replaceRelativeLinks(markdown: string) {
 
 function removeMarkdownComments(markdown: string) {
   return markdown.replace(/<!--[\s\S]*?-->/g, '')
+}
+
+async function inlineSubdirectoryFiles(
+  markdown: string,
+  ensipNumber: number
+): Promise<string> {
+  // Replace lines containing links to subdirectory .md files
+  // (e.g. "- [text](./19/supported.md)") with the actual file content.
+  // Matches the entire line to avoid leftover list markers.
+  const subfileLink = /^[^\S\n]*(?:[-*]|\d+\.)\s*\[([^\]]*)\]\(\.\/\d+\/([^)]+\.md)\)\s*$/gm
+  let result = markdown
+
+  for (const match of markdown.matchAll(subfileLink)) {
+    const [fullMatch, , filename] = match
+    const url = `https://raw.githubusercontent.com/ensdomains/ensips/master/ensips/${ensipNumber}/${filename}`
+    const res = await fetch(url)
+
+    if (res.ok) {
+      const content = await res.text()
+      result = result.replace(fullMatch, content)
+    }
+  }
+
+  return result
 }
