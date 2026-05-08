@@ -202,7 +202,9 @@ Each name can point to a child registry via its subregistry field. These parent-
 (parent)          (child)       (grandchild)
 ```
 
-The registry also stores its own parent via `setParent()` / `getParent()`, which records both the parent registry address and the child label.
+The registry also stores its own parent via `setParent()` / `getParent()`, which records both the parent registry address and the child label. This backward pointer is used by the Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#registry-navigation) to verify hierarchy integrity.
+
+A registry has a **canonical parent** once `setParent(parent, label)` has been called, establishing where it sits in the hierarchy. A registry has a **locked canonical parent** when the owner additionally revokes `ROLE_SET_PARENT` (and `ROLE_SET_PARENT_ADMIN`) on `ROOT_RESOURCE`, making the backward pointer immutable. Without this, the registry could be remounted at a different position in the hierarchy (e.g. moved from `nick.eth` to `nick.xyz`).
 
 `getSubregistry()` and `getResolver()` return `address(0)` for expired names, preventing resolution through lapsed names. See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full explanation with diagrams, resolution algorithm, and the IRegistry interface.
 
@@ -437,6 +439,50 @@ Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry
     ],
     returns: [
       { name: 'roleBitmap', type: 'uint256', description: 'Full role bitmap' },
+    ],
+  },
+  {
+    name: 'roleCount',
+    description: 'Get the packed assignee counts for all 64 roles on a name. Each nybble (4 bits) holds the count of accounts holding that role.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+    ],
+    returns: [
+      { name: 'counts', type: 'uint256', description: 'Packed assignee counts (nybble per role)' },
+    ],
+  },
+  {
+    name: 'hasAssignees',
+    description: 'Check whether any accounts hold the specified roles on a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if any account holds the roles' },
+    ],
+  },
+  {
+    name: 'getAssigneeCount',
+    description: 'Get per-role assignee counts for the specified roles on a name.',
+    params: [
+      { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to count' },
+    ],
+    returns: [
+      { name: 'counts', type: 'uint256', description: 'Packed per-role assignee counts' },
+      { name: 'mask', type: 'uint256', description: 'Mask indicating which nybbles are relevant' },
+    ],
+  },
+  {
+    name: 'hasRootRoles',
+    description: 'Check whether an account holds all specified roles on ROOT_RESOURCE only (does not check token-level roles).',
+    params: [
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to check' },
+      { name: 'account', type: 'address', description: 'Account to check' },
+    ],
+    returns: [
+      { name: 'result', type: 'bool', description: 'True if account holds all specified roles on ROOT' },
     ],
   },
 ]} />
