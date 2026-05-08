@@ -13,8 +13,13 @@ type DirectoryContents = {
 // Only runs once, no need for hot reloading
 export async function ensips() {
   {
+    // Check for sidebar JSON (written last) as the completion marker.
+    // If a previous run crashed midway, .mdx files may exist but the
+    // sidebar won't, so we correctly re-run instead of serving partial content.
     const alreadyExists = await fs
-      .access(path.join(__dirname, '..', 'src/pages/ensip/1.mdx'))
+      .access(
+        path.join(__dirname, '..', 'src/data/generated/ensips-sidebar.json')
+      )
       .then(() => true)
       .catch(() => false)
 
@@ -22,7 +27,7 @@ export async function ensips() {
 
     console.log('Fetching ENSIPs')
 
-    const ensipsRepoRes = await fetch(
+    const ensipsRepoRes = await fetchWithRetry(
       'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
     )
     if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
@@ -35,8 +40,8 @@ export async function ensips() {
 
     await Promise.all(
       files.map(async (file) => {
-        const res = await fetch(file.download_url)
-        if (!res.ok) throw new Error('Failed to fetch ENSIP')
+        const res = await fetchWithRetry(file.download_url)
+        if (!res.ok) throw new Error(`Failed to fetch ${file.name}`)
         const mdFile = await res.text()
         const parsedMd = matter(mdFile)
         const ensipNumber = Number(file.name.split('.')[0])
@@ -140,6 +145,23 @@ function removeMarkdownComments(markdown: string) {
   return markdown.replace(/<!--[\s\S]*?-->/g, '')
 }
 
+async function fetchWithRetry(
+  url: string,
+  retries = 3,
+  delay = 1000
+): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url)
+      if (res.ok || i === retries) return res
+    } catch (e) {
+      if (i === retries) throw e
+    }
+    await new Promise((r) => setTimeout(r, delay * (i + 1)))
+  }
+  throw new Error(`Failed to fetch ${url}`)
+}
+
 async function inlineSubdirectoryFiles(
   markdown: string,
   ensipNumber: number
@@ -147,13 +169,14 @@ async function inlineSubdirectoryFiles(
   // Replace lines containing links to subdirectory .md files
   // (e.g. "- [text](./19/supported.md)") with the actual file content.
   // Matches the entire line to avoid leftover list markers.
-  const subfileLink = /^[^\S\n]*(?:[-*]|\d+\.)\s*\[([^\]]*)\]\(\.\/\d+\/([^)]+\.md)\)\s*$/gm
+  const subfileLink =
+    /^[^\S\n]*(?:[-*]|\d+\.)\s*\[([^\]]*)\]\(\.\/\d+\/([^)]+\.md)\)\s*$/gm
   let result = markdown
 
   for (const match of markdown.matchAll(subfileLink)) {
     const [fullMatch, , filename] = match
     const url = `https://raw.githubusercontent.com/ensdomains/ensips/master/ensips/${ensipNumber}/${filename}`
-    const res = await fetch(url)
+    const res = await fetchWithRetry(url)
 
     if (res.ok) {
       const content = await res.text()
