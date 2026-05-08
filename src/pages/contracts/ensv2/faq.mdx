@@ -11,7 +11,7 @@ This page is under construction. Questions and answers will be added as the ENSv
 </FrenCallout>
 
 <FrenCallout fren="earl" variant="note" title="Did you know?">
-ENSv2 replaces the single flat registry from ENSv1 with a hierarchical model where each name can have its own registry and resolver. Check out the [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) page to learn more.
+ENSv2 replaces the single flat registry from ENSv1 with a hierarchical model where each name can have its own registry, and each account gets its own resolver. Check out the [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) page to learn more.
 </FrenCallout>
 
 <FrenCallout fren="bittu" variant="tip" title="Developer tip">
@@ -23,7 +23,7 @@ Token IDs in ENSv2 are mutable. Don't cache them! Use the labelhash instead and 
 </FrenCallout>
 
 <FrenCallout fren="lili" variant="note">
-Each name in ENSv2 gets its own resolver instance, deployed as a UUPS proxy. This means you can grant fine-grained permissions per record type, and even per individual text key or coin type.
+Each account in ENSv2 gets its own resolver instance, deployed as a UUPS proxy. All names owned by the same account share one resolver. You can grant fine-grained permissions per record type, and even per individual text key or coin type.
 </FrenCallout>
 
 <FrenCallout fren="peanut" variant="tip" title="New to ENS?">

@@ -17,7 +17,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 | Feature              | ENSv1                               | ENSv2                                                                                 |
 | -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
-| Grace period         | 90-day grace period after expiry    | **No grace period**, names expire immediately                                        |
+| Grace period         | 90-day grace period after expiry    | **28-day grace period**                                                              |
 | Payment              | ETH only                            | ERC20 tokens via `safeTransferFrom`                                                   |
 | Pricing              | StablePriceOracle (USD-denominated) | StandardRentPriceOracle with duration discounts and expiry premiums                   |
 | Name ownership       | ERC721 token on BaseRegistrar       | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
@@ -116,7 +116,7 @@ The **StandardRentPriceOracle** provides flexible, configurable pricing:
 
 **Duration discounts**: longer registrations receive discounts through a piecewise-linear curve. The discount points are DAO-configurable.
 
-**Expiry premium**: since ENSv2 has no grace period, recently-expired names enter a temporary premium period to prevent sniping. The premium starts high and decreases over time. The previous owner can re-register during the premium period **without paying the premium**.
+**Expiry premium**: after the 28-day grace period, recently-expired names enter a temporary premium period to prevent sniping. The premium starts high and decreases over time. The previous owner can re-register during the premium period **without paying the premium**.
 
 ## Multi-Token Payments
 

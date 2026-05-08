@@ -26,9 +26,9 @@ The information on this page is a work-in-progress. Expect updates as the design
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
   in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2, using a new, highly flexible,
   role-based permissions model.
-- **No Grace Period** - The grace period is no longer a part of the ENS protocol, meaning names expire when they say they expire. Upon expiration, names immediately enter into the [temporary premium](/registry/eth#premium--auctions) period. The owner of a recently-expired name doesn't have to pay the premium fee during this period.
+- **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed by the owner. After the grace period, names enter a temporary premium period.
 - **Contract Factories** - Rather than relying on large multi-user contracts such as
-  the default public resolver, every name gets its own resolver, and every name
+  the default public resolver, every account gets its own resolver, and every name
   with subnames gets its own registry contract. This simplifies the contracts significantly, while offering users
   new functionality such as the possibility of 'aliasing' multiple domains to
   the same records.
@@ -46,7 +46,7 @@ The information on this page is a work-in-progress. Expect updates as the design
 
 ## Registry Architecture
 
-ENSv2 replaces ENSv1's single flat registry with a **hierarchical model** where each name can have its own registry for managing subnames, and its own resolver for storing records. Names don't exist as single on-chain objects. Instead, a full name like `sub.alice.eth` is a chain of entries across registries linked by subregistry pointers.
+ENSv2 replaces ENSv1's single flat registry with a **hierarchical model** where each name can have its own registry for managing subnames. Each account gets its own resolver for storing records. Names don't exist as single on-chain objects. Instead, a full name like `sub.alice.eth` is a chain of entries across registries linked by subregistry pointers.
 
 See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full explanation with diagrams, including subtree operations, namespace aliasing, token representation, and the permissions model.
 
@@ -66,7 +66,7 @@ See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full expla
 | Page                                                            | Description                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------ |
 | [Permissioned Registry](/contracts/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
-| [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) | Per-name resolver with per-record roles and record aliasing        |
+| [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record aliasing     |
 | [ETH Registrar](/contracts/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
 | [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) | Single entry point for name resolution across the hierarchy        |
 | [Registry Metadata](/contracts/ensv2/registry-metadata)         | ERC-1155 metadata providers for registries                         |

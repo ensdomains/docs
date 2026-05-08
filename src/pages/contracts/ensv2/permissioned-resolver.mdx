@@ -1,5 +1,5 @@
 ---
-description: Per-name resolver with role-based access control, record aliasing, and DNS resolution
+description: Per-account resolver with role-based access control, record aliasing, and DNS resolution
 ---
 
 import { Card } from '../../../components/ui/Card'
@@ -10,7 +10,7 @@ import { ContractReference } from '../../../components/ensv2/ContractReference'
 
 # Permissioned Resolver
 
-In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each name gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. This gives name owners fine-grained control over who can set which records, and enables new features like record aliasing.
+In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each account gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. All names owned by the same account share one resolver. This gives name owners fine-grained control over who can set which records, and enables new features like record aliasing.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -20,7 +20,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 | Feature         | ENSv1 Public Resolver      | ENSv2 Permissioned Resolver                                               |
 | --------------- | -------------------------- | ------------------------------------------------------------------------- |
-| Deployment      | Single shared contract     | Per-name proxy instances                                                  |
+| Deployment      | Single shared contract     | Per-account proxy instances                                               |
 | Permissions     | Owner controls all records | Per-record-type roles via [EAC](/contracts/ensv2/enhanced-access-control) |
 | Aliasing        | Not supported              | Built-in name aliasing with cycle protection                              |
 | Record clearing | `clearRecords()` by owner  | Profile versioning                                                        |

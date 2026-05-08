@@ -6,7 +6,7 @@ import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # Verifiable Factory
 
-ENSv2 deploys per-name resolvers and per-name subname registries through a single shared factory. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. This page covers the factory itself and how the protocol uses it.
+ENSv2 deploys per-account resolvers and per-name subname registries through a single shared factory. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. This page covers the factory itself and how the protocol uses it.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -14,7 +14,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## Why a Factory
 
-ENSv2 chooses per-name instances over a single shared resolver or registry contract (see the "Contract Factories" point in the [Overview](/contracts/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
+ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see the "Contract Factories" point in the [Overview](/contracts/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
 
 - **Deterministic**: the address is known before deployment.
 - **Verifiable**: anyone can prove on-chain that an arbitrary address really came from this factory with a known proxy bytecode.
@@ -69,7 +69,7 @@ function verifyContract(address proxy) external view returns (bool);
 
 ## How ENSv2 Uses It
 
-Three implementation contracts are deployed once and then proxied per-name through the factory:
+Three implementation contracts are deployed once and then proxied through the factory:
 
 | Implementation             | Salt scheme                                                                    | Where it's deployed                                           |
 | -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------- |

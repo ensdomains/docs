@@ -37,17 +37,53 @@ ENSv2 adds functions for navigating and verifying the registry hierarchy. All wa
 
 ## Verifying Name Ownership
 
-In ENSv1, verifying name ownership was a single call: check `ownerOf(namehash)` on one contract. In ENSv2, a name like `sub.nick.eth` is a chain of entries across multiple registries (see [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)), so verification requires confirming the full chain from root to the name's registry.
+In ENSv1, verifying name ownership was a single call: check `ownerOf(namehash)` on one contract. In ENSv2, a name like `sub.nick.eth` is a chain of entries across multiple registries (see [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)), so verification requires confirming the full chain from root to the name's registry, plus checking the role state of the name.
 
-`findCanonicalRegistry` is designed for this purpose. To verify that a specific account owns a name:
+This is particularly important for marketplaces and any context where a name is being purchased or trusted. Simply checking `ownerOf` is not enough: you need to verify that the registry is legitimate, that the owner actually has the roles to control the name, and that no stale grants from previous owners remain.
 
-1. Call `findCanonicalRegistry(name)` to get the verified registry
-2. If non-zero, query the registry for the name's token ownership
+<FrenCallout fren="lili" variant="tip">
+The [mutable token ID](/contracts/ensv2/mutable-token-ids) mechanism already protects against **post-listing** manipulation: if the seller changes roles after listing, the token regenerates and the old listing becomes invalid. The checks below are about detecting **pre-existing** stale grants from before the listing. `roleCount(labelhash)` catches these on-chain.
+</FrenCallout>
 
-The bidirectional check ensures that:
-- The registry is actually reachable from the root (downward walk)
-- The registry considers itself to be at that position in the hierarchy (upward walk via `getParent()`)
-- No aliasing or stale references are being exploited
+The standard set of roles granted to a name owner at registration is defined by `REGISTRATION_ROLE_BITMAP`:
+
+```ts
+const REGISTRATION_ROLE_BITMAP =
+  (1n << 20n) |            // ROLE_SET_SUBREGISTRY
+  ((1n << 20n) << 128n) |  // ROLE_SET_SUBREGISTRY_ADMIN
+  (1n << 24n) |            // ROLE_SET_RESOLVER
+  ((1n << 24n) << 128n) |  // ROLE_SET_RESOLVER_ADMIN
+  ((1n << 28n) << 128n)    // ROLE_CAN_TRANSFER_ADMIN
+// = 0x0000000000000000000000001110000000000000000000000000000001100000n
+```
+
+### 2LD Names (e.g. alice.eth)
+
+For names registered directly in the `.eth` registry. In the examples below, `labelhash = keccak256("alice")`.
+
+1. **Verify the registry**: `findCanonicalRegistry(dnsEncode("alice.eth"))` must return a non-zero address. Compare it to the registry address listed in the marketplace. If `address(0)`, the chain from root is broken.
+
+2. **Check the owner's roles**: call `ownerRoles = roles(labelhash, owner)` on the registry. Compute `missingRoles = REGISTRATION_ROLE_BITMAP & ~ownerRoles`. If `missingRoles == 0n`, the owner has at least the standard set. If non-zero, `missingRoles` is itself a bitmap of exactly which roles are absent (e.g. no `ROLE_SET_RESOLVER` = locked resolver, no `ROLE_CAN_TRANSFER_ADMIN` = non-transferable). The owner may also hold roles beyond the standard set if they were explicitly granted; extra roles give the owner more control, not less.
+
+3. **Check for stale grants**: call `roleCount(labelhash)` on the registry. This returns packed assignee counts for all 64 roles (one nybble per role). Each admin nybble (upper 32) should be 0 or 1, where 1 means only the current owner holds it. Regular role nybbles > 1 indicate stale grants from a previous owner.
+
+   After receiving a name with the full `REGISTRATION_ROLE_BITMAP`, the new owner holds admin roles for `SET_SUBREGISTRY`, `SET_RESOLVER`, and `CAN_TRANSFER`. To revoke a stale grant, call `revokeRoles(labelhash, roleBitmap, thirdPartyAddress)` for each account. Since there is no on-chain enumeration of role holders, the third-party addresses must be discovered by indexing `EACRolesChanged` events.
+
+### 3LD+ Names (e.g. sub.nick.eth)
+
+For subnames, you need to verify the name itself plus the security of the parent's subregistry.
+
+1. **Verify the canonical chain**: `findCanonicalRegistry(dnsEncode("sub.nick.eth"))` must return non-zero. This verifies every link from root through `.eth` and `nick.eth` to the subname's registry.
+
+2. **Locked canonical parent**: on the subregistry, call `hasAssignees(ROOT_RESOURCE, ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN)`. This must return `false`. Otherwise the subregistry can be [remounted](/contracts/ensv2/permissioned-registry#registry-hierarchy) at a different position (e.g. moved from `nick.eth` to `nick.xyz`), changing what name the tokens represent.
+
+3. **Subregistry emancipation**: call `roleCount(ROOT_RESOURCE)` on the subregistry and inspect the packed nybbles:
+
+   **Technical emancipation**: the nybbles for `ROLE_UNREGISTER`, `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, `ROLE_SET_PARENT` (and their admin counterparts) must all be zero. This guarantees the registry operator cannot modify or delete individual names.
+
+   **Standard emancipation**: additionally, the token holder gets the standard role set and ROOT's roles don't overlap with it. This is what the `.eth` registry provides: ROOT only holds `ROLE_REGISTRAR` + `ROLE_RENEW`, tokens get `ROLE_SET_RESOLVER` + `ROLE_SET_SUBREGISTRY` + `ROLE_CAN_TRANSFER`, intersection is empty. A name can be technically emancipated but not standard (e.g. no `ROLE_SET_RESOLVER` because the resolver is intentionally locked).
+
+4. **Check the token's roles and stale grants**: same as 2LD steps 2-3. Call `roles(labelhash, owner)` and `roleCount(labelhash)` on the subregistry to verify the owner's roles and check for stale grants.
 
 ## Reference
 
