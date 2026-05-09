@@ -13,7 +13,7 @@ The contracts and interfaces described here are **not yet final** and may change
 </FrenCallout>
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-This page is under active development. The migration contracts are being finalized and details may change. Check back for updates.
+Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. All renewals and new registrations go through the v2 [ETH Registrar](/contracts/ensv2/eth-registrar). Names in v1 will simply expire and can never be re-registered through v1.
 </FrenCallout>
 
 ## Overview
@@ -45,8 +45,10 @@ Migration supports all `.eth` descendants. The migration path depends on the tok
 |------|---------------|-------------|
 | **Unwrapped** | BaseRegistrar ERC-721 | 2LD only |
 | **Unlocked** | NameWrapper ERC-1155 | Without `CANNOT_UNWRAP` (2LD only) |
-| **Locked** | NameWrapper ERC-1155 | With `CANNOT_UNWRAP` (2LD and 3LD+) |
-| **Detached** | NameWrapper ERC-1155 | Emancipated (`PARENT_CANNOT_CONTROL`) child of a locked parent, without `CANNOT_UNWRAP` (3LD+ only) |
+| **Locked** | NameWrapper ERC-1155 | Emancipated + `CANNOT_UNWRAP` (2LD and 3LD+) |
+| **Detached** | NameWrapper ERC-1155 | Emancipated, without `CANNOT_UNWRAP`, parent is Locked (3LD+ only) |
+
+Both Locked and Detached are subtypes of **Emancipated** (`PARENT_CANNOT_CONTROL` set). The distinction determines the migration path: Locked names preserve their fuse restrictions as v2 roles, while Detached names are unwrapped and registered with the standard role set.
 
 ### Key Definitions
 
@@ -60,7 +62,7 @@ Migration supports all `.eth` descendants. The migration path depends on the tok
 |----------|-------|-------------|
 | `GRACE_PERIOD_V1` | 90 days | Post-expiry window in ENSv1 where the owner can still renew |
 | `GRACE_PERIOD_V2` | 28 days | Post-expiry window in ENSv2 where the owner can still renew via the [ETH Registrar](/contracts/ensv2/eth-registrar) |
-| `BONUS_PERIOD` | ~62 days | `GRACE_PERIOD_V1 - GRACE_PERIOD_V2` (plus 1 second due to boundary handling). Added to v1 expiry during premigration so that a name becomes available in v2 no earlier than in v1 |
+| `BONUS_PERIOD` | ~62 days | `GRACE_PERIOD_V1 - GRACE_PERIOD_V2` (plus 1 second due to boundary handling). Added to v1 expiry during premigration so that the v2 reservation does not expire before v1's grace period ends |
 
 ## Premigration
 
@@ -72,7 +74,7 @@ For each name:
 - **Resolver**: set to `ENSV1Resolver`, which performs wildcard fallback to the v1 ENS registry
 - **Owner**: not set (RESERVED names have no owner)
 
-After premigration, new v1 `.eth` registrations are disabled. Names continue to resolve through v1 during this phase because `ENSV1Resolver` mirrors v1 resolution.
+After premigration, v1 `.eth` registrations and v1 renewals are disabled. All renewals go through the v2 `ETHRegistrar`, which syncs the expiry back to v1 when necessary. Names continue to resolve through v1 during this phase because `ENSV1Resolver` mirrors v1 resolution.
 
 ## Migration Paths
 
@@ -200,11 +202,11 @@ Some names are structurally unable to migrate (see [Restrictions](#restrictions)
 - Renewals work via the `ETHRegistrar`, keeping the v1 and v2 expiries in sync
 - v1 fuses, resolver, and ownership remain unchanged
 
-The only v2 features unavailable to unmigratable names are per-record permissions, aliasing, and the new resolver. Once the name expires in both v1 and v2, the `Graveyard` can clear its v1 namespace and the name becomes available for fresh registration in v2.
+The only v2 features unavailable to unmigratable names are per-record permissions, aliasing, and the new resolver. Once the v2 reservation expires, the name becomes available for fresh registration in v2. The `Graveyard` can clear the expired v1 namespace.
 
 ### What Happens to Unmigrated Names
 
-Names that *could* migrate but don't will eventually expire. Their v1 tokens expire, leaving the v1 registry state frozen (resolver, owner, fuses all unchanged). The v2 RESERVED slot also expires. Once both have expired, the name becomes available for fresh registration in v2 via the `ETHRegistrar`.
+Names that *could* migrate but don't will eventually expire. Their v1 tokens expire, leaving the v1 registry state frozen (resolver, owner, fuses all unchanged). Since v1 registrations are disabled, names never become available in v1 again. The v2 RESERVED slot also expires. Once expired in v2, the name becomes available for fresh registration via the `ETHRegistrar`.
 
 ## Scenarios
 
@@ -212,19 +214,19 @@ Names that *could* migrate but don't will eventually expire. Their v1 tokens exp
 
 *A name with 100 days left in v1 is premigrated.*
 
-The RESERVED slot has 162 days left (100 + 62 day bonus). ENSv1 expires after 100 days and becomes available after 190 days (100 + 90 day grace). ENSv2 expires after 162 days and becomes available after 190 days (162 + 28 day grace). Both systems make the name available at the same time.
+The RESERVED slot has 162 days left (100 + 62 day bonus). The v1 token expires after 100 days and its grace period ends after 190 days (100 + 90). The v2 reservation expires after 162 days and becomes available for registration after 190 days (162 + 28 day grace). The v2 availability aligns with the end of the v1 grace period.
 
 ### Migrates then renews
 
 *A name with 50 days remaining is premigrated, migrated, then renewed for 50 days.*
 
-The RESERVED slot has 112 days (50 + 62). The owner migrates, promoting to REGISTERED. The v1 token goes to the Graveyard with 50 days left. The owner renews via `ETHRegistrar` for 50 days, extending the v2 registration to 162 days. ENSv1 becomes available after 140 days (50 + 90), ENSv2 after 190 days (162 + 28).
+The RESERVED slot has 112 days (50 + 62). The owner migrates, promoting to REGISTERED. The v1 token goes to the Graveyard with 50 days left. The owner renews via `ETHRegistrar` for 50 days, extending the v2 registration to 162 days. The v1 grace period ends after 140 days (50 + 90). The v2 registration becomes available after 190 days (162 + 28).
 
 ### In grace period, renews out of grace
 
 *A name has 29 days left in the v1 grace period (i.e., -61 days remaining).*
 
-The RESERVED slot has 1 day left (-61 + 62). The owner uses the `ETHRegistrar` to renew for 62 days. ENSv1 expires after 1 day (-61 + 62) and becomes available after 91 days. ENSv2 expires after 63 days (-61 + 62 + 62) and becomes available after 91 days. The token can now be transferred and migrated.
+The RESERVED slot has 1 day left (-61 + 62). The owner uses the `ETHRegistrar` to renew for 62 days. The v1 token expires after 1 day (-61 + 62) with its grace period ending after 91 days. The v2 reservation expires after 63 days (-61 + 62 + 62) and becomes available after 91 days (63 + 28). The token can now be transferred and migrated.
 
 ### NameWrapper expiry out of sync
 
@@ -256,9 +258,12 @@ Migration is **not required** immediately. Unmigrated names continue to resolve 
 
 ### Subname Owners
 
-If you own a locked subname (3LD+), your parent must migrate first. Once the parent has migrated, transfer your token to the parent's `WrapperRegistry`.
+If you own an emancipated subname (3LD+), your parent must migrate first. Once the parent has migrated, transfer your token to the parent's `WrapperRegistry`:
 
-Unlocked 3LD+ subnames cannot be migrated through the migration controllers. They must be registered directly in v2 once their parent has a v2 registry.
+- **Locked subnames** (`CANNOT_UNWRAP` set): fuses are converted to v2 roles, a new WrapperRegistry is deployed as the subregistry
+- **Detached subnames** (emancipated without `CANNOT_UNWRAP`): unwrapped to the Graveyard and registered with the standard role set
+
+Non-emancipated 3LD+ subnames cannot be migrated through the migration controllers. They must be registered directly in v2 once their parent has a v2 registry.
 
 ### What Happens to Records
 
