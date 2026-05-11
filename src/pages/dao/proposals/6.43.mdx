@@ -27,7 +27,7 @@ This is a social proposal: it asks the DAO to approve the pricing structure to b
 
 ## Specification
 
-### 1\. Annual base price
+### 1. Annual base price
 
 | Name length   | Current | Proposed            |
 | :------------ | :------ | :------------------ |
@@ -35,7 +35,7 @@ This is a social proposal: it asks the DAO to approve the pricing structure to b
 | 4 characters  | $160/yr | $160/yr (unchanged) |
 | 5+ characters | $5/yr   | **$8/yr**           |
 
-### 2\. Multi-year discount curve (all name lengths)
+### 2. Multi-year discount curve (all name lengths)
 
 The discount is determined by the registration duration in a single transaction and applies to the entire registration, not just additional years. The same discount curve applies to first-time registrations and renewals.
 
@@ -43,14 +43,14 @@ The discount is determined by the registration duration in a single transaction 
 | :--- | :------- | :---------- | :----------- | :---------- | :----------- | :---------- | :----------- |
 | 1 yr | 0%       | $8.00       | $8.00        | $160        | $160         | $640        | $640         |
 | 2 yr | 12.5%    | $7.00       | $14.00       | $140        | $280         | $560        | $1,120       |
-| 3 yr | \~31%    | $5.50       | $16.50       | $110        | $330         | $440        | $1,320       |
-| 4 yr | \~31%    | $5.50       | $22.00       | $110        | $440         | $440        | $1,760       |
-| 5 yr | \~31%    | $5.50       | $27.50       | $110        | $550         | $440        | $2,200       |
-| 6 yr | \~44%    | $4.50       | $27.00       | $90         | $540         | $360        | $2,160       |
+| 3 yr | ~31%     | $5.50       | $16.50       | $110        | $330         | $440        | $1,320       |
+| 4 yr | ~31%     | $5.50       | $22.00       | $110        | $440         | $440        | $1,760       |
+| 5 yr | ~31%     | $5.50       | $27.50       | $110        | $550         | $440        | $2,200       |
+| 6 yr | ~44%     | $4.50       | $27.00       | $90         | $540         | $360        | $2,160       |
 
 The applicable rate is calculated based on the number of years registered or renewed in a single transaction and applies to the full duration. For example, renewing a 5+ character name for one year always costs $8 regardless of the existing expiration; renewing the same name for six years costs $27 ($4.50/yr).
 
-### 3\. Scope and timing
+### 3. Scope and timing
 
 The pricing structure described above will take effect with the deployment of the ENSv2 registrar contracts. Registrations and renewals before that point continue to use the existing pricing. This proposal does not alter 3- or 4-character base prices, and does not modify temporary premium pricing.
 
@@ -64,8 +64,8 @@ Because v2 shortens the grace period by 62 days, a one-time free 62-day renewal 
 
 This is a single-choice vote with three options:
 
-- **For** \- approve the pricing changes described above.
-- **Against** \- reject the pricing changes; existing pricing continues under ENSv2 unless another competing proposal passes.
-- **Abstain** \- neither approve nor reject; counts toward quorum.
+- **For** - approve the pricing changes described above.
+- **Against** - reject the pricing changes; existing pricing continues under ENSv2 unless another competing proposal passes.
+- **Abstain** - neither approve nor reject; counts toward quorum.
 
 If approved, ENS Labs will implement the pricing structure in the ENSv2 contracts at launch. If the proposal does not pass, existing .eth pricing will carry over to ENSv2 unchanged, and any future adjustment will require a new DAO process.
