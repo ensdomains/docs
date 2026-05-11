@@ -27,8 +27,14 @@ export async function ensips() {
 
     console.log('Fetching ENSIPs')
 
+    const githubHeaders: Record<string, string> = {}
+    if (process.env.GITHUB_TOKEN) {
+      githubHeaders.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
+    }
+
     const ensipsRepoRes = await fetchWithRetry(
-      'https://api.github.com/repos/ensdomains/ensips/contents/ensips'
+      'https://api.github.com/repos/ensdomains/ensips/contents/ensips',
+      { headers: githubHeaders }
     )
     if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
     const files = ((await ensipsRepoRes.json()) as DirectoryContents).filter(
@@ -147,12 +153,13 @@ function removeMarkdownComments(markdown: string) {
 
 async function fetchWithRetry(
   url: string,
+  options?: RequestInit,
   retries = 3,
   delay = 1000
 ): Promise<Response> {
   for (let i = 0; i <= retries; i++) {
     try {
-      const res = await fetch(url)
+      const res = await fetch(url, options)
       if (res.ok || i === retries) return res
     } catch (e) {
       if (i === retries) throw e
