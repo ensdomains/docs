@@ -6,7 +6,7 @@ import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # Reverse Resolution
 
-Reverse resolution maps an address back to an ENS name (the "primary name"). In ENSv1, this was handled by a single L1 Reverse Registrar. ENSv2 redesigns reverse resolution with native multi-chain support, signature-based claims, and a standalone architecture detached from the registry hierarchy.
+Reverse resolution maps an address back to an ENS name (the "primary name"). ENSv1 already supports multi-chain reverse resolution via per-chain [L2 Reverse Registrars](/registry/reverse) with signature-based claims ([ENSIP-19](/ensip/19)). ENSv2 refines the signature-based claim system and integrates reverse resolution into the v2 registry hierarchy.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -46,7 +46,7 @@ The L2ReverseRegistrar provides four methods for setting a primary name, coverin
 | Method | Authorization | Use case |
 |--------|--------------|----------|
 | `setName(name)` | `msg.sender` only | EOA setting its own primary name |
-| `setNameForAddr(addr, name)` | Caller must be the address | Setting from a different caller context |
+| `setNameForAddr(addr, name)` | Caller is the address, or owns the contract at `addr` via Ownable | Setting from a different caller context |
 | `setNameForAddrWithSignature(claim, signature)` | ERC-191 signature from the address | Gasless or cross-chain claims for EOAs |
 | `setNameForOwnableWithSignature(claim, owner, signature)` | Ownable pattern + ERC-1271/6492 signature | Smart contract wallets (Safe, ERC-4337) |
 
