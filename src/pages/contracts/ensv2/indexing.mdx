@@ -36,6 +36,10 @@ Resolvers are separate contracts ([Permissioned Resolver](/contracts/ensv2/permi
 
 These events are emitted by any registry contract (PermissionedRegistry / UserRegistry).
 
+:::note
+A `RegistryCreated()` event (emitted by PermissionedRegistry in the constructor, and by UserRegistry/WrapperRegistry on `initialize()`) is being added in [contracts-v2#258](https://github.com/ensdomains/contracts-v2/pull/258). This will allow indexers to discover new registry deployments on-chain.
+:::
+
 ### LabelRegistered
 
 ```solidity

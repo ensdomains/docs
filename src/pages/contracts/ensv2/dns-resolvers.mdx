@@ -10,6 +10,10 @@ ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) thro
 
 Users don't interact with these contracts directly. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) handles the entire flow transparently. This page explains what happens internally and how to configure DNS records for ENS resolution.
 
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+ENSv2's DNS resolution uses off-chain DNSSEC verification via [CCIP-Read](/resolvers/ccip-read). The on-chain DNSSEC proof submission used by the v1 [DNS Registrar](/registry/dns) for claiming DNS names remains on v1 infrastructure at launch.
+</FrenCallout>
+
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
 </FrenCallout>

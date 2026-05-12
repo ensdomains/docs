@@ -168,6 +168,16 @@ For subnames, you need to verify the name itself plus the security of the parent
     ],
   },
   {
+    name: 'requireResolver',
+    description: 'Same as findResolver, but reverts if no resolver is found or the resolver is invalid. Used internally by resolve() and reverse().',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to search' },
+    ],
+    returns: [
+      { name: 'info', type: 'ResolverInfo', description: 'Struct with name, offset, node, resolver address, and whether it supports IExtendedResolver' },
+    ],
+  },
+  {
     name: 'findExactRegistry',
     description: "Find the registry at a name's position by walking down from root.",
     params: [
