@@ -139,7 +139,7 @@ ETHRegistrar.renew(
 
 ## BatchRegistrar
 
-The **BatchRegistrar** is a companion contract used during migration. It allows the deployer to batch-register or batch-renew names in a single transaction:
+The **BatchRegistrar** is a companion contract used during migration from ENSv1. It allows the deployer to batch-register or batch-renew names in a single transaction:
 
 - For `AVAILABLE` names: registers them as `RESERVED` (no owner)
 - For `RESERVED` names with a shorter expiry: extends the expiry via `renew()`
