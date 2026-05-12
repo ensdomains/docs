@@ -1,0 +1,285 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 6.42] [Social] SPP3: Program Authorization and Committee Model
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/22086/)                                                                     |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x3e523451340e987e9d3745fb33585bd7136bb6fa8519691ba7b04fa160d4ab7b) |
+
+## Abstract
+
+The Service Provider Program funds teams that provide defined services to the ENS ecosystem. This proposal authorizes a third season, specifies the objectives SPP3 should advance, names the committee that will execute it, and caps the budget at 20% of trailing protocol revenue.
+
+The program parameters and budget are ratified in a single Snapshot vote alongside the named committee; the committee then returns to the DAO with a final cohort recommendation ratified via on-chain executable.
+
+SPP3 requires two votes from delegates:
+
+1.  The first approves the program, budget, and committee;
+2.  the second ratifies the cohort.
+
+This removes the burden on delegates of rating and ranking every service provider themselves, a structural problem SPP2 exposed.
+
+The committee reports to the DAO directly through standard governance channels. SPP3 is not contingent on the outcome of any ongoing governance discussions; the two tracks proceed independently. The SPP3 provider cohort shall not be unwound or restructured mid-cycle by an incoming foundation or working group.
+
+**The total budget specified in this proposal is $3.4M USDC.**
+
+## Specification
+
+### Part I: Program Authorization
+
+#### Authorization
+
+SPP3 is authorized as a one-cycle program. Renewal requires a new DAO vote. Nothing in this proposal commits the DAO to future seasons.
+
+The program funds teams that provide a defined service to the ENS ecosystem in exchange for payment. The primary deliverable must be a service to ENS. Projects whose primary value accrues outside the ENS ecosystem are not eligible.
+
+#### Ecosystem Objectives
+
+SPP3 applicants must map their proposed work to one or more of the following objective categories.
+
+Across all categories, growth in ENS registrations and integrations is a primary outcome the program is desires to advance.
+
+- **ENS Infrastructure.** Work that improves ENS as a protocol: smart contract development, frontend and client library improvements, resolver infrastructure, L2 support, and any engineering that increases the utility or reliability of the naming system.
+- **Outreach and Integrations.** Work that increases adoption and usage of ENS: integration support for wallets, dApps, and exchanges; developer relations; documentation; marketing; and partnership development.
+- **DAO Infrastructure.** Work that improves the operation of the DAO itself: governance tooling, transparency and accountability tools, voting infrastructure, communication platforms, and process automation.
+- **General Ecosystem Benefit.** Work that broadly benefits ENS without fitting into the first three categories. Applicants claiming this category must demonstrate why their work does not fit and provide a concrete theory of value, including measurable outcomes. Category 4 is a narrow residual; the committee should prefer placing work into the first three categories where a reasonable mapping exists.
+
+_The committee may define subcategories and weights when it publishes the rubric, but may not create new top-level categories. Different objectives in a future cycle require a new Program Authorization vote._
+
+#### Budget
+
+The SPP3 budget shall not exceed 20% of gross protocol revenue (registrations and renewals).
+
+The 20% formula is applied to trailing 12-month protocol revenue as measured at the time of the original draft (February 2026): approximately $16.9M, producing a binding budget cap of approximately $3.4M for SPP3. The cap is not recomputed at ratification.
+
+For comparison, SPP2 was $4.5M; the decrease reflects a year-over-year decline in protocol revenue, not a policy decision to reduce program funding. Proportionally to last year it remains the same.
+
+Committee compensation totals $150,000 USDC across the three compensated seats (one Chair at $45,000 and three compensated Members at $35,000 each). The ENS Labs Technical Representative seat is non-compensated. After overhead, approximately $3.25M is available for service provider funding. Funds are transferred to the accountability body's multisig upon cohort ratification and disbursed to providers via stream from there. Unspent funds return to the DAO treasury.
+
+The committee will not consider applications requesting less than $200,000. This floor exists to keep evaluation workload proportionate to program value; the committee should focus its effort on providers whose scope and funding represent a meaningful contribution to the ecosystem.
+
+Revenue source: [dune.com/steakhouse/ens-steakhouse](http://dune.com/steakhouse/ens-steakhouse)
+
+#### Relationship to SPP2
+
+SSPP3 is independent of SPP2. SPP2 streams continue on their original terms. SPP3 does not modify, terminate, or extend them. SPP2 providers whose agreements are concluding may apply to SPP3 on the same basis as any other applicant. Work delivered on schedule during the final weeks of an expiring SPP2 stream carries no negative weight in the SPP3 evaluation; the committee will assess delivery timing fairly.
+
+### Part II: Committee Model
+
+#### Model Justification
+
+_Throughout this proposal, "the accountability body" refers to the body the DAO designates as the SPP3 accountability counterparty. At the time of this proposal, that body is the_ **_Meta-Governance Working Group._**
+
+A standing committee addresses accountability gaps without removing the DAO from the decision. The DAO ratifies the committee in this proposal, approves the cohort recommendation by on-chain vote, and holds removal authority throughout.
+
+The primary improvement over SPP2 is structural. Under SPP2, delegates were asked to rate and rank each provider proposal individually. That placed a heavy evaluation burden on the DAO and produced cohorts shaped more by aggregated voter sorting than by deliberate composition. SPP3 moves that work to a named, accountable committee whose recommendation the DAO ratifies as a single cohort.
+
+SPP2 also surfaced smaller structural questions this model addresses:
+
+- Program scope wasn't formally ratified by the DAO ahead of selection
+- Some disagreements landed mid-cycle, after applications had opened
+- The fixed budget wasn't tied to protocol revenue
+
+Compensation reflects 12 months of accountability: reading every application, conducting interviews, negotiating service agreements, voting on the cohort, defending the recommendation publicly, and remaining the DAO's contact point for the funded providers across the year.
+
+#### Roles
+
+**Committee Chair.** Owns the full lifecycle of SPP3: timeline, interview calendar, forum updates, primary DAO contact for the 12-month term, post-cycle retrospective, and the point of contact for the funded cohort post-ratification. The Chair is a neutral process owner during selection and votes or ranks only as a tiebreaker.
+
+**Committee Member.** Reads every qualifying submission in full, participates in structured interviews, votes on allocation, and approves the cohort rationale before publication. No Member has unilateral authority to disqualify applicants.
+
+**ENS Labs Technical Representative (non-compensated).** A Labs-designated voting Member seat (currently gregskril.eth). Brings protocol-level technical judgment. This seat is bound by the same CoI requirements as all other members. Not eligible for promotion to Chair.
+
+#### Composition
+
+| Role                  | Count | Compensation    |
+| --------------------- | ----- | --------------- |
+| Chair                 | 1     | $45,000 / cycle |
+| Member (compensated)  | 3     | $35,000 / cycle |
+| Member (ENS Labs Rep) | 1     | Non-compensated |
+
+**Named seats:**
+
+| Seat   | Name                | Profile                                                                                                                                                                        |
+| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Chair  | coltron.eth         | Long-standing ENS DAO contributor and steward and current steward.                                                                                                             |
+| Member | sovereignsignal.eth | Current steward and experienced grants administrator. Cross-ecosystem experience in Gitcoin, ENS, and Uniswap.                                                                 |
+| Member | austingriffith.eth  | Long-standing Ethereum builder, mentor, and educator. Founder of BuidlGuidl and creator of Scaffold-ETH. Currently working with the Ethereum Foundation.                       |
+| Member | abdullahumar.eth    | Former co-president and head of governance at Michigan Blockchain. Active across Arbitrum, Lido, and Uniswap DAO's with a broad context on DAO operations and grants programs. |
+| Member | gregskril.eth       | ENS Labs technical representative providing protocol-level engineering judgment. Non-compensated                                                                               |
+
+The committee is named in this proposal and ratified by the DAO in the same Snapshot vote that authorizes the program. No separate election is held. Naming constitutes tacit acceptance of the role.
+
+#### Term and Payment
+
+Term aligns with the SPP3 funding cycle (12 months).Term aligns with the SPP3 funding cycle (12 months).
+
+Compensation: **20%** paid upon on-chain submission of the cohort recommendation; **80%** streamed over the remainder of the 12-month term, beginning on cohort on-chain ratification. The accountability body initiates the upfront payment and the stream; the committee holds no funds directly. If the accountability body changes during the cycle, responsibility passes to the successor body without interruption.
+
+**Dissolution.** Each member receives only compensation earned to that point. The 20% upfront tranche is owed if the cohort recommendation has been submitted on-chain. Any portion of the 80% stream that has elapsed is owed; the remainder returns to the treasury.
+
+#### Vacancies
+
+If a compensated Member seat becomes vacant, it is filled by mutual agreement of the remaining members, subject to eligibility and DAO notification within 7 days. The replacement receives the remaining unpaid compensation of the member they replace. If the ENS Labs Rep seat becomes vacant, ENS Labs designates a replacement.
+
+If the Chair seat becomes vacant, the remaining Members promote one of the three compensated Members to Chair by simple majority. The promoted Chair receives the Chair stream from the date of promotion forward; the outgoing Chair retains anything vested. If the vacancy occurs before or during cohort selection, a replacement Member is also appointed and the published timeline may be extended by up to 14 days. The ENS Labs Rep is not eligible for promotion to Chair.
+
+#### Quorum and Voting
+
+Voting or ranking of the cohort requires 3 of the 4 Member seats to be active and participating. Decisions require a simple majority of participating Members. The Chair votes only as a tiebreaker.
+
+#### Conflict of Interest
+
+A ommittee Member or Chair may not:
+
+- Be a current or pending SPP3 applicant
+- Be employed by, contracted to, hold stake in, or serve in any advisory capacity to any current or pending SPP3 applicant
+- Have received direct compensation from any SPP3 applicant in the 3 months prior to nomination
+- Acquire any of the above interests after ratification
+
+Breach triggers automatic suspension pending a removal vote. Self-disclosure is required at nomination, and any new potential conflict must be disclosed as it arises. Failing to disclose a new conflict after ratification is grounds for removal.
+
+CoI disputes are handled within the committee. In the absence of a functioning accountability body, the guardrail is social coordination among delegates or an executable DAO vote.
+
+#### No Backchanneling
+
+Once the application window opens, committee members must not meet privately with applicants to discuss SPP3. All program discussion happens through the structured interview process. Providers who attempt to gain advantage by pressuring individual members may be considered for disqualification.
+
+#### Removal
+
+A committee member may be removed by unanimous vote of the remaining members with documented cause (persistent non-performance or material CoI breach). Upon removal, any unpaid compensation is forfeited.
+
+#### Committee Accountability
+
+The committee is expected to complete the following across the cycle. These are generally pass/fail obligations; the program depends on all of them being met.
+
+- Read every qualifying submission in full
+- Conduct structured interviews with each qualifying applicant
+- Publish cohort selection rationale alongside the recommendation
+- Publish a mid-cycle update in Q4 2026
+- Publish an end-of-cycle retrospective within 30 days of cycle close (May 2027)
+- Document any stream suspension or termination decision with public rationale
+- Chair serves as primary point of contact for the funded cohort for the full 12-month term
+
+At mid-cycle and end-of-cycle, the committee will report on:
+
+- Provider milestone completion rate, with a target of 80% of milestones delivered by end of cycle
+- Any indicated movement in name registrations, renewals, or integrations attributable to funded work
+
+These metrics provide sufficient signal to assess whether funds were effectively deployed and whether the program structure warrants continuation in the same form after SPP3.
+
+### Part III: SPP Application Process
+
+The committee sets and publishes the full process timeline before the submission window opens. The committee may extend the submission or review windows if more time is needed to ensure a thorough evaluation. Any extension must be announced publicly before the original deadline passes.
+
+#### Pre-Submission Work
+
+Before the provider submission window opens, the committee is responsible for preparing the infrastructure that makes the cycle run. This work begins immediately upon committee seating and includes:
+
+- Developing and publishing the evaluation rubric based on the suggested criteria below
+- Drafting and publishing the standard service agreement template
+- Publishing the application format and required fields
+- Building or configuring the submission system (intake form, confidential storage, interview scheduling)
+- Posting the full process timeline with binding dates
+- Setting up internal scoring and rationale-tracking tools
+
+All pre-submission artifacts (rubric, service agreement template, application format, timeline) will be posted publicly to the forum before the submission window opens.
+
+#### Cohort Composition
+
+The committee determines the number of funded providers. There is no minimum or maximum number of providers; the only binding constraint is that total funding fits within the ratified budget envelope. The $200,000 application floor in Part I applies.
+
+The committee has discretion within the following principles:
+
+- **Category coverage:** The cohort should advance the program's objectives across all relevant categories, but the committee is not required to fund every category. If the applicant pool in a given category does not meet the evaluation threshold, the committee may decline to fund it.
+- **Award sizing:** The committee may negotiate tfund providers at amounts smaller than requested, with rationale, and may negotiate scope or milestone adjustments.
+
+The committee will make best efforts to construct a cohort that fits well as a whole, reducing funding overlaps and avoiding duplicative work across funded teams.
+
+#### Process
+
+**Submission window and committee context-building (concurrent, ~14 days).** The submission window and committee context-building period run simultaneously. While providers are preparing and submitting applications, the committee is building shared context on the current ecosystem, existing integrations, and ongoing work. The rubric, service agreement template, and application format are published before this window opens. The committee filters spam and erroneous submissions concurrently. Pre-qualification is a basic screen, not a quality judgment.
+
+**Committee review (~14 days).** The committee reads every qualifying application in full and conducts a structured interview with each team in a consistent format. Scoring begins on pre-qualified applications before the submission window closes. The committee may negotiate scope, objectives, or award amounts during this period. The committee may extend this window if more time is needed for a complete evaluation, with public notice.
+
+**Week 3: Recommendation and ratification.** The committee submits a cohort recommendation publicly to the DAO. Selected applicants, individual award amounts, total program cost, and a public rationale on the forum. Internal working documents may be shared with the accountability body or the ENS Foundation upon request.
+
+The committee then submits the recommendation as an executable proposal. Delegates vote on the cohort as a whole; the recommendation is a take-it-or-leave-it and cannot be amended on-chain.
+
+If rejected, the committee may revise and resubmit a maximum of two additional times. If no cohort is ratified within 30 days of the first failure, or if the committee voluntarily steps down, the committee is dissolved.
+
+#### Evaluation Criteria
+
+Eligibility (Ecosystem Objective category fit) is established in Part I.
+
+The criteria below evaluate the quality and likely impact of eligible applicants and are ratified as the floor of the rubric. The committee may expand on these criteria, define sub-criteria, or set weights, but the criteria themselves are binding.
+
+**Prior Delivery History within ENS.** Has the team shipped what it committed to in previous ENS work? Incomplete or abandoned prior grants are weighted negatively. New teams without ENS history must demonstrate comparable delivery elsewhere.
+
+**Scope Clarity.** Is the team's intended work clearly defined? The committee looks for a coherent problem statement, a credible approach, and a clear articulation of what success looks like. Flexibility in execution is expected; the committee evaluates whether the team can credibly deliver meaningful outcomes, not whether they have followed a prescribed format.
+
+**Milestone Structure.** Are deliverables broken into realistic and verifiable checkpoints with dates? Each milestone should answer: what is being delivered, how completion is verified (a metric, a deployed contract, a published report, or a link), when it is expected, and what an on-track quarterly update looks like. Proposals with lump-sum outputs and no interim milestones score lower.
+
+**Adoption, Revenue, and Ecosystem Utility.** Does this work expand ENS's reach or usage? Covers direct user adoption metrics, name sales and renewal revenue attributable to the work, integrations, and broader ecosystem health. As stated in the program objectives, registration growth is a first-order outcome; the committee should weigh contributions to registration and revenue growth alongside non-revenue forms of adoption.
+
+#### Service Provider Obligations
+
+Individual service agreements are negotiated by the committee and specified per provider before cohort submission, within the following constraints:
+
+**Payment structure.** Funded providers are compensated via stream, not lump sum. Streams are optimistic and continue by default. The committee negotiates schedule, duration, and milestones with each provider individually.
+
+**Milestone accountability.** Milestones are targets, not gates. A provider is in good standing as long as they have not abandoned the work and are maintaining their reporting cadence. Stream continuation is tied to continued engagement and reporting, not milestone completion. The committee may recommend suspension or termination of a stream if a provider stops reporting or abandons the work, subject to a written notice and response period defined in the agreement. Disputes may be raised to the accountability body for resolution.
+
+**Treasury return.** Unspent funds from terminated agreements return to the DAO treasury at the conclusion of the cycle. They do not roll over without a new DAO vote.
+
+**Service Agreement.** Selected providers will be required to sign the ENS Foundation Terms of Use before funding begins. The Terms establish the legal relationship between the Foundation and funded providers, covering conditions of fund use, open-source licensing requirements, sanctions and OFAC compliance, AML obligations, quarterly reporting, and the right to suspend or terminate streams for material breaches or reputational harm.
+
+The standard service agreement template will be published to the forum at the time the application window opens. Material per-provider deviations will be noted in the cohort recommendation.
+
+## Voting
+
+This proposal will be submitted as a Snapshot vote.
+
+- **For:** Authorize SPP3.
+- **Against:** Do not authorize SPP3.
+- **Abstain:** Abstain from this vote. Counts toward quorum but not approval.
+
+**Quorum:** 1% of total $ENS supply.  
+**Approval:** Simple majority (>50%) of For vs. Against votes.
+
+## Next Steps
+
+1.  All five committee seats confirmed publicly during forum discussion (5–7 days)
+2.  Proposal submitted to Snapshot upon close of forum discussion
+3.  Committee seated upon Snapshot passage
+4.  Rubric and service agreement template published within 7 days of seating
+5.  Provider submission window opens (minimum 5 days after rubric publication); committee context-building runs concurrently
+
+### Timeline
+
+**Phase 1: Forum Discussion + Snapshot**
+
+| Step                         | Dates          | Notes                         |
+| ---------------------------- | -------------- | ----------------------------- |
+| Forum discussion             | Apr 25 – May 2 | Named seats declared publicly |
+| Program + committee Snapshot | May 2 – May 7  | Single proposal, 5 days       |
+| Committee seated             | ~May 7         | Rubric due within 7 days      |
+
+**Phase 2: Provider selection + Executable**
+
+| Step                                              | Dates           | Notes                                                                                       |
+| ------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------- |
+| Committee context-building + Provider submissions | May 19 – Jun 2  | 14-day window; rubric publishes ≥5 days prior; committee context-building runs concurrently |
+| Committee review                                  | Jun 2 – Jun 16  | 14-day review                                                                               |
+| Recommendation posted                             | Jun 16 – Jun 19 | Forum publication                                                                           |
+| On-chain ratification                             | Jun 22 – Jul 1  | 7-day vote + 2-day timelock                                                                 |
+
+- The timeline posted in this proposal may be adjusted by the committee if a change reasonably improves the process. Examples cases may be to allow more time for submissions and review, or shortening window if a step is completed (rubric/review). Changes will be communicated on the forum.

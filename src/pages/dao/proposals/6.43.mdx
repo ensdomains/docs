@@ -1,0 +1,71 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 6.43] [Social] ENSv2 Pricing: 5+ Character Name Adjustment, Multi-Year Discounts, Grace Period Change
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/22038/)                                                                     |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0xeba629f6c1600cceff07e01e922e4e61c7b19f9e04e03e89ec30500878cb6783) |
+
+## Abstract
+
+This proposal asks the DAO to approve two changes to .eth registration pricing, to take effect with the launch of ENS v2:
+
+1. Introduce a multi-year registration discount that applies to all name lengths, to incentivize longer-term commitments.
+2. Increase the annual registration fee for 5+ character names from $5 to $8 per year. Pricing for 3 and 4-character names is unchanged.
+
+These changes follow the [temperature check](https://discuss.ens.domains/t/temp-check-ens-v2-pricing-5-character-name-price-adjustment-multi-year-discounts/22038) discussion and reflect feedback from delegates and .eth name holders during that process.
+
+This is a social proposal: it asks the DAO to approve the pricing structure to be included in the ENS v2 contracts.
+
+## Specification
+
+### 1. Annual base price
+
+| Name length   | Current | Proposed            |
+| :------------ | :------ | :------------------ |
+| 3 characters  | $640/yr | $640/yr (unchanged) |
+| 4 characters  | $160/yr | $160/yr (unchanged) |
+| 5+ characters | $5/yr   | **$8/yr**           |
+
+### 2. Multi-year discount curve (all name lengths)
+
+The discount is determined by the registration duration in a single transaction and applies to the entire registration, not just additional years. The same discount curve applies to first-time registrations and renewals.
+
+| Term | Discount | 5-char $/yr | 5-char Total | 4-char $/yr | 4-char Total | 3-char $/yr | 3-char Total |
+| :--- | :------- | :---------- | :----------- | :---------- | :----------- | :---------- | :----------- |
+| 1 yr | 0%       | $8.00       | $8.00        | $160        | $160         | $640        | $640         |
+| 2 yr | 12.5%    | $7.00       | $14.00       | $140        | $280         | $560        | $1,120       |
+| 3 yr | ~31%     | $5.50       | $16.50       | $110        | $330         | $440        | $1,320       |
+| 4 yr | ~31%     | $5.50       | $22.00       | $110        | $440         | $440        | $1,760       |
+| 5 yr | ~31%     | $5.50       | $27.50       | $110        | $550         | $440        | $2,200       |
+| 6 yr | ~44%     | $4.50       | $27.00       | $90         | $540         | $360        | $2,160       |
+
+The applicable rate is calculated based on the number of years registered or renewed in a single transaction and applies to the full duration. For example, renewing a 5+ character name for one year always costs $8 regardless of the existing expiration; renewing the same name for six years costs $27 ($4.50/yr).
+
+### 3. Scope and timing
+
+The pricing structure described above will take effect with the deployment of the ENSv2 registrar contracts. Registrations and renewals before that point continue to use the existing pricing. This proposal does not alter 3- or 4-character base prices, and does not modify temporary premium pricing.
+
+## Grace Period
+
+ENS v2 will reduce the grace period from 90 days to 28 days. During the grace period, names will be untransferrable and will not resolve. During this period the name can still be renewed, which will restore it for its original owner.
+
+Because v2 shortens the grace period by 62 days, a one-time free 62-day renewal will be applied to all v1 names at the time of upgrade. This renewal covers the difference between the old and new grace periods, ensuring that existing owners retain the same total amount of time to renew their names. No action is required as the renewal will be applied automatically.
+
+## Voting
+
+This is a single-choice vote with three options:
+
+- **For** - approve the pricing changes described above.
+- **Against** - reject the pricing changes; existing pricing continues under ENSv2 unless another competing proposal passes.
+- **Abstain** - neither approve nor reject; counts toward quorum.
+
+If approved, ENS Labs will implement the pricing structure in the ENSv2 contracts at launch. If the proposal does not pass, existing .eth pricing will carry over to ENSv2 unchanged, and any future adjustment will require a new DAO process.
