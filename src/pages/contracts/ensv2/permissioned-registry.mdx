@@ -27,7 +27,6 @@ In ENSv1, name management was split across three separate contracts: the ENS Reg
 | Token IDs       | Fixed (derived from namehash/labelhash)         | [Mutable](/contracts/ensv2/mutable-token-ids): change on role updates and re-registration |
 | Subname control | Requires Name Wrapper + fuse configuration      | Built-in via subregistry pointer + per-name roles                            |
 | Upgradeability  | Not upgradeable                                 | UUPS proxy pattern (for [UserRegistry](/contracts/ensv2/registry-template#userregistry)) |
-| Grace period    | 90-day grace period after expiry                | No grace period; names expire immediately                                    |
 | Name states     | Registered or not                               | Three states: AVAILABLE, RESERVED, REGISTERED                                |
 
 ## Names

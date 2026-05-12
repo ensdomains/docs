@@ -139,7 +139,7 @@ flowchart TD
 Functions that accept `anyId` include: `setSubregistry()`, `setResolver()`, `renew()`, `unregister()`, `getExpiry()`, `getStatus()`, `getState()`, `getTokenId()`, `getResource()`, and all EAC role functions.
 
 :::note
-anyId polymorphism is specific to the [Permissioned Registry](/contracts/ensv2/permissioned-registry). The [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) uses a [different resource scheme](/contracts/ensv2/enhanced-access-control#resources) based on `keccak256(node, part)` and does not use anyId.
+`anyId` polymorphism is specific to the [Permissioned Registry](/contracts/ensv2/permissioned-registry). The [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) uses a [different resource scheme](/contracts/ensv2/enhanced-access-control#resources) based on `keccak256(node, part)` and does not use `anyId`.
 :::
 
 ## Implications for Developers
@@ -148,7 +148,7 @@ anyId polymorphism is specific to the [Permissioned Registry](/contracts/ensv2/p
 
 Token IDs are not stable identifiers. If you need to reference a name, store the **labelhash** instead and use `getTokenId(anyId)` to get the current token ID when needed.
 
-### Use anyId Where Possible
+### Use `anyId` Where Possible
 
 Since most functions accept `anyId`, you can simply pass the labelhash and avoid dealing with token IDs entirely in many cases.
 
