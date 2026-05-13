@@ -56,7 +56,7 @@ function Profile({
           className="border-grey-light h-10 w-10 rounded-sm border-0.5"
         />
         <div className="flex flex-col gap-0.5 leading-none">
-          <span className="font-semibold">{name || 'No name'}</span>
+          <span className="font-semibold font-semi-mono">{name || 'No name'}</span>
 
           {!hideAddress && (
             <span className={cn('text-grey text-xs')}>
