@@ -6,7 +6,9 @@ import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # Verifiable Factory
 
-ENSv2 deploys per-account resolvers and per-name subname registries through a single shared factory. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. The factory is maintained in a [separate repository](https://github.com/ensdomains/verifiable-factory). This page covers how the protocol uses it.
+ENSv2's default setup deploys per-account resolvers and per-name subname registries through a single shared factory, replacing the v1 Public Resolver with individual [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxies per account. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. The factory is maintained in a [separate repository](https://github.com/ensdomains/verifiable-factory). This page covers how the protocol uses it.
+
+The factory is the **default** deployment mechanism, not a protocol requirement. Custom resolver contracts are fully supported: `setResolver()` on the [Permissioned Registry](/contracts/ensv2/permissioned-registry) accepts any address. You can deploy your own resolver implementing `IExtendedResolver` (or the standard resolver profiles) without using the factory.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.

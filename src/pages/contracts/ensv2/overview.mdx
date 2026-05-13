@@ -18,35 +18,51 @@ The information on this page is a work-in-progress. Expect updates as the design
 
 ## What's new in ENSv2?
 
-- **Hierarchical Registries** – while ENSv1 used a single flat registry for all
-  names, ENSv2 allows each name to provide its own registry implementation for
-  subnames. This provides name owners and developers with direct control over
-  the ownership and transfer rules for names and subnames.
+- **Hierarchical Registries** - While ENSv1 used a single flat registry for all
+  names, ENSv2 uses a [hierarchical model](/contracts/ensv2/registry-hierarchy) where a full
+  name like `sub.alice.eth` is a chain of entries across registries linked by
+  subregistry pointers. Name owners can deploy their own subname registry on
+  demand. Registries and resolvers are deployed as proxies via the
+  [Verifiable Factory](/contracts/ensv2/verifiable-factory).
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
-  in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2, using a new, highly flexible,
-  role-based permissions model.
+  in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2 via a new role-based
+  permission system called [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
 - **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed by the owner. After the grace period, names enter a temporary premium period.
-- **Contract Factories** - Rather than relying on large multi-user contracts such as
-  the default public resolver, every account gets its own resolver, and every name
-  with subnames gets its own registry contract. This simplifies the contracts significantly, while offering users
-  new functionality such as the possibility of 'aliasing' multiple domains to
-  the same records.
+- **Per-Account Resolvers** - Rather than sharing a single Public Resolver, every
+  account gets its own [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy
+  with fine-grained per-record permissions and [record aliasing](/contracts/ensv2/permissioned-resolver#aliasing).
+
+```mermaid
+flowchart LR
+    subgraph once ["One-time setup"]
+        VF["Verifiable\nFactory"]
+        PR["PermissionedResolver\n(per account)"]
+        VF -->|"deploy proxy"| PR
+    end
+
+    subgraph names ["Name registration"]
+        N1["alice.eth"]
+        N2["bob.eth"]
+        N3["wallet.eth"]
+    end
+
+    subgraph subnames ["On demand"]
+        UR["UserRegistry"]
+    end
+
+    N1 & N2 & N3 -.->|"resolver"| PR
+    N1 -->|"subregistry"| UR
+```
 
 ## What hasn't changed?
 
 - **Resolvers** - while we have developed new resolver contracts to take advantage
-  of the changed environment enabled by ENSv2, the interface used
-  by resolvers remains the same.
+  of the changed environment enabled by ENSv2, the resolver interface remains the
+  same. Custom resolver implementations are fully supported.
 - **True Ownership** - ENSv2 continues to prioritize trust minimization, enabling
   you to own your name fully, without having to worry about interference from
   centralized third-parties.
 - **Truly multi-chain** - ENS continues to support all L2s.
-
-## Registry Architecture
-
-ENSv2 replaces ENSv1's single flat registry with a **hierarchical model** where each name can have its own registry for managing subnames. Each account gets its own resolver for storing records. Names don't exist as single on-chain objects. Instead, a full name like `sub.alice.eth` is a chain of entries across registries linked by subregistry pointers.
-
-See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full explanation with diagrams, including subtree operations, namespace aliasing, token representation, and the permissions model.
 
 ## Architecture
 
@@ -70,6 +86,17 @@ See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full expla
 | [Registry Metadata](/contracts/ensv2/registry-metadata)         | ERC-1155 metadata providers for registries                         |
 | [DNS Name Resolution](/contracts/ensv2/dns-resolvers)           | Resolving DNS domain names through the ENS protocol                |
 | [Reverse Resolution](/contracts/ensv2/reverse-resolution)       | Primary names and multi-chain reverse resolution                   |
+
+## Guides
+
+| Page                                                                     | Description                                                            |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [Migration](/contracts/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
+| [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                           |
+| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Hands-on guide for direct smart contract interaction                   |
+| [Registry Template](/contracts/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation       |
+| [Indexing](/contracts/ensv2/indexing)                                     | Events and functions for building indexers and subgraphs               |
+| [FAQ](/contracts/ensv2/faq)                                              | Frequently asked questions about ENSv2                                 |
 
 ## Deployments (Sepolia)
 
@@ -97,14 +124,3 @@ See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full expla
 | ENSV1Resolver | `TBD` |
 | ReverseRegistrarHCAAdapter | `TBD` |
 | DefaultReverseRegistrarHCAAdapter | `TBD` |
-
-## Guides
-
-| Page                                                                     | Description                                                            |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| [Migration](/contracts/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
-| [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                           |
-| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Hands-on guide for direct smart contract interaction                   |
-| [Registry Template](/contracts/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation       |
-| [Indexing](/contracts/ensv2/indexing)                                     | Events and functions for building indexers and subgraphs               |
-| [FAQ](/contracts/ensv2/faq)                                              | Frequently asked questions about ENSv2                                 |
