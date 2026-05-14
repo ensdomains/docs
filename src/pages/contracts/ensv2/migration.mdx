@@ -13,7 +13,7 @@ The contracts and interfaces described here are **not yet final** and may change
 </FrenCallout>
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. All renewals and new registrations go through the v2 [ETH Registrar](/contracts/ensv2/eth-registrar). Names in v1 will simply expire and can never be re-registered through v1.
+Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. New registrations go through the v2 [ETH Registrar](/contracts/ensv2/eth-registrar). Migrated names are renewed via the ETH Registrar; unmigrated (RESERVED) names are renewed via `ETHRenewerV1`, which syncs the expiry back to v1. Names in v1 will simply expire and can never be re-registered through v1.
 </FrenCallout>
 
 ## Overview
@@ -74,7 +74,7 @@ For each name:
 - **Resolver**: set to `ENSV1Resolver`, which performs wildcard fallback to the v1 ENS registry
 - **Owner**: not set (RESERVED names have no owner)
 
-After premigration, v1 `.eth` registrations and v1 renewals are disabled. All renewals go through the v2 `ETHRegistrar`, which syncs the expiry back to v1 when necessary. Names continue to resolve through v1 during this phase because `ENSV1Resolver` mirrors v1 resolution.
+After premigration, v1 `.eth` registrations and v1 renewals are disabled. Migrated (REGISTERED) names are renewed via the `ETHRegistrar`. Unmigrated (RESERVED) names are renewed via `ETHRenewerV1`, which syncs the expiry back to the v1 BaseRegistrar. Names continue to resolve through v1 during this phase because `ENSV1Resolver` mirrors v1 resolution.
 
 ## Migration Paths
 
@@ -87,8 +87,8 @@ The v2 owner specified during migration **does not need to match** the v1 owner.
 Unwrapped 2LD names (BaseRegistrar ERC-721 tokens) are migrated via the `UnlockedMigrationController`.
 
 1. Transfer the ERC-721 token via `safeTransferFrom` with an encoded data payload specifying: label, new owner, resolver, and subregistry
-2. The controller reclaims the token on the BaseRegistrar and clears the v1 resolver
-3. The token is sent to the Graveyard
+2. The controller reclaims the token on the BaseRegistrar, transfers v1 registry ownership to the Graveyard, and clears the v1 resolver
+3. The ERC-721 token is sent to the Graveyard
 4. The name is promoted from RESERVED to REGISTERED in the v2 ETH Registry with the provided parameters
 5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/contracts/ensv2/eth-registrar#eac-integration))
 
@@ -121,7 +121,7 @@ The migration flow:
 4. ENSv1 [fuses](/wrapper/fuses) are converted to ENSv2 roles (see [Fuse-to-Role Conversion](#fuse-to-role-conversion))
 5. A `WrapperRegistry` is always deployed as the subregistry, replicating the v1 fuse-based access control using v2's [EAC](/contracts/ensv2/enhanced-access-control) system
 6. The resolver is cleared, **unless** `CANNOT_SET_RESOLVER` is burned, in which case the existing v1 resolver is preserved. If the preserved resolver is a known `PublicResolver`, it is replaced with `PublicResolverV2`
-7. The token is **not unwrapped** and stays in the receiver until expiry (the `LockedMigrationController` for 2LD, or the parent's `WrapperRegistry` for 3LD+)
+7. The token is **not unwrapped** but is transferred to the Graveyard as an ERC-1155 token
 8. The name is promoted from RESERVED to REGISTERED (for 2LD) or registered directly (for 3LD+) with the converted roles
 
 ### Detached Names
@@ -156,13 +156,13 @@ These roles are granted to the name owner on the WrapperRegistry's `ROOT_RESOURC
 |------------|-----------|------------------------|
 | `CANNOT_CREATE_SUBDOMAIN` | `ROLE_REGISTRAR` | Not set (not burned) |
 | `CANNOT_BURN_FUSES` | Admin counterparts of above | Not set (not frozen) |
-| (always) | `ROLE_RENEW` + `ROLE_RENEW_ADMIN` | Always granted |
+| (always) | `ROLE_RENEW` + `ROLE_RENEW_ADMIN` + `ROLE_UPGRADE` + `ROLE_UPGRADE_ADMIN` | Always granted |
 
 ## Graveyard
 
 The `Graveyard` contract is the burn address for migrated v1 tokens. It holds migrated tokens until expiry. The tokens are technically transferable, but the Graveyard has no upgrade or transfer mechanism.
 
-Migration itself only clears the **resolver** of the migrated name (when possible). The remainder of the v1 registry namespace is left unchanged. The Graveyard can separately clean up the unemancipated namespace of any migrated name:
+Migration clears the **resolver** of the migrated name (when possible). For unwrapped names, v1 registry ownership is also transferred to the Graveyard. The remainder of the v1 registry namespace is left unchanged. The Graveyard can separately clean up the unemancipated namespace of any migrated name:
 
 ```solidity
 // Anyone can call this to clean up v1 registry entries for migrated names
@@ -180,13 +180,16 @@ Not all names will migrate immediately. ENSv2 provides mechanisms to keep unmigr
 
 ### Renewals
 
-The [ETH Registrar](/contracts/ensv2/eth-registrar) handles all renewals, for both REGISTERED and RESERVED names. When renewing a RESERVED name, the registrar automatically syncs the duration to the v1 BaseRegistrar so both systems stay in lockstep.
+Renewals are handled by two contracts depending on the name's status:
 
-The `ETHSyncer` contract handles a separate concern: syncing the NameWrapper expiry with the BaseRegistrar expiry (for cases where the two have drifted out of sync).
+- **`ETHRegistrar`**: renews REGISTERED names (migrated names). Does not sync v1.
+- **`ETHRenewerV1`**: renews RESERVED names (unmigrated names). Syncs the expiry back to the v1 BaseRegistrar so both systems stay in lockstep.
+
+`ETHRenewerV1` also provides `syncWrapper()` for batch-syncing NameWrapper expiry with BaseRegistrar expiry:
 
 ```solidity
 // Batch-sync NameWrapper expiry with BaseRegistrar
-ETHSyncer.syncWrapper(labels)
+ETHRenewerV1.syncWrapper(labels)
 ```
 
 **Key invariants:**
@@ -199,7 +202,7 @@ ETHSyncer.syncWrapper(labels)
 Some names are structurally unable to migrate (see [Restrictions](#restrictions)). These names remain fully functional on v1:
 
 - Resolution continues via `ENSV1Resolver` as long as the v2 reservation is active
-- Renewals work via the `ETHRegistrar`, keeping the v1 and v2 expiries in sync
+- Renewals work via `ETHRenewerV1`, keeping the v1 and v2 expiries in sync
 - v1 fuses, resolver, and ownership remain unchanged
 
 The only v2 features unavailable to unmigratable names are per-record permissions, aliasing, and the new resolver. Once the v2 reservation expires, the name becomes available for fresh registration in v2. The `Graveyard` can clear the expired v1 namespace.
@@ -226,13 +229,13 @@ The RESERVED slot has 112 days (50 + 62). The owner migrates, promoting to REGIS
 
 *A name has 29 days left in the v1 grace period (i.e., -61 days remaining).*
 
-The RESERVED slot has 1 day left (-61 + 62). The owner uses the `ETHRegistrar` to renew for 62 days. The v1 token expires after 1 day (-61 + 62) with its grace period ending after 91 days. The v2 reservation expires after 63 days (-61 + 62 + 62) and becomes available after 91 days (63 + 28). The token can now be transferred and migrated.
+The RESERVED slot has 1 day left (-61 + 62). The owner uses `ETHRenewerV1` to renew for 62 days. The v1 token expires after 1 day (-61 + 62) with its grace period ending after 91 days. The v2 reservation expires after 63 days (-61 + 62 + 62) and becomes available after 91 days (63 + 28). The token can now be transferred and migrated.
 
 ### NameWrapper expiry out of sync
 
 *The NameWrapper shows an expired name but the BaseRegistrar still has it as registered.*
 
-Use `ETHSyncer.syncWrapper(labels)` to batch-sync the NameWrapper expiry with the BaseRegistrar expiry.
+Use `ETHRenewerV1.syncWrapper(labels)` to batch-sync the NameWrapper expiry with the BaseRegistrar expiry.
 
 ## What Users Need to Do
 
@@ -250,7 +253,7 @@ Premigration happens automatically. To migrate your name to v2:
 2. Specify the new v2 owner, resolver, and subregistry in the transfer data
 3. The v2 owner can be a different address than the v1 owner (e.g., migrating to a smart account)
 
-If your name is in the v1 grace period, use the `ETHRegistrar` to renew it first.
+If your name is in the v1 grace period, use `ETHRenewerV1` to renew it first.
 
 :::note
 Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/contracts/ensv2/permissioned-resolver#eac-integration), [aliasing](/contracts/ensv2/permissioned-resolver#aliasing), and the new resolver.
@@ -288,6 +291,6 @@ Migration is not possible in the following cases:
 | `LockedMigrationController` | Migrates locked 2LD names |
 | `WrapperRegistry` | Migrates locked/detached 3LD+ names; replicates fuse-based access control in v2 |
 | `Graveyard` | Burn address for migrated tokens; clears unemancipated v1 namespaces |
-| `ETHSyncer` | Syncs NameWrapper expiry with BaseRegistrar expiry |
+| `ETHRenewerV1` | Renews RESERVED (unmigrated) names with v1 BaseRegistrar sync; syncs NameWrapper expiry |
 | `ENSV1Resolver` | Wildcard fallback resolver for premigrated names |
 | `PublicResolverV2` | Replacement for v1 PublicResolver that respects v2 ownership |
