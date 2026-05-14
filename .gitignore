@@ -18,3 +18,5 @@ src/data/generated/*
 
 .wrangler
 .claude
+# Local Netlify folder
+.netlify

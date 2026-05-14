@@ -21,7 +21,7 @@ const variantStyles = {
   destructive: '!bg-red text-white hover:!bg-red-bright',
   success: '!bg-green text-white hover:!bg-green-bright',
   outline:
-    'ring-2 ring-inset ring-grey-active text-grey-active hover:ring-grey hover:text-grey',
+    'ring-1 ring-inset ring-grey-active text-grey-active hover:ring-grey hover:text-grey',
 }
 
 type HrefProperties = {
@@ -46,7 +46,7 @@ export const Button: FC<
   const disabled = 'disabled' in properties ? properties.disabled : false
 
   className = cn(
-    'py-3 px-5 rounded-lg inline-flex justify-center gap-0.5 overflow-hidden text-sm font-medium transition',
+    'py-3 px-5 rounded-sm inline-flex justify-center gap-0.5 overflow-hidden text-sm font-medium transition',
     'hover:-translate-y-[1px]',
     'active:translate-y-0',
     variantStyles[variant],

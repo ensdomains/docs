@@ -14,7 +14,7 @@ export const AddressRecords = ({ name, coinTypes }: UseEnsAddressesProps) => {
           src={avatar || '/img/fallback-avatar.svg'}
           className="h-8 w-8 rounded"
         />
-        <span className="font-semibold">{name}</span>
+        <span className="font-semibold font-semi-mono">{name}</span>
       </div>
 
       <Table

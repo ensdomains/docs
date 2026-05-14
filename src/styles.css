@@ -1,13 +1,18 @@
 @import 'tailwindcss';
 @config '../tailwind.config.cjs';
 
+
 :root {
-  --ens-blue-active: #003685;
-  --ens-blue-dim: #056aff;
-  --ens-blue-primary: #3889ff;
-  --ens-blue-bright: #569aff;
-  --ens-blue-light: #d1e4ff;
-  --ens-blue-surface: #eef5ff;
+  --ens-radius-button: 4px;
+  --ens-radius-table: 4px; /* Tailwind rounded-sm */
+
+  /* Figma ENS Core: colors/lapis (node 514:12). */
+  --ens-blue-active: #02293b; /* lapis/900 */
+  --ens-blue-dim: #39b4ea; /* lapis/400 */
+  --ens-blue-primary: #0082bb; /* lapis/500 */
+  --ens-blue-bright: #80c4e0; /* lapis/300 */
+  --ens-blue-light: #dbf0f8; /* lapis/100 */
+  --ens-blue-surface: #dbf0f8; /* lapis/100 */
 
   --ens-indigo-active: #19175f;
   --ens-indigo-dim: #342fc5;
@@ -65,21 +70,38 @@
   --ens-grey-light: #e8e8e8;
   --ens-grey-surface: #f6f6f6;
 
-  --ens-background: #ffffff;
-  --ens-background-secondary: var(--ens-grey-surface);
+  --ens-background: #F9F9F7;
+  --ens-background-secondary: #F2F2F2;
+  
   --ens-border: var(--ens-grey-light);
-  --ens-text: var(--ens-grey-active);
-  --ens-text-secondary: var(--ens-grey-dim);
+  --ens-text: #191919;
+  --ens-text-secondary: #737373;
   --ens-text-disabled: var(--ens-grey-bright);
+
+  /* ABC Monument Grotesk / Mono (Dinamo): ss01 → single-storey “a”. Pass to font-feature-settings; ignored by Inter fallback. */
+  --ens-font-feature-monument-a-alt: 'ss01' 1;
+}
+
+/* Applies the Monument alternate “a” anywhere the stack resolves to ABC Monument (site default + Tailwind font-sans). */
+html {
+  font-feature-settings: var(--ens-font-feature-monument-a-alt);
+}
+
+/* Button shape pattern: all clickable button controls use 4px rounding. */
+button:not([role='tab']),
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
+  border-radius: var(--ens-radius-button);
 }
 
 .dark {
-  --ens-blue-active: #eef5ff;
-  --ens-blue-dim: #d1e4ff;
-  --ens-blue-primary: #3889ff;
-  --ens-blue-bright: #056aff;
-  --ens-blue-light: #0c4597;
-  --ens-blue-surface: #0d2851;
+  --ens-blue-active: #dbf0f8; /* lapis/100 */
+  --ens-blue-dim: #80c4e0; /* lapis/300 */
+  --ens-blue-primary: #39b4ea; /* lapis/400 */
+  --ens-blue-bright: #0082bb; /* lapis/500 */
+  --ens-blue-light: #02293b; /* lapis/900 */
+  --ens-blue-surface: #02293b; /* lapis/900 */
 
   --ens-indigo-active: #e3e2f8;
   --ens-indigo-dim: #c7c5f1;
@@ -137,13 +159,15 @@
   --ens-grey-light: #424347;
   --ens-grey-surface: #141416;
 
-  --ens-background: var(--ens-grey-surface);
-  --ens-background-secondary: #1e2122;
+  --ens-background: #191919;
+  --ens-background-secondary: #242424;
   --ens-border: var(--ens-grey-light);
   --ens-text: var(--ens-grey-dim);
   --ens-text-secondary: var(--ens-grey-primary);
   --ens-text-disabled: var(--ens-grey-bright);
 }
+
+
 
 /* Dampen styling on <code> in <th> */
 th.vocs_TableHeader > code.vocs_Code {
@@ -151,6 +175,43 @@ th.vocs_TableHeader > code.vocs_Code {
   border: none;
   color: unset;
   font-size: unset;
+}
+
+.vocs_H1 {
+letter-spacing: 0.00em;}
+.vocs_H2 {
+letter-spacing: 0.00em;}
+.vocs_H3 {
+letter-spacing: 0.00em;}
+.vocs_H4 {
+letter-spacing: 0.00em;}
+.vocs_H5 {
+letter-spacing: 0.00em;}
+.vocs_H6 {
+letter-spacing: 0.00em;}
+
+/* Table shape pattern: use rounded-md corners for all docs tables. */
+.vocs_TableContainer,
+table.vocs_Table {
+  border-radius: var(--ens-radius-table);
+  overflow: hidden;
+}
+
+/* Fine-grain table corners: 4px on head top corners and body bottom corners. */
+table.vocs_Table thead tr:first-child th:first-child {
+  border-top-left-radius: 4px;
+}
+
+table.vocs_Table thead tr:first-child th:last-child {
+  border-top-right-radius: 4px;
+}
+
+table.vocs_Table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 4px;
+}
+
+table.vocs_Table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 4px;
 }
 
 /* Remove bottom border on the page header when it's followed by the ENSIP header block */
@@ -169,4 +230,133 @@ th.vocs_TableHeader > code.vocs_Code {
 .vocs_Paragraph > .vocs_Code,
 .vocs_ListItem > .vocs_Anchor {
   word-break: break-word;
+}
+
+/* Design tokens: shared UI primitives used across docs surfaces. */
+@font-face {
+  font-family: 'ABCMarist';
+  src:
+    url('/fonts/Marist/ABCMarist-Book.woff2') format('woff2'),
+    url('/fonts/Marist/ABCMarist-Book.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMarist';
+  src:
+    url('/fonts/Marist/ABCMarist-BookItalic.woff2') format('woff2'),
+    url('/fonts/Marist/ABCMarist-BookItalic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src:
+    url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Variable/ABCMonumentGroteskVariable.woff')
+      format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskSemiMono';
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Regular.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Regular.woff')
+      format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskSemiMono';
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-RegularItalic.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-RegularItalic.woff')
+      format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskSemiMono';
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-Medium.woff')
+      format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskSemiMono';
+  src:
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-MediumItalic.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Semi-Mono/ABCMonumentGroteskSemi-Mono-MediumItalic.woff')
+      format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskMono';
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Regular.woff')
+      format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskMono';
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-RegularItalic.woff')
+      format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskMono';
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-Medium.woff')
+      format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABCMonumentGroteskMono';
+  src:
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff2')
+      format('woff2'),
+    url('/fonts/Monument Grotesk Mono/ABCMonumentGroteskMono-MediumItalic.woff')
+      format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
 }
