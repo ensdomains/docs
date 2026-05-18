@@ -4,6 +4,7 @@ description: The ENSv2 ETH Registrar - commit-reveal registration, flexible pric
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { ContractReference } from '../../../components/ensv2/ContractReference'
+import { Card } from '../../../components/ui/Card'
 
 # ETH Registrar
 
@@ -24,6 +25,72 @@ The contracts and interfaces described here are **not yet final** and may change
 | Permissions          | Owner-only                          | Fixed role set via [EAC](/contracts/ensv2/enhanced-access-control)                    |
 | `makeCommitment`     | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `referrer`; roles are fixed internally |
 | `register`           | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `paymentToken`, `referrer`             |
+
+## Pricing
+
+### Base Rate
+
+Names are priced annually by character count:
+
+| Name Length | Annual Price |
+|-------------|-------------|
+| 3 characters | $640/yr |
+| 4 characters | $160/yr |
+| 5+ characters | $8/yr |
+
+### Multi-Year Discounts
+
+Longer registrations (and renewals) receive a discount applied to the entire duration. The discount is determined by the total term in a single transaction:
+
+| Term | Discount | 5+ char /yr | 5+ char total | 4-char /yr | 4-char total | 3-char /yr | 3-char total |
+|------|----------|------------|--------------|-----------|-------------|-----------|-------------|
+| 1 yr | 0% | $8.00 | $8.00 | $160 | $160 | $640 | $640 |
+| 2 yr | 12.5% | $7.00 | $14.00 | $140 | $280 | $560 | $1,120 |
+| 3 yr | ~31% | $5.50 | $16.50 | $110 | $330 | $440 | $1,320 |
+| 4 yr | ~31% | $5.50 | $22.00 | $110 | $440 | $440 | $1,760 |
+| 5 yr | ~31% | $5.50 | $27.50 | $110 | $550 | $440 | $2,200 |
+| 6 yr | ~44% | $4.50 | $27.00 | $90 | $540 | $360 | $2,160 |
+
+For example, renewing a 5+ character name for one year always costs $8 regardless of the existing expiration; renewing the same name for six years costs $27 ($4.50/yr).
+
+Pricing parameters (base rates and discount tiers) are immutable per oracle deployment. Changing them requires deploying a new oracle and calling `setRentPriceOracle()`.
+
+### Expiry Premium
+
+After the 28-day grace period, recently-expired names enter a 21-day temporary premium period to prevent sniping. The premium starts at ~$100M and decays exponentially (halving every day), reaching zero at the end of the window.
+
+<Card>
+  <div className="mx-auto h-40">
+    <svg className="h-full w-full" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+      <text x="100" y="10" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.5">Premium (USD)</text>
+      <text x="100" y="98" textAnchor="middle" fontSize="6" fill="currentColor" opacity="0.5">Days after grace period ends</text>
+      <text x="18" y="22" textAnchor="end" fontSize="5" fill="currentColor" opacity="0.4">$100M</text>
+      <text x="18" y="82" textAnchor="end" fontSize="5" fill="currentColor" opacity="0.4">$0</text>
+      <text x="20" y="92" textAnchor="start" fontSize="5" fill="currentColor" opacity="0.4">0</text>
+      <text x="180" y="92" textAnchor="end" fontSize="5" fill="currentColor" opacity="0.4">21</text>
+      <line x1="20" y1="15" x2="20" y2="82" stroke="currentColor" opacity="0.2" strokeWidth="0.5" />
+      <line x1="20" y1="82" x2="180" y2="82" stroke="currentColor" opacity="0.2" strokeWidth="0.5" />
+      <path d="M 20 18 Q 22 78 180 80" stroke="#3889FF" fill="transparent" strokeWidth="1.5" />
+    </svg>
+  </div>
+</Card>
+
+### Querying Prices
+
+Both the registrar and the oracle expose `getRegisterPrice` and `getRenewPrice`, but they serve different purposes:
+
+- **Registrar** (stateful): `getRegisterPrice(label, duration, paymentToken)` returns the actual cost for a specific name right now. It reads registry state to determine how long the name has been available, then forwards to the oracle. Reverts if the name is not available or the duration is below the minimum.
+- **Oracle** (stateless): `getRegisterPrice(label, available, duration, paymentToken)` takes a fully parameterized `available` duration and returns what the price would be for any hypothetical scenario. It has no knowledge of registry state or minimums.
+
+<FrenCallout fren="bittu">
+  Use the registrar's version when you need the true price for a specific name (e.g., before calling `register()`). Use the oracle directly when you need hypothetical pricing (e.g., a pricing calculator or "what would this cost?" UI).
+</FrenCallout>
+
+## Multi-Token Payments
+
+Unlike ENSv1 which only accepted ETH, the ENSv2 registrar supports payment in multiple ERC20 tokens. The `StandardRentPriceOracle` maintains exchange rate ratios for each accepted token. Check accepted tokens via `isPaymentToken(token)` on the `StandardRentPriceOracle`.
+
+Payment is collected via `safeTransferFrom` to an immutable beneficiary address. The caller must approve the registrar for the payment token before calling `register()` or `renew()`.
 
 ## Registering a Name
 
@@ -71,7 +138,7 @@ Before initiating registration, ensure that:
 - `isAvailable(label)` returns `true`
 - `duration` >= `MIN_REGISTER_DURATION`
 - The commitment is between `MIN_COMMITMENT_AGE` and `MAX_COMMITMENT_AGE` old
-- The payment token is approved for `base + premium` (query via `rentPrice`)
+- The payment token is approved for `base + premium` (query via `getRegisterPrice`)
 
 ```solidity
 ETHRegistrar.register(
@@ -98,6 +165,8 @@ register(
 );
 ```
 
+#### Roles Granted at Registration
+
 The registration grants the owner a fixed set of roles defined by `REGISTRATION_ROLE_BITMAP`:
 
 - `ROLE_SET_SUBREGISTRY`: change the name's child registry
@@ -107,22 +176,6 @@ The registration grants the owner a fixed set of roles defined by `REGISTRATION_
 - `ROLE_CAN_TRANSFER_ADMIN`: controls whether the token owner can transfer the name (admin-only; there is no non-admin `ROLE_CAN_TRANSFER`)
 
 Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar. See [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) for details on the role system.
-
-## Pricing
-
-The **StandardRentPriceOracle** provides flexible, configurable pricing:
-
-**Base rate**: names are priced by character count, with shorter names costing more. Query via `rentPrice(label, owner, duration, paymentToken)` which returns `(base, premium)`.
-
-**Duration discounts**: longer registrations receive discounts through a piecewise-linear curve. The discount points are DAO-configurable.
-
-**Expiry premium**: after the 28-day grace period, recently-expired names enter a temporary premium period to prevent sniping. The premium starts high and decreases over time. The previous owner can re-register during the premium period **without paying the premium**.
-
-## Multi-Token Payments
-
-Unlike ENSv1 which only accepted ETH, the ENSv2 registrar supports payment in multiple ERC20 tokens. The `StandardRentPriceOracle` maintains exchange rate ratios for each accepted token. Check accepted tokens via `isPaymentToken(token)`.
-
-Payment is collected via `safeTransferFrom` to an immutable beneficiary address. The caller must approve the registrar for the payment token before calling `register()` or `renew()`.
 
 ## Renewing a Name
 
@@ -139,26 +192,19 @@ ETHRegistrar.renew(
 
 ## BatchRegistrar
 
-The **BatchRegistrar** is a companion contract used during migration from ENSv1. It allows the deployer to batch-register or batch-renew names in a single transaction:
+The **BatchRegistrar** is a companion contract used during migration from ENSv1. It has a single owner-only function, `batchRegister(registry, resolver, labels, expires)`:
 
-- For `AVAILABLE` names: registers them as `RESERVED` (no owner)
-- For `RESERVED` names with a shorter expiry: extends the expiry via `renew()`
+- `AVAILABLE` names: registered as `RESERVED` (no owner, no payment)
+- `RESERVED` names where the target expiry exceeds the current expiry: extended via `ETH_REGISTRY.renew()` directly (no payment, absolute timestamp)
+- `REGISTERED` names: silently skipped
 
-This contract is owner-only and intended for pre-migration use, not for general public registration.
+This contract is intended for pre-migration use, not for general public registration.
 
 ## EAC Integration
 
-The ETH Registrar participates in the [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) system at two levels.
+### Registrar Governance
 
-### Registrar's Own EAC
-
-The ETH Registrar inherits from `EnhancedAccessControl` and defines one role for its own governance:
-
-| Role | Nybble | Description |
-|------|--------|-------------|
-| `ROLE_SET_ORACLE` | 0 | Authorizes calling `setRentPriceOracle()` to change the pricing oracle |
-
-The deployer receives all roles on `ROOT_RESOURCE` at construction. Only root-level roles are used; there are no per-name resources on the registrar itself.
+The ETH Registrar uses OpenZeppelin `Ownable` for its own governance. The owner can call `setRentPriceOracle()` to replace the pricing oracle. Ownership is transferable via `transferOwnership()`.
 
 ### Roles on the ETH Registry
 
@@ -212,7 +258,7 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
   },
   {
     name: 'setRentPriceOracle',
-    description: 'Change the pricing oracle. Requires ROLE_SET_ORACLE.',
+    description: 'Change the pricing oracle. Callable by the contract owner only.',
     params: [
       { name: 'oracle', type: 'IRentPriceOracle', description: 'New pricing oracle' },
     ],
@@ -239,11 +285,10 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
     ],
   },
   {
-    name: 'rentPrice',
-    description: 'Get the registration or renewal price.',
+    name: 'getRegisterPrice',
+    description: 'Get the registration price for a name.',
     params: [
       { name: 'label', type: 'string', description: 'The label to price' },
-      { name: 'owner', type: 'address', description: 'Owner address (affects premium waiver for re-registration)' },
       { name: 'duration', type: 'uint64', description: 'Duration in seconds' },
       { name: 'paymentToken', type: 'IERC20', description: 'Token to price in' },
     ],
@@ -263,26 +308,6 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
     ],
   },
   {
-    name: 'isValid',
-    description: 'Check whether a name meets validity requirements.',
-    params: [
-      { name: 'label', type: 'string', description: 'The label to check' },
-    ],
-    returns: [
-      { name: 'valid', type: 'bool', description: 'True if the name is valid' },
-    ],
-  },
-  {
-    name: 'isPaymentToken',
-    description: 'Check whether a token is accepted for payment.',
-    params: [
-      { name: 'paymentToken', type: 'IERC20', description: 'Token to check' },
-    ],
-    returns: [
-      { name: 'accepted', type: 'bool', description: 'True if the token is accepted' },
-    ],
-  },
-  {
     name: 'commitmentAt',
     description: 'Get the timestamp when a commitment was recorded.',
     params: [
@@ -292,13 +317,45 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
       { name: 'commitTime', type: 'uint64', description: 'Timestamp, or 0 if not found' },
     ],
   },
+  {
+    name: 'getRenewPrice',
+    description: 'Get the renewal price for a name (base rate only, no premium).',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to price' },
+      { name: 'duration', type: 'uint64', description: 'Duration in seconds' },
+      { name: 'paymentToken', type: 'IERC20', description: 'Token to price in' },
+    ],
+    returns: [
+      { name: 'amount', type: 'uint256', description: 'Amount of payment token required' },
+    ],
+  },
+  {
+    name: 'isRenewable',
+    description: 'Check whether a name can be renewed (registered or within grace period).',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to check' },
+    ],
+    returns: [
+      { name: 'renewable', type: 'bool', description: 'True if the name can be renewed' },
+    ],
+  },
+  {
+    name: 'getRemainingGracePeriod',
+    description: 'Get the remaining grace period for an expired name.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to check' },
+    ],
+    returns: [
+      { name: 'remaining', type: 'uint64', description: 'Seconds remaining in the grace period, or 0' },
+    ],
+  },
 ]} />
 
 ### Constants
 
 <ContractReference functions={[
   {
-    name: 'REGISTRY',
+    name: 'ETH_REGISTRY',
     description: 'The Permissioned Registry this registrar writes to.',
   },
   {
@@ -316,6 +373,14 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
   {
     name: 'MIN_REGISTER_DURATION',
     description: 'Shortest allowed registration duration.',
+  },
+  {
+    name: 'MIN_RENEW_DURATION',
+    description: 'Shortest allowed renewal duration (1 second).',
+  },
+  {
+    name: 'GRACE_PERIOD',
+    description: 'Post-expiry window (in seconds) during which a name is renewable but not re-registerable.',
   },
   {
     name: 'rentPriceOracle',
@@ -359,11 +424,11 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
       { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp' },
       { name: 'paymentToken', type: 'IERC20', description: 'Token used for payment' },
       { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
-      { name: 'base', type: 'uint256', description: 'Base price paid' },
+      { name: 'amount', type: 'uint256', description: 'Amount of payment token paid' },
     ],
   },
   {
-    name: 'RentPriceOracleChanged',
+    name: 'RentPriceOracleUpdated',
     description: 'Pricing oracle updated.',
     params: [
       { name: 'oracle', type: 'IRentPriceOracle', description: 'New pricing oracle' },
@@ -411,8 +476,8 @@ if (!available) throw new Error('Name not available')
 const [base, premium] = await client.readContract({
   address: ethRegistrarAddress,
   abi: ethRegistrarAbi,
-  functionName: 'rentPrice',
-  args: [label, owner, duration, paymentToken],
+  functionName: 'getRegisterPrice',
+  args: [label, duration, paymentToken],
 })
 
 // 3. Approve the registrar to spend the payment token
@@ -463,11 +528,11 @@ await wallet.writeContract({
 ### Renewing a Name
 
 ```ts [Viem]
-const [renewPrice] = await client.readContract({
+const renewPrice = await client.readContract({
   address: ethRegistrarAddress,
   abi: ethRegistrarAbi,
-  functionName: 'rentPrice',
-  args: [label, owner, duration, paymentToken],
+  functionName: 'getRenewPrice',
+  args: [label, duration, paymentToken],
 })
 
 // Approve the registrar to spend the payment token
