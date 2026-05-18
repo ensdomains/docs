@@ -23,7 +23,7 @@ The contracts and interfaces described here are **not yet final** and may change
 | Deployment      | Single shared contract     | Per-account proxy instances                                               |
 | Permissions     | Owner controls all records | Per-record-type roles via [EAC](/contracts/ensv2/enhanced-access-control) |
 | Aliasing        | Not supported              | Built-in name aliasing with cycle protection                              |
-| Record clearing | `clearRecords()` by owner  | Profile versioning                                                        |
+| Record clearing | `clearRecords()` by owner  | Record versioning                                                         |
 | Upgradeability  | Not upgradeable            | UUPS proxy pattern                                                        |
 
 ## Supported Record Types
@@ -39,7 +39,8 @@ The Permissioned Resolver supports all standard ENS record types:
 | Name (reverse)       | `name(bytes32 node)`                    | `setName(bytes32 node, string)`             | [EIP-181](https://eips.ethereum.org/EIPS/eip-181)   |
 | Public key           | `pubkey(bytes32 node)`                  | `setPubkey(bytes32 node, bytes32, bytes32)` | [EIP-619](https://eips.ethereum.org/EIPS/eip-619)   |
 | ABI                  | `ABI(bytes32 node, uint256)`            | `setABI(bytes32 node, uint256, bytes)`      | [EIP-205](https://eips.ethereum.org/EIPS/eip-205)   |
-| Interface            | `interfaceImplementer(bytes32, bytes4)` | `setInterface(bytes32, bytes4, address)`    | [EIP-2544](https://eips.ethereum.org/EIPS/eip-2544) |
+| Interface            | `interfaceImplementer(bytes32, bytes4)` | `setInterface(bytes32, bytes4, address)`    | [ENSIP-8](/ensip/8) |
+| Data                 | `data(bytes32 node, string key)`        | `setData(bytes32 node, string, bytes)`      | [ENSIP-24](/ensip/24)                               |
 
 ## EAC Integration
 
@@ -77,7 +78,11 @@ Select roles to compose a bitmap value for use with `authorizeNameRoles`.
 
 ### Granting and Revoking Roles
 
-Both `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver. Instead, all role management goes through `authorize*` functions that take a `bool grant` parameter: pass `true` to grant, `false` to revoke.
+Use the `authorize*` functions below to manage permissions (pass `true` to grant, `false` to revoke).
+
+<FrenCallout fren="bittu" variant="tip">
+For root-level (`ROOT_RESOURCE`) permissions, you can also use `grantRootRoles()` / `revokeRootRoles()` inherited from [EAC](/contracts/ensv2/enhanced-access-control). For non-root resources, `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver.
+</FrenCallout>
 
 | Function | Scope | Grants/revokes |
 |----------|-------|----------------|
@@ -159,7 +164,7 @@ The `setAlias` function requires `ROLE_SET_ALIAS`, which is a root-only role. Th
 
 ### Cycle Protection
 
-The resolver includes built-in cycle detection. If you try to create a chain of aliases that loops back on itself (e.g., A -> B -> C -> A), the resolution will detect the cycle and stop. This prevents infinite loops during resolution.
+The resolver detects self-referential aliases (A aliased to itself) and applies them only once. However, longer alias cycles (e.g., A -> B -> A or A -> B -> C -> A) are **not** detected and will cause an out-of-gas revert during resolution. Avoid creating circular alias chains.
 
 ### Use Cases
 
@@ -169,9 +174,9 @@ The resolver includes built-in cycle detection. If you try to create a chain of 
 
 Note that aliasing at the resolver level is different from [subregistry aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
 
-## Multi-Profile Support
+## Record Versioning
 
-The resolver supports profile versioning. The `clearRecords(node)` function increments the version, effectively clearing all records at once without individual delete calls. This is useful when you want a clean slate, for example when transferring a name to a new owner.
+The resolver supports record versioning. The `clearRecords(node)` function increments the version, effectively clearing all records at once without individual delete calls. This is useful when you want a clean slate, for example when transferring a name to a new owner.
 
 ## UUPS Upgradeability
 
@@ -555,17 +560,17 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     description: 'Records cleared (version bumped).',
     params: [
       { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'version', type: 'uint64', description: 'New version number' },
+      { name: 'newVersion', type: 'uint64', description: 'New version number' },
     ],
   },
   {
     name: 'AliasChanged',
     description: 'Alias set or removed.',
     params: [
-      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
-      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
       { name: 'indexedFromName', type: 'bytes', description: 'Indexed copy of source name' },
       { name: 'indexedToName', type: 'bytes', description: 'Indexed copy of target name' },
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
     ],
   },
   {

@@ -90,7 +90,7 @@ Unwrapped 2LD names (BaseRegistrar ERC-721 tokens) are migrated via the `Unlocke
 2. The controller reclaims the token on the BaseRegistrar, transfers v1 registry ownership to the Graveyard, and clears the v1 resolver
 3. The ERC-721 token is sent to the Graveyard
 4. The name is promoted from RESERVED to REGISTERED in the v2 ETH Registry with the provided parameters
-5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/contracts/ensv2/eth-registrar#eac-integration))
+5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/contracts/ensv2/eth-registrar#roles-granted-at-registration))
 
 ### Unlocked Wrapped Names
 
