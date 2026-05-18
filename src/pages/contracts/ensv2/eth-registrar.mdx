@@ -8,7 +8,7 @@ import { Card } from '../../../components/ui/Card'
 
 # ETH Registrar
 
-The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registrations) while introducing new parameters, multi-token payments, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
+The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registrations) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -20,11 +20,9 @@ The contracts and interfaces described here are **not yet final** and may change
 | -------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
 | Grace period         | 90-day grace period after expiry    | **28-day grace period**                                                              |
 | Payment              | ETH only                            | ERC20 tokens via `safeTransferFrom`                                                   |
-| Pricing              | StablePriceOracle (USD-denominated) | StandardRentPriceOracle with duration discounts and expiry premiums                   |
-| Name ownership       | ERC721 token on BaseRegistrar       | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
-| Permissions          | Owner-only                          | Fixed role set via [EAC](/contracts/ensv2/enhanced-access-control)                    |
-| `makeCommitment`     | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `referrer`; roles are fixed internally |
-| `register`           | Includes `data`, `reverseRecord`, `ownerControlledFuses` | Replaced with `subregistry`, `paymentToken`, `referrer`             |
+| Pricing              | USD-denominated, no duration discounts | USD-denominated, multi-year duration discounts                                       |
+| Name ownership       | ERC721 on BaseRegistrar (optionally wrapped to ERC1155 via [NameWrapper](/wrapper/overview)) | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
+| Permissions          | Owner has full control; no granular roles | Registrant receives a fixed set of [EAC](/contracts/ensv2/enhanced-access-control) roles |
 
 ## Pricing
 
