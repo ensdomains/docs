@@ -10,35 +10,31 @@ ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) thro
 
 Users don't interact with these contracts directly. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) handles the entire flow transparently. This page explains what happens internally and how to configure DNS records for ENS resolution.
 
-<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-ENSv2's DNS resolution uses off-chain DNSSEC verification via [CCIP-Read](/resolvers/ccip-read). The on-chain DNSSEC proof submission used by the v1 [DNS Registrar](/registry/dns) for claiming DNS names remains on v1 infrastructure at launch.
-</FrenCallout>
-
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
 </FrenCallout>
 
 ## How It Works
 
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+ENSv2's DNS resolution uses off-chain DNSSEC verification via [CCIP-Read](/resolvers/ccip-read). The on-chain DNSSEC proof submission used by the v1 [DNS Registrar](/registry/dns) for claiming DNS names remains on v1 infrastructure at launch.
+</FrenCallout>
+
 When the Universal Resolver encounters a DNS name (e.g., `example.com`), it finds the **DNSTLDResolver** set as the resolver for that TLD on the root registry. The DNSTLDResolver then follows a multi-step resolution strategy:
 
-1. **Check ENSv1**: look for an existing resolver in the ENSv1 registry. If one exists (and it's not the old v1 DNS resolver), delegate to it directly. This preserves backward compatibility.
+1. **Check ENSv1**: look for an existing resolver in the ENSv1 registry. If one exists (and it's not the v1 DNS TLD resolver or the DNSTLDResolver itself), delegate to it directly. This preserves backward compatibility.
 2. **Query DNSSEC**: initiate a [CCIP-Read](/resolvers/ccip-read) request to fetch DNSSEC-signed TXT records for the domain.
-3. **Parse the TXT record**: find the first TXT record starting with `ENS1`, extract the resolver address and context.
+3. **Parse the TXT record**: find the first TXT record starting with `ENS1` that yields a valid resolver address, and extract the resolver address and context.
 4. **Delegate to the parsed resolver**: depending on the resolver address, the request is handled by either the **DNSAliasResolver** (for name rewriting) or the **DNSTXTResolver** (for inline record data).
 
 ```mermaid
-flowchart TD
+flowchart LR
     UR["Universal Resolver"] --> TLD["DNSTLDResolver"]
-    TLD --> V1{"ENSv1 resolver<br/>exists?"}
-    V1 -- yes --> Legacy["Delegate to v1 resolver"]
-    V1 -- no --> DNSSEC["Fetch DNSSEC TXT records<br/>(via CCIP-Read)"]
-    DNSSEC --> Parse["Parse ENS1 TXT record"]
-    Parse --> Which{"Resolver type?"}
-    Which -- "name rewriting" --> Alias["DNSAliasResolver"]
-    Which -- "inline records" --> TXT["DNSTXTResolver"]
-    Alias --> Result["Resolved record"]
-    TXT --> Result
+    TLD --> V1{"Usable v1<br/>resolver?"}
+    V1 -- yes --> Legacy["Delegate to<br/>v1 resolver"]
+    V1 -- no --> DNSSEC["Fetch & parse<br/>ENS1 TXT record<br/>(CCIP-Read)"]
+    DNSSEC -- "name rewriting" --> Alias["DNSAliasResolver"]
+    DNSSEC -- "inline records" --> TXT["DNSTXTResolver"]
 ```
 
 ## TXT Record Formats
@@ -68,8 +64,13 @@ Supported record formats:
 | `a[e<chainId>]`   | EVM chain address by chain ID ([ENSIP-19](/ensip/19))  | `a[e8453]=0x5678...` |
 | `a[<coinType>]`   | Non-EVM address by SLIP-44 coin type ([ENSIP-9](/ensip/9)) | `a[0]=0x00...`  |
 | `t[key]`          | Text record                                      | `t[avatar]=https://...` |
-| `c`               | Content hash ([ENSIP-7](/ensip/7))                | `c=ipfs://...`          |
-| `xy`              | Public key (x,y coordinates)                     | `xy=0x...,0x...`        |
+| `c`               | Content hash ([ENSIP-7](/ensip/7))                | `c=0xe301...`           |
+| `d[key]`          | Data record                                      | `d[mykey]=0x1234...`    |
+| `xy`              | Public key (x and y concatenated, 64 bytes)      | `xy=0x...`              |
+
+<FrenCallout fren="peanut" variant="note" title="Values with spaces">
+Values are separated by spaces. To include spaces in a value, wrap it in single quotes: `t[description]='Hello World'`. Escape single quotes with a backslash: `t[notice]='it\'s ENS'`.
+</FrenCallout>
 
 This is the simplest approach: all record data lives in the DNS TXT record itself, with no on-chain registration required.
 
@@ -91,6 +92,6 @@ This causes `sub.example.com` to resolve as `sub.example.base.eth`. The resolver
 ENS1 dnsalias.ens.eth alice.eth
 ```
 
-This causes `example.com` (and all subdomains) to resolve as `alice.eth`. Useful when you want a DNS domain to mirror an existing ENS name.
+This causes `example.com` to resolve as `alice.eth`. Subdomains also resolve as `alice.eth` if a DNS wildcard record is configured (e.g., `*.example.com` with the same TXT record). Useful when you want a DNS domain to mirror an existing ENS name.
 
 Alias resolution is particularly useful for organizations that want their DNS domains to resolve ENS records without on-chain registration of every subdomain.

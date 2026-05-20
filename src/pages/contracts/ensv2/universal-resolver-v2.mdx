@@ -20,76 +20,361 @@ The contracts and interfaces described here are **not yet final** and may change
 - **URv1** walks a flat ENS registry
 - **URv2** walks the hierarchical registry tree via `getSubregistry()` at each level
 
-This means `resolve()`, `reverse()`, and all CCIP-Read infrastructure work identically across both versions. The `LibRegistry` library that powers the hierarchy traversal is also used directly by other contracts including `DNSAliasResolver`, `DNSTLDResolver`, and `ENSV2Resolver`.
+Because the walk passes through each parent registry, if a parent name expires or its subregistry is removed, the registry returns `address(0)` and all subnames stop resolving automatically.
+
+`resolve()`, `reverse()`, and all CCIP-Read infrastructure work identically across both versions.
+
+## Resolution
+
+The Universal Resolver resolves names by walking down the registry tree from the root, looking for the **deepest resolver** along the path. At each level, it calls `getResolver(label)` on the current registry. If a resolver exists, it's remembered. Then it calls `getSubregistry(label)` to descend to the next level. The resolver that covers the longest matching suffix of the name wins.
+
+`resolve()` and `reverse()` both call `findResolver` internally via `requireResolver`, which reverts if no suitable resolver is found.
+
+Using the structure from the [registry hierarchy diagrams](/contracts/ensv2/registry-hierarchy#from-flat-to-hierarchical), here are two examples showing how `findResolver()` walks the tree:
+
+### Example 1
+
+Resolving `inigo.montoya.eth`: the walk descends from root, checking for resolvers at each level:
+
+```mermaid
+flowchart LR
+    subgraph s1 [" "]
+        direction TB
+        r1@{label: "<b>&lt;root&gt;</b>"}
+        e1@{label: "<b>eth</b>"}
+        m1@{label: "<b>montoya.eth</b>"}
+        i1@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d1@{label: "<b>domingo.montoya.eth</b>"}
+        mr1@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r1-- eth --> e1
+        e1-- montoya --> m1
+        e1-- montoya --> mr1
+        m1-- inigo --> i1
+        m1-- domingo --> d1
+        style r1 fill:#0080BC,stroke:#011A25,color:#fff
+        style e1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style m1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+    end
+    subgraph s2 [" "]
+        direction TB
+        r2@{label: "<b>&lt;root&gt;</b>"}
+        e2@{label: "<b>eth</b>"}
+        m2@{label: "<b>montoya.eth</b>"}
+        i2@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d2@{label: "<b>domingo.montoya.eth</b>"}
+        mr2@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r2-- eth --> e2
+        e2-- montoya --> m2
+        e2-- montoya --> mr2
+        m2-- inigo --> i2
+        m2-- domingo --> d2
+        style r2 fill:#0080BC,stroke:#011A25,color:#fff
+        style e2 fill:#0080BC,stroke:#011A25,color:#fff
+        style m2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    subgraph s3 [" "]
+        direction TB
+        r3@{label: "<b>&lt;root&gt;</b>"}
+        e3@{label: "<b>eth</b>"}
+        m3@{label: "<b>montoya.eth</b>"}
+        i3@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d3@{label: "<b>domingo.montoya.eth</b>"}
+        mr3@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r3-- eth --> e3
+        e3-- montoya --> m3
+        e3-- montoya --> mr3
+        m3-- inigo --> i3
+        m3-- domingo --> d3
+        style r3 fill:#0080BC,stroke:#011A25,color:#fff
+        style e3 fill:#0080BC,stroke:#011A25,color:#fff
+        style m3 fill:#0080BC,stroke:#011A25,color:#fff
+        style i3 fill:#011A25,stroke:#0080BC,color:#fff
+        style d3 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr3 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    style s1 fill:none,stroke:none
+    style s2 fill:none,stroke:none
+    style s3 fill:none,stroke:none
+    s1 ~~~ s2 ~~~ s3
+```
+
+Resolver 1 is found at the .eth level, but Resolver 2 is found one level deeper at montoya.eth. **Resolver 2 wins** because it covers the longest matching suffix, in this case the full name `inigo.montoya.eth`.
+
+### Example 2
+
+Resolving `domingo.montoya.eth`: the walk follows the same path, but `domingo` has no resolver:
+
+```mermaid
+flowchart LR
+    subgraph s1 [" "]
+        direction TB
+        r1@{label: "<b>&lt;root&gt;</b>"}
+        e1@{label: "<b>eth</b>"}
+        m1@{label: "<b>montoya.eth</b>"}
+        i1@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d1@{label: "<b>domingo.montoya.eth</b>"}
+        mr1@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r1-- eth --> e1
+        e1-- montoya --> m1
+        e1-- montoya --> mr1
+        m1-- inigo --> i1
+        m1-- domingo --> d1
+        style r1 fill:#0080BC,stroke:#011A25,color:#fff
+        style e1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style m1 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr1 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+    end
+    subgraph s2 [" "]
+        direction TB
+        r2@{label: "<b>&lt;root&gt;</b>"}
+        e2@{label: "<b>eth</b>"}
+        m2@{label: "<b>montoya.eth</b>"}
+        i2@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d2@{label: "<b>domingo.montoya.eth</b>"}
+        mr2@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r2-- eth --> e2
+        e2-- montoya --> m2
+        e2-- montoya --> mr2
+        m2-- inigo --> i2
+        m2-- domingo --> d2
+        style r2 fill:#0080BC,stroke:#011A25,color:#fff
+        style e2 fill:#0080BC,stroke:#011A25,color:#fff
+        style m2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style i2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d2 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style mr2 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+    end
+    subgraph s3 [" "]
+        direction TB
+        r3@{label: "<b>&lt;root&gt;</b>"}
+        e3@{label: "<b>eth</b>"}
+        m3@{label: "<b>montoya.eth</b>"}
+        i3@{label: "<b>Resolver 2</b>", shape: notch-rect}
+        d3@{label: "<b>domingo.montoya.eth</b>"}
+        mr3@{label: "<b>Resolver 1</b>", shape: notch-rect}
+        r3-- eth --> e3
+        e3-- montoya --> m3
+        e3-- montoya --> mr3
+        m3-- inigo --> i3
+        m3-- domingo --> d3
+        style r3 fill:#0080BC,stroke:#011A25,color:#fff
+        style e3 fill:#0080BC,stroke:#011A25,color:#fff
+        style m3 fill:#0080BC,stroke:#011A25,color:#fff
+        style i3 fill:#CEE1E8,stroke:#CEE1E8,color:#999
+        style d3 fill:#CEE1E8,stroke:#0080BC,color:#011A25
+        style mr3 fill:#011A25,stroke:#0080BC,color:#fff
+    end
+    style s1 fill:none,stroke:none
+    style s2 fill:none,stroke:none
+    style s3 fill:none,stroke:none
+    s1 ~~~ s2 ~~~ s3
+```
+
+Resolver 1 is found at the .eth level, but `domingo` has no resolver set. **Resolver 1 wins** as the longest-suffix match, covering `montoya.eth`. Any subname of `montoya.eth` without its own resolver will fall back to Resolver 1 the same way.
+
+### The Algorithm
+
+`findResolver()` implements this longest-suffix match. It recursively descends from the root, and at each level:
+
+1. Calls `getResolver(label)`. If non-zero, overwrites the previously remembered resolver.
+2. Calls `getSubregistry(label)`. If non-zero, continues descending into the subregistry.
+
+The final remembered resolver is the one used for the actual record query.
 
 ## Registry Navigation
 
-ENSv2 adds functions for navigating and verifying the registry hierarchy. All walk **down** from root except `findCanonicalName` which walks **up** via `getParent()`, and `findCanonicalRegistry` which does both.
+ENSv2 provides functions for locating registries within the hierarchy and verifying their position. All functions described here are exposed on the `UniversalResolverV2` contract.
 
-`findResolver` is the core function that powers `resolve()` and `reverse()` internally. It walks down the registry tree, following `getSubregistry()` at each label, and returns the resolver covering the longest matching suffix of the name. See [Resolution](/contracts/ensv2/registry-hierarchy#resolution) for a step-by-step walkthrough.
+All navigation functions walk **down** from the root registry except `findCanonicalName`, which walks **up** via `getParent()`, and `findCanonicalRegistry`, which does both.
 
-`findExactRegistry` and `findRegistries` locate registries by walking down from root. Use `findExactRegistry` when you need a single registry and trust the hierarchy; use `findRegistries` to get the full ancestry:
+### findExactRegistry
 
-- `findRegistries("sub.nick.eth")` returns `[<sub>, <nick>, <eth>, <root>]`
-- If `sub.nick.eth` has no subregistry: `[address(0), <nick>, <eth>, <root>]`
+Walks top-down from root, calling `getSubregistry()` at each label. Returns the subregistry that the target name points to, or `address(0)` if any link in the chain is missing.
 
-`findCanonicalName` reconstructs a registry's DNS-encoded name by walking **up** via `getParent()`, verifying each link. Returns empty bytes if any registry in the chain hasn't called [`setParent()`](/contracts/ensv2/permissioned-registry#hierarchy). `findCanonicalRegistry` combines both directions: it walks down to find the registry, then up to verify the name matches, ensuring no aliasing or stale references are exploited.
+For `nick.eth`:
 
-## Verifying Name Ownership
-
-In ENSv1, verifying name ownership was a single call: check `ownerOf(namehash)` on one contract. In ENSv2, a name like `sub.nick.eth` is a chain of entries across multiple registries (see [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)), so verification requires confirming the full chain from root to the name's registry, plus checking the role state of the name.
-
-This is particularly important for marketplaces and any context where a name is being purchased or trusted. Simply checking `ownerOf` is not enough: you need to verify that the registry is legitimate, that the owner actually has the roles to control the name, and that no stale grants from previous owners remain.
-
-<FrenCallout fren="lili" variant="tip">
-The [mutable token ID](/contracts/ensv2/mutable-token-ids) mechanism already protects against **post-listing** manipulation: if the seller changes roles after listing, the token regenerates and the old listing becomes invalid. The checks below are about detecting **pre-existing** stale grants from before the listing. `roleCount(labelhash)` catches these on-chain.
-</FrenCallout>
-
-The standard set of roles granted to a name owner at registration is defined by `REGISTRATION_ROLE_BITMAP`:
-
-```ts
-const REGISTRATION_ROLE_BITMAP =
-  (1n << 20n) |            // ROLE_SET_SUBREGISTRY
-  ((1n << 20n) << 128n) |  // ROLE_SET_SUBREGISTRY_ADMIN
-  (1n << 24n) |            // ROLE_SET_RESOLVER
-  ((1n << 24n) << 128n) |  // ROLE_SET_RESOLVER_ADMIN
-  ((1n << 28n) << 128n)    // ROLE_CAN_TRANSFER_ADMIN
-// = 0x0000000000000000000000001110000000000000000000000000000001100000n
+```
+root
+└── getSubregistry("eth") → .eth registry
+    └── getSubregistry("nick") → nick.eth subregistry ← returned
 ```
 
-### 2LD Names (e.g. alice.eth)
+This is the registry where `nick.eth`'s subnames live. If `nick.eth` has no subregistry set, the final step returns `address(0)`.
 
-For names registered directly in the `.eth` registry. In the examples below, `labelhash = keccak256("alice")`.
+Use `findExactRegistry` when you need to interact with a specific registry and trust the hierarchy (e.g., checking roles or reading name state). For security-sensitive contexts, use [`findCanonicalRegistry`](#findcanonicalregistry) instead.
 
-1. **Verify the registry**: `findCanonicalRegistry(dnsEncode("alice.eth"))` must return a non-zero address. Compare it to the registry address listed in the marketplace. If `address(0)`, the chain from root is broken.
+### findParentRegistry
 
-2. **Check the owner's roles**: call `ownerRoles = roles(labelhash, owner)` on the registry. Compute `missingRoles = REGISTRATION_ROLE_BITMAP & ~ownerRoles`. If `missingRoles == 0n`, the owner has at least the standard set. If non-zero, `missingRoles` is itself a bitmap of exactly which roles are absent (e.g. no `ROLE_SET_RESOLVER` = locked resolver, no `ROLE_CAN_TRANSFER_ADMIN` = non-transferable). The owner may also hold roles beyond the standard set if they were explicitly granted; extra roles give the owner more control, not less.
+Walks top-down to find the registry that **contains** a name's entry, rather than the subregistry the name points to. It strips the first label and calls `findExactRegistry` on the parent suffix.
 
-3. **Check for stale grants**: call `roleCount(labelhash)` on the registry. This returns packed assignee counts for all 64 roles (one nybble per role). Each admin nybble (upper 32) should be 0 or 1, where 1 means only the current owner holds it. Regular role nybbles > 1 indicate stale grants from a previous owner.
+For `nick.eth`:
 
-   After receiving a name with the full `REGISTRATION_ROLE_BITMAP`, the new owner holds admin roles for `SET_SUBREGISTRY`, `SET_RESOLVER`, and `CAN_TRANSFER`. To revoke a stale grant, call `revokeRoles(labelhash, roleBitmap, thirdPartyAddress)` for each account. Since there is no on-chain enumeration of role holders, the third-party addresses must be discovered by indexing `EACRolesChanged` events.
+```
+root
+└── getSubregistry("eth") → .eth registry ← returned
+```
 
-### 3LD+ Names (e.g. sub.nick.eth)
+The `.eth` registry is where `nick` is an entry. Contrast with `findExactRegistry("nick.eth")`, which returns `nick.eth`'s own subregistry (one level deeper).
 
-For subnames, you need to verify the name itself plus the security of the parent's subregistry.
+This is used internally by [`findOwner`](#findowner) to locate the registry that holds ownership information for a name.
 
-1. **Verify the canonical chain**: `findCanonicalRegistry(dnsEncode("sub.nick.eth"))` must return non-zero. This verifies every link from root through `.eth` and `nick.eth` to the subname's registry.
+### findRegistries
 
-2. **Locked canonical parent**: on the subregistry, call `hasAssignees(ROOT_RESOURCE, ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN)`. This must return `false`. Otherwise the subregistry can be [remounted](/contracts/ensv2/permissioned-registry#parent-pointer) at a different position (e.g. moved from `nick.eth` to `nick.xyz`), changing what name the tokens represent.
+Walks top-down and builds the complete ancestry array for a name, from innermost to outermost. Each position in the array corresponds to one label in the name, with the root registry appended at the end.
 
-3. **Subregistry emancipation**: call `roleCount(ROOT_RESOURCE)` on the subregistry and inspect the packed nybbles:
+```
+findRegistries("")           → [<root>]
+findRegistries("eth")        → [<eth>, <root>]
+findRegistries("nick.eth")   → [<nick>, <eth>, <root>]
+findRegistries("sub.nick.eth") → [address(0), <nick>, <eth>, <root>]
+```
 
-   **Technical emancipation**: the nybbles for `ROLE_UNREGISTER`, `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, `ROLE_SET_PARENT` (and their admin counterparts) must all be zero. This guarantees the registry operator cannot modify or delete individual names.
+If a name has no subregistry at some level, that position in the array is `address(0)`. In the last example, `sub.nick.eth` has no subregistry, so the first element is zero, but its parent registries are all present.
 
-   **Standard emancipation**: additionally, the token holder gets the standard role set and ROOT's roles don't overlap with it. This is what the `.eth` registry provides: ROOT only holds `ROLE_REGISTRAR` + `ROLE_RENEW`, tokens get `ROLE_SET_RESOLVER` + `ROLE_SET_SUBREGISTRY` + `ROLE_CAN_TRANSFER`, intersection is empty. A name can be technically emancipated but not standard (e.g. no `ROLE_SET_RESOLVER` because the resolver is intentionally locked).
+### findCanonicalName
 
-4. **Check the token's roles and stale grants**: same as 2LD steps 2-3. Call `roles(labelhash, owner)` and `roleCount(labelhash)` on the subregistry to verify the owner's roles and check for stale grants.
+<FrenCallout fren="earl" variant="note" title="Definition – Canonical Name">
+A registry's **canonical name** is the DNS-encoded name produced by `findCanonicalName`: it walks up the verified [parent pointer](/contracts/ensv2/permissioned-registry#parent-pointer) chain from the registry to root, reconstructing the name at each step.
+</FrenCallout>
+
+Because registries have no inherent concept of "their name" (a registry can be mounted at multiple positions via [namespace aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing)), a canonical name only exists when both directions of the hierarchy agree: `setParent()` establishes the backward pointer, and `findCanonicalName` verifies at each step that the parent's forward pointer (`getSubregistry`) points back to the same registry.
+
+For the `nick.eth` subregistry (walking upward):
+
+```
+nick.eth subregistry
+├── getParent() → (.eth registry, "nick")
+│   └── verify: eth.getSubregistry("nick") == nick.eth subregistry ✓
+└── .eth registry
+    ├── getParent() → (root, "eth")
+    │   └── verify: root.getSubregistry("eth") == .eth registry ✓
+    └── root reached → canonical name: "nick.eth"
+```
+
+Returns empty bytes if any link is broken: if a registry has no parent set, or if `parent.getSubregistry(label)` points to a different address.
+
+### findCanonicalRegistry
+
+<FrenCallout fren="earl" variant="note" title="Definition – Canonical Registry">
+The **canonical registry** for a name is the registry at that position in the hierarchy whose [canonical name](#findcanonicalname) equals the name.
+</FrenCallout>
+
+`findCanonicalRegistry` verifies this by combining both directions:
+
+For `nick.eth`:
+
+```
+Down: findExactRegistry("nick.eth")
+└── root.getSubregistry("eth") → .eth registry
+    └── eth.getSubregistry("nick") → 0xABCD
+
+Up: findCanonicalName(0xABCD)
+├── 0xABCD.getParent() → (.eth registry, "nick")
+│   └── verify: eth.getSubregistry("nick") == 0xABCD ✓
+└── reconstructed name: "nick.eth" == input name ✓ → return 0xABCD
+```
+
+The bidirectional check prevents aliasing attacks: a registry could be mounted at one position in the tree but claim (via `getParent()`) to be at another. This is the function to use when verifying a registry's legitimacy, for example in marketplaces or any context where a name is being purchased or trusted.
+
+### findOwner
+
+Finds the current owner of a name. `IOwnedRegistry` is a minimal interface that extends `IRegistry` with a single `findOwner(label)` function, returning the owner of a label. [PermissionedRegistry](/contracts/ensv2/permissioned-registry) implements it, but any custom registry with ownership can too.
+
+For `nick.eth`:
+
+```
+findParentRegistry("nick.eth") → .eth registry
+├── supports IOwnedRegistry? (ERC-165 check) ✓
+└── .eth.findOwner("nick") → 0x1234 ← returned
+```
+
+Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IOwnedRegistry`, or the label has no owner.
 
 ## Reference
 
 ### View Functions
 
 <ContractReference functions={[
+  {
+    name: 'findResolver',
+    description: 'Find the resolver for a name by walking down the registry hierarchy.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to search' },
+    ],
+    returns: [
+      { name: 'resolver', type: 'address', description: 'Resolver covering the longest suffix, or address(0)' },
+      { name: 'node', type: 'bytes32', description: 'Namehash of the full name' },
+      { name: 'offset', type: 'uint256', description: 'Byte offset into the DNS-encoded name where the resolver was found. 0 means an exact match; non-zero means the resolver was found at a parent suffix. Used by requireResolver to enforce that non-wildcard resolvers only serve exact matches.' },
+    ],
+  },
+  {
+    name: 'findExactRegistry',
+    description: "Find the registry at a name's position by walking down from root.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Registry at that position, or address(0) if not found' },
+    ],
+  },
+  {
+    name: 'findParentRegistry',
+    description: "Find the parent registry for a name (the registry containing the name's entry).",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'parentRegistry', type: 'IRegistry', description: 'Parent registry, or address(0) if not found' },
+    ],
+  },
+  {
+    name: 'findRegistries',
+    description: "Return all registries in a name's ancestry, innermost first.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registries', type: 'IRegistry[]', description: 'Array in label order, e.g. [<nick>, <eth>, <root>] for nick.eth' },
+    ],
+  },
+  {
+    name: 'findCanonicalName',
+    description: "Reconstruct a registry's DNS-encoded name by walking up via getParent().",
+    params: [
+      { name: 'registry', type: 'IRegistry', description: 'The registry to name' },
+    ],
+    returns: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name, or empty if not canonical' },
+    ],
+  },
+  {
+    name: 'findCanonicalRegistry',
+    description: 'Find the registry for a name, verified canonical via bidirectional walk.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Canonical registry, or address(0) if not found or not canonical' },
+    ],
+  },
+  {
+    name: 'findOwner',
+    description: 'Find the current owner of a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Owner address, or address(0) if not found or registry does not implement IOwnedRegistry' },
+    ],
+  },
   {
     name: 'resolve',
     description: 'Forward-resolve a single record for a DNS-encoded name. For batch resolution, encode data as multicall(bytes[]).',
@@ -156,65 +441,13 @@ For subnames, you need to verify the name itself plus the security of the parent
     ],
   },
   {
-    name: 'findResolver',
-    description: 'Find the resolver for a name by walking down the registry hierarchy.',
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name to search' },
-    ],
-    returns: [
-      { name: 'resolver', type: 'address', description: 'Resolver covering the longest suffix, or address(0)' },
-      { name: 'node', type: 'bytes32', description: 'Namehash of the full name' },
-      { name: 'offset', type: 'uint256', description: 'Byte offset into name where the resolver was found (0 = exact match)' },
-    ],
-  },
-  {
     name: 'requireResolver',
-    description: 'Same as findResolver, but reverts if no resolver is found or the resolver is invalid. Used internally by resolve() and reverse().',
+    description: 'Same as findResolver, but reverts if no suitable resolver is found. Reverts with ResolverNotFound if: no resolver exists, or the resolver does not support IExtendedResolver and was found at a parent suffix (non-zero offset). Reverts with ResolverNotContract if the resolver was matched exactly (zero offset), does not support IExtendedResolver, and has no deployed code. Used internally by resolve() and reverse().',
     params: [
       { name: 'name', type: 'bytes', description: 'DNS-encoded name to search' },
     ],
     returns: [
       { name: 'info', type: 'ResolverInfo', description: 'Struct with name, offset, node, resolver address, and whether it supports IExtendedResolver' },
-    ],
-  },
-  {
-    name: 'findExactRegistry',
-    description: "Find the registry at a name's position by walking down from root.",
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registry', type: 'IRegistry', description: 'Registry at that position, or address(0) if not found' },
-    ],
-  },
-  {
-    name: 'findRegistries',
-    description: "Return all registries in a name's ancestry, innermost first.",
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registries', type: 'IRegistry[]', description: 'Array in label order, e.g. [<nick>, <eth>, <root>] for nick.eth' },
-    ],
-  },
-  {
-    name: 'findCanonicalName',
-    description: "Reconstruct a registry's DNS-encoded name by walking up via getParent().",
-    params: [
-      { name: 'registry', type: 'IRegistry', description: 'The registry to name' },
-    ],
-    returns: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name, or empty if not canonical' },
-    ],
-  },
-  {
-    name: 'findCanonicalRegistry',
-    description: 'Find the registry for a name, verified canonical via bidirectional walk.',
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registry', type: 'IRegistry', description: 'Canonical registry, or address(0) if not found or not canonical' },
     ],
   },
 ]} />
@@ -224,11 +457,11 @@ For subnames, you need to verify the name itself plus the security of the parent
 <ContractReference functions={[
   {
     name: 'ROOT_REGISTRY',
-    description: 'The ENSv2 root registry. All hierarchy traversal starts from this address.',
+    description: 'The ENSv2 root registry. All hierarchy traversal starts from this address. Set once at deployment (immutable).',
   },
   {
     name: 'batchGatewayProvider',
-    description: 'Default gateway provider for CCIP-Read batching.',
+    description: 'Default gateway provider for CCIP-Read batching. Set once at deployment (immutable).',
   },
 ]} />
 
