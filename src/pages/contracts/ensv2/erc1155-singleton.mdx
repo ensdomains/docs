@@ -93,6 +93,6 @@ interface IERC1155Singleton is IERC1155 {
 
 Internally, the contract replaces the standard ERC1155 nested balance mapping (`id → address → balance`) with a flat `id → address` ownership mapping. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides `ownerOf` to add expiry and version validation on top of raw ownership, returning `address(0)` for expired names or stale token IDs.
 
-Unlike the standard ERC1155 which has a `_uri` storage variable, ERC1155Singleton makes `uri()` abstract with no built-in storage. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) delegates `uri()` to an external [metadata provider](/contracts/ensv2/registry-metadata) via the `MetadataMixin` pattern.
+Unlike the standard ERC1155 which has a `_uri` storage variable, ERC1155Singleton makes `uri()` abstract with no built-in storage. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides it with a two-mode implementation: a static URI string, or delegation to an [`IRegistryURIRenderer`](/contracts/ensv2/permissioned-registry#token-metadata) contract for dynamic per-token metadata.
 
 The contract emits all standard ERC1155 events (`TransferSingle`, `TransferBatch`, `ApprovalForAll`, `URI`).

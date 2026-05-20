@@ -15,6 +15,7 @@ const REGISTRY_ROLES = [
   { name: 'ROLE_RENEW', value: 1n << 16n },                                // Nybble 4
   { name: 'ROLE_SET_SUBREGISTRY', value: 1n << 20n },                      // Nybble 5
   { name: 'ROLE_SET_RESOLVER', value: 1n << 24n },                         // Nybble 6
+  { name: 'ROLE_SET_URI', value: 1n << 36n },                              // Nybble 9
   { name: 'ROLE_UPGRADE', value: 1n << 124n },                             // Nybble 31
   // Admin roles (upper 128 bits)
   { name: 'ROLE_REGISTRAR_ADMIN', value: (1n << 0n) << 128n },             // Nybble 32
@@ -25,6 +26,7 @@ const REGISTRY_ROLES = [
   { name: 'ROLE_SET_SUBREGISTRY_ADMIN', value: (1n << 20n) << 128n },      // Nybble 37
   { name: 'ROLE_SET_RESOLVER_ADMIN', value: (1n << 24n) << 128n },         // Nybble 38
   { name: 'ROLE_CAN_TRANSFER_ADMIN', value: (1n << 28n) << 128n },         // Nybble 39 (admin-only, no regular variant)
+  { name: 'ROLE_SET_URI_ADMIN', value: (1n << 36n) << 128n },              // Nybble 41
   { name: 'ROLE_UPGRADE_ADMIN', value: (1n << 124n) << 128n },             // Nybble 63
 ] as const
 

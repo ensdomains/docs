@@ -17,7 +17,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## What Changed from ENSv1
 
-In ENSv1, name management was split across three separate contracts: the ENS Registry (flat mapping of all names), the BaseRegistrar (ERC721 tokens for .eth), and the Name Wrapper (ERC1155 wrapping + fuses). ENSv2 replaces all three with a single unified contract.
+In ENSv1, name management was split across three separate contracts: the ENS Registry (flat mapping of all names), the BaseRegistrar (ERC721 tokens for .eth), and the Name Wrapper (ERC1155 wrapping + fuses). ENSv2 replaces all three with a single unified contract. The table below summarizes the key differences; each concept is explained in the sections that follow.
 
 | Feature         | ENSv1                                           | ENSv2 Permissioned Registry                                                  |
 | --------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -27,7 +27,7 @@ In ENSv1, name management was split across three separate contracts: the ENS Reg
 | Token IDs       | Fixed (derived from namehash/labelhash)         | [Mutable](/contracts/ensv2/mutable-token-ids): change on role updates and re-registration |
 | Subname control | Requires Name Wrapper + fuse configuration      | Built-in via subregistry pointer + per-name roles                            |
 | Upgradeability  | Not upgradeable                                 | UUPS proxy pattern (for [UserRegistry](/contracts/ensv2/registry-template#userregistry)) |
-| Name states     | Registered or not                               | Three states: AVAILABLE, RESERVED, REGISTERED                                |
+| Name states     | Registered or not                               | Three-state lifecycle (see [Name Lifecycle](#name-lifecycle))                |
 
 ## Names
 
@@ -35,7 +35,7 @@ Each name in the registry is identified by its **labelhash** (the `keccak256` ha
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `subregistry` | `IRegistry` | Pointer to a child registry for managing subnames |
+| `subregistry` | `IRegistry` | Pointer to a subregistry for managing subnames |
 | `resolver` | `address` | Resolver contract that holds this name's records |
 | `expiry` | `uint64` | Timestamp after which the name is considered expired (`block.timestamp >= expiry`) |
 | `eacVersionId` | `uint32` | Isolates permissions across registrations (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)) |
@@ -74,11 +74,10 @@ stateDiagram-v2
 
 `register()` accepts a `label` (string), `owner`, `registry` (subregistry), `resolver`, `roleBitmap` (initial roles granted to the owner), and `expiry`. Labels are validated for size before registration. If `owner` is `address(0)`, the name is reserved instead of registered, and `roleBitmap` must be `0`.
 
-A non-expired registered name cannot be re-registered directly. It must be unregistered first. Similarly, a reserved name cannot be re-reserved; it can only be promoted to registered.
-
-When promoting a `RESERVED` name to `REGISTERED`, if `expiry` is `0` the current expiry is preserved.
-
-Re-registering an expired name that had a previous owner burns the old token and increments both version counters, ensuring stale permissions and token approvals don't carry over.
+- A non-expired registered name cannot be re-registered; it must be unregistered first.
+- A reserved name cannot be re-reserved; it can only be promoted to registered.
+- When promoting a `RESERVED` name to `REGISTERED`, if `expiry` is `0` the current expiry is preserved.
+- Re-registering an expired name that had a previous owner burns the old token and increments both version counters. This ensures stale permissions and token approvals don't carry over.
 
 ### Unregistration
 
@@ -92,11 +91,11 @@ Re-registering an expired name that had a previous owner burns the old token and
 
 Most functions accept an `anyId` parameter that can be a `labelhash`, [token ID](/contracts/ensv2/mutable-token-ids#id-types), or [resource](/contracts/ensv2/enhanced-access-control#resources) interchangeably. Internally, `_entry()` zeroes the version bits to find the canonical storage slot for the name. This means you can pass whichever identifier you have on hand, and the registry resolves it to the same underlying entry.
 
-This applies to `setSubregistry()`, `setResolver()`, `renew()`, `unregister()`, `getExpiry()`, `getStatus()`, `getState()`, `getTokenId()`, `getResource()`, and all EAC role functions (`grantRoles()`, `revokeRoles()`, `roles()`, etc.). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) for the full explanation and diagram.
+See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) for the full explanation and diagram.
 
 ## Ownership
 
-Each registered name is an [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token with exactly one owner. The token ID changes when the name is re-registered or when roles change (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)).
+The token ID for a name changes when it is re-registered or when roles change (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)).
 
 `ownerOf()` returns `address(0)` for:
 - Expired names (ownership is time-bounded)
@@ -117,16 +116,19 @@ All permissions are managed through [Enhanced Access Control](/contracts/ensv2/e
 | `ROLE_SET_PARENT` | `1 << 8` | root | Set parent registry |
 | `ROLE_UNREGISTER` | `1 << 12` | root or name | Unregister names |
 | `ROLE_RENEW` | `1 << 16` | root or name | Extend expiry |
-| `ROLE_SET_SUBREGISTRY` | `1 << 20` | root or name | Set child registry |
+| `ROLE_SET_SUBREGISTRY` | `1 << 20` | root or name | Set subregistry |
 | `ROLE_SET_RESOLVER` | `1 << 24` | root or name | Set resolver |
-| `ROLE_CAN_TRANSFER_ADMIN` | `(1 << 28) << 128` | root or name | Authorize ERC1155 token transfers (admin-only — no regular variant, checked on the token owner not the operator) |
+| `ROLE_CAN_TRANSFER_ADMIN` | `(1 << 28) << 128` | root or name | Authorize ERC1155 token transfers |
+| `ROLE_SET_URI` | `1 << 36` | root | Set metadata URI and renderer |
 | `ROLE_UPGRADE` | `1 << 124` | root | Authorize proxy upgrades |
 
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_RESOLVER_ADMIN = (1 << 24) << 128`), except `ROLE_CAN_TRANSFER_ADMIN` which exists only as an admin role. In TypeScript, use `1n << 24n` for the bigint equivalent.
 
+`ROLE_CAN_TRANSFER_ADMIN` has no regular (non-admin) variant and is checked against the token owner, not the operator. See [Transfers](#transfers) for details.
+
 "Root" scope means the role only works on `ROOT_RESOURCE`. "Root or name" means it can be granted on either scope, and the two compose: a root grant applies to all names.
 
-**Admin role restriction on names:** admin roles on individual names can only be granted at registration time. See [EAC Hook Overrides](#eac-hook-overrides) for how this is enforced.
+Admin roles on individual names are restricted to registration time (see [EAC Hook Overrides](#eac-hook-overrides)).
 
 ### Role Bitmap Composer
 
@@ -140,10 +142,10 @@ Select roles to compose a bitmap value for use with `grantRoles` and `revokeRole
 
 ### Granting and Revoking Roles
 
-The registry uses the standard EAC [`grantRoles` and `revokeRoles`](/contracts/ensv2/enhanced-access-control#granting-and-revoking) functions, overridden to accept `anyId`. You can pass a labelhash, token ID, or resource and the registry computes the correct resource internally. No manual resource computation is needed. See [Code Examples](#code-examples) for usage.
+The registry uses the standard EAC [`grantRoles` and `revokeRoles`](/contracts/ensv2/enhanced-access-control#granting-and-revoking) functions with [anyId polymorphism](#anyid-polymorphism). See [Code Examples](#code-examples) for usage.
 
 :::note
-You can only grant roles for which you hold the corresponding admin role. The roles granted at registration time (typically `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_CAN_TRANSFER_ADMIN` with their admin counterparts) determine what the name owner can delegate.
+You can only grant roles for which you hold the corresponding admin role. The set of roles granted at registration determines what the owner can delegate; see [Emancipation](#emancipation) for the default bitmap.
 :::
 
 ### EAC Hook Overrides
@@ -180,32 +182,136 @@ Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an **admin rol
 
 When a token transfers, all roles are atomically moved from the old owner to the new owner: the old owner's roles are revoked first (freeing assignee slots), then granted to the new owner. Roles granted to other accounts on the same name are unaffected. Without `ROLE_CAN_TRANSFER_ADMIN`, the name is effectively non-transferable, similar to the `CANNOT_TRANSFER` fuse in the Name Wrapper.
 
-## Versioning
+## Token Metadata
 
-The registry uses [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) to provide two security guarantees: **permission isolation** (roles from a previous registration don't carry over after re-registration) and **transfer griefing protection** (role changes invalidate pending marketplace approvals by changing the token ID). Expired names retain their storage but all mutating operations check expiry first and revert.
+The registry's `uri(tokenId)` function returns token metadata following the [EIP-1155](https://eips.ethereum.org/EIPS/eip-1155) standard. It supports two modes:
+
+- **Static URI:** a single string returned for all tokens. Clients substitute `{id}` with the hex token ID per the [EIP-1155 metadata spec](https://eips.ethereum.org/EIPS/eip-1155#metadata). Suitable when an off-chain service resolves per-token data from the URL template.
+- **Dynamic renderer:** an `IRegistryURIRenderer` contract that generates metadata per token. The registry calls `renderURI(registry, tokenId)`, passing itself so the renderer can query on-chain state (owner, expiry, records) to compose SVGs or JSON.
+
+The renderer takes precedence: if set, the static URI is ignored. If neither is set, `uri()` returns an empty string.
+
+`setURI(uri_, renderer)` sets both atomically and requires `ROLE_SET_URI` on `ROOT_RESOURCE`.
+
+### Building a Custom Renderer
+
+Implement `IRegistryURIRenderer`:
+
+```solidity
+interface IRegistryURIRenderer {
+    function renderURI(IRegistry registry, uint256 tokenId)
+        external view returns (string memory);
+}
+```
+
+The registry passes itself as the first argument, so the renderer can call `getExpiry()`, `latestOwnerOf()`, etc. to build metadata from on-chain state.
+
+## Parent Pointer
+
+Each name's `subregistry` field creates a forward pointer from parent to child. The registry also stores a backward pointer to its own parent via `setParent()` / `getParent()`, creating a two-way link at every level:
+
+<Card className="flex items-center justify-center gap-4 py-6">
+  <div className="border-grey-light flex items-center gap-2 rounded-lg border bg-white px-4 py-2 dark:bg-black">
+    <div className="text-center">
+      <div className="font-semibold">.eth</div>
+      <div className="text-grey text-xs">parent</div>
+    </div>
+  </div>
+  <div className="text-blue font-bold">⇄</div>
+  <div className="border-grey-light flex items-center gap-2 rounded-lg border bg-white px-4 py-2 dark:bg-black">
+    <div className="text-center">
+      <div className="font-semibold">nick.eth</div>
+      <div className="text-grey text-xs">child</div>
+    </div>
+  </div>
+  <div className="text-blue font-bold">⇄</div>
+  <div className="border-grey-light flex items-center gap-2 rounded-lg border bg-white px-4 py-2 dark:bg-black">
+    <div className="text-center">
+      <div className="font-semibold">sub.nick.eth</div>
+      <div className="text-grey text-xs">grandchild</div>
+    </div>
+  </div>
+</Card>
+
+The backward pointer records both the parent registry's address and the label this registry is known by in the parent. For example, the `sub.nick.eth` registry would set its parent pointer as:
+
+```solidity
+setParent(<nick.eth registry>, "sub")
+```
+
+The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#registry-navigation) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
+
+Once this pointer is set, the registry has committed to its position in the hierarchy:
+
+<FrenCallout fren="earl" variant="note" title="Definition – Canonical Parent">
+The **canonical parent** of a registry is the parent registry set by calling `setParent(parent, label)`. It identifies where this registry sits in the hierarchy: as `label` under `parent`.
+</FrenCallout>
+
+However, as long as `ROLE_SET_PARENT` is still held on `ROOT_RESOURCE`, the pointer can be changed, effectively remounting the registry at a different position (e.g. moving from `nick.eth` to `nick.xyz`). To prevent this, the owner revokes `ROLE_SET_PARENT` and `ROLE_SET_PARENT_ADMIN` on `ROOT_RESOURCE`:
+
+```solidity
+revokeRootRoles(ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN, owner)
+```
+
+<FrenCallout fren="earl" variant="note" title="Definition – Locked Canonical Parent">
+A registry has a **locked canonical parent** when it has a canonical parent and no account holds `ROLE_SET_PARENT` or `ROLE_SET_PARENT_ADMIN` on `ROOT_RESOURCE`, making the pointer permanent.
+</FrenCallout>
 
 ## Emancipation
 
-A registry is **emancipated** when the root-level admin roles for dangerous operations (`ROLE_UNREGISTER`, `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY` and their admin counterparts) have been permanently revoked. Since revoking an admin role is irreversible (you need the admin role to grant the admin role), emancipation is a one-way guarantee: once achieved, the registry operator can never regain control over individual names.
+<FrenCallout fren="earl" variant="note" title="Definition – Emancipation">
+A registry is **emancipated** when no account can use `ROOT_RESOURCE` roles to interfere with name owners, remount the registry elsewhere in the hierarchy, or escalate privileges by granting new roles.
+</FrenCallout>
 
-The `.eth` registry is emancipated by design: the ETH Registrar holds only `ROLE_REGISTRAR` and `ROLE_RENEW` at root, which don't overlap with the token owner's roles. You can verify emancipation for any registry by calling `getAssigneeCount(ROOT_RESOURCE)` and checking that the dangerous role counts are zero.
+Emancipation is a property of a registry, but its purpose is protecting names. This section covers how a registry is emancipated, how to verify it on-chain, and how emancipation composes across the hierarchy to fully protect individual names.
 
-See [Registry Template: Configuration Patterns](/contracts/ensv2/registry-template#configuration-patterns) for a full explanation of emancipation, including how it applies across the registry hierarchy.
+If any account holds `ROLE_SET_RESOLVER` on `ROOT_RESOURCE`, that account can change the resolver on every name under the corresponding registry, overriding any individual owner. The same applies to `ROLE_UNREGISTER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_SET_PARENT`.
 
-## Registry Hierarchy
+Emancipation is achieved by ensuring the roles granted on `ROOT_RESOURCE` don't overlap with the roles granted to token owners, then revoking all admin roles on `ROOT_RESOURCE` to make the separation permanent.
 
-Each name can point to a child registry via its subregistry field. These parent-child relationships form a tree that mirrors the DNS hierarchy:
+- On `ROOT_RESOURCE`: only operational roles needed by the registrar (e.g. `ROLE_REGISTRAR`, `ROLE_RENEW`)
+- On each name's resource: the owner's control roles as defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration)
 
-```
-.eth registry  →  nick.eth  →  sub.nick.eth
-(parent)          (child)       (grandchild)
-```
+These two sets don't overlap. Once all admin roles on `ROOT_RESOURCE` are revoked, the separation is irreversible (you need the admin role to grant the admin role).
 
-The registry also stores its own parent via `setParent()` / `getParent()`, which records both the parent registry address and the child label. This backward pointer is used by the Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#registry-navigation) to verify hierarchy integrity.
+This is how the `.eth` registry works. The [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` (so it can register and renew names), while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration).
 
-A registry has a **canonical parent** once `setParent(parent, label)` has been called, establishing where it sits in the hierarchy. A registry has a **locked canonical parent** when the owner additionally revokes `ROLE_SET_PARENT` (and `ROLE_SET_PARENT_ADMIN`) on `ROOT_RESOURCE`, making the backward pointer immutable. Without this, the registry could be remounted at a different position in the hierarchy (e.g. moved from `nick.eth` to `nick.xyz`).
+### Verifying Emancipation
 
-`getSubregistry()` and `getResolver()` return `address(0)` for expired names, preventing resolution through lapsed names. See [Registry Hierarchy](/contracts/ensv2/registry-hierarchy) for the full explanation with diagrams, resolution algorithm, and the IRegistry interface.
+Call [`roleCount(ROOT_RESOURCE)`](/contracts/ensv2/enhanced-access-control#bitmap-layout) on the registry to inspect the assignee counts. For emancipation, two categories of roles must have zero assignees on `ROOT_RESOURCE`:
+
+**Roles that directly endanger name owners** (any account holding these on `ROOT_RESOURCE` can act on any name):
+
+| Role | Danger |
+|------|--------|
+| `ROLE_UNREGISTER` | Holder can delete any name |
+| `ROLE_SET_RESOLVER` | Holder can change any name's resolver |
+| `ROLE_SET_SUBREGISTRY` | Holder can change any name's subregistry |
+| `ROLE_SET_PARENT` | Holder can remount the entire registry elsewhere in the hierarchy |
+
+**Admin roles that enable escalation** (any account holding these on `ROOT_RESOURCE` can grant the corresponding role to arbitrary accounts):
+
+| Role | Danger |
+|------|--------|
+| `ROLE_UNREGISTER_ADMIN` | Can grant `ROLE_UNREGISTER` |
+| `ROLE_SET_RESOLVER_ADMIN` | Can grant `ROLE_SET_RESOLVER` |
+| `ROLE_SET_SUBREGISTRY_ADMIN` | Can grant `ROLE_SET_SUBREGISTRY` |
+| `ROLE_SET_PARENT_ADMIN` | Can grant `ROLE_SET_PARENT` |
+| `ROLE_REGISTRAR_ADMIN` | Can grant `ROLE_REGISTRAR` |
+| `ROLE_REGISTER_RESERVED_ADMIN` | Can grant `ROLE_REGISTER_RESERVED` |
+| `ROLE_RENEW_ADMIN` | Can grant `ROLE_RENEW` |
+
+`ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` are expected (the registrar needs them to function). They don't endanger existing registered names: `ROLE_REGISTRAR` can only register available names, and `ROLE_RENEW` only extends expiry. The concern is their **admin** counterparts, which allow granting these roles to arbitrary accounts.
+
+### Emancipation Across the Hierarchy
+
+Emancipation at one level is not sufficient if a higher level can still interfere. If the `.eth` registry is emancipated but the root registry is not, an account with `ROLE_SET_SUBREGISTRY` on the root registry's `ROOT_RESOURCE` could swap the `.eth` subregistry pointer. True emancipation requires the entire chain from root down to be secured:
+
+- **Root registry**: governed by ENS governance (trusted by design)
+- **.eth registry**: emancipated (only `ROLE_REGISTRAR` + `ROLE_RENEW` granted on `ROOT_RESOURCE`)
+- **2LD registries** (e.g., alice.eth): depends on the 2LD owner's configuration
+
+For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke the roles listed above on `ROOT_RESOURCE`) and lock the [canonical parent](#parent-pointer) by revoking `ROLE_SET_PARENT` on `ROOT_RESOURCE` (so the registry can't be re-mounted elsewhere in the hierarchy).
 
 ## Reference
 
@@ -218,7 +324,7 @@ A registry has a **canonical parent** once `setParent(parent, label)` has been c
     params: [
       { name: 'label', type: 'string', description: 'The label to register (e.g. "alice" for alice.eth)' },
       { name: 'owner', type: 'address', description: 'Owner address, or address(0) to reserve' },
-      { name: 'registry', type: 'IRegistry', description: 'Child subregistry to set, or address(0)' },
+      { name: 'registry', type: 'IRegistry', description: 'Subregistry to set, or address(0)' },
       { name: 'resolver', type: 'address', description: 'Resolver to set, or address(0)' },
       { name: 'roleBitmap', type: 'uint256', description: 'Initial roles to grant the owner' },
       { name: 'expiry', type: 'uint64', description: 'Expiry timestamp in seconds' },
@@ -244,10 +350,10 @@ A registry has a **canonical parent** once `setParent(parent, label)` has been c
   },
   {
     name: 'setSubregistry',
-    description: 'Set the child registry for a name. Pointing two names to the same registry creates a namespace alias.',
+    description: 'Set the subregistry for a name. Pointing two names to the same registry creates a namespace alias.',
     params: [
       { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
-      { name: 'registry', type: 'IRegistry', description: 'Child registry address' },
+      { name: 'registry', type: 'IRegistry', description: 'Subregistry address' },
     ],
   },
   {
@@ -264,6 +370,14 @@ A registry has a **canonical parent** once `setParent(parent, label)` has been c
     params: [
       { name: 'parent', type: 'IRegistry', description: 'Parent registry address' },
       { name: 'label', type: 'string', description: 'This registry\'s label within the parent' },
+    ],
+  },
+  {
+    name: 'setURI',
+    description: 'Set the metadata URI and optional renderer. Requires ROLE_SET_URI on ROOT_RESOURCE.',
+    params: [
+      { name: 'uri_', type: 'string', description: 'Static metadata URI' },
+      { name: 'renderer', type: 'IRegistryURIRenderer', description: 'Renderer contract, or address(0) for static URI only' },
     ],
   },
   {
@@ -315,8 +429,6 @@ A registry has a **canonical parent** once `setParent(parent, label)` has been c
 ]} />
 
 ### View Functions
-
-Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry-interface) interface (`getSubregistry`, `getResolver`, `getParent`) take label strings. All other functions accept `anyId`.
 
 <ContractReference functions={[
   {
@@ -391,12 +503,12 @@ Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry
   },
   {
     name: 'getSubregistry',
-    description: 'Get the child registry for a label. Returns address(0) if expired.',
+    description: 'Get the subregistry for a label. Returns address(0) if expired.',
     params: [
       { name: 'label', type: 'string', description: 'The label to query' },
     ],
     returns: [
-      { name: 'registry', type: 'IRegistry', description: 'Child registry address' },
+      { name: 'registry', type: 'IRegistry', description: 'Subregistry address' },
     ],
   },
   {
@@ -484,6 +596,16 @@ Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry
       { name: 'result', type: 'bool', description: 'True if account holds all specified roles on ROOT' },
     ],
   },
+  {
+    name: 'uri',
+    description: 'ERC1155 metadata URI. Delegates to the renderer if set, otherwise returns the static URI.',
+    params: [
+      { name: 'tokenId', type: 'uint256', description: 'Token ID' },
+    ],
+    returns: [
+      { name: '', type: 'string', description: 'Metadata URI' },
+    ],
+  },
 ]} />
 
 ### Events
@@ -531,10 +653,10 @@ Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry
   },
   {
     name: 'SubregistryUpdated',
-    description: 'Child registry changed.',
+    description: 'Subregistry changed.',
     params: [
       { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
-      { name: 'subregistry', type: 'IRegistry', description: 'New child registry address' },
+      { name: 'subregistry', type: 'IRegistry', description: 'New subregistry address' },
       { name: 'sender', type: 'address', description: 'Caller that made the change' },
     ],
   },
@@ -562,6 +684,15 @@ Functions from the [IRegistry](/contracts/ensv2/registry-hierarchy#the-iregistry
       { name: 'parent', type: 'IRegistry', description: 'New parent registry' },
       { name: 'label', type: 'string', description: 'Label within the parent' },
       { name: 'sender', type: 'address', description: 'Caller that made the change' },
+    ],
+  },
+  {
+    name: 'URIUpdated',
+    description: 'Emitted when metadata URI or renderer is changed.',
+    params: [
+      { name: 'uri', type: 'string', description: 'New metadata URI' },
+      { name: 'renderer', type: 'address', description: 'New renderer address (or address(0))' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Account that called setURI' },
     ],
   },
 ]} />
