@@ -75,7 +75,7 @@ For subnames, you need to verify the name itself plus the security of the parent
 
 1. **Verify the canonical chain**: `findCanonicalRegistry(dnsEncode("sub.nick.eth"))` must return non-zero. This verifies every link from root through `.eth` and `nick.eth` to the subname's registry.
 
-2. **Locked canonical parent**: on the subregistry, call `hasAssignees(ROOT_RESOURCE, ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN)`. This must return `false`. Otherwise the subregistry can be [remounted](/contracts/ensv2/permissioned-registry#registry-hierarchy) at a different position (e.g. moved from `nick.eth` to `nick.xyz`), changing what name the tokens represent.
+2. **Locked canonical parent**: on the subregistry, call `hasAssignees(ROOT_RESOURCE, ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN)`. This must return `false`. Otherwise the subregistry can be [remounted](/contracts/ensv2/permissioned-registry#parent-pointer) at a different position (e.g. moved from `nick.eth` to `nick.xyz`), changing what name the tokens represent.
 
 3. **Subregistry emancipation**: call `roleCount(ROOT_RESOURCE)` on the subregistry and inspect the packed nybbles:
 

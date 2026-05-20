@@ -79,64 +79,9 @@ Since the roles on `ROOT_RESOURCE` overlap with member token roles (e.g. the ope
 
 ### Emancipated (ETH-like)
 
-<FrenCallout fren="earl" variant="note" title="Definition">
-A registry is **emancipated** when no account can use `ROOT_RESOURCE` roles to interfere with name owners, remount the registry elsewhere in the hierarchy, or escalate privileges by granting new roles.
-</FrenCallout>
+An emancipated registry separates operator and owner roles so that no `ROOT_RESOURCE` role can interfere with individual name owners. This is how the `.eth` registry works: the registrar holds only `ROLE_REGISTRAR` and `ROLE_RENEW`, while name owners hold `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_CAN_TRANSFER_ADMIN` on their own tokens.
 
-If any account holds `ROLE_SET_RESOLVER` on `ROOT_RESOURCE`, that account can change the resolver on every name under the corresponding registry, overriding any individual owner. The same applies to `ROLE_UNREGISTER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_SET_PARENT`.
-
-Emancipation is achieved by ensuring the roles granted on `ROOT_RESOURCE` don't overlap with the roles granted to token owners, then revoking all admin roles on `ROOT_RESOURCE` to make the separation permanent.
-
-- On `ROOT_RESOURCE`: only operational roles needed by the registrar (e.g. `ROLE_REGISTRAR`, `ROLE_RENEW`)
-- On each name's resource: the owner's control roles as defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration):
-  ```
-  ROLE_SET_SUBREGISTRY | ROLE_SET_SUBREGISTRY_ADMIN
-  | ROLE_SET_RESOLVER | ROLE_SET_RESOLVER_ADMIN
-  | ROLE_CAN_TRANSFER_ADMIN
-  ```
-
-These two sets don't overlap. Once all admin roles on `ROOT_RESOURCE` are revoked, the separation is irreversible (you need the admin role to grant the admin role).
-
-This is how the `.eth` registry works. The [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` (so it can register and renew names), while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration).
-
-### Verifying Emancipation
-
-Call [`roleCount(ROOT_RESOURCE)`](/contracts/ensv2/enhanced-access-control#bitmap-layout) on the registry to inspect the assignee counts. For emancipation, two categories of roles must have zero assignees on `ROOT_RESOURCE`:
-
-**Roles that directly endanger name owners** (any account holding these on `ROOT_RESOURCE` can act on any name):
-
-| Role | Danger |
-|------|--------|
-| `ROLE_UNREGISTER` | Holder can delete any name |
-| `ROLE_SET_RESOLVER` | Holder can change any name's resolver |
-| `ROLE_SET_SUBREGISTRY` | Holder can change any name's subregistry |
-| `ROLE_SET_PARENT` | Holder can remount the entire registry elsewhere in the hierarchy |
-
-**Admin roles that enable escalation** (any account holding these on `ROOT_RESOURCE` can grant the corresponding role to arbitrary accounts):
-
-| Role | Danger |
-|------|--------|
-| `ROLE_UNREGISTER_ADMIN` | Can grant `ROLE_UNREGISTER` |
-| `ROLE_SET_RESOLVER_ADMIN` | Can grant `ROLE_SET_RESOLVER` |
-| `ROLE_SET_SUBREGISTRY_ADMIN` | Can grant `ROLE_SET_SUBREGISTRY` |
-| `ROLE_SET_PARENT_ADMIN` | Can grant `ROLE_SET_PARENT` |
-| `ROLE_REGISTRAR_ADMIN` | Can grant `ROLE_REGISTRAR` |
-| `ROLE_REGISTER_RESERVED_ADMIN` | Can grant `ROLE_REGISTER_RESERVED` |
-| `ROLE_RENEW_ADMIN` | Can grant `ROLE_RENEW` |
-
-`ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` are expected (the registrar needs them to function). They don't endanger existing registered names: `ROLE_REGISTRAR` can only register available names, and `ROLE_RENEW` only extends expiry. The concern is their **admin** counterparts, which allow granting these roles to arbitrary accounts.
-
-### Emancipation Across the Hierarchy
-
-Emancipation at one level is not sufficient if a higher level can still interfere. If the `.eth` registry is emancipated but the root registry is not, an account with `ROLE_SET_SUBREGISTRY` on the root registry's `ROOT_RESOURCE` could swap the `.eth` subregistry pointer. True emancipation requires the entire chain from root down to be secured:
-
-- **Root registry**: governed by ENS governance (trusted by design)
-- **.eth registry**: emancipated (only `ROLE_REGISTRAR` + `ROLE_RENEW` granted on `ROOT_RESOURCE`)
-- **2LD registries** (e.g., alice.eth): depends on the 2LD owner's configuration
-
-For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke the roles listed above on `ROOT_RESOURCE`) and lock the [canonical parent](/contracts/ensv2/permissioned-registry#registry-hierarchy) by revoking `ROLE_SET_PARENT` on `ROOT_RESOURCE` (so the registry can't be re-mounted elsewhere in the hierarchy).
-
-See the [Permissioned Registry](/contracts/ensv2/permissioned-registry#eac-integration) page for the full role table.
+See [Permissioned Registry: Emancipation](/contracts/ensv2/permissioned-registry#emancipation) for the full definition, verification steps, and how emancipation works across the hierarchy.
 
 ## Building Your Own Registry
 
