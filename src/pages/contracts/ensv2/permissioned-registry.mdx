@@ -144,9 +144,9 @@ Select roles to compose a bitmap value for use with `grantRoles` and `revokeRole
 
 The registry uses the standard EAC [`grantRoles` and `revokeRoles`](/contracts/ensv2/enhanced-access-control#granting-and-revoking) functions with [anyId polymorphism](#anyid-polymorphism). See [Code Examples](#code-examples) for usage.
 
-:::note
+<FrenCallout fren="peanut" variant="note">
 You can only grant roles for which you hold the corresponding admin role. The set of roles granted at registration determines what the owner can delegate; see [Emancipation](#emancipation) for the default bitmap.
-:::
+</FrenCallout>
 
 ### EAC Hook Overrides
 
@@ -239,7 +239,7 @@ The backward pointer records both the parent registry's address and the label th
 setParent(<nick.eth registry>, "sub")
 ```
 
-The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#registry-navigation) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
+The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#findcanonicalname) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
 
 Once this pointer is set, the registry has committed to its position in the hierarchy:
 
