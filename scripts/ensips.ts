@@ -36,7 +36,12 @@ export async function ensips() {
       'https://api.github.com/repos/ensdomains/ensips/contents/ensips',
       { headers: githubHeaders }
     )
-    if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
+    if (!ensipsRepoRes.ok) {
+      const body = await ensipsRepoRes.text()
+      throw new Error(
+        `Failed to fetch ENSIPs: ${ensipsRepoRes.status} ${ensipsRepoRes.statusText} — ${body}`
+      )
+    }
     const files = ((await ensipsRepoRes.json()) as DirectoryContents).filter(
       (f) => f.name.endsWith('.md')
     )
@@ -173,15 +178,12 @@ async function inlineSubdirectoryFiles(
   markdown: string,
   ensipNumber: number
 ): Promise<string> {
-  // Replace lines containing links to subdirectory .md files
-  // (e.g. "- [text](./19/supported.md)") with the actual file content.
-  // Matches the entire line to avoid leftover list markers.
-  const subfileLink =
-    /^[^\S\n]*(?:[-*]|\d+\.)\s*\[([^\]]*)\]\(\.\/\d+\/([^)]+\.md)\)\s*$/gm
+  // Matches [](./NUMBER/file.md) — content inclusion directives
+  const subfileLink = /^\[\]\(\.\/\d+\/([^)]+\.md)\)$/gm
   let result = markdown
 
   for (const match of markdown.matchAll(subfileLink)) {
-    const [fullMatch, , filename] = match
+    const [fullMatch, filename] = match
     const url = `https://raw.githubusercontent.com/ensdomains/ensips/master/ensips/${ensipNumber}/${filename}`
     const res = await fetchWithRetry(url)
 
