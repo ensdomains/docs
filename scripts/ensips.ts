@@ -173,15 +173,11 @@ async function inlineSubdirectoryFiles(
   markdown: string,
   ensipNumber: number
 ): Promise<string> {
-  // Replace lines containing links to subdirectory .md files
-  // (e.g. "- [text](./19/supported.md)") with the actual file content.
-  // Matches the entire line to avoid leftover list markers.
-  const subfileLink =
-    /^[^\S\n]*(?:[-*]|\d+\.)\s*\[([^\]]*)\]\(\.\/\d+\/([^)]+\.md)\)\s*$/gm
+  const subfileLink = /^\[[^\]]*\]\(\.\/\d+\/([^)]+\.md)\)$/gm
   let result = markdown
 
   for (const match of markdown.matchAll(subfileLink)) {
-    const [fullMatch, , filename] = match
+    const [fullMatch, filename] = match
     const url = `https://raw.githubusercontent.com/ensdomains/ensips/master/ensips/${ensipNumber}/${filename}`
     const res = await fetchWithRetry(url)
 
