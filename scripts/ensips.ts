@@ -36,7 +36,12 @@ export async function ensips() {
       'https://api.github.com/repos/ensdomains/ensips/contents/ensips',
       { headers: githubHeaders }
     )
-    if (!ensipsRepoRes.ok) throw new Error('Failed to fetch ENSIPs')
+    if (!ensipsRepoRes.ok) {
+      const body = await ensipsRepoRes.text()
+      throw new Error(
+        `Failed to fetch ENSIPs: ${ensipsRepoRes.status} ${ensipsRepoRes.statusText} — ${body}`
+      )
+    }
     const files = ((await ensipsRepoRes.json()) as DirectoryContents).filter(
       (f) => f.name.endsWith('.md')
     )
