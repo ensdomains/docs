@@ -179,7 +179,7 @@ async function inlineSubdirectoryFiles(
   ensipNumber: number
 ): Promise<string> {
   // Matches [](./NUMBER/file.md) — content inclusion directives
-  const subfileLink = /^\[\]\(\.\/\d+\/([^)]+\.md)\)$/gm
+  const subfileLink = /\[\]\(\.\/\d+\/([^)]+\.md)\)/gm
   let result = markdown
 
   for (const match of markdown.matchAll(subfileLink)) {
