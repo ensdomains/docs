@@ -63,27 +63,6 @@ from ens.auto import ns
 avatar = ns.get_text('alice.eth', 'avatar')
 ```
 
-```go [Go]
-package main
-
-import (
-	"fmt"
-
-	"github.com/ethereum/go-ethereum/ethclient"
-	ens "github.com/wealdtech/go-ens/v3"
-)
-
-func main() {
-	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
-
-	domain, _ := ens.Normalize("nick.eth")
-	resolver, _ := ens.NewResolver(client, domain)
-	avatar, _ := resolver.Text("avatar")
-
-	fmt.Println("Avatar: ", avatar)
-}
-```
-
 :::
 
 ### The Metadata Service

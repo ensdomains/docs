@@ -130,26 +130,6 @@ from ens.auto import ns
 name = ns.name('0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5')
 ```
 
-```go [Go]
-package main
-
-import (
-	"fmt"
-
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
-	ens "github.com/wealdtech/go-ens/v3"
-)
-
-func main() {
-	client, _ := ethclient.Dial("https://rpc.ankr.com/eth")
-
-	name, _ := ens.ReverseResolve(client, common.HexToAddress("0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5"))
-	fmt.Println("Name:", name)
-	// Name: nick.eth
-}
-```
-
 :::
 
 As of September 2025, Wagmi and Viem are the only libraries that support L2 Primary Names, and they can be used like this:

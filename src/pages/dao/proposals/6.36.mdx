@@ -12,15 +12,15 @@ proposal:
 | **Status**            | Passed                                                                                                                                                                                                                                                  |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Discussion Thread** | [Forum](https://discuss.ens.domains/t/21894/6)                                                                                                                                                                                                          |
-| **Votes**             | [Agora](https://agora.ensdao.org/proposals/31038548146097859834078018568437840147798885401616129864120868194533406456350), [Tally](https://tally.ensdao.org/dao/proposal/31038548146097859834078018568437840147798885401616129864120868194533406456350) |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/31038548146097859834078018568437840147798885401616129864120868194533406456350), [Anticapture](https://app.anticapture.com/ens/governance/proposal/31038548146097859834078018568437840147798885401616129864120868194533406456350) |
 
 ## Previous Context
 
-This proposal passed as [EP 6.34](https://www.tally.xyz/gov/ens/proposal/69304512515872868228453463730257567312488838925636819022683533220991373699419 'EP 6.34') and was queued for execution. Unfortunately, that proposal cannot be executed on-chain in its current form.
+This proposal passed as [EP 6.34](https://vote.ensdao.org/#/onchain/69304512515872868228453463730257567312488838925636819022683533220991373699419 'EP 6.34') and was queued for execution. Unfortunately, that proposal cannot be executed on-chain in its current form.
 
 Whilst the calldata was correct, and the simulations passed as expected, the calldata was generated against the blockchain state at the time and did not give consideration to other ongoing executable proposals.
 
-Alongside this proposal, another proposal was in motion ([Tally | ENS | Enable Root and Registrar Security Controllers](https://www.tally.xyz/gov/ens/proposal/7432320732701654700329828389963546575346476886035742386260284098817526767149 'Enable Root and Registrar Security Controllers')), which passed and was executed prior to 6.34.
+Alongside this proposal, another proposal was in motion ([Tally | ENS | Enable Root and Registrar Security Controllers](https://vote.ensdao.org/#/onchain/7432320732701654700329828389963546575346476886035742386260284098817526767149 'Enable Root and Registrar Security Controllers')), which passed and was executed prior to 6.34.
 
 That proposal changed a dependency on which 6.34 relied - specifically, the ownership of the Base Registrar.&#x20;
 
@@ -93,4 +93,4 @@ Simulation: [https://www.tdly.co/shared/simulation/264b8117-23a3-47e4-b84e-be49d
 ### Notes
 
 - For complete clarity, what differentiates this updated proposal from the original is that transactions 1, and 4 target **the RegistrarSecurityController**. The new security model for the \`BaseRegistrarImplementation\` proxies the addition and removal of controllers through this contract.
-- Explicit consideration has been given to other ongoing executable proposals. The only current proposal is [https://www.tally.xyz/gov/ens/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260](https://www.tally.xyz/gov/ens/proposal/28252712932062322633429808688780331957150867173093906455161078029287649387260) which does not modify any dependencies on which this proposal relies.
+- Explicit consideration has been given to other ongoing executable proposals. The only current proposal is [https://vote.ensdao.org/#/onchain/28252712932062322633429808688780331957150867173093906455161078029287649387260](https://vote.ensdao.org/#/onchain/28252712932062322633429808688780331957150867173093906455161078029287649387260) which does not modify any dependencies on which this proposal relies.
