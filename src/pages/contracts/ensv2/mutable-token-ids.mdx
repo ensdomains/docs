@@ -87,6 +87,10 @@ Note that legitimate ERC1155 transfers (`safeTransferFrom`) move roles from the 
 | Unregistration (reserved)      |      -       |       -        |             No               | No token exists to burn; counters unchanged                 |
 | Renewal                        |      -       |       -        |              No              | Only expiry changes                                         |
 
+<FrenCallout fren="peanut" variant="note" title="Quick rule">
+A token ID changes in exactly three situations: a role is granted or revoked, the name is re-registered after expiry, or the name is unregistered. Transfers and renewals never change the token ID.
+</FrenCallout>
+
 ## `anyId` Polymorphism
 
 Because token IDs change, you might not always have the current token ID on hand. To make this easier, most [Permissioned Registry](/contracts/ensv2/permissioned-registry) functions accept a `uint256 anyId` parameter that can be any of:
