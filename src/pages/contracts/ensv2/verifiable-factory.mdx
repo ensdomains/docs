@@ -57,17 +57,17 @@ sequenceDiagram
 Each proxy stores two pieces of provenance:
 
 - An immutable `verifiableProxyFactory` address baked into the proxy bytecode at construction.
-- A salt stored at the ERC-7201 namespaced slot `eth.ens.proxy.verifiable.salt`, exposed via `getVerifiableProxySalt()`.
+- A salt appended to the proxy bytecode at construction, readable via `getVerifiableProxyData()` (which also returns the current implementation address from the ERC-1967 slot).
 
 `initialize(implementation, data)` runs once. It calls OpenZeppelin's `ERC1967Utils.upgradeToAndCall`, which sets the implementation slot and delegate-calls the implementation with `data` so it can run its own initializer.
 
 ## On-chain Verification
 
 ```solidity
-function verifyContract(address proxy) external view returns (bool);
+function verifyContract(address proxy, address expectedImplementation) external view returns (bool);
 ```
 
-`verifyContract` asks the proxy for its salt, reconstructs the expected CREATE2 address from `(UUPSProxy creation code, factory, salt)`, and returns `true` if it matches `proxy`. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory, without trusting metadata or off-chain data.
+`verifyContract` calls `getVerifiableProxyData()` on the proxy to retrieve its stored salt and actual implementation address. It first checks that the implementation matches `expectedImplementation`, then reconstructs the expected CREATE2 address from `(UUPSProxy creation code, factory, salt)` and returns `true` if it matches `proxy`. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory with a known implementation, without trusting metadata or off-chain data.
 
 ## How ENSv2 Uses It
 

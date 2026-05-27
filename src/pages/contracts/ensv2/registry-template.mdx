@@ -22,7 +22,7 @@ This means every registry in the tree shares the same:
 - **[Enhanced Access Control](/contracts/ensv2/enhanced-access-control)** permission system: roles, admin roles, resource scoping
 - **[Mutable Token IDs](/contracts/ensv2/mutable-token-ids)**: version counters that protect against stale permissions and transfer griefing
 - **[anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism)**: accept labelhash, tokenId, or resource interchangeably
-- **Name lifecycle**: the same AVAILABLE → RESERVED → REGISTERED state machine
+- **Name lifecycle**: the same AVAILABLE → REGISTERED state machine (with optional reservation)
 
 ## Customizing via Inheritance
 
@@ -43,8 +43,12 @@ A UUPS-upgradeable proxy designed for user-owned subdomain registries. It adds:
 
 ```solidity
 contract UserRegistry is Initializable, PermissionedRegistry, UUPSUpgradeable, IProxyAuthorization {
+    // ... constructor, supportsInterface, _authorizeUpgrade omitted
+
     function initialize(address rootAccount, uint256 roleBitmap) public initializer {
-        if (rootAccount == address(0)) revert InvalidOwner();
+        if (rootAccount == address(0)) {
+            revert InvalidOwner();
+        }
         emit RegistryCreated();
         _grantRoles(ROOT_RESOURCE, roleBitmap, rootAccount, false);
     }
@@ -52,6 +56,53 @@ contract UserRegistry is Initializable, PermissionedRegistry, UUPSUpgradeable, I
 ```
 
 This is the registry that gets deployed when someone creates subnames under their name. Each child namespace gets its own `UserRegistry` proxy instance.
+
+## Registry Interface Hierarchy
+
+Registry functionality is split across layered interfaces. Each layer adds a capability, and PermissionedRegistry implements all of them. A custom registry can implement only the layers it needs.
+
+```mermaid
+graph BT
+    IRegistry["IRegistry"]
+    IOwnedRegistry["IOwnedRegistry"]
+    ITemporalRegistry["ITemporalRegistry"]
+    IERC1155Singleton["IERC1155Singleton"]
+    ITokenizedRegistry["ITokenizedRegistry"]
+    IStandardRegistry["IStandardRegistry"]
+    IEnhancedAccessControl["IEnhancedAccessControl"]
+    IPermissionedRegistry["IPermissionedRegistry"]
+
+    IRegistry --> IOwnedRegistry
+    IRegistry --> ITemporalRegistry
+    IERC1155Singleton --> ITokenizedRegistry
+    IOwnedRegistry --> ITokenizedRegistry
+    ITokenizedRegistry --> IStandardRegistry
+    ITemporalRegistry --> IStandardRegistry
+    IStandardRegistry --> IPermissionedRegistry
+    IEnhancedAccessControl --> IPermissionedRegistry
+```
+
+| Interface | Extends | Adds |
+|-----------|---------|------|
+| `IRegistry` | `IRegistryEvents` | `getSubregistry`, `getResolver`, `getParent` |
+| `IOwnedRegistry` | `IRegistry` | `findOwner` |
+| `ITemporalRegistry` | `IRegistry` | `findExpiry` |
+| `ITokenizedRegistry` | `IOwnedRegistry`, `IERC1155Singleton` | `findTokenId` |
+| `IStandardRegistry` | `ITemporalRegistry`, `ITokenizedRegistry` | `register`, `renew`, `unregister`, `setSubregistry`, `setResolver`, `setParent`, `getExpiry` |
+| `IPermissionedRegistry` | `IStandardRegistry`, `IEnhancedAccessControl` | `latestOwnerOf`, `getState`, `getStatus`, `getResource`, `getTokenId` |
+
+`IRegistry` is the minimum for participating in ENS resolution: the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) only needs `getSubregistry`, `getResolver`, and `getParent` to walk the hierarchy. The intermediate interfaces are opt-in capability layers that URv2 detects via [ERC-165](https://eips.ethereum.org/EIPS/eip-165) (for example, [`findOwner`](/contracts/ensv2/universal-resolver-v2#findowner) checks for `IOwnedRegistry` before calling it). Most custom registries should extend PermissionedRegistry directly for the full feature set.
+
+### Which Interface to Target
+
+| Goal | Interface | What you get |
+|------|-----------|-------------|
+| Resolution only (no ownership or tokens) | `IRegistry` | Participates in the hierarchy, URv2 can resolve through it |
+| Resolution + ownership queries | `IOwnedRegistry` | URv2's `findOwner` works |
+| Full ENS-compatible registry | `IStandardRegistry` | Tokens, expiry, lifecycle, compatible with ENSjs and indexers |
+| Full registry + permissions | Extend `PermissionedRegistry` | Everything above, plus EAC roles out of the box |
+
+PermissionedRegistry registers all of these interfaces via ERC-165 (`supportsInterface`), so external contracts can detect exactly which capabilities a given registry supports at runtime.
 
 ## Configuration Patterns
 
@@ -91,6 +142,6 @@ To build a custom registry for your project, extend `PermissionedRegistry` and o
 | -------- | ------- | ------- |
 | `register()` | Custom registration logic | Add allowlists, custom pricing, or validation |
 | `getResolver()` / `getSubregistry()` | Custom resolution behavior | Fallback to external data sources |
-| `_authorizeUpgrade()` | Upgrade control | Gate upgrades behind a multisig or governance |
+| `_authorizeUpgrade()` (requires `UUPSUpgradeable`) | Upgrade control | Gate upgrades behind a multisig or governance |
 
 All of the inherited infrastructure (EAC roles, ERC1155 tokens, anyId polymorphism, the name lifecycle state machine) works out of the box. You only override the parts you want to change.
