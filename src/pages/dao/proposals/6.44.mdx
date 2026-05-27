@@ -1,0 +1,188 @@
+---
+authors:
+  - netto.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 6.44] [6.44] [Social] Path forward on Working Groups for Term 7
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                           |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0xe4e1c052b2ea4f640cab27ddec326df6290d8996a9219b60cda4c4d4509f5f9a) |
+
+## Abstract
+
+This proposal sets the structure and election timeline for Term 7 of the ENS DAO Working Groups. Voters choose between five structural options, ranging from keeping the current 3-WG setup to replacing the entire WG system with the proposed DAO Coordination Layer. Each option that diverges from the current structure includes the specific Working Group Rule amendments required to implement it. Voting closes May 31, nominations open June 1, and Term 7 begins July 1.
+
+## Specification
+
+### Background
+
+The [DAO retrospective](https://discuss.ens.domains/t/final-ens-retro-report/22096) published in early May has fed into broader conversations over the past months about restructuring the Working Groups. This proposal builds on those conversations and may represent the first steps toward a broader DAO restructuring. It presents several structural options for Term 7, addresses feedback gathered in recent months, and brings clarity to the start of the new term.
+
+This proposal can be seen as an expansion of the [Working Group Restructure proposal](https://discuss.ens.domains/t/temp-check-working-group-restructure/22084) from james.eth. The active [[Temp Check] ENS DAO Coordination Layer](https://discuss.ens.domains/t/temp-check-ens-dao-coordination-layer/22133) by clowes.eth is included here as option 5.
+
+### Option 1: 3 WGs + secretary (As-is)
+
+- Lead steward: $5.5k/month + ENS\*
+- Steward: $4k/month + ENS\*
+- Secretary: $5.5k/month
+
+No Working Group Rule amendments required.
+
+### Option 2: Metagov + merged Eco/PG + secretary
+
+- Lead steward: $5.5k/month + ENS\*
+- Steward: $4k/month + ENS\*
+- Secretary: $2k/month
+  - No need to attend calls
+  - Signer for extra security
+  - Support on operations by loading transactions on the multisig
+  - Manages Calendar
+- Add rule to remove a steward from a WG if there is 2/3 consensus within the WG.
+
+**Required Working Group Rule amendments**
+
+Per Rule 12, the following amendments would be bundled into this Social Proposal. Additions in **bold**, removals in ~~strikethrough~~.
+
+_Dissolve Public Goods WG and merge its mandate into the Ecosystem WG_
+
+Include a dissolution clause for the Public Goods WG under Rule 2.1, with unspent funds returned to the DAO treasury per Rule 2.3. The Social Proposal explicitly states that the Ecosystem WG's mandate is expanded to incorporate the Public Goods scope.
+
+_Amend Rule 7.1 to allow within-WG steward removal_
+
+> 7.1. Stewards may be removed at any time by:
+>
+> 1. a Social Proposal passed by the DAO;
+> 2. a simple indicative majority vote among Stewards of all working groups, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum; **or**
+> 3. **a two-thirds vote among the elected Stewards of a single working group, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum.**
+
+_Amend Rule 9.8 to drop meeting-attendance and add multisig ops support_
+
+> 9.8. The responsibilities of the Secretary include, but are not limited to:
+>
+> 1. Managing a DAO-wide calendar;
+> 2. ~~Coordinating and attending working group meetings where possible and ensuring meeting summaries are posted in the ENS governance forum;~~ **Loading transactions on working group multi-sigs to support operations;**
+> 3. Assisting Stewards with coordination challenges within working groups; and
+> 4. Acting as a multi-sig keyholder for each working group.
+
+### Option 3: Metagov + merged Eco/PG
+
+- Lead steward: $5.5k/month + ENS\*
+- Steward: $4k/month + ENS\*
+- Multisig changes to 2/3, which is the decision structure within each group on the social layer.
+- Add rule to remove a steward from a WG if there is 2/3 consensus within the WG.
+
+**Required Working Group Rule amendments**
+
+Per Rule 12, the following amendments would be bundled into this Social Proposal. Additions in **bold**, removals in ~~strikethrough~~.
+
+_Dissolve Public Goods WG and merge its mandate into the Ecosystem WG_
+
+Include a dissolution clause for the Public Goods WG under Rule 2.1, with unspent funds returned to the DAO treasury per Rule 2.3. The Social Proposal explicitly states that the Ecosystem WG's mandate is expanded to incorporate the Public Goods scope.
+
+_Amend Rule 7.1 to allow within-WG steward removal_
+
+> 7.1. Stewards may be removed at any time by:
+>
+> 1. a Social Proposal passed by the DAO;
+> 2. a simple indicative majority vote among Stewards of all working groups, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum; **or**
+> 3. **a two-thirds vote among the elected Stewards of a single working group, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum.**
+
+_Amend Rule 9.1 to permit no Secretary appointment and disapply the rest of section 9_
+
+> 9.1. At the start of each Term, the current Stewards of each working group **may** ~~shall~~ collaborate to appoint an individual who will serve as the secretary of the DAO (hereafter 'Secretary' or 'Secretaries'). **If no Secretary is appointed for a Term, rules 9.2 through 9.8 shall not apply for that Term, and the administrative duties otherwise set out in rule 9.8 (other than multi-sig keyholding, which is governed by rule 10.3) shall be carried out collectively by the Stewards of each working group.**
+
+_Amend Rule 10.3 to remove the Secretary from the multisig_
+
+> 10.3. Each working group multi-sig must have four keyholders, made up of three current elected Stewards for that working group and the Secretary of the DAO for that Term, with no other keyholders permitted. **Where no Secretary has been appointed for a Term in accordance with rule 9.1 above, each working group multi-sig shall instead have three keyholders, made up of the three current elected Stewards for that working group, with no other keyholders permitted.**
+
+_Amend Rule 10.4 to set 2-of-3 signing_
+
+> 10.4. Working group funds may be disbursed from working group multi-sigs with three-of-four keyholder signing**, or with two-of-three keyholder signing in the case of a three-keyholder multi-sig as defined in rule 10.3 above.**
+
+### Option 4: Metagov only
+
+- Lead steward: $5.5k/month + ENS\*
+- Steward: $4k/month + ENS\*
+- Multisig changes to 2/3, which is the decision structure within the group on the social layer.
+
+**Required Working Group Rule amendments**
+
+Per Rule 12, the following amendments would be bundled into this Social Proposal. Additions in **bold**, removals in ~~strikethrough~~.
+
+_Dissolve Public Goods WG and Ecosystem WG_
+
+Include a dissolution clause under Rule 2.1, with unspent funds returned to the DAO treasury per Rule 2.3.
+
+_Amend Rule 7.1 to allow within-WG steward removal_
+
+> 7.1. Stewards may be removed at any time by:
+>
+> 1. a Social Proposal passed by the DAO;
+> 2. a simple indicative majority vote among Stewards of all working groups, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum; **or**
+> 3. **a two-thirds vote among the elected Stewards of a single working group, with the outcome of that vote communicated in the relevant working group category of the ENS governance forum.**
+
+_Amend Rule 9.1 to permit no Secretary appointment and disapply the rest of section 9_
+
+> 9.1. At the start of each Term, the current Stewards of each working group **may** ~~shall~~ collaborate to appoint an individual who will serve as the secretary of the DAO (hereafter 'Secretary' or 'Secretaries'). **Where only a single working group exists, the Stewards of that working group may elect not to appoint a Secretary. If no Secretary is appointed for a Term, rules 9.2 through 9.8 shall not apply for that Term, and the administrative duties otherwise set out in rule 9.8 (other than multi-sig keyholding, which is governed by rule 10.3) shall be carried out collectively by the Stewards of the working group.**
+
+_Amend Rule 10.3 to remove the Secretary from the multisig_
+
+> 10.3. Each working group multi-sig must have four keyholders, made up of three current elected Stewards for that working group and the Secretary of the DAO for that Term, with no other keyholders permitted. **Where no Secretary has been appointed for a Term in accordance with rule 9.1 above, the multi-sig for the sole working group shall instead have three keyholders, made up of the three current elected Stewards for that working group, with no other keyholders permitted.**
+
+_Amend Rule 10.4 to set 2-of-3 signing_
+
+> 10.4. Working group funds may be disbursed from working group multi-sigs with three-of-four keyholder signing**, or with two-of-three keyholder signing in the case of a three-keyholder multi-sig as defined in rule 10.3 above.**
+
+### Option 5: DAO Coordination Layer
+
+Replaces all three WGs with a single operational coordination body operating as a 12-month pilot. See [[Temp Check] ENS DAO Coordination Layer](https://discuss.ens.domains/t/temp-check-ens-dao-coordination-layer/22133) for full details.
+
+- Lead-steward-equivalent compensation: $5.5k/month + ENS\*
+- Initial composition of 2 stewards, with a 3rd elected through an open delegate process within the first 30 days
+- Up to $500k operational budget per 6 months, subject to transparency requirements, timelock constraints, and veto mechanisms
+
+**Required Working Group Rule amendments**
+
+Per Rule 12, the following amendments would be bundled into this Social Proposal. Additions in **bold**, removals in ~~strikethrough~~.
+
+_Dissolve all three Working Groups_
+
+Include a dissolution clause under Rule 2.1 (Public Goods WG, Ecosystem WG, and Meta-Governance WG), with unspent funds returned to the DAO treasury per Rule 2.3.
+
+The Coordination Layer would operate under its own [ruleset](https://gist.github.com/clowestab/f6bcc152885d644fe4404d939cd72629) rather than the Working Group Rules. With no Working Groups in existence during the pilot, sections 3 through 11 of the WG Rules would not be operative.
+
+### Additional considerations
+
+- Deleted scribe from the options, since it's a Metagov decision.
+- The 2/3 within-WG steward removal rule would be useful to add regardless of which option wins. If more working groups are created again in the future, it's a good safeguard to have in place.
+- I'd also be supportive of a working group focused on growth and revenue. We need to discuss this subject more as a DAO and have initiatives pushing it forward.
+- Regarding the duration of the term, my understanding is the majority would prefer to continue having a 1 year term.
+  - Some complaints about changing terms between holidays (Christmas and New Year's Eve)
+  - 6 months is a short period to make more meaningful contributions. Less voting and political friction.
+  - If the DAO decides to make the restructuring happen, we can always interrupt the term.
+
+### Timeline
+
+Working backwards from a Term 7 start on July 1, 9am UTC, using the [ENS DAO Working Group Rules](https://docs.ens.domains/dao/wg/rules):
+
+- **Now through May 31**: voting on this proposal.
+- **June 1 to June 22**: Nomination Window. Nominees self-nominate in the relevant working group category (or, for option 5, in the Coordination Layer category) and gather the 10,000 signed votes required by WG Rule 4.4. Three weeks gives realistic time for off-cycle nominations, vs. the standard 72-hour window.
+- **June 25, 9am UTC**: Steward election voting opens on Snapshot. Voting period is 120 hours per WG Rule 5.1.
+- **June 30, 9am UTC**: Voting closes.
+- **July 1, 9am UTC**: Term 7 begins. Outgoing Term 6 stewards step down. Newly elected stewards take their seats (WG Rule 6.2 and 6.3).
+- **Within first 5 days of July**: Each working group appoints its Lead Steward (WG Rule 8.1). Where applicable, stewards collaborate to appoint a Secretary (WG Rule 9.1).
+- **July (Funding Window)**: Term 7 stewards collaborate on the Collective Proposal to request working group funds for the new term.
+
+For current stewards: be ready to support the nomination and election process from June 1. ENS token compensation also needs to be disbursed, taking into consideration the 6-month TWAP.
+
+### Note on voting method
+
+Due to some push back from different delegates, for this vote we'll not be using private voting. Ranked choice is very gameable and can make delegates lives harder and more political than it already is, plus needing to take in consideration strategic voting behavior. I'll post another thread where we can discuss the use of private voting on the DAO and hopefully use it on the next votes.
+
+The quorum of this vote is 1M ENS tokens in total participation.
