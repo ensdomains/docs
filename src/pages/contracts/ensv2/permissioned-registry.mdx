@@ -154,7 +154,7 @@ The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv
 
 **Token regeneration on role changes**: when roles are granted or revoked via `grantRoles()` / `revokeRoles()`, the `_onRolesGranted` and `_onRolesRevoked` hooks trigger a token regeneration (burn + mint with a new token ID). This invalidates any pending ERC1155 transfer approvals tied to the old token ID, preventing an attacker from racing to transfer a token after their roles have been revoked.
 
-**Admin role restriction on names**: `_getSettableRoles` is overridden so that admin roles on individual names can only be assigned at registration time. After registration, only regular (non-admin) roles can be granted on a name. On `ROOT_RESOURCE`, admin roles work normally. This prevents a name owner from escalating their own permissions after registration.
+**Admin role restriction on names**: `_getSettableRoles` is overridden so that admin roles on individual names can only be assigned at registration time. After registration, only regular (non-admin) roles can be granted on a name, but admin roles can still be revoked (including by the holder revoking their own). On `ROOT_RESOURCE`, admin roles work normally. This prevents a name owner from escalating their own permissions after registration.
 
 **No role changes on unregistered names**: both `_getSettableRoles` and `_getRevokableRoles` return `0` for names that are `AVAILABLE` or `RESERVED`, blocking all role operations until the name is fully registered.
 
