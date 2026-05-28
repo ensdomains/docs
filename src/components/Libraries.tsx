@@ -120,7 +120,7 @@ const ensLibraries: Language[] = [
         href: 'https://github.com/wealdtech/go-ens',
         name: 'go-ens',
         description:
-          'Go bindings for ENS contracts and resolution. Maintained by Bitwise Investments.',
+          'Go bindings for ENS contracts and resolution. Maintained by Bitwise.',
         logo: undefined,
       },
       {
