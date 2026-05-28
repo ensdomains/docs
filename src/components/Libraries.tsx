@@ -117,6 +117,13 @@ const ensLibraries: Language[] = [
     logo: <TbBrandGolang />,
     libraries: [
       {
+        href: 'https://github.com/wealdtech/go-ens',
+        name: 'go-ens',
+        description:
+          'Go bindings for ENS contracts and resolution. Maintained by Bitwise Investments.',
+        logo: undefined,
+      },
+      {
         href: 'https://github.com/wealdtech/ethereal',
         name: 'ethereal',
         description: '',
