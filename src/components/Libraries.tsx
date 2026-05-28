@@ -37,7 +37,8 @@ const ensLibraries: Language[] = [
       {
         href: 'https://viem.sh/',
         name: 'Viem',
-        description: '',
+        description:
+          'TypeScript interface for Ethereum. Maintained by wevm.',
         logo: undefined,
       },
       {
@@ -81,7 +82,7 @@ const ensLibraries: Language[] = [
         href: 'https://github.com/ethereum/web3.py',
         name: 'web3.py',
         description:
-          'A python interface for interacting with the Ethereum blockchain and ecosystem.',
+          'A python interface for interacting with the Ethereum blockchain and ecosystem. Maintained by ApeWorX.',
         logo: undefined,
       },
     ],
