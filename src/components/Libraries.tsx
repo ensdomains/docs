@@ -105,7 +105,8 @@ const ensLibraries: Language[] = [
       {
         href: 'https://docs.web3j.io/',
         name: 'web3j',
-        description: '',
+        description:
+          'Lightweight Java and Android library for integration with Ethereum clients. Maintained by Web3 Labs.',
         logo: '/img/libraries/web3j.png',
       },
     ],
