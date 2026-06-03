@@ -260,21 +260,14 @@ A registry has a **locked canonical parent** when it has a canonical parent and 
 ## Emancipation
 
 <FrenCallout fren="earl" variant="note" title="Definition – Emancipation">
-A registry is **emancipated** when no account can use `ROOT_RESOURCE` roles to interfere with name owners, remount the registry elsewhere in the hierarchy, or escalate privileges by granting new roles.
+A registry is **emancipated** when it is a [verified](/contracts/ensv2/verifiable-factory#on-chain-verification) registry implementation and no account holds dangerous roles on `ROOT_RESOURCE`. Custom registry implementations cannot be emancipated by definition, because their code has not been verified.
 </FrenCallout>
 
 Emancipation is a property of a registry, but its purpose is protecting names. This section covers how a registry is emancipated, how to verify it on-chain, and how emancipation composes across the hierarchy to fully protect individual names.
 
-If any account holds `ROLE_SET_RESOLVER` on `ROOT_RESOURCE`, that account can change the resolver on every name under the corresponding registry, overriding any individual owner. The same applies to `ROLE_UNREGISTER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_SET_PARENT`.
+Certain roles on `ROOT_RESOURCE` can override individual name owners. For example, `ROLE_SET_RESOLVER` on ROOT can change the resolver on every name, `ROLE_UNREGISTER` can delete any name, and `ROLE_UPGRADE` can replace the registry implementation entirely. These are examples of **dangerous roles**: roles that can override individual name owners' permissions. A registry is emancipated when none of them have any assignees on `ROOT_RESOURCE`.
 
-Emancipation is achieved by ensuring the roles granted on `ROOT_RESOURCE` don't overlap with the roles granted to token owners, then revoking all admin roles on `ROOT_RESOURCE` to make the separation permanent.
-
-- On `ROOT_RESOURCE`: only operational roles needed by the registrar (e.g. `ROLE_REGISTRAR`, `ROLE_RENEW`)
-- On each name's resource: the owner's control roles as defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration)
-
-These two sets don't overlap. Once all admin roles on `ROOT_RESOURCE` are revoked, the separation is irreversible (you need the admin role to grant the admin role).
-
-This is how the `.eth` registry works. The [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` (so it can register and renew names), while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration).
+Non-dangerous roles like `ROLE_REGISTRAR` and `ROLE_RENEW` can safely remain on `ROOT_RESOURCE` (the registrar needs them to function). This is how the `.eth` registry works: the [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE`, while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration). Once all dangerous roles are revoked, the separation is irreversible (you need the admin role to grant the admin role).
 
 ### Verifying Emancipation
 
@@ -284,24 +277,22 @@ Call [`roleCount(ROOT_RESOURCE)`](/contracts/ensv2/enhanced-access-control#bitma
 
 | Role | Danger |
 |------|--------|
-| `ROLE_UNREGISTER` | Holder can delete any name |
 | `ROLE_SET_RESOLVER` | Holder can change any name's resolver |
 | `ROLE_SET_SUBREGISTRY` | Holder can change any name's subregistry |
-| `ROLE_SET_PARENT` | Holder can remount the entire registry elsewhere in the hierarchy |
+| `ROLE_UNREGISTER` | Holder can delete any name |
 
-**Admin roles that enable escalation** (any account holding these on `ROOT_RESOURCE` can grant the corresponding role to arbitrary accounts):
+**Roles that enable escalation or bypass access control:**
 
 | Role | Danger |
 |------|--------|
-| `ROLE_UNREGISTER_ADMIN` | Can grant `ROLE_UNREGISTER` |
 | `ROLE_SET_RESOLVER_ADMIN` | Can grant `ROLE_SET_RESOLVER` |
 | `ROLE_SET_SUBREGISTRY_ADMIN` | Can grant `ROLE_SET_SUBREGISTRY` |
-| `ROLE_SET_PARENT_ADMIN` | Can grant `ROLE_SET_PARENT` |
-| `ROLE_REGISTRAR_ADMIN` | Can grant `ROLE_REGISTRAR` |
-| `ROLE_REGISTER_RESERVED_ADMIN` | Can grant `ROLE_REGISTER_RESERVED` |
-| `ROLE_RENEW_ADMIN` | Can grant `ROLE_RENEW` |
+| `ROLE_UNREGISTER_ADMIN` | Can grant `ROLE_UNREGISTER` |
+| `ROLE_CAN_TRANSFER_ADMIN` | Can grant or revoke transfer rights on any name |
+| `ROLE_UPGRADE` | Can replace the registry implementation via UUPS proxy |
+| `ROLE_UPGRADE_ADMIN` | Can grant `ROLE_UPGRADE` |
 
-`ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` are expected (the registrar needs them to function). They don't endanger existing registered names: `ROLE_REGISTRAR` can only register available names, and `ROLE_RENEW` only extends expiry. The concern is their **admin** counterparts, which allow granting these roles to arbitrary accounts.
+`ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE` are expected (the registrar needs them to function). They don't endanger existing registered names: `ROLE_REGISTRAR` can only register available names, and `ROLE_RENEW` only extends expiry (`CannotReduceExpiry`). Their admin counterparts (`ROLE_REGISTRAR_ADMIN`, `ROLE_RENEW_ADMIN`) are also excluded: granting someone the ability to register or renew does not endanger existing name owners.
 
 ### Emancipation Across the Hierarchy
 
@@ -311,7 +302,7 @@ Emancipation at one level is not sufficient if a higher level can still interfer
 - **.eth registry**: emancipated (only `ROLE_REGISTRAR` + `ROLE_RENEW` granted on `ROOT_RESOURCE`)
 - **2LD registries** (e.g., alice.eth): depends on the 2LD owner's configuration
 
-For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke the roles listed above on `ROOT_RESOURCE`) and lock the [canonical parent](#parent-pointer) by revoking `ROLE_SET_PARENT` on `ROOT_RESOURCE` (so the registry can't be re-mounted elsewhere in the hierarchy).
+For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke the dangerous roles on `ROOT_RESOURCE`).
 
 ## Reference
 
@@ -606,84 +597,127 @@ For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owne
       { name: '', type: 'string', description: 'Metadata URI' },
     ],
   },
+  {
+    name: 'findOwner',
+    description: 'Get the current owner of a name by label. Returns address(0) if expired.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to query' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Owner address, or address(0)' },
+    ],
+  },
+  {
+    name: 'findExpiry',
+    description: 'Get the expiry timestamp of a name by label.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to query' },
+    ],
+    returns: [
+      { name: 'expiry', type: 'uint64', description: 'Expiry timestamp in seconds' },
+    ],
+  },
+  {
+    name: 'findTokenId',
+    description: 'Get the current token ID of a name by label.',
+    params: [
+      { name: 'label', type: 'string', description: 'The label to query' },
+    ],
+    returns: [
+      { name: 'tokenId', type: 'uint256', description: 'Current ERC1155 token ID' },
+    ],
+  },
 ]} />
 
 ### Events
 
 <ContractReference functions={[
   {
+    name: 'RegistryCreated',
+    description: 'Emitted once in the constructor when the registry is deployed.',
+    params: [],
+  },
+  {
     name: 'LabelRegistered',
     description: 'Name registered with an owner.',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the registered name' },
-      { name: 'labelHash', type: 'bytes32', description: 'Hash of the registered label' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the registered name' },
+      { name: 'labelHash', type: 'bytes32', indexed: true, description: 'Hash of the registered label' },
       { name: 'label', type: 'string', description: 'The registered label' },
       { name: 'owner', type: 'address', description: 'Owner of the name' },
       { name: 'expiry', type: 'uint64', description: 'Expiry timestamp' },
-      { name: 'sender', type: 'address', description: 'Caller that triggered the registration' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that triggered the registration' },
+    ],
+  },
+  {
+    name: 'TokenResource',
+    description: 'Associates a token ID with its EAC resource ID. Emitted during registration.',
+    params: [
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the name' },
+      { name: 'resource', type: 'uint256', indexed: true, description: 'EAC resource ID for role checks' },
     ],
   },
   {
     name: 'LabelReserved',
     description: 'Name reserved without an owner.',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the reserved name' },
-      { name: 'labelHash', type: 'bytes32', description: 'Hash of the reserved label' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the reserved name' },
+      { name: 'labelHash', type: 'bytes32', indexed: true, description: 'Hash of the reserved label' },
       { name: 'label', type: 'string', description: 'The reserved label' },
       { name: 'expiry', type: 'uint64', description: 'Expiry timestamp' },
-      { name: 'sender', type: 'address', description: 'Caller that triggered the reservation' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that triggered the reservation' },
     ],
   },
   {
     name: 'LabelUnregistered',
     description: 'Name unregistered.',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the unregistered name' },
-      { name: 'sender', type: 'address', description: 'Caller that triggered unregistration' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the unregistered name' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that triggered unregistration' },
     ],
   },
   {
     name: 'ExpiryUpdated',
     description: 'Expiry extended via renew().',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
-      { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp' },
-      { name: 'sender', type: 'address', description: 'Caller that triggered the renewal' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the name' },
+      { name: 'newExpiry', type: 'uint64', indexed: true, description: 'New expiry timestamp' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that triggered the renewal' },
     ],
   },
   {
     name: 'SubregistryUpdated',
     description: 'Subregistry changed.',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
-      { name: 'subregistry', type: 'IRegistry', description: 'New subregistry address' },
-      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the name' },
+      { name: 'subregistry', type: 'IRegistry', indexed: true, description: 'New subregistry address' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that made the change' },
     ],
   },
   {
     name: 'ResolverUpdated',
     description: 'Resolver address changed.',
     params: [
-      { name: 'tokenId', type: 'uint256', description: 'Token ID of the name' },
-      { name: 'resolver', type: 'address', description: 'New resolver address' },
-      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+      { name: 'tokenId', type: 'uint256', indexed: true, description: 'Token ID of the name' },
+      { name: 'resolver', type: 'address', indexed: true, description: 'New resolver address' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that made the change' },
     ],
   },
   {
     name: 'TokenRegenerated',
     description: 'Token ID changed due to role update.',
     params: [
-      { name: 'oldTokenId', type: 'uint256', description: 'Previous token ID' },
-      { name: 'newTokenId', type: 'uint256', description: 'New token ID' },
+      { name: 'oldTokenId', type: 'uint256', indexed: true, description: 'Previous token ID' },
+      { name: 'newTokenId', type: 'uint256', indexed: true, description: 'New token ID' },
     ],
   },
   {
     name: 'ParentUpdated',
     description: 'Canonical parent reference changed.',
     params: [
-      { name: 'parent', type: 'IRegistry', description: 'New parent registry' },
+      { name: 'parent', type: 'IRegistry', indexed: true, description: 'New parent registry' },
       { name: 'label', type: 'string', description: 'Label within the parent' },
-      { name: 'sender', type: 'address', description: 'Caller that made the change' },
+      { name: 'sender', type: 'address', indexed: true, description: 'Caller that made the change' },
     ],
   },
   {

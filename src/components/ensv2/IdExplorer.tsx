@@ -66,17 +66,6 @@ export function IdExplorer() {
     if (!label) return null
     try {
       const labelhashHex = keccak256(toHex(label))
-      const labelhashBigInt = BigInt(labelhashHex)
-
-      // Canonical ID: zero the lower 32 bits
-      const canonicalId = labelhashBigInt ^ (labelhashBigInt & 0xFFFFFFFFn)
-
-      // Token ID: canonical ID | tokenVersionId
-      const tokenId = canonicalId | BigInt(tokenVersionId)
-
-      // Resource: canonical ID | eacVersionId
-      const resource = canonicalId | BigInt(eacVersionId)
-
       // Split into upper (56 hex = 224 bits) and lower (8 hex = 32 bits)
       const fullLabelhash = labelhashHex.slice(2).padStart(64, '0')
       const upperHex = fullLabelhash.slice(0, 56)

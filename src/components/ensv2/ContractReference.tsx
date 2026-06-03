@@ -6,6 +6,7 @@ type Param = {
   name: string
   type: string
   description: string
+  indexed?: boolean
 }
 
 type FunctionDef = {
@@ -232,6 +233,19 @@ function ParamRow({ param }: { param: Param }) {
         >
           {param.type}
         </code>
+        {param.indexed && (
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'var(--vocs-color_textAccent)',
+              marginLeft: '4px',
+              opacity: 0.7,
+            }}
+          >
+            indexed
+          </span>
+        )}
       </td>
       <td
         style={{
