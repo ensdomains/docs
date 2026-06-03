@@ -4,6 +4,7 @@ description: The Universal Resolver V2 - single entry point for resolving names 
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { ContractReference } from '../../../components/ensv2/ContractReference'
+import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
 
 # Universal Resolver V2
 
@@ -201,11 +202,7 @@ Walks top-down from root, calling `getSubregistry()` at each label. Returns the 
 
 For `nick.eth`:
 
-```
-root
-└── getSubregistry("eth") → .eth registry
-    └── getSubregistry("nick") → nick.eth subregistry ← returned
-```
+<MonoDiagram content={`root\n└── getSubregistry("eth") → .eth registry\n    └── getSubregistry("nick") → nick.eth subregistry ← returned`} />
 
 This is the registry where `nick.eth`'s subnames live. If `nick.eth` has no subregistry set, the final step returns `address(0)`.
 
@@ -217,10 +214,7 @@ Walks top-down to find the registry that **contains** a name's entry, rather tha
 
 For `nick.eth`:
 
-```
-root
-└── getSubregistry("eth") → .eth registry ← returned
-```
+<MonoDiagram content={`root\n└── getSubregistry("eth") → .eth registry ← returned`} />
 
 The `.eth` registry is where `nick` is an entry. Contrast with `findExactRegistry("nick.eth")`, which returns `nick.eth`'s own subregistry (one level deeper).
 
@@ -249,15 +243,7 @@ Because registries have no inherent concept of "their name" (a registry can be m
 
 For the `nick.eth` subregistry (walking upward):
 
-```
-nick.eth subregistry
-├── getParent() → (.eth registry, "nick")
-│   └── verify: eth.getSubregistry("nick") == nick.eth subregistry ✓
-└── .eth registry
-    ├── getParent() → (root, "eth")
-    │   └── verify: root.getSubregistry("eth") == .eth registry ✓
-    └── root reached → canonical name: "nick.eth"
-```
+<MonoDiagram content={`nick.eth subregistry\n├── getParent() → (.eth registry, "nick")\n│   └── verify: eth.getSubregistry("nick") == nick.eth subregistry ✓\n└── .eth registry\n    ├── getParent() → (root, "eth")\n    │   └── verify: root.getSubregistry("eth") == .eth registry ✓\n    └── root reached → canonical name: "nick.eth"`} />
 
 Returns empty bytes if any link is broken: if a registry has no parent set, or if `parent.getSubregistry(label)` points to a different address.
 
@@ -271,16 +257,7 @@ The **canonical registry** for a name is the registry at that position in the hi
 
 For `nick.eth`:
 
-```
-Down: findExactRegistry("nick.eth")
-└── root.getSubregistry("eth") → .eth registry
-    └── eth.getSubregistry("nick") → 0xABCD
-
-Up: findCanonicalName(0xABCD)
-├── 0xABCD.getParent() → (.eth registry, "nick")
-│   └── verify: eth.getSubregistry("nick") == 0xABCD ✓
-└── reconstructed name: "nick.eth" == input name ✓ → return 0xABCD
-```
+<MonoDiagram content={`Down: findExactRegistry("nick.eth")\n└── root.getSubregistry("eth") → .eth registry\n    └── eth.getSubregistry("nick") → 0xABCD\n\nUp: findCanonicalName(0xABCD)\n├── 0xABCD.getParent() → (.eth registry, "nick")\n│   └── verify: eth.getSubregistry("nick") == 0xABCD ✓\n└── reconstructed name: "nick.eth" == input name ✓ → return 0xABCD`} />
 
 The bidirectional check prevents aliasing attacks: a registry could be mounted at one position in the tree but claim (via `getParent()`) to be at another. This is the function to use when verifying a registry's legitimacy, for example in marketplaces or any context where a name is being purchased or trusted.
 
@@ -290,11 +267,7 @@ Finds the current owner of a name. `IOwnedRegistry` is a minimal interface that 
 
 For `nick.eth`:
 
-```
-findParentRegistry("nick.eth") → .eth registry
-├── supports IOwnedRegistry? (ERC-165 check) ✓
-└── .eth.findOwner("nick") → 0x1234 ← returned
-```
+<MonoDiagram content={`findParentRegistry("nick.eth") → .eth registry\n├── supports IOwnedRegistry? (ERC-165 check) ✓\n└── .eth.findOwner("nick") → 0x1234 ← returned`} />
 
 Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IOwnedRegistry`, or the label has no owner.
 

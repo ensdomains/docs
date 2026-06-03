@@ -3,6 +3,7 @@ description: Guide to indexing ENSv2 contracts, functions, and events for buildi
 ---
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
 
 # Indexing ENSv2
 
@@ -16,17 +17,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ENSv2 uses a hierarchical registry model. There is no single registry contract that holds all names. Instead:
 
-```
-RootRegistry (PermissionedRegistry)
-  └── ETHRegistry (PermissionedRegistry) — manages *.eth
-        ├── name.eth (token in ETHRegistry)
-        │     └── UserRegistry — manages *.name.eth
-        │           ├── sub.name.eth (token in UserRegistry)
-        │           │     └── UserRegistry — manages *.sub.name.eth
-        │           │           └── ...
-        │           └── ...
-        └── ...
-```
+<MonoDiagram content={`RootRegistry (PermissionedRegistry)\n└── ETHRegistry (PermissionedRegistry) — manages *.eth\n    ├── name.eth (token in ETHRegistry)\n    │   └── UserRegistry — manages *.name.eth\n    │       ├── sub.name.eth (token in UserRegistry)\n    │       │   └── UserRegistry — manages *.sub.name.eth\n    │       │       └── ...\n    │       └── ...\n    └── ...`} />
 
 Each registry is a [Permissioned Registry](/contracts/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) (one token per name).
 
