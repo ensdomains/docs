@@ -66,6 +66,10 @@ Each record type has its own role, allowing you to delegate specific record-sett
 
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_TEXT_ADMIN = (1 << 4) << 128`). In TypeScript, use `1n << 4n` for the bigint equivalent.
 
+<FrenCallout fren="earl" variant="note" title="Default Deployment Roles">
+When deployed through the [Verifiable Factory](/contracts/ensv2/verifiable-factory), the deployer is granted **every role and its admin counterpart** on `ROOT_RESOURCE` by default, giving full control over all record types, aliasing, clearing, and upgrades.
+</FrenCallout>
+
 ### Role Bitmap Composer
 
 <FrenCallout fren="peanut" variant="tip" title="Interactive Widget">
@@ -137,7 +141,7 @@ Compute the EAC resource for any name and record type.
 
 ## Aliasing
 
-One of the most powerful new features in ENSv2 is **record aliasing**. You can make one name's records point to another name's records, so they always resolve identically without duplicating data.
+One of the most powerful new features in ENSv2 is **record aliasing**. Within a single resolver instance, you can make one name's records point to another name's records, so they always resolve identically without duplicating data.
 
 ```mermaid
 flowchart LR
@@ -160,7 +164,7 @@ resolver.setAlias(
 );
 ```
 
-The `setAlias` function requires `ROLE_SET_ALIAS`, which is a root-only role. This ensures only the resolver's admin can set up aliases.
+The `setAlias` function requires `ROLE_SET_ALIAS`, which is a root-only role. This ensures only the resolver's admin can set up aliases. Both names (the alias and the target) must use the same resolver instance. To alias names that were registered with separate resolvers, first point them to the same resolver via `setResolver` on the registry.
 
 ### Cycle Protection
 
@@ -168,9 +172,9 @@ The resolver detects self-referential aliases (A aliased to itself) and applies 
 
 ### Use Cases
 
-- **Multiple domains, same records**: point `wallet.eth`, `brand.eth`, and `company.eth` all to the same set of records
+- **Multiple domains, same records**: point `wallet.eth`, `brand.eth`, and `company.eth` to the same resolver, then alias them so they share one set of records
 - **Name migration**: alias an old name to a new one so existing references continue to work
-- **Shared infrastructure**: multiple names can share resolver records managed by a single entity
+- **Subname delegation**: let subnames of a parent (e.g., `pay.alice.eth`, `nft.alice.eth`) resolve to the parent's records without duplicating them
 
 Note that aliasing at the resolver level is different from [subregistry aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
 
@@ -216,7 +220,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     description: 'Set the ETH address record (convenience overload for coin type 60).',
     params: [
       { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
-      { name: 'addr', type: 'address', description: 'The Ethereum address' },
+      { name: 'addr_', type: 'address', description: 'The Ethereum address' },
     ],
   },
   {
@@ -290,7 +294,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'authorizeNameRoles',
     description: 'Grant or revoke roles on a name.',
     params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name to authorize for' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded name to authorize for' },
       { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant or revoke' },
       { name: 'account', type: 'address', description: 'Account to modify roles for' },
       { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
@@ -336,6 +340,24 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     ],
     returns: [
       { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+    ],
+  },
+  {
+    name: 'initialize',
+    description: 'Initialize the proxy instance. Grants the given roles to the admin on ROOT_RESOURCE.',
+    params: [
+      { name: 'admin', type: 'address', description: 'The initial admin address' },
+      { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+    ],
+  },
+  {
+    name: 'multicall',
+    description: 'Execute multiple write operations in a single transaction.',
+    params: [
+      { name: 'calls', type: 'bytes[]', description: 'Array of encoded function calls' },
+    ],
+    returns: [
+      { name: 'results', type: 'bytes[]', description: 'Array of return data from each call' },
     ],
   },
 ]} />
@@ -471,6 +493,17 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
       { name: 'version', type: 'uint64', description: 'Current version number' },
     ],
   },
+  {
+    name: 'resolve',
+    description: 'Resolve a name by applying alias rewriting (if set) and dispatching to the appropriate resolver profile. Implements IExtendedResolver.',
+    params: [
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded name to resolve' },
+      { name: 'fromData', type: 'bytes', description: 'Encoded resolver call (e.g. addr, text)' },
+    ],
+    returns: [
+      { name: 'result', type: 'bytes', description: 'Encoded result from the resolver profile' },
+    ],
+  },
 ]} />
 
 ### Events
@@ -480,25 +513,25 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'AddrChanged',
     description: 'ETH address changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'addr', type: 'address', description: 'New ETH address' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
+      { name: 'a', type: 'address', description: 'New ETH address' },
     ],
   },
   {
     name: 'AddressChanged',
     description: 'Multichain address changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
       { name: 'coinType', type: 'uint256', description: 'Coin type' },
-      { name: 'addressBytes', type: 'bytes', description: 'New encoded address' },
+      { name: 'newAddress', type: 'bytes', description: 'New encoded address' },
     ],
   },
   {
     name: 'TextChanged',
     description: 'Text record changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', indexed: true, description: 'Indexed copy of the key' },
       { name: 'key', type: 'string', description: 'The text key' },
       { name: 'value', type: 'string', description: 'New text value' },
     ],
@@ -507,17 +540,17 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'DataChanged',
     description: 'Data record changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'indexedKey', type: 'string', description: 'Indexed copy of the key' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
+      { name: 'indexedKey', type: 'string', indexed: true, description: 'Indexed copy of the key' },
       { name: 'key', type: 'string', description: 'The data key' },
-      { name: 'indexedData', type: 'bytes', description: 'Indexed copy of the data value' },
+      { name: 'indexedData', type: 'bytes', indexed: true, description: 'Indexed copy of the data value' },
     ],
   },
   {
     name: 'ContenthashChanged',
     description: 'Content hash changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
       { name: 'hash', type: 'bytes', description: 'New content hash' },
     ],
   },
@@ -525,7 +558,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'NameChanged',
     description: 'Reverse name changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
       { name: 'name', type: 'string', description: 'New primary name' },
     ],
   },
@@ -533,7 +566,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'PubkeyChanged',
     description: 'Public key changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
       { name: 'x', type: 'bytes32', description: 'New X coordinate' },
       { name: 'y', type: 'bytes32', description: 'New Y coordinate' },
     ],
@@ -542,16 +575,16 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'ABIChanged',
     description: 'ABI data changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'contentType', type: 'uint256', description: 'The content type that changed' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
+      { name: 'contentType', type: 'uint256', indexed: true, description: 'The content type that changed' },
     ],
   },
   {
     name: 'InterfaceChanged',
     description: 'Interface implementer changed.',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
-      { name: 'interfaceId', type: 'bytes4', description: 'The EIP-165 interface ID' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
+      { name: 'interfaceId', type: 'bytes4', indexed: true, description: 'The EIP-165 interface ID' },
       { name: 'implementer', type: 'address', description: 'New implementer address' },
     ],
   },
@@ -559,7 +592,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'VersionChanged',
     description: 'Records cleared (version bumped).',
     params: [
-      { name: 'node', type: 'bytes32', description: 'Namehash of the name' },
+      { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
       { name: 'newVersion', type: 'uint64', description: 'New version number' },
     ],
   },
@@ -567,8 +600,8 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'AliasChanged',
     description: 'Alias set or removed.',
     params: [
-      { name: 'indexedFromName', type: 'bytes', description: 'Indexed copy of source name' },
-      { name: 'indexedToName', type: 'bytes', description: 'Indexed copy of target name' },
+      { name: 'indexedFromName', type: 'bytes', indexed: true, description: 'Indexed copy of source name' },
+      { name: 'indexedToName', type: 'bytes', indexed: true, description: 'Indexed copy of target name' },
       { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
       { name: 'toName', type: 'bytes', description: 'DNS-encoded target name' },
     ],
@@ -577,7 +610,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'NamedResource',
     description: 'EAC resource linked to a name.',
     params: [
-      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'resource', type: 'uint256', indexed: true, description: 'The EAC resource ID' },
       { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
     ],
   },
@@ -585,9 +618,9 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'NamedTextResource',
     description: 'EAC resource linked to a text key.',
     params: [
-      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'resource', type: 'uint256', indexed: true, description: 'The EAC resource ID' },
       { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-      { name: 'keyHash', type: 'bytes32', description: 'Hash of the text key' },
+      { name: 'keyHash', type: 'bytes32', indexed: true, description: 'Hash of the text key' },
       { name: 'key', type: 'string', description: 'The text key' },
     ],
   },
@@ -595,9 +628,9 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'NamedDataResource',
     description: 'EAC resource linked to a data key.',
     params: [
-      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'resource', type: 'uint256', indexed: true, description: 'The EAC resource ID' },
       { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-      { name: 'keyHash', type: 'bytes32', description: 'Hash of the data key' },
+      { name: 'keyHash', type: 'bytes32', indexed: true, description: 'Hash of the data key' },
       { name: 'key', type: 'string', description: 'The data key' },
     ],
   },
@@ -605,9 +638,9 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'NamedAddrResource',
     description: 'EAC resource linked to a coin type.',
     params: [
-      { name: 'resource', type: 'uint256', description: 'The EAC resource ID' },
+      { name: 'resource', type: 'uint256', indexed: true, description: 'The EAC resource ID' },
       { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-      { name: 'coinType', type: 'uint256', description: 'The coin type' },
+      { name: 'coinType', type: 'uint256', indexed: true, description: 'The coin type' },
     ],
   },
 ]} />

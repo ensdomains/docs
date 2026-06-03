@@ -220,13 +220,6 @@ Renewals are handled by two contracts depending on the name's status:
 - **`ETHRegistrar`**: renews REGISTERED names (migrated names). Does not sync v1.
 - **`ETHRenewerV1`**: renews RESERVED names (unmigrated names). Syncs the expiry back to the v1 BaseRegistrar so both systems stay in lockstep.
 
-`ETHRenewerV1` also provides `syncWrapper()` for batch-syncing NameWrapper expiry with BaseRegistrar expiry:
-
-```solidity
-// Batch-sync NameWrapper expiry with BaseRegistrar
-ETHRenewerV1.syncWrapper(labels)
-```
-
 **Key invariants:**
 - The v2 expiry is always `BONUS_PERIOD` ahead of the v1 expiry
 - The `ETHRegistrar` cannot register RESERVED names (it lacks `ROLE_REGISTER_RESERVED`), so unmigrated names are protected until they expire
@@ -260,17 +253,16 @@ The RESERVED slot has 162 days left (100 + 62 day bonus). The v1 token expires a
 
 The RESERVED slot has 112 days (50 + 62). The owner migrates, promoting to REGISTERED. The v1 token goes to the Graveyard with 50 days left. The owner renews via `ETHRegistrar` for 50 days, extending the v2 registration to 162 days. The v1 grace period ends after 140 days (50 + 90). The v2 registration becomes available after 190 days (162 + 28).
 
-### In grace period, renews out of grace
+### In grace period, renews before migrating
 
-*A name has 29 days left in the v1 grace period (i.e., -61 days remaining).*
+*A name expired 61 days ago and has 29 days left in the v1 grace period (i.e., -61 days remaining). The owner cannot migrate because the name is expired in v1.*
 
-The RESERVED slot has 1 day left (-61 + 62). The owner uses `ETHRenewerV1` to renew for 62 days. The v1 token expires after 1 day (-61 + 62) with its grace period ending after 91 days. The v2 reservation expires after 63 days (-61 + 62 + 62) and becomes available after 91 days (63 + 28). The token can now be transferred and migrated.
+The RESERVED slot has 1 day left (-61 + 62 day bonus). The owner renews for 62 days via `ETHRenewerV1` (the minimum needed to make the name active again), which extends both expiries:
 
-### NameWrapper expiry out of sync
+- **v1 expiry**: -61 + 62 = 1 day from now. Grace period ends after 91 days (1 + 90).
+- **v2 expiry**: 1 + 62 = 63 days from now. Becomes available after 91 days (63 + 28).
 
-*The NameWrapper shows an expired name but the BaseRegistrar still has it as registered.*
-
-Use `ETHRenewerV1.syncWrapper(labels)` to batch-sync the NameWrapper expiry with the BaseRegistrar expiry.
+The name is active again (no longer in grace), so the token can be transferred and migrated to v2.
 
 ## Restrictions
 
@@ -290,6 +282,6 @@ Migration is not possible in the following cases:
 | `LockedMigrationController` | Migrates locked 2LD names |
 | `WrapperRegistry` | Migrates locked/detached 3LD+ names; replicates fuse-based access control in v2 |
 | `Graveyard` | Receives migrated v1 tokens; clears stale v1 registry entries and resolvers |
-| `ETHRenewerV1` | Renews RESERVED (unmigrated) names with v1 BaseRegistrar sync; syncs NameWrapper expiry |
+| `ETHRenewerV1` | Renews RESERVED (unmigrated) names with v1 BaseRegistrar sync |
 | `ENSV1Resolver` | Wildcard fallback resolver for premigrated names |
 | `PublicResolverV2` | Replacement for v1 PublicResolver that respects v2 ownership |

@@ -6,7 +6,7 @@ import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # DNS Name Resolution
 
-ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) through the ENS protocol. This builds on the [DNS on ENS](/learn/dns) functionality from ENSv1, replacing the single `OffchainDNSResolver` ([ENSIP-17](/ensip/17)) with a pipeline of three specialized contracts.
+ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) through the ENS protocol. This builds on the [DNS on ENS](/learn/dns) functionality from ENSv1, replacing the single `OffchainDNSResolver` ([ENSIP-17](/ensip/17)) with a set of three specialized contracts.
 
 Users don't interact with these contracts directly. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) handles the entire flow transparently. This page explains what happens internally and how to configure DNS records for ENS resolution.
 
@@ -17,7 +17,7 @@ The contracts and interfaces described here are **not yet final** and may change
 ## How It Works
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-ENSv2's DNS resolution uses off-chain DNSSEC verification via [CCIP-Read](/resolvers/ccip-read). The on-chain DNSSEC proof submission used by the v1 [DNS Registrar](/registry/dns) for claiming DNS names remains on v1 infrastructure at launch.
+ENSv2's DNS resolution fetches DNSSEC proofs off-chain via [CCIP-Read](/resolvers/ccip-read) and verifies them on-chain. The on-chain DNSSEC proof submission used by the v1 [DNS Registrar](/registry/dns) for claiming DNS names remains on v1 infrastructure at launch.
 </FrenCallout>
 
 When the Universal Resolver encounters a DNS name (e.g., `example.com`), it finds the **DNSTLDResolver** set as the resolver for that TLD on the root registry. The DNSTLDResolver then follows a multi-step resolution strategy:
@@ -25,7 +25,7 @@ When the Universal Resolver encounters a DNS name (e.g., `example.com`), it find
 1. **Check ENSv1**: look for an existing resolver in the ENSv1 registry. If one exists (and it's not the v1 DNS TLD resolver or the DNSTLDResolver itself), delegate to it directly. This preserves backward compatibility.
 2. **Query DNSSEC**: initiate a [CCIP-Read](/resolvers/ccip-read) request to fetch DNSSEC-signed TXT records for the domain.
 3. **Parse the TXT record**: find the first TXT record starting with `ENS1` that yields a valid resolver address, and extract the resolver address and context.
-4. **Delegate to the parsed resolver**: depending on the resolver address, the request is handled by either the **DNSAliasResolver** (for name rewriting) or the **DNSTXTResolver** (for inline record data).
+4. **Delegate to the parsed resolver**: forward the request to the resolver contract specified in the TXT record. ENS ships two standard resolver implementations: the **DNSAliasResolver** (for name rewriting) and the **DNSTXTResolver** (for inline record data), but any contract implementing `IExtendedDNSResolver` can be used.
 
 ```mermaid
 flowchart LR
@@ -59,10 +59,10 @@ Supported record formats:
 
 | Prefix            | Record type                                      | Example                 |
 | ----------------- | ------------------------------------------------ | ----------------------- |
-| `a[60]`           | Ethereum address ([ENSIP-1](/ensip/1))            | `a[60]=0x1234...`       |
+| `a[60]`           | Ethereum address ([ENSIP-9](/ensip/9))            | `a[60]=0x1234...`       |
 | `a[e0]`           | Default EVM address, any chain ([ENSIP-19](/ensip/19)) | `a[e0]=0x1234...`  |
 | `a[e<chainId>]`   | EVM chain address by chain ID ([ENSIP-19](/ensip/19))  | `a[e8453]=0x5678...` |
-| `a[<coinType>]`   | Non-EVM address by SLIP-44 coin type ([ENSIP-9](/ensip/9)) | `a[0]=0x00...`  |
+| `a[<coinType>]`   | Non-EVM address by SLIP-44 coin type ([ENSIP-9](/ensip/9)) | `a[0]=bc1qar0...` |
 | `t[key]`          | Text record                                      | `t[avatar]=https://...` |
 | `c`               | Content hash ([ENSIP-7](/ensip/7))                | `c=0xe301...`           |
 | `d[key]`          | Data record                                      | `d[mykey]=0x1234...`    |
@@ -78,20 +78,18 @@ This is the simplest approach: all record data lives in the DNS TXT record itsel
 
 Set the resolver to the DNSAliasResolver address and provide a rewrite rule in the context. Two modes are supported:
 
-**Suffix replacement**: rewrite the DNS suffix to an ENS suffix.
+**Suffix replacement**: rewrite the DNS suffix to an ENS suffix. For example, setting this TXT record on `example.com`:
 
 ```
 ENS1 dnsalias.ens.eth com base.eth
 ```
 
-This causes `sub.example.com` to resolve as `sub.example.base.eth`. The resolver rewrites the suffix, then resolves the rewritten name through the ENSv2 registry hierarchy.
+The context `com base.eth` tells the resolver to strip the `com` suffix and replace it with `base.eth`. So `sub.example.com` resolves as `sub.example.base.eth`, and `example.com` itself resolves as `example.base.eth`. The resolver then looks up the rewritten name through the ENSv2 registry hierarchy.
 
-**Full replacement**: replace the entire name.
+**Full replacement**: map a DNS domain to a single ENS name. When the context contains no space, the resolver ignores the queried name entirely and resolves the context as an ENS name. For example, setting this TXT record on `example.com`:
 
 ```
 ENS1 dnsalias.ens.eth alice.eth
 ```
 
-This causes `example.com` to resolve as `alice.eth`. Subdomains also resolve as `alice.eth` if a DNS wildcard record is configured (e.g., `*.example.com` with the same TXT record). Useful when you want a DNS domain to mirror an existing ENS name.
-
-Alias resolution is particularly useful for organizations that want their DNS domains to resolve ENS records without on-chain registration of every subdomain.
+This makes `example.com` resolve as `alice.eth`.

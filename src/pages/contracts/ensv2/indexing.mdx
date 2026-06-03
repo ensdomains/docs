@@ -30,7 +30,7 @@ RootRegistry (PermissionedRegistry)
 
 Each registry is a [Permissioned Registry](/contracts/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) (one token per name).
 
-Resolvers are separate contracts ([Permissioned Resolver](/contracts/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names can also share records across resolvers via [aliases](/contracts/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
+Resolvers are separate contracts ([Permissioned Resolver](/contracts/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [aliases](/contracts/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
 
 ## Registry Events
 
