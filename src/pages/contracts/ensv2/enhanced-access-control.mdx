@@ -4,6 +4,7 @@ description: Enhanced Access Control
 
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { ContractReference } from '../../../components/ensv2/ContractReference'
+import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
 
 # Enhanced Access Control
 
@@ -99,13 +100,7 @@ The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides bo
 
 Under the hood, roles are packed into a single `uint256` bitmap split into two halves. Each role occupies one nybble (4 bits), giving space for up to 32 regular roles and 32 corresponding admin roles:
 
-```
-  255         128 127            0
-  ┌──────────────┬───────────────┐
-  │ Admin Roles  │ Regular Roles │
-  └──────────────┴───────────────┘
-  63           32 31             0  ← nybble indices
-```
+<MonoDiagram content={` 255         128 127            0\n ┌──────────────┬───────────────┐\n │ Admin Roles  │ Regular Roles │\n └──────────────┴───────────────┘\n 63           32 31             0  ← nybble indices`} />
 
 Each nybble is a 4-bit slot. A regular role at nybble index `N` occupies bits `4N` to `4N + 3`, so nybble 0 is bits 0–3, nybble 1 is bits 4–7, and so on. Its admin counterpart sits at the same position in the upper half (`4N + 128` to `4N + 131`).
 

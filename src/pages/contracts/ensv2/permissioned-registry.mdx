@@ -6,6 +6,7 @@ import { Card } from '../../../components/ui/Card'
 import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
 import { ContractReference } from '../../../components/ensv2/ContractReference'
+import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
 
 # Permissioned Registry
 
@@ -166,13 +167,7 @@ This section explains how [EAC resources](/contracts/ensv2/enhanced-access-contr
 
 The registry derives each EAC resource from the name's labelhash and its current `eacVersionId`, so permissions are scoped per-name and automatically invalidated on re-registration:
 
-```
-  255                                    32 31             0
-  ┌──────────────────────────────────────┬─────────────────┐
-  │       labelhash upper bits           │  eacVersionId   │
-  │            (224 bits)                │    (32 bits)    │
-  └──────────────────────────────────────┴─────────────────┘
-```
+<MonoDiagram content={`255                                   32 31               0\n ┌──────────────────────────────────────┬─────────────────┐\n │       labelhash upper bits           │  eacVersionId   │\n │            (224 bits)                │    (32 bits)    │\n └──────────────────────────────────────┴─────────────────┘`} />
 
 Registry resources participate in [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for how resources, token IDs, and canonical IDs relate.
 
