@@ -27,9 +27,13 @@ Resolvers are separate contracts ([Permissioned Resolver](/contracts/ensv2/permi
 
 These events are emitted by any registry contract (PermissionedRegistry / UserRegistry).
 
-:::note
-A `RegistryCreated()` event (emitted by PermissionedRegistry in the constructor, and by UserRegistry/WrapperRegistry on `initialize()`) is being added in [contracts-v2#258](https://github.com/ensdomains/contracts-v2/pull/258). This will allow indexers to discover new registry deployments on-chain.
-:::
+### RegistryCreated
+
+```solidity
+event RegistryCreated();
+```
+
+Emitted once per registry: by `PermissionedRegistry` in the constructor, and by `UserRegistry`/`WrapperRegistry` on `initialize()`. Allows indexers to discover new registry deployments on-chain.
 
 ### LabelRegistered
 
@@ -116,7 +120,7 @@ event TokenRegenerated(uint256 indexed oldTokenId, uint256 indexed newTokenId);
 
 **Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
 
-**When:** a name's [EAC roles](/contracts/ensv2/enhanced-access-control) are modified via `grantRoles()` or `revokeRoles()`. The ERC1155 token ID changes to encode the new role configuration, while the underlying name (canonical ID / resource) remains the same. Always accompanied by ERC1155 `TransferSingle` events (burn old + mint new). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for details.
+**When:** a name's [EAC roles](/contracts/ensv2/enhanced-access-control) are modified via `grantRoles()` or `revokeRoles()`. The ERC1155 token ID changes (its version counter increments), while the underlying name (canonical ID / resource) remains the same. Always accompanied by ERC1155 `TransferSingle` events (burn old + mint new). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for details.
 
 ### ParentUpdated
 
@@ -136,7 +140,7 @@ event TokenResource(uint256 indexed tokenId, uint256 indexed resource);
 
 **Emitted by:** `IPermissionedRegistry`
 
-**When:** a token is created or regenerated. Maps a `tokenId` to its corresponding `resource`. The `resource` is derived from the `labelHash` and `eacVersionId`. It remains stable across role-change regenerations (which only change the `tokenVersionId`), but changes on re-registration (which increments `eacVersionId`). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#id-types-and-how-they-relate) for details.
+**When:** a token is created or regenerated. Maps a `tokenId` to its corresponding `resource`. The `resource` is derived from the `labelHash` and `eacVersionId`. It remains stable across role-change regenerations (which only change the `tokenVersionId`), but changes on re-registration (which increments `eacVersionId`). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#id-types) for details.
 
 ## ERC1155 Transfer Events
 
@@ -328,7 +332,7 @@ event AliasChanged(
 event NamedResource(uint256 indexed resource, bytes name);
 ```
 
-**When:** an EAC resource is associated with a name for [fine-grained permission control](/contracts/ensv2/permissioned-resolver#fine-grained-permissions) on the resolver.
+**When:** an EAC resource is associated with a name for [fine-grained permission control](/contracts/ensv2/permissioned-resolver#eac-integration) on the resolver.
 
 ### NamedTextResource
 
@@ -360,7 +364,7 @@ This creates a self-expanding set of monitored contracts.
 
 ### TokenId vs Resource (Canonical ID)
 
-- **tokenId**: the ERC1155 token ID. Changes when roles are modified (`TokenRegenerated`). Encodes role configuration.
+- **tokenId**: the ERC1155 token ID. Changes when roles are modified (`TokenRegenerated`), because it embeds a version counter that increments on each change.
 - **resource**: the EAC permission key for a name within a registry. Derived from the `labelHash` and `eacVersionId`. Stable across role modifications, but changes on re-registration (when `eacVersionId` increments).
 
 Use the `TokenResource` event to maintain the mapping. The `resource` should be the primary key for domain lookups.
@@ -403,7 +407,7 @@ Names can be in one of three states (from `IPermissionedRegistry.Status`):
 | `RESERVED`   | 1     | Name is reserved (cannot be registered until expiry, unless caller has `ROLE_REGISTER_RESERVED`) |
 | `REGISTERED` | 2     | Name is actively registered with an owner                                                        |
 
-After expiry, names return to `AVAILABLE`. Re-registration creates a new `tokenId` but keeps the same `resource`.
+After expiry, names return to `AVAILABLE`. Re-registration creates both a new `tokenId` and a new `resource` (both version counters increment).
 
 ### Event Processing Order
 

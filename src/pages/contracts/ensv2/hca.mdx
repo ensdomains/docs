@@ -55,6 +55,7 @@ HCA-aware sender resolution is built into every contract that gates actions or r
 | `ERC1155Singleton`        | `HCAContext` (registries inherit transitively) |
 | `PermissionedRegistry`    | via `ERC1155Singleton`                         |
 | `WrapperRegistry`         | via `PermissionedRegistry`                      |
+| `UserRegistry`            | via `PermissionedRegistry`                      |
 | `PermissionedResolver`    | `HCAContextUpgradeable`                        |
 | `ETHRegistrar`            | `HCAEquivalence` directly                      |
 

@@ -18,7 +18,7 @@ ENSv1 used ERC721 for `.eth` names via the BaseRegistrar. ENSv2 switched to a mo
 
 - **Batch operations**: ERC1155 natively supports batch transfers and balance queries, which is useful when operating on multiple names at once
 - **Interface compatibility**: the ERC1155 interface is well-supported by wallets, marketplaces, and indexers
-- **Gas efficiency**: ERC1155Singleton removes the balance tracking overhead of standard ERC1155 while keeping a simpler ownership model than ERC721's dual approval system
+- **Gas efficiency**: ERC1155Singleton removes the balance tracking overhead of standard ERC1155 while using a simpler approval model than the NameWrapper's hybrid per-token and operator approvals
 
 ## Key Differences from Standard ERC1155
 

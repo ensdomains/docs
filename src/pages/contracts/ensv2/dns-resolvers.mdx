@@ -6,7 +6,7 @@ import { FrenCallout } from '../../../components/ensv2/FrenCallout'
 
 # DNS Name Resolution
 
-ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) through the ENS protocol. This builds on the [DNS on ENS](/learn/dns) functionality from ENSv1, replacing the single `OffchainDNSResolver` ([ENSIP-17](/ensip/17)) with a set of three specialized contracts.
+ENSv2 supports resolving traditional DNS domain names (like `.com`, `.xyz`) through the ENS protocol, provided the domain has DNSSEC enabled. This builds on the [DNS on ENS](/learn/dns) functionality from ENSv1, replacing the single `OffchainDNSResolver` ([ENSIP-17](/ensip/17)) with a set of three specialized contracts.
 
 Users don't interact with these contracts directly. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) handles the entire flow transparently. This page explains what happens internally and how to configure DNS records for ENS resolution.
 

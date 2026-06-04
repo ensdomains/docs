@@ -8,7 +8,7 @@ import { Card } from '../../../components/ui/Card'
 
 # ETH Registrar
 
-The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registrations) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
+The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registering-a-name) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -49,7 +49,7 @@ Longer registrations (and renewals) receive a discount applied to the entire dur
 | 5 yr | ~31% | $5.50 | $27.50 | $110 | $550 | $440 | $2,200 |
 | 6 yr | ~44% | $4.50 | $27.00 | $90 | $540 | $360 | $2,160 |
 
-For example, renewing a 5+ character name for one year always costs $8 regardless of the existing expiration; renewing the same name for six years costs $27 ($4.50/yr).
+Because the discount rate increases at six years, the total cost for six years is lower than for five. For example, renewing a 5+ character name for one year always costs $8 regardless of the existing expiration; renewing the same name for six years costs $27 ($4.50/yr).
 
 Pricing parameters (base rates and discount tiers) are immutable per oracle deployment. Changing them requires deploying a new oracle and calling `setRentPriceOracle()`.
 
@@ -213,7 +213,7 @@ To register and renew names, the ETH Registrar needs roles on the `.eth` [Permis
 | [`ROLE_REGISTRAR`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `register()` to create new `.eth` names |
 | [`ROLE_RENEW`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `renew()` on any `.eth` name |
 
-Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [OR-combines](/contracts/ensv2/enhanced-access-control#resources) root and token-level roles). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
+Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [checks both root and token-level roles](/contracts/ensv2/enhanced-access-control#roles)). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
 
 ## Reference
 

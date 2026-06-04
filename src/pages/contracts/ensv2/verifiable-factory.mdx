@@ -16,7 +16,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## Why a Factory
 
-ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see the "Contract Factories" point in the [Overview](/contracts/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
+ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/contracts/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
 
 - **Deterministic**: the address is known before deployment.
 - **Verifiable**: anyone can prove on-chain that an arbitrary address really came from this factory with a known proxy bytecode.

@@ -37,7 +37,7 @@ The reverse namespace will be migrated to v2-native infrastructure post-launch. 
 
 ## Multi-Chain Reverse Resolution (Upcoming)
 
-ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chain individually. Each deployment stores the mapping from addresses to their primary names for that chain. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) resolves reverse lookups via the inherited `reverse(addr, coinType)` function, which queries the appropriate reverse registrar based on the coin type.
+ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chain individually. Each deployment stores the mapping from addresses to their primary names for that chain. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) resolves reverse lookups via the inherited `reverse(lookupAddress, coinType)` function, which queries the appropriate reverse registrar based on the coin type.
 
 ### Setting a Primary Name
 
