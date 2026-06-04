@@ -38,7 +38,7 @@ The [Permissioned Registry](/contracts/ensv2/permissioned-registry) maintains tw
 
 | Counter          | Incremented when                       | Encoded into | Purpose                                                                      |
 | ---------------- | -------------------------------------- | ------------ | ---------------------------------------------------------------------------- |
-| `tokenVersionId` | Roles are granted or revoked           | Token ID     | Invalidates marketplace approvals when the name's permission profile changes |
+| `tokenVersionId` | Roles are granted or revoked, name is unregistered or re-registered | Token ID     | Invalidates marketplace approvals when the name's permission profile changes |
 | `eacVersionId`   | Name is unregistered or re-registered  | Resource     | Isolates permissions across different registrations of the same label        |
 
 When a counter increments, the derived ID changes, producing a new token ID or a new resource. Re-registration increments both counters simultaneously.

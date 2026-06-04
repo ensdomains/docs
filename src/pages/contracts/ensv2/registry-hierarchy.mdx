@@ -114,14 +114,14 @@ These three functions are what enable the hierarchical model:
 
 Resolution works by walking down the registry tree from root, querying `getResolver()` and `getSubregistry()` at each level. The deepest resolver found along the path wins (longest-suffix match). If a name has no resolver of its own, it inherits the resolver of its closest ancestor that does.
 
-See [Resolution: findResolver](/contracts/ensv2/universal-resolver-v2#resolution-findresolver) on the Universal Resolver V2 page for the full algorithm and step-by-step examples with diagrams.
+See [Resolution: findResolver](/contracts/ensv2/universal-resolver-v2#resolution) on the Universal Resolver V2 page for the full algorithm and step-by-step examples with diagrams.
 
 ## Subtree Operations
 
 One consequence of this tree structure is that it becomes possible to delete or reassign entire subtrees in a
 single operation. For example, suppose `montoya.eth` is transferred to a new owner, who wants to
-configure his own set of subdomains; he can simply replace the subregistry responsible for subnames of
-`montoya.eth` with his own new subregistry:
+configure their own set of subdomains; they can simply replace the subregistry responsible for subnames of
+`montoya.eth` with their own new subregistry:
 
 ```mermaid
 flowchart TB
@@ -138,8 +138,8 @@ flowchart TB
     montoya-- domingo --> domingo
 ```
 
-All resolvers and subregistries previously associated with `montoya.eth` are thus removed in a single operation!
-The new owner will still need to replace the resolver for `montoya.eth` if he wishes to change how the bare
+All resolvers and subregistries previously associated with `montoya.eth` are thus removed in a single operation.
+The new owner will still need to replace the resolver for `montoya.eth` if they wish to change how the bare
 name itself is resolved, however.
 
 ## Namespace Aliasing
@@ -169,7 +169,7 @@ subnames with resolvers set. Notably, `domingo.montoya.eth` will resolve using R
 set a resolver for `domingo` in Registry 3, both names would resolve identically using it, just as they do
 for `inigo`.
 
-This example also exposes one other crucial fact about ENSv2: registries have no individual concept of 'their name'.
+This example also illustrates that in ENSv2, registries have no individual concept of 'their name'.
 In earlier diagrams we labelled each registry with a name for convenience, but as these examples demonstrate,
 there's no requirement that a registry have exactly one name associated with it - it can have thousands, or none
 at all!

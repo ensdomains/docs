@@ -115,7 +115,7 @@ EAC replaces the one-way [fuse system](/wrapper/fuses) from the Name Wrapper. Th
 
 | Feature           | ENSv1 Fuses                    | ENSv2 EAC                                                   |
 | ----------------- | ------------------------------ | ----------------------------------------------------------- |
-| Revocability      | One-way burn — permanent       | Fully reversible grant/revoke                               |
+| Revocability      | One-way burn — permanent       | Reversible grant/revoke (while admin role is held)          |
 | Delegation        | Single owner only              | Up to 15 accounts per role per resource                     |
 | Scope             | Per-name only                  | Per-name or contract-wide via `ROOT_RESOURCE`               |
 | Extensibility     | Fixed set of 16 fuses          | Each contract defines its own roles (up to 32)              |
@@ -128,7 +128,7 @@ EAC replaces the one-way [fuse system](/wrapper/fuses) from the Name Wrapper. Th
 Each ENSv2 contract defines its own roles and its own resource scheme. See the EAC Permissions section on each contract page for details:
 
 - [Permissioned Registry: EAC Integration](/contracts/ensv2/permissioned-registry#eac-integration): 10 roles, labelhash-based resources with version isolation, anyId polymorphism
-- [Permissioned Resolver: EAC Integration](/contracts/ensv2/permissioned-resolver#eac-integration): 11 per-record roles, fine-grained scoping down to individual keys or coin types
+- [Permissioned Resolver: EAC Integration](/contracts/ensv2/permissioned-resolver#eac-integration): 11 roles (8 per-record), fine-grained scoping down to individual keys or coin types
 
 ## Reference
 

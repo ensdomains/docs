@@ -141,7 +141,7 @@ Compute the EAC resource for any name and record type.
 
 ## Aliasing
 
-One of the most powerful new features in ENSv2 is **record aliasing**. Within a single resolver instance, you can make one name's records point to another name's records, so they always resolve identically without duplicating data.
+ENSv2 introduces **record aliasing**. Within a single resolver instance, you can make one name's records point to another name's records, so they always resolve identically without duplicating data.
 
 ```mermaid
 flowchart LR
@@ -176,7 +176,7 @@ The resolver detects self-referential aliases (A aliased to itself) and applies 
 - **Name migration**: alias an old name to a new one so existing references continue to work
 - **Subname delegation**: let subnames of a parent (e.g., `pay.alice.eth`, `nft.alice.eth`) resolve to the parent's records without duplicating them
 
-Note that aliasing at the resolver level is different from [subregistry aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
+Note that aliasing at the resolver level is different from [namespace aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
 
 ## Record Versioning
 
