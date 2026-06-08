@@ -157,8 +157,6 @@ The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv
 
 **Admin role restriction on names**: `_getSettableRoles` is overridden so that admin roles on individual names can only be assigned at registration time. After registration, only regular (non-admin) roles can be granted on a name, but admin roles can still be revoked (including by the holder revoking their own). On `ROOT_RESOURCE`, admin roles work normally. This prevents a name owner from escalating their own permissions after registration.
 
-**No role changes on unregistered names**: both `_getSettableRoles` and `_getRevokableRoles` return `0` for names that are `AVAILABLE` or `RESERVED`, blocking all role operations until the name is fully registered.
-
 ### Resource Scheme
 
 <FrenCallout fren="bittu" variant="tip" title="Developer tip">
@@ -173,9 +171,13 @@ Registry resources participate in [anyId polymorphism](/contracts/ensv2/mutable-
 
 ## Transfers
 
-Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an **admin role on the token owner** (not the operator; operator approval via `ERC1155` is a separate check).
+Transferring a name's token requires `ROLE_CAN_TRANSFER_ADMIN` as an admin role on the **current owner** of the token. It does not matter who initiates the transfer; the role is always checked against the owner.
 
 When a token transfers, all roles are atomically moved from the old owner to the new owner: the old owner's roles are revoked first (freeing assignee slots), then granted to the new owner. Roles granted to other accounts on the same name are unaffected. Without `ROLE_CAN_TRANSFER_ADMIN`, the name is effectively non-transferable, similar to the `CANNOT_TRANSFER` fuse in the Name Wrapper.
+
+### Operator Approval
+
+The owner of a name can call `setApprovalForAll(operator, true)` to approve an operator. An approved operator inherits all of the owner's EAC roles on every name the owner holds (via the [`_getRoles` override](/contracts/ensv2/enhanced-access-control#role-resolution-hook)), allowing them to perform any role-gated action (set resolver, set subregistry, transfer, etc.) on the owner's behalf. This is an all-or-nothing delegation: an approved operator can act on every name the owner holds, with the owner's full set of roles. There is no way to scope operator approval to specific names or roles.
 
 ## Token Metadata
 
