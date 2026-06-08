@@ -80,21 +80,25 @@ All four functions return `true` if the account's roles actually changed, or `fa
 
 ## Callback Hooks
 
-EAC provides four internal hooks that contracts can override to customize permission behavior:
+EAC provides five internal hooks that contracts can override to customize permission behavior:
+
+### Role Resolution Hook
+
+- **`_getRoles(resource, account)`**: returns the role bitmap for an account on a resource. By default, returns the stored roles directly. Contracts override this to inject additional role logic at read time. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides `_getRoles` so that ERC1155-approved operators (via `setApprovalForAll`) inherit the token owner's roles on that name.
 
 ### Role Change Callbacks
 
 - **`_onRolesGranted(resource, account, oldRoles, newRoles, roleBitmap)`**: called after roles are successfully granted. Receives the account's role bitmap before and after the change, plus the specific roles that were newly added.
 - **`_onRolesRevoked(resource, account, oldRoles, newRoles, roleBitmap)`**: called after roles are successfully revoked. Same parameters, with `roleBitmap` containing the roles that were actually removed.
 
-Both are no-ops in the base implementation. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides these to regenerate ERC1155 tokens when roles change, invalidating stale transfer approvals.
+Both are no-ops in the base implementation. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides these to [regenerate](/contracts/ensv2/mutable-token-ids#regeneration) ERC1155 tokens when roles change, invalidating stale transfer approvals.
 
 ### Grant/Revoke Restriction Hooks
 
 - **`_getSettableRoles(resource, account)`**: returns which roles the account is allowed to grant on a given resource. By default, an account can grant any role for which it holds the corresponding admin role. Contracts override this to impose additional restrictions.
 - **`_getRevokableRoles(resource, account)`**: returns which roles the account is allowed to revoke on a given resource. Same default behavior as settable roles.
 
-The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides both to prevent admin role escalation on individual names after registration and to block all role changes on unregistered or reserved names.
+The [Permissioned Registry](/contracts/ensv2/permissioned-registry) overrides `_getSettableRoles` to prevent admin role escalation on individual names after registration. Role changes on unregistered or reserved names are blocked implicitly: `_getRoles` returns no effective roles when a name has no owner.
 
 ## Bitmap Layout
 
@@ -188,7 +192,7 @@ Each ENSv2 contract defines its own roles and its own resource scheme. See the E
 <ContractReference functions={[
   {
     name: 'roles',
-    description: 'Get the full role bitmap for an account on a resource.',
+    description: 'Get the effective role bitmap for an account on a resource. Delegates to the internal _getRoles hook, so contracts that override _getRoles may return additional roles beyond those explicitly granted.',
     params: [
       { name: 'resource', type: 'uint256', description: 'The resource to query' },
       { name: 'account', type: 'address', description: 'The account to query' },

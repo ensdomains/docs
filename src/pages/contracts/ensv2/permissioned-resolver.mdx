@@ -344,10 +344,11 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
   },
   {
     name: 'initialize',
-    description: 'Initialize the proxy instance. Grants the given roles to the admin on ROOT_RESOURCE.',
+    description: 'Initialize the proxy instance. Grants the given roles to the admin on ROOT_RESOURCE, then executes the setter calls via multicall with permission checks bypassed.',
     params: [
       { name: 'admin', type: 'address', description: 'The initial admin address' },
       { name: 'roleBitmap', type: 'uint256', description: 'Bitmap of roles to grant' },
+      { name: 'setters', type: 'bytes[]', description: 'Encoded setter calls to execute during initialization (permission checks are bypassed)' },
     ],
   },
   {
