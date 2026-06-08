@@ -230,13 +230,7 @@ Each name's `subregistry` field creates a forward pointer from parent to child. 
   </div>
 </Card>
 
-The backward pointer records both the parent registry's address and the label this registry is known by in the parent. For example, the `sub.nick.eth` registry would set its parent pointer as:
-
-```solidity
-setParent(<nick.eth registry>, "sub")
-```
-
-The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#findcanonicalname) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
+The backward pointer records both the parent registry's address and the label this registry is known by in the parent. The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#findcanonicalname) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
 
 Once this pointer is set, the registry has committed to its position in the hierarchy:
 
@@ -246,8 +240,30 @@ The **canonical parent** of a registry is the parent registry set by calling `se
 
 However, as long as `ROLE_SET_PARENT` is still held on `ROOT_RESOURCE`, the pointer can be changed, effectively remounting the registry at a different position (e.g. moving from `nick.eth` to `nick.xyz`). To prevent this, the owner revokes `ROLE_SET_PARENT` and `ROLE_SET_PARENT_ADMIN` on `ROOT_RESOURCE`:
 
-```solidity
-revokeRootRoles(ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN, owner)
+```ts [Viem]
+import { createWalletClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+const ROLE_SET_PARENT = 1n << 8n
+const ROLE_SET_PARENT_ADMIN = ROLE_SET_PARENT << 128n
+
+// Set the canonical parent: this registry is "sub" under the nick.eth registry
+await wallet.writeContract({
+  address: subRegistryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'setParent',
+  args: [parentRegistryAddress, 'sub'],
+})
+
+// Lock the parent pointer permanently by revoking both the role and its admin
+await wallet.writeContract({
+  address: subRegistryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'revokeRootRoles',
+  args: [ROLE_SET_PARENT | ROLE_SET_PARENT_ADMIN, ownerAddress],
+})
 ```
 
 <FrenCallout fren="earl" variant="note" title="Definition – Locked Canonical Parent">
@@ -300,6 +316,102 @@ Emancipation at one level is not sufficient if a higher level can still interfer
 - **2LD registries** (e.g., alice.eth): depends on the 2LD owner's configuration
 
 For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owner must emancipate their registry (revoke the dangerous roles on `ROOT_RESOURCE`).
+
+## Code Examples
+
+Subname registries are deployed as UserRegistry proxies through the Verifiable Factory. See [Deploying a Registry Proxy](/contracts/ensv2/verifiable-factory#deploying-a-registry-proxy) for a code example. The examples below use the ETHRegistry, but the same functions are available on any PermissionedRegistry instance.
+
+### Querying Name State
+
+`getState` returns the full state of a name in a single call: its registration status, expiry, current owner, token ID, and EAC resource. Both `getState` and `getStatus` accept any of a name's three identifiers (labelhash, tokenId, or resource) thanks to [anyId polymorphism](/contracts/ensv2/permissioned-registry#anyid-polymorphism):
+
+```ts [Viem]
+import { createPublicClient, http, keccak256, toHex } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+
+const labelhash = BigInt(keccak256(toHex('alice')))
+
+// Query the full state of a name
+const state = await client.readContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'getState',
+  args: [labelhash],
+})
+// state: { status, expiry, latestOwner, tokenId, resource }
+
+const STATUS = ['AVAILABLE', 'RESERVED', 'REGISTERED'] as const
+console.log(STATUS[state.status]) // "REGISTERED"
+console.log(state.latestOwner)    // "0x..."
+console.log(state.expiry)         // expiry as unix timestamp
+
+// anyId polymorphism: labelhash, tokenId, and resource all resolve
+// to the same name, so this returns the same result
+const sameState = await client.readContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'getState',
+  args: [state.tokenId],
+})
+```
+
+If you only need to check whether a name is available, `getStatus` is a lighter alternative that returns just the status enum:
+
+```ts [Viem]
+const status = await client.readContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'getStatus',
+  args: [labelhash],
+})
+// 0 = AVAILABLE, 1 = RESERVED, 2 = REGISTERED
+```
+
+### Granting and Revoking Roles
+
+A name owner can delegate specific capabilities to other accounts by granting roles on the name's labelhash. Multiple roles can be combined into a single call using bitwise OR:
+
+```ts [Viem]
+import { createWalletClient, http, keccak256, toHex } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+const ROLE_SET_RESOLVER = 1n << 24n
+const ROLE_SET_SUBREGISTRY = 1n << 20n
+const labelhash = BigInt(keccak256(toHex('alice')))
+
+// Grant a single role
+await wallet.writeContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'grantRoles',
+  args: [labelhash, ROLE_SET_RESOLVER, operatorAddress],
+})
+
+// Grant multiple roles at once using bitwise OR
+await wallet.writeContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'grantRoles',
+  args: [labelhash, ROLE_SET_RESOLVER | ROLE_SET_SUBREGISTRY, operatorAddress],
+})
+```
+
+To revoke a role, call `revokeRoles` with the same arguments. Only the specified role is removed; other grants on the same name remain active:
+
+```ts [Viem]
+await wallet.writeContract({
+  address: registryAddress,
+  abi: permissionedRegistryAbi,
+  functionName: 'revokeRoles',
+  args: [labelhash, ROLE_SET_RESOLVER, operatorAddress],
+})
+// ROLE_SET_SUBREGISTRY remains active
+```
+
 
 ## Reference
 
@@ -728,44 +840,3 @@ For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owne
   },
 ]} />
 
-## Code Examples
-
-Subname registries are deployed as UserRegistry proxies through the Verifiable Factory. See [Deploying a Proxy](/contracts/ensv2/verifiable-factory#deploying-a-proxy) for a code example. The examples below use the ETHRegistry, but the same functions are available on any PermissionedRegistry instance.
-
-### Granting and Revoking Roles
-
-```ts [Viem]
-import { createWalletClient, http, keccak256, toHex } from 'viem'
-import { mainnet } from 'viem/chains'
-
-const wallet = createWalletClient({ chain: mainnet, transport: http() })
-
-const ROLE_SET_RESOLVER = 1n << 24n
-const ROLE_SET_SUBREGISTRY = 1n << 20n
-const labelhash = BigInt(keccak256(toHex('alice')))
-
-// Grant a single role
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'grantRoles',
-  args: [labelhash, ROLE_SET_RESOLVER, operatorAddress],
-})
-
-// Grant multiple roles at once using bitwise OR
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'grantRoles',
-  args: [labelhash, ROLE_SET_RESOLVER | ROLE_SET_SUBREGISTRY, operatorAddress],
-})
-
-// Revoke a role — same interface, just pass the labelhash
-await wallet.writeContract({
-  address: registryAddress,
-  abi: permissionedRegistryAbi,
-  functionName: 'revokeRoles',
-  args: [labelhash, ROLE_SET_RESOLVER, operatorAddress],
-})
-// ROLE_SET_SUBREGISTRY remains active — only the specified role is revoked
-```
