@@ -648,6 +648,8 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
 
 ## Code Examples
 
+Each account deploys its own resolver instance. See [Deploying a Proxy](/contracts/ensv2/verifiable-factory#deploying-a-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
+
 ### Delegating a Single Text Key
 
 A name owner can grant a dApp permission to set only a specific text record, for example allowing it to update the `avatar` key without giving access to any other records:

@@ -69,7 +69,7 @@ function verifyContract(address proxy, address expectedImplementation) external 
 
 `verifyContract` calls `getVerifiableProxyData()` on the proxy to retrieve its stored salt and actual implementation address. It first checks that the implementation matches `expectedImplementation`, then reconstructs the expected CREATE2 address from `(UUPSProxy creation code, factory, salt)` and returns `true` if it matches `proxy`. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory with a known implementation, without trusting metadata or off-chain data.
 
-## How ENSv2 Uses It
+## Available Implementations
 
 Three implementation contracts are deployed once and then proxied through the factory:
 
@@ -78,8 +78,6 @@ Three implementation contracts are deployed once and then proxied through the fa
 | `PermissionedResolverImpl` | `keccak256("OwnedResolver", owner, version)` — one resolver per owner          | On demand by users                                            |
 | `UserRegistryImpl`         | `keccak256("UserRegistry", namehash, version)` — one subname registry per name | On demand by name owners                                      |
 | `WrapperRegistryImpl`      | per-name                                                                       | Inside migration controllers when a locked v1 name is wrapped |
-
-Salt schemes come from `contracts/script/setup.ts` in the ENSv2 repository; the same schemes let any client predict a deployment address before it exists.
 
 ## Upgrade Authorization
 
@@ -131,4 +129,78 @@ function predictProxyAddress({
 }
 ```
 
-This is the pattern used inside the ENSv2 deployment scripts (`computeVerifiableProxyAddress` in `setup.ts`); reuse it whenever you need a name's resolver or subname-registry address before the user actually creates it.
+This is useful whenever you need a name's resolver or subname-registry address before the user actually creates it.
+
+## Code Examples
+
+### Deploying a Proxy
+
+Deploy a [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy through the factory. The same pattern applies to any implementation (e.g., `UserRegistryImpl` for subname registries): encode the implementation's `initialize` call as the `data` argument to `deployProxy`.
+
+<FrenCallout fren="bittu" variant="tip">
+The `VERIFIABLE_FACTORY` and `PERMISSIONED_RESOLVER_IMPL` addresses used below are protocol-deployed contracts. Find them in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
+</FrenCallout>
+
+```ts [Viem]
+import {
+  createPublicClient,
+  createWalletClient,
+  encodeFunctionData,
+  http,
+  keccak256,
+  parseAbi,
+  parseEventLogs,
+  stringToBytes,
+} from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+const wallet = createWalletClient({
+  account,
+  chain: mainnet,
+  transport: http(),
+})
+
+const verifiableFactoryAbi = parseAbi([
+  'function deployProxy(address implementation, uint256 salt, bytes data)',
+  'event ProxyDeployed(address indexed sender, address indexed proxyAddress, uint256 salt, address implementation)',
+])
+
+const resolverInitAbi = parseAbi([
+  'function initialize(address admin, uint256 roleBitmap, bytes[] setters)',
+])
+
+// Grant all roles and their admin counterparts
+const ALL_ROLES =
+  0x1111111111111111111111111111111111111111111111111111111111111111n
+
+// Unique salt per deployment (reusing a salt from the same sender will revert)
+const salt = BigInt(keccak256(stringToBytes('my-resolver-v1')))
+
+// Encode the implementation's initializer as calldata
+const initData = encodeFunctionData({
+  abi: resolverInitAbi,
+  functionName: 'initialize',
+  args: [account.address, ALL_ROLES, []],
+})
+
+// Deploy the proxy
+const hash = await wallet.writeContract({
+  address: VERIFIABLE_FACTORY,
+  abi: verifiableFactoryAbi,
+  functionName: 'deployProxy',
+  args: [PERMISSIONED_RESOLVER_IMPL, salt, initData],
+})
+
+const receipt = await client.waitForTransactionReceipt({ hash })
+
+// Parse the ProxyDeployed event to get the new address
+const [log] = parseEventLogs({
+  abi: verifiableFactoryAbi,
+  eventName: 'ProxyDeployed',
+  logs: receipt.logs,
+})
+const resolverAddress = log.args.proxyAddress
+```
+
+The `resolverAddress` is now a fully initialized Permissioned Resolver proxy. Point a name to it via `setResolver` on the registry, then use it to [set records and delegate access](/contracts/ensv2/permissioned-resolver#code-examples).
