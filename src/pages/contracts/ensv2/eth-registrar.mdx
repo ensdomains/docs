@@ -215,6 +215,123 @@ To register and renew names, the ETH Registrar needs roles on the `.eth` [Permis
 
 Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [checks both root and token-level roles](/contracts/ensv2/enhanced-access-control#roles)). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
 
+## Code Examples
+
+### Full Registration Flow
+
+```ts [Viem]
+import {
+  createPublicClient,
+  createWalletClient,
+  erc20Abi,
+  http,
+  keccak256,
+  toHex,
+} from 'viem'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+const label = 'alice'
+const owner = '0x...' // Your address
+const duration = 31536000n // 1 year in seconds
+const secret = keccak256(toHex(crypto.randomUUID())) // Random secret
+const resolver = '0x...' // Resolver address
+const subregistry = '0x0000000000000000000000000000000000000000'
+const paymentToken = '0x...' // ERC20 token address
+const referrer = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+// 1. Check availability
+const available = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'isAvailable',
+  args: [label],
+})
+
+if (!available) throw new Error('Name not available')
+
+// 2. Get the price
+const [base, premium] = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'getRegisterPrice',
+  args: [label, duration, paymentToken],
+})
+
+// 3. Approve the registrar to spend the payment token
+const totalCost = base + premium
+await wallet.writeContract({
+  address: paymentToken,
+  abi: erc20Abi,
+  functionName: 'approve',
+  args: [ethRegistrarAddress, totalCost],
+})
+
+// 4. Create and submit commitment
+const commitment = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'makeCommitment',
+  args: [label, owner, secret, subregistry, resolver, duration, referrer],
+})
+
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'commit',
+  args: [commitment],
+})
+
+// 5. Wait at least MIN_COMMITMENT_AGE (e.g., 60 seconds)
+// ... wait ...
+
+// 6. Register
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'register',
+  args: [
+    label,
+    owner,
+    secret,
+    subregistry,
+    resolver,
+    duration,
+    paymentToken,
+    referrer,
+  ],
+})
+```
+
+### Renewing a Name
+
+```ts [Viem]
+const renewPrice = await client.readContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'getRenewPrice',
+  args: [label, duration, paymentToken],
+})
+
+// Approve the registrar to spend the payment token
+await wallet.writeContract({
+  address: paymentToken,
+  abi: erc20Abi,
+  functionName: 'approve',
+  args: [ethRegistrarAddress, renewPrice],
+})
+
+await wallet.writeContract({
+  address: ethRegistrarAddress,
+  abi: ethRegistrarAbi,
+  functionName: 'renew',
+  args: [label, duration, paymentToken, referrer],
+})
+```
+
+
 ## Reference
 
 ### Write Functions
@@ -434,117 +551,3 @@ Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [
   },
 ]} />
 
-## Code Examples
-
-### Full Registration Flow
-
-```ts [Viem]
-import {
-  createPublicClient,
-  createWalletClient,
-  http,
-  keccak256,
-  toHex,
-} from 'viem'
-import { mainnet } from 'viem/chains'
-
-const client = createPublicClient({ chain: mainnet, transport: http() })
-const wallet = createWalletClient({ chain: mainnet, transport: http() })
-
-const label = 'alice'
-const owner = '0x...' // Your address
-const duration = 31536000n // 1 year in seconds
-const secret = keccak256(toHex(crypto.randomUUID())) // Random secret
-const resolver = '0x...' // Resolver address
-const subregistry = '0x0000000000000000000000000000000000000000'
-const paymentToken = '0x...' // ERC20 token address
-const referrer = '0x0000000000000000000000000000000000000000000000000000000000000000'
-
-// 1. Check availability
-const available = await client.readContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'isAvailable',
-  args: [label],
-})
-
-if (!available) throw new Error('Name not available')
-
-// 2. Get the price
-const [base, premium] = await client.readContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'getRegisterPrice',
-  args: [label, duration, paymentToken],
-})
-
-// 3. Approve the registrar to spend the payment token
-const totalCost = base + premium
-await wallet.writeContract({
-  address: paymentToken,
-  abi: erc20Abi,
-  functionName: 'approve',
-  args: [ethRegistrarAddress, totalCost],
-})
-
-// 4. Create and submit commitment
-const commitment = await client.readContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'makeCommitment',
-  args: [label, owner, secret, subregistry, resolver, duration, referrer],
-})
-
-await wallet.writeContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'commit',
-  args: [commitment],
-})
-
-// 5. Wait at least MIN_COMMITMENT_AGE (e.g., 60 seconds)
-// ... wait ...
-
-// 6. Register
-await wallet.writeContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'register',
-  args: [
-    label,
-    owner,
-    secret,
-    subregistry,
-    resolver,
-    duration,
-    paymentToken,
-    referrer,
-  ],
-})
-```
-
-### Renewing a Name
-
-```ts [Viem]
-const renewPrice = await client.readContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'getRenewPrice',
-  args: [label, duration, paymentToken],
-})
-
-// Approve the registrar to spend the payment token
-await wallet.writeContract({
-  address: paymentToken,
-  abi: erc20Abi,
-  functionName: 'approve',
-  args: [ethRegistrarAddress, renewPrice],
-})
-
-await wallet.writeContract({
-  address: ethRegistrarAddress,
-  abi: ethRegistrarAbi,
-  functionName: 'renew',
-  args: [label, duration, paymentToken, referrer],
-})
-```

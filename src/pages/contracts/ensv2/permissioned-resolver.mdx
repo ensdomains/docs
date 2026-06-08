@@ -85,17 +85,17 @@ Select roles to compose a bitmap value for use with `authorizeNameRoles`.
 Use the `authorize*` functions below to manage permissions (pass `true` to grant, `false` to revoke).
 
 <FrenCallout fren="bittu" variant="tip">
-For root-level (`ROOT_RESOURCE`) permissions, you can also use `grantRootRoles()` / `revokeRootRoles()` inherited from [EAC](/contracts/ensv2/enhanced-access-control). For non-root resources, `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver.
+For root-level (`ROOT_RESOURCE`) permissions, you can also use `grantRootRoles()` / `revokeRootRoles()` inherited from [EAC](/contracts/ensv2/enhanced-access-control). `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver; use the `authorize*` functions for name and record-level permissions.
 </FrenCallout>
 
 | Function | Scope | Grants/revokes |
 |----------|-------|----------------|
-| `authorizeNameRoles(name, roleBitmap, account, grant)` | Name-level | Any role(s) on a specific name |
-| `authorizeTextRoles(name, key, account, grant)` | Record-level | `ROLE_SET_TEXT` for a specific text key |
-| `authorizeDataRoles(name, key, account, grant)` | Record-level | `ROLE_SET_DATA` for a specific data key |
-| `authorizeAddrRoles(name, coinType, account, grant)` | Record-level | `ROLE_SET_ADDR` for a specific coin type |
+| `authorizeNameRoles(toName, roleBitmap, account, grant)` | Name-level | Any role(s) on a specific name |
+| `authorizeTextRoles(toName, key, account, grant)` | Record-level | `ROLE_SET_TEXT` for a specific text key |
+| `authorizeDataRoles(toName, key, account, grant)` | Record-level | `ROLE_SET_DATA` for a specific data key |
+| `authorizeAddrRoles(toName, coinType, account, grant)` | Record-level | `ROLE_SET_ADDR` for a specific coin type |
 
-All four functions take a DNS-encoded name (`bytes`) as the first parameter. For example, `authorizeNameRoles(name, ROLE_SET_TEXT, account, true)` grants the account permission to set any text key on that name, while `authorizeTextRoles(name, "avatar", account, true)` restricts it to only the `avatar` key. To revoke either, make the same call with `false`.
+All four functions take a DNS-encoded name (`bytes`) as the first parameter (`toName`). For example, `authorizeNameRoles(toName, ROLE_SET_TEXT, account, true)` grants the account permission to set any text key on that name, while `authorizeTextRoles(toName, "avatar", account, true)` restricts it to only the `avatar` key. To revoke either, make the same call with `false`.
 
 `ROLE_SET_ADDR`, `ROLE_SET_TEXT`, and `ROLE_SET_DATA` support both levels of scoping. A name-level grant (via `authorizeNameRoles`) covers all keys or coin types on that name. A record-level grant (via `authorizeTextRoles`, `authorizeDataRoles`, or `authorizeAddrRoles`) covers only the specific key or coin type. When checking permissions, the resolver allows the action if the account has the role at either scope, so a name-level grant is a superset of any record-level grant.
 
@@ -156,15 +156,40 @@ flowchart LR
 
 ### Setting an Alias
 
-```solidity
+Both `setAlias` parameters are DNS-encoded names. The alias and target must use the same resolver instance:
+
+```ts [Viem]
+import { createWalletClient, http, toHex } from 'viem'
+import { packetToBytes } from 'viem/ens'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
 // Make wallet.eth resolve to the same records as alice.eth
-resolver.setAlias(
-    dnsEncode("wallet.eth"),  // from: the alias name
-    dnsEncode("alice.eth")    // to: the canonical name
-);
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setAlias',
+  args: [
+    toHex(packetToBytes('wallet.eth')),  // from: the alias name
+    toHex(packetToBytes('alice.eth')),   // to: the canonical name
+  ],
+})
+
+// To remove an alias, set the target to empty
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setAlias',
+  args: [toHex(packetToBytes('wallet.eth')), '0x00'],
+})
 ```
 
-The `setAlias` function requires `ROLE_SET_ALIAS`, which is a root-only role. This ensures only the resolver's admin can set up aliases. Both names (the alias and the target) must use the same resolver instance. To alias names that were registered with separate resolvers, first point them to the same resolver via `setResolver` on the registry.
+<FrenCallout fren="bittu" variant="note">
+Aliasing only works through the Universal Resolver's `resolve()` function. Calling `addr()` or `text()` directly on the resolver contract with an aliased name's namehash will return empty results, because the alias rewrite is part of the extended resolver resolution flow.
+</FrenCallout>
+
+`setAlias` requires `ROLE_SET_ALIAS`, which is a root-only role. This ensures only the resolver's admin can set up aliases. To alias names that were registered with separate resolvers, first point them to the same resolver via `setResolver` on the registry.
 
 ### Cycle Protection
 
@@ -191,6 +216,149 @@ Each resolver instance is a UUPS proxy pointing to a shared implementation contr
 - Individual name owners can upgrade their resolver if they hold the upgrade role
 
 See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver proxies are deployed.
+
+## Code Examples
+
+Each account deploys its own resolver instance. See [Deploying a Resolver Proxy](/contracts/ensv2/verifiable-factory#deploying-a-resolver-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
+
+### Delegating a Single Text Key
+
+A name owner can grant a dApp permission to set only a specific text record, for example allowing it to update the `avatar` key without giving access to any other records:
+
+```ts [Viem]
+import { createWalletClient, http, namehash, toHex } from 'viem'
+import { packetToBytes } from 'viem/ens'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+// authorize* functions take DNS-encoded names; record setters take namehashes
+const dnsName = toHex(packetToBytes('alice.eth'))
+const node = namehash('alice.eth')
+
+// Grant a dApp permission to set ONLY the "avatar" text key on alice.eth
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeTextRoles',
+  args: [dnsName, 'avatar', dappAddress, true],
+})
+
+// The dApp can now set the avatar record...
+await dappWallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setText',
+  args: [node, 'avatar', 'https://example.com/avatar.png'],
+})
+
+// ...but attempting to set any other key will revert
+// setText(node, 'description', '...') → reverts with EACUnauthorizedAccountRoles
+```
+
+To grant access to all text keys on a name (not just one), use `authorizeNameRoles` with `ROLE_SET_TEXT`:
+
+```ts [Viem]
+const ROLE_SET_TEXT = 1n << 4n
+
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeNameRoles',
+  args: [dnsName, ROLE_SET_TEXT, dappAddress, true],
+})
+```
+
+### Revoking Permissions
+
+To revoke a permission, call the same `authorize*` function with `false` as the last argument:
+
+```ts [Viem]
+// Revoke the dApp's permission to set the "avatar" text key
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeTextRoles',
+  args: [dnsName, 'avatar', dappAddress, false],
+})
+
+// Revoke name-level ROLE_SET_TEXT (all text keys)
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'authorizeNameRoles',
+  args: [dnsName, ROLE_SET_TEXT, dappAddress, false],
+})
+```
+
+### Locking a Record Permanently
+
+Because each role has a corresponding admin role, an owner can make a record type permanently immutable by revoking both the role and its admin from themselves. Without the admin role, nobody can grant the role back.
+
+```ts [Viem]
+import { createWalletClient, http, namehash } from 'viem'
+import { mainnet } from 'viem/chains'
+
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+const node = namehash('alice.eth')
+
+const ROLE_SET_CONTENTHASH = 1n << 8n
+const ROLE_SET_CONTENTHASH_ADMIN = ROLE_SET_CONTENTHASH << 128n
+
+// Set the content hash one final time
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setContenthash',
+  args: [node, contenthashBytes], // your encoded content hash
+})
+
+// Permanently lock: revoke both the role and its admin in one call
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'revokeRootRoles',
+  args: [ROLE_SET_CONTENTHASH | ROLE_SET_CONTENTHASH_ADMIN, ownerAddress], // your address
+})
+// The content hash can never be changed again, even by the owner
+```
+
+<FrenCallout fren="earl" variant="warning">
+This is irreversible. Once both a role and its admin are revoked, there is no way to restore the ability to modify that record type.
+</FrenCallout>
+
+### Clearing All Records
+
+The `clearRecords` function increments the record version for a name, effectively clearing all records at once without individual delete calls. This is useful when transferring a name to a new owner or starting fresh:
+
+```ts [Viem]
+const node = namehash('alice.eth')
+
+// Check the current version
+const versionBefore = await client.readContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'recordVersions',
+  args: [node],
+})
+
+// Clear all records in one call
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'clearRecords',
+  args: [node],
+})
+
+// The version is incremented; all previous records now return empty
+const versionAfter = await client.readContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'recordVersions',
+  args: [node],
+})
+// versionAfter === versionBefore + 1n
+```
 
 ## Reference
 
@@ -307,7 +475,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'authorizeTextRoles',
     description: 'Grant or revoke ROLE_SET_TEXT for a specific text key.',
     params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded name' },
       { name: 'key', type: 'string', description: 'The text key to authorize' },
       { name: 'account', type: 'address', description: 'Account to modify roles for' },
       { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
@@ -320,7 +488,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'authorizeDataRoles',
     description: 'Grant or revoke ROLE_SET_DATA for a specific data key.',
     params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded name' },
       { name: 'key', type: 'string', description: 'The data key to authorize' },
       { name: 'account', type: 'address', description: 'Account to modify roles for' },
       { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
@@ -333,7 +501,7 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     name: 'authorizeAddrRoles',
     description: 'Grant or revoke ROLE_SET_ADDR for a specific coin type.',
     params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'toName', type: 'bytes', description: 'DNS-encoded name' },
       { name: 'coinType', type: 'uint256', description: 'The coin type to authorize' },
       { name: 'account', type: 'address', description: 'Account to modify roles for' },
       { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
@@ -645,135 +813,3 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
     ],
   },
 ]} />
-
-## Code Examples
-
-Each account deploys its own resolver instance. See [Deploying a Proxy](/contracts/ensv2/verifiable-factory#deploying-a-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
-
-### Delegating a Single Text Key
-
-A name owner can grant a dApp permission to set only a specific text record, for example allowing it to update the `avatar` key without giving access to any other records:
-
-```ts [Viem]
-import { createWalletClient, http, namehash, toHex } from 'viem'
-import { packetToBytes } from 'viem/ens'
-import { mainnet } from 'viem/chains'
-
-const wallet = createWalletClient({ chain: mainnet, transport: http() })
-
-// authorize* functions take DNS-encoded names; record setters take namehashes
-const dnsName = toHex(packetToBytes('alice.eth'))
-const node = namehash('alice.eth')
-
-// Grant a dApp permission to set ONLY the "avatar" text key on alice.eth
-await wallet.writeContract({
-  address: resolverAddress,
-  abi: permissionedResolverAbi,
-  functionName: 'authorizeTextRoles',
-  args: [dnsName, 'avatar', dappAddress, true],
-})
-
-// The dApp can now set the avatar record...
-await dappWallet.writeContract({
-  address: resolverAddress,
-  abi: permissionedResolverAbi,
-  functionName: 'setText',
-  args: [node, 'avatar', 'https://example.com/avatar.png'],
-})
-
-// ...but attempting to set any other key will revert
-// setText(node, 'description', '...') → reverts with EACUnauthorizedAccountRoles
-```
-
-To grant access to all text keys on a name (not just one), use `authorizeNameRoles` with `ROLE_SET_TEXT`:
-
-```ts [Viem]
-const ROLE_SET_TEXT = 1n << 4n
-
-await wallet.writeContract({
-  address: resolverAddress,
-  abi: permissionedResolverAbi,
-  functionName: 'authorizeNameRoles',
-  args: [dnsName, ROLE_SET_TEXT, dappAddress, true],
-})
-```
-
-### Revoking Permissions
-
-To revoke a permission, call the same `authorize*` function with `false` as the last argument:
-
-```ts [Viem]
-// Revoke the dApp's permission to set the "avatar" text key
-await wallet.writeContract({
-  address: resolverAddress,
-  abi: permissionedResolverAbi,
-  functionName: 'authorizeTextRoles',
-  args: [dnsName, 'avatar', dappAddress, false],
-})
-
-// Revoke name-level ROLE_SET_TEXT (all text keys)
-await wallet.writeContract({
-  address: resolverAddress,
-  abi: permissionedResolverAbi,
-  functionName: 'authorizeNameRoles',
-  args: [dnsName, ROLE_SET_TEXT, dappAddress, false],
-})
-```
-
-### Resolving Through an Alias
-
-When a name is aliased, records are resolved through the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2). The alias rewrite happens during the `resolve()` call, not when reading records directly from the resolver:
-
-```ts [Viem]
-import {
-  createPublicClient,
-  decodeFunctionResult,
-  encodeFunctionData,
-  http,
-  namehash,
-  parseAbi,
-  toHex,
-} from 'viem'
-import { packetToBytes } from 'viem/ens'
-import { mainnet } from 'viem/chains'
-
-const client = createPublicClient({ chain: mainnet, transport: http() })
-
-const resolverAbi = parseAbi([
-  'function addr(bytes32 node) view returns (address)',
-  'function text(bytes32 node, string key) view returns (string)',
-])
-
-const universalResolverAbi = parseAbi([
-  'function resolve(bytes name, bytes data) view returns (bytes, address)',
-])
-
-// Suppose wallet.eth is aliased to alice.eth.
-// Resolving wallet.eth via the Universal Resolver returns alice.eth's records:
-const calldata = encodeFunctionData({
-  abi: resolverAbi,
-  functionName: 'addr',
-  args: [namehash('wallet.eth')],
-})
-
-const [resultData] = await client.readContract({
-  address: universalResolverAddress,
-  abi: universalResolverAbi,
-  functionName: 'resolve',
-  args: [toHex(packetToBytes('wallet.eth')), calldata],
-})
-
-const address = decodeFunctionResult({
-  abi: resolverAbi,
-  functionName: 'addr',
-  data: resultData,
-})
-// address === alice.eth's address
-
-// Subname aliasing works too: sub.wallet.eth resolves to sub.alice.eth's records
-// without any additional configuration.
-```
-
-:::note
-Aliasing only works through the Universal Resolver's `resolve()` function. Calling `addr()` or `text()` directly on the resolver contract with an aliased name's namehash will return empty results, because the alias rewrite is part of the extended resolver resolution flow.
-:::

@@ -133,24 +133,26 @@ This is useful whenever you need a name's resolver or subname-registry address b
 
 ## Code Examples
 
-### Deploying a Proxy
-
-Deploy a [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy through the factory. The same pattern applies to any implementation (e.g., `UserRegistryImpl` for subname registries): encode the implementation's `initialize` call as the `data` argument to `deployProxy`.
+Every proxy deployment follows the same steps: compute a salt, encode the implementation's `initialize` call as the `data` argument, and call `deployProxy` on the factory. The salt and initializer differ per implementation.
 
 <FrenCallout fren="bittu" variant="tip">
-The `VERIFIABLE_FACTORY` and `PERMISSIONED_RESOLVER_IMPL` addresses used below are protocol-deployed contracts. Find them in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
+The contract addresses used below (`VERIFIABLE_FACTORY`, `PERMISSIONED_RESOLVER_IMPL`, `USER_REGISTRY_IMPL`) are protocol-deployed contracts. Find them in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
 </FrenCallout>
+
+Both examples below share this setup:
 
 ```ts [Viem]
 import {
   createPublicClient,
   createWalletClient,
+  encodeAbiParameters,
   encodeFunctionData,
   http,
   keccak256,
+  namehash,
   parseAbi,
   parseEventLogs,
-  stringToBytes,
+  stringToHex,
 } from 'viem'
 import { mainnet } from 'viem/chains'
 
@@ -166,41 +168,99 @@ const verifiableFactoryAbi = parseAbi([
   'event ProxyDeployed(address indexed sender, address indexed proxyAddress, uint256 salt, address implementation)',
 ])
 
+// Grant all roles and their admin counterparts
+const ALL_ROLES =
+  0x1111111111111111111111111111111111111111111111111111111111111111n
+```
+
+### Deploying a Resolver Proxy
+
+Deploy a per-account [Permissioned Resolver](/contracts/ensv2/permissioned-resolver). The salt is derived from the owner's address so that any client can predict the resolver address before it exists.
+
+```ts [Viem]
 const resolverInitAbi = parseAbi([
   'function initialize(address admin, uint256 roleBitmap, bytes[] setters)',
 ])
 
-// Grant all roles and their admin counterparts
-const ALL_ROLES =
-  0x1111111111111111111111111111111111111111111111111111111111111111n
+// Salt scheme: keccak256("OwnedResolver", owner, version)
+const version = 0n
+const resolverSalt = BigInt(
+  keccak256(
+    encodeAbiParameters(
+      [{ type: 'bytes32' }, { type: 'address' }, { type: 'uint256' }],
+      [keccak256(stringToHex('OwnedResolver')), account.address, version]
+    )
+  )
+)
 
-// Unique salt per deployment (reusing a salt from the same sender will revert)
-const salt = BigInt(keccak256(stringToBytes('my-resolver-v1')))
-
-// Encode the implementation's initializer as calldata
-const initData = encodeFunctionData({
+const resolverInitData = encodeFunctionData({
   abi: resolverInitAbi,
   functionName: 'initialize',
   args: [account.address, ALL_ROLES, []],
 })
 
-// Deploy the proxy
-const hash = await wallet.writeContract({
+const resolverTx = await wallet.writeContract({
   address: VERIFIABLE_FACTORY,
   abi: verifiableFactoryAbi,
   functionName: 'deployProxy',
-  args: [PERMISSIONED_RESOLVER_IMPL, salt, initData],
+  args: [PERMISSIONED_RESOLVER_IMPL, resolverSalt, resolverInitData],
 })
 
-const receipt = await client.waitForTransactionReceipt({ hash })
-
-// Parse the ProxyDeployed event to get the new address
-const [log] = parseEventLogs({
+const resolverReceipt = await client.waitForTransactionReceipt({
+  hash: resolverTx,
+})
+const [resolverLog] = parseEventLogs({
   abi: verifiableFactoryAbi,
   eventName: 'ProxyDeployed',
-  logs: receipt.logs,
+  logs: resolverReceipt.logs,
 })
-const resolverAddress = log.args.proxyAddress
+const resolverAddress = resolverLog.args.proxyAddress
 ```
 
 The `resolverAddress` is now a fully initialized Permissioned Resolver proxy. Point a name to it via `setResolver` on the registry, then use it to [set records and delegate access](/contracts/ensv2/permissioned-resolver#code-examples).
+
+### Deploying a Registry Proxy
+
+Deploy a per-name [User Registry](/contracts/ensv2/permissioned-registry) for managing subnames. The salt is derived from the name's namehash.
+
+```ts [Viem]
+const registryInitAbi = parseAbi([
+  'function initialize(address rootAccount, uint256 roleBitmap)',
+])
+
+// Salt scheme: keccak256("UserRegistry", namehash, version)
+const version = 0n
+const registrySalt = BigInt(
+  keccak256(
+    encodeAbiParameters(
+      [{ type: 'bytes32' }, { type: 'bytes32' }, { type: 'uint256' }],
+      [keccak256(stringToHex('UserRegistry')), namehash('alice.eth'), version]
+    )
+  )
+)
+
+const registryInitData = encodeFunctionData({
+  abi: registryInitAbi,
+  functionName: 'initialize',
+  args: [account.address, ALL_ROLES],
+})
+
+const registryTx = await wallet.writeContract({
+  address: VERIFIABLE_FACTORY,
+  abi: verifiableFactoryAbi,
+  functionName: 'deployProxy',
+  args: [USER_REGISTRY_IMPL, registrySalt, registryInitData],
+})
+
+const registryReceipt = await client.waitForTransactionReceipt({
+  hash: registryTx,
+})
+const [registryLog] = parseEventLogs({
+  abi: verifiableFactoryAbi,
+  eventName: 'ProxyDeployed',
+  logs: registryReceipt.logs,
+})
+const registryAddress = registryLog.args.proxyAddress
+```
+
+The `registryAddress` is now a User Registry proxy. Set it as the subregistry for a name via `setSubregistry` on the parent registry, then use it to [manage subnames and roles](/contracts/ensv2/permissioned-registry#code-examples).
