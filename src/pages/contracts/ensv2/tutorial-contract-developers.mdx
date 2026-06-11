@@ -67,7 +67,7 @@ remappings = [
 ]
 ```
 
-You will build the contract in `src/SimpleSubnameRegistrar.sol`. Run `forge build` after each section to check your progress.
+You will build the contract in `src/SimpleSubnameRegistrar.sol`.
 
 ## Building the Contract
 
@@ -364,28 +364,20 @@ This contract is provided for educational purposes only, not as a production-gra
 
 ### Set Up the UserRegistry
 
-The registrar needs a registry to register into. If your parent name does not have one yet, two setup steps are required: deploy a UserRegistry proxy via the [Verifiable Factory](/contracts/ensv2/verifiable-factory), then point your parent name at it with `setSubregistry()` on the parent registry.
+The registrar needs a registry to register into. If your parent name does not have one yet, two setup steps are required: deploy a UserRegistry proxy via the Verifiable Factory, then point your parent name at it with `setSubregistry()` on the parent registry.
 
-The second step is what connects the new registry to the ENS hierarchy. The [Universal Resolver](/contracts/ensv2/universal-resolver-v2) finds subnames by walking `getSubregistry()` calls down from the root, so until your parent name points at the UserRegistry, names registered in it mint tokens but never resolve.
+For the first step, follow [Deploying a Registry Proxy](/contracts/ensv2/verifiable-factory#deploying-a-registry-proxy); the `ProxyDeployed` event in the receipt gives you the proxy address (`userRegistryAddress` below). Choose the `roleBitmap` passed to `initialize()` carefully: granting a role later via `grantRootRoles()` requires holding that role's `_ADMIN` variant, so the bitmap must include at least `ROLE_REGISTRAR_ADMIN` and `ROLE_RENEW_ADMIN` for the authorization step below to succeed.
 
-The `wallet` object in the TypeScript snippets on this page is a viem wallet client; its setup is shown in [Client Integration](#client-integration) below.
+The second step is what connects the new registry to the ENS hierarchy. The [Universal Resolver](/contracts/ensv2/universal-resolver-v2) finds subnames by walking `getSubregistry()` calls down from the root, so until your parent name points at the UserRegistry, names registered in it mint tokens but never resolve. You hold `ROLE_SET_SUBREGISTRY` on your name from registration, so this call needs no extra setup:
 
 ```typescript
-// 1. Deploy the UserRegistry proxy
-const initData = encodeFunctionData({
-  abi: userRegistryAbi,
-  functionName: 'initialize',
-  args: [ownerAddress, roleBitmap],
-})
-const deployHash = await wallet.writeContract({
-  address: verifiableFactoryAddress,
-  abi: verifiableFactoryAbi,
-  functionName: 'deployProxy',
-  args: [userRegistryImplAddress, salt, initData],
-})
-// Read the proxy address from the ProxyDeployed event in the receipt
+import { keccak256, toHex, parseAbi } from 'viem'
 
-// 2. Point the parent name at it
+const permissionedRegistryAbi = parseAbi([
+  'function setSubregistry(uint256 anyId, address subregistry)',
+])
+
+// Point the parent name at the UserRegistry
 // (here: nick.eth, so this runs on the .eth registry)
 await wallet.writeContract({
   address: ethRegistryAddress,
@@ -395,14 +387,14 @@ await wallet.writeContract({
 })
 ```
 
-You hold `ROLE_SET_SUBREGISTRY` on your name from registration, so the second call needs no extra setup. For the first call, choose the `roleBitmap` carefully: granting a role later via `grantRootRoles()` requires holding that role's `_ADMIN` variant, so the bitmap passed to `initialize()` must include at least `ROLE_REGISTRAR_ADMIN` and `ROLE_RENEW_ADMIN` for the authorization step below to succeed.
+The `wallet` object in the TypeScript snippets on this page is a viem wallet client; its setup is shown in [Client Integration](#client-integration) below. The protocol contract addresses (like `ethRegistryAddress`) are listed in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
 
 ### Deploy the Registrar
 
 The registrar is a plain contract (not a proxy), so deployment is straightforward. You need:
 
 - The address of your UserRegistry (from the previous step)
-- An ERC20 payment token address
+- An ERC20 payment token address (on a testnet, deploy your own mintable mock ERC20; any token implementing `transferFrom`/`approve` works)
 - A beneficiary address for receiving payments
 - The annual price in the token's smallest unit
 - A minimum registration duration in seconds
@@ -416,6 +408,16 @@ SimpleSubnameRegistrar registrar = new SimpleSubnameRegistrar(
     30 days          // minimum 30-day registration
 );
 ```
+
+For example, deploying with Foundry:
+
+```bash
+forge create src/SimpleSubnameRegistrar.sol:SimpleSubnameRegistrar \
+    --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast \
+    --constructor-args $USER_REGISTRY $PAYMENT_TOKEN $BENEFICIARY 5000000 2592000
+```
+
+The last two arguments are the price (5 USDC with 6 decimals) and the minimum duration (30 days in seconds). Passing a raw private key is acceptable for testnet experiments; in general, follow Foundry's [key management best practices](https://getfoundry.sh/guides/best-practices/key-management/) (encrypted keystores via `cast wallet import`, hardware wallets for production).
 
 ### Grant Roles to the Registrar
 
