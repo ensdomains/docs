@@ -221,6 +221,42 @@ See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver p
 
 Each account deploys its own resolver instance. See [Deploying a Resolver Proxy](/contracts/ensv2/verifiable-factory#deploying-a-resolver-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
 
+### Setting and Reading Records
+
+The Permissioned Resolver implements the same record interfaces as ENSv1 resolvers (`addr`, `text`, `contenthash`, etc.), so existing viem patterns work unchanged. The only difference is that each account deploys its own resolver instance rather than sharing one:
+
+```ts [Viem]
+import { createPublicClient, createWalletClient, http, namehash } from 'viem'
+import { normalize } from 'viem/ens'
+import { mainnet } from 'viem/chains'
+
+const client = createPublicClient({ chain: mainnet, transport: http() })
+const wallet = createWalletClient({ chain: mainnet, transport: http() })
+
+const name = normalize('alice.eth')
+const node = namehash(name)
+
+// Set an ETH address
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setAddr',
+  args: [node, '0x1234...'],
+})
+
+// Set a text record
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: permissionedResolverAbi,
+  functionName: 'setText',
+  args: [node, 'avatar', 'https://example.com/avatar.png'],
+})
+
+// Read them back using viem's built-in ENS functions
+const ethAddr = await client.getEnsAddress({ name })
+const avatar = await client.getEnsText({ name, key: 'avatar' })
+```
+
 ### Delegating a Single Text Key
 
 A name owner can grant a dApp permission to set only a specific text record, for example allowing it to update the `avatar` key without giving access to any other records:
