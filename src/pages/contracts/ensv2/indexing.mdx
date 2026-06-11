@@ -110,7 +110,7 @@ event ResolverUpdated(uint256 indexed tokenId, address resolver, address indexed
 
 **Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
 
-**When:** a name's resolver is set or changed via `setResolver()`. Also fires during `register()`. New resolver addresses indicate dynamically deployed PermissionedResolver contracts.
+**When:** a name's resolver is set or changed via `setResolver()`. Also fires during `register()` if a resolver is provided. New resolver addresses indicate dynamically deployed PermissionedResolver contracts.
 
 ### TokenRegenerated
 

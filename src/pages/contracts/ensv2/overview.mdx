@@ -29,7 +29,7 @@ The contracts and interfaces described here are **not yet final** and may change
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
   in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2 via a new role-based
   permission system called [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
-- **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed by the owner. After the grace period, names enter a temporary premium period.
+- **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed (by anyone, not just the owner). After the grace period, names enter a temporary premium period.
 - **Per-Account Resolvers** - Rather than sharing a single Public Resolver, every
   account gets its own [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy
   with fine-grained per-record permissions and [record aliasing](/contracts/ensv2/permissioned-resolver#aliasing).
@@ -94,7 +94,7 @@ flowchart LR
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | [Migration](/contracts/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
 | [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                           |
-| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Hands-on guide for direct smart contract interaction                   |
+| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Tutorial: build a subname registrar on the Permissioned Registry       |
 | [Registry Template](/contracts/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation       |
 | [Indexing](/contracts/ensv2/indexing)                                     | Events and functions for building indexers and subgraphs               |
 | [FAQ](/contracts/ensv2/faq)                                              | Frequently asked questions about ENSv2                                 |
