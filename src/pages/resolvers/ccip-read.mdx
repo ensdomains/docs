@@ -87,7 +87,7 @@ From the perspective of the L1 Resolver contract, the process of resolving an L2
 
 For names that are stored offchain like the example above, the Gateway would read from a normal web2 database and the Resolver's callback function would simply verify the Gateway operator's signature.
 
-For names that are stored on L2, the Gateway would make an RPC call to the relevant L2 and the Resolver's callback function would ideally verify the response by using the L2's state roon on L1 (this assumes knowledge of how L2's work).
+For names that are stored on L2, the Gateway would make an RPC call to the relevant L2 and the Resolver's callback function would ideally verify the response by using the L2's state root on L1 (this assumes knowledge of how L2's work).
 
 To implement trustless L2 resolution, developers should use a solution like [Unruggable Gateways](https://gateway-docs.unruggable.com/).
 
