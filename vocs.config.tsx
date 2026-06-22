@@ -26,7 +26,7 @@ export default defineConfig({
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
-  ogImageUrl: baseUrl ? `${baseUrl}/api/og?title=%title` : undefined,
+  ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
   banner: {
     content: (
       <p>
