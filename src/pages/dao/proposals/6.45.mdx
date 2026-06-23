@@ -1,0 +1,76 @@
+---
+authors:
+  - avsa.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 6.45] [6.45] [Social] Renewal of the Security Council
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                           |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x3ad5e730a4ee271d9aab14f0b7bc81d1a8a6d4387299fb902413969fa6124a16) |
+
+## Abstract
+
+The ENS DAO Security Council’s veto authority expires on 24 July 2026, when renounceTimelockRoleByExpiration() becomes callable at Fri, Jul 24, 2026, 18:52:59 UTC. This proposal renews the council for a further two-year term. It deploys an updated SecurityCouncil contract that adds a extend() function callable only by the DAO timelock, so future renewals are a single governance vote rather than a fresh deployment and role re-grant. The new contract is audited before it is deployed, with the Meta-Governance Working Group funding the audit. The 4-of-8 multisig and the council’s cancel-only emergency mandate are unchanged, with one signer rotation: lefteris.eth, who is no longer active in the DAO, is removed and coltron.eth, the largest active delegate not currently on the council, is added. This post is the temperature check; after one week of discussion it proceeds to a Snapshot social vote, with the executable grant targeted for the last week of June.
+
+## Specification
+
+### Background
+
+The Security Council is a 4-of-8 [Safe multisig](https://app.safe.global/home?safe=eth:0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7) with a single power: to cancel malicious proposals in the ENS timelock. It cannot propose, amend, or initiate any governance action. It was approved through [EP 5.7 [Social]](https://snapshot.box/#/s:ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54), [EP 5.10 [Social]](https://snapshot.box/#/s:ens.eth/proposal/0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a), and [EP 5.13 [Executable]](https://www.tally.xyz/gov/ens/proposal/42329103797433777309488042029679811802172320979541414683300183273376839219133) (passed 25 July 2024). The current contract is deployed at [0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0) and its authority is time-limited: two years plus a 7-day buffer after deployment, anyone may call renounceTimelockRoleByExpiration() to permanently disable the cancel power, which occurs on 24 July 2026. The threat that motivated the council, a large treasury relative to active voting power, has not changed, so the recommendation is to renew rather than let it lapse.
+
+### New contract
+
+The current contract has no way to extend its own expiration, so renewing it requires deploying a new contract, passing an executable proposal to grant PROPOSER_ROLE, and letting the old role expire. We propose deploying an updated SecurityCouncil contract ([blockful/security-council-ens](https://github.com/blockful/security-council-ens)) with the same cancel-only mandate and 4-of-8 ownership, plus an extend() function:
+
+```
+function extend(uint256 newExpiration) external {
+
+if (msg.sender != address(timelock)) revert OnlyTimelock();
+
+if (newExpiration <= expiration) revert InvalidExpiration();
+
+if (newExpiration <= block.timestamp) revert InvalidExpiration();
+
+if (!timelock.hasRole(timelock.PROPOSER_ROLE(), address(this)))
+
+revert RoleAlreadyRenounced();
+
+expiration = newExpiration;
+
+}
+```
+
+The key safety property is that only the timelock can call extend(), so only a passed ENS DAO proposal can extend the term and the multisig cannot extend its own power. After this renewal, each subsequent renewal is a single extend() proposal with no redeploy and no re-grant.
+
+### Audit
+
+The new contract is audited before it is deployed to mainnet. We are collecting quotes from auditors, and the Meta-Governance Working Group funds the audit. Deployment and the executable grant proposal happen only after the audit is complete and any findings are resolved.
+
+### Signer rotation
+
+[lefteris.eth](https://etherscan.io/address/lefteris.eth) is no longer active in DAO governance. Because the 4-of-8 threshold depends on signer availability, securitycouncil.lefteris.eth is removed and [coltron.eth](https://etherscan.io/address/coltron.eth) ([TBD address, to provide]), the largest active delegate not currently on the council, is added. The council maintains jurisdictional diversity as a legal-resilience requirement: no group of four signers (the signing threshold) shares a single jurisdiction, so no single jurisdiction can compel a passing quorum. The incoming signer is selected so this property continues to hold after the swap. The change is executed on the Safe multisig (removeOwner / addOwner, threshold kept at 4) and does not require a contract redeploy.
+
+### Timeline
+
+This post is the temperature check, running one week, then a Snapshot social vote the following week, with the executable proposal in the last week of June, ahead of the 24 July 2026 expiration. The contract is audited and deployed before the executable.
+
+| #   | Step                                                       | Owner              | Target date                | Status                          |
+| --- | ---------------------------------------------------------- | ------------------ | -------------------------- | ------------------------------- |
+| 1   | Finalize and freeze new contract code                      | Blockful           | late May 2026              | Done                            |
+| 2   | Temperature check, one week discussion                     | DAO                | 29 May to 5 June 2026      | Live                            |
+| 3   | Audit and resolve findings                                 | Auditor / Blockful | by mid June 2026           | In progress (collecting quotes) |
+| 4   | Social proposal on Snapshot, ~5 day vote                   | DAO                | submit week of 8 June 2026 | We are here                     |
+| 5   | Deploy audited contract to mainnet                         | Blockful           | mid June 2026              | Not started                     |
+| 6   | Signer rotation on the Safe                                | Multisig           | mid to late June 2026      | Not started                     |
+| 7   | Executable proposal: grantRole(PROPOSER_ROLE, newContract) | DAO                | last week of June 2026     | Not started                     |
+| 8   | Old contract role expires automatically                    | n/a                | 24 July 2026               | Not started                     |
+
+### Executable actions
+
+The on-chain executable portion will contain a single action: ENSTimelock.grantRole(PROPOSER_ROLE, ). Deployment and the Safe signer rotation happen outside the executable transaction. The old contract’s role expires automatically on 24 July 2026 or can be renounced by anyone via renounceTimelockRoleByExpiration(). The exact newContractAddress, calldata, and PROPOSER_ROLE hash are appended once the audited contract is deployed.
