@@ -27,17 +27,6 @@ export default defineConfig({
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
   ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
-  banner: {
-    content: (
-      <p>
-        Hacking at ETHGlobal New York?{' '}
-        <a href="https://pr-543.docs-bao.pages.dev/contracts/ensv2/overview/">
-          Read the ENSv2 docs preview
-        </a>
-        .
-      </p>
-    ),
-  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
