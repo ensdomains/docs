@@ -1,0 +1,39 @@
+---
+authors:
+  - avsa.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.47] [6.47][Executable] Delegation Incentives Program (Funding Transfer)
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                                         |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/104212182161850550962744337399787220583533293984710381556645937262731963073399), [Anticapture](https://app.anticapture.com/ens/governance/proposal/104212182161850550962744337399787220583533293984710381556645937262731963073399) |
+
+https://discuss.ens.domains/t/temp-check-delegation-incentives-program/21824
+
+## Abstract
+
+This is the on-chain executable proposal to fund the **Delegation Incentives Program**, already [approved](https://snapshot.box/#/s:ens.eth/proposal/0xf0ad5ad5a1ee353a65424a83e74f2b8846b16885a4be99af26b5162bfa78c644) by ENS governance via Snapshot (\[6.31] Delegation Incentives Program). It transfers **90,000 ENS** and 5 ETH from the DAO treasury to the **MetaGov stewards multisig**, which will manage distribution over the program's three monthly rounds.
+
+The program is ready to launch:
+
+- **Start date:** July 1st, 2026
+- **Duration:** 3 months (three monthly distribution rounds)
+- **Launch campaign:** Planned (redelegation campaign with sponsored gas via `delegateBySig`, plus a visibility campaign).
+- **Website:** Live.
+
+## Motivation
+
+ENS is safer when voting power sits with active delegates rather than idle wallets. This 90-day pilot pays viewpoint-neutral incentives to active delegates and their delegators, using time-weighted balances, per-recipient caps, a 1 ENS minimum payout, and a lottery for sub-1 ENS amounts. Full program design, reward formulas, and guardrails are specified in the approved Snapshot proposal.
+
+- **Funding:** 90,000 ENS, managed by the MetaGov stewards for distribution. Actual usage scales with results and can range from 15,000 to 90,000 ENS. **Any remainder is returned to the treasury after the program ends.** 5 ETH is transferred to sponsor gas on delegations, votes for the long term.
+- **Distribution:** Monthly, claimless transfers executed by the MetaGov multisig, with public snapshots, data, and distribution files published each round.
+
+## Specification
+
+90,000 ENS tokens + 5 ETH sent to [MetaGov multisig](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b).
