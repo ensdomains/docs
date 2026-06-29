@@ -1,0 +1,33 @@
+---
+authors:
+  - avsa.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.47] [6.48][Executable] Renewal of the Security Council (Term 2)
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                                       |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/45402179622316441394139979097514597399865468312011562941203078514615705423505), [Anticapture](https://app.anticapture.com/ens/governance/proposal/45402179622316441394139979097514597399865468312011562941203078514615705423505) |
+
+https://discuss.ens.domains/t/6-45-renewal-of-the-security-council/22145
+
+## Abstract
+
+The ENS DAO Security Council's veto authority expires on 24 July 2026, when renounceTimelockRoleByExpiration() becomes callable at Fri, Jul 24, 2026, 18:52:59 UTC. This proposal renews the council for a further two-year term. It deploys an updated SecurityCouncil contract that adds a extend() function callable only by the DAO timelock, so future renewals are a single governance vote rather than a fresh deployment and role re-grant. The new contract is audited before it is deployed, with the Meta-Governance Working Group funding the audit. The 4-of-8 multisig and the council's cancel-only emergency mandate are unchanged, with one signer rotation: lefteris.eth, who is no longer active in the DAO, is removed and coltron.eth, the largest active delegate not currently on the council, is added. This post has gone through the temperature check; and the Snapshot social vote, and now we are voting on the executable.
+
+## Specification
+
+### Background
+
+The Security Council is a 4-of-8 [Safe multisig](https://app.safe.global/home?safe=eth:0xaA5cD05f6B62C3af58AE9c4F3F7A2aCC2Cdc2Cc7) with a single power: to cancel malicious proposals in the ENS timelock. It cannot propose, amend, or initiate any governance action. It was approved through [EP 5.7 \[Social\]](https://snapshot.box/#/s:ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54), [EP 5.10 \[Social\]](https://snapshot.box/#/s:ens.eth/proposal/0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a), and [EP 5.13 \[Executable\]](https://www.tally.xyz/gov/ens/proposal/42329103797433777309488042029679811802172320979541414683300183273376839219133) (passed 25 July 2024). The current contract is deployed at [0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0](https://etherscan.io/address/0xb8fa0ce3f91f41c5292d07475b445c35ddf63ee0) and its authority is time-limited: two years plus a 7-day buffer after deployment, anyone may call renounceTimelockRoleByExpiration() to permanently disable the cancel power, which occurs on 24 July 2026. The threat that motivated the council, a large treasury relative to active voting power, has not changed, so the recommendation is to renew rather than let it lapse.
+
+### New contract
+
+The current contract has no way to extend its own expiration, so renewing it requires deploying a new contract, passing an executable proposal to grant PROPOSER_ROLE, and letting the old role expire. We propose deploying an updated SecurityCouncil contract ([blockful/security-council-ens](https://github.com/blockful/security-council-ens)) with the same cancel-only mandate and 4-of-8 ownership, plus an extend() function.
+
+The key safety property is that only the timelock can call extend(), so only a passed ENS DAO proposal can extend the term and the multisig cannot extend its own power. After this renewal, each subsequent renewal is a single extend() proposal with no redeploy and no re-grant.
