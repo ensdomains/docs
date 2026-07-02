@@ -132,6 +132,8 @@ event ParentUpdated(IRegistry indexed parent, string label, address indexed send
 
 **When:** a registry's parent reference is set via `setParent()`. This establishes the upward link in the registry hierarchy, complementing `SubregistryUpdated` (which links parent → child) by establishing the child → parent direction.
 
+`setParent()` is an optional, separately-permissioned call (`ROLE_SET_PARENT`), so this event is **not** emitted for every child registry and `getParent()` may return empty for registries where it was never called. Treat `SubregistryUpdated` (emitted by the parent) as the authoritative parent → child link, and use `ParentUpdated`/`getParent()` only as a supplementary child → parent hint when present.
+
 ### TokenResource
 
 ```solidity
@@ -140,7 +142,7 @@ event TokenResource(uint256 indexed tokenId, uint256 indexed resource);
 
 **Emitted by:** `IPermissionedRegistry`
 
-**When:** a token is created or regenerated. Maps a `tokenId` to its corresponding `resource`. The `resource` is derived from the `labelHash` and `eacVersionId`. It remains stable across role-change regenerations (which only change the `tokenVersionId`), but changes on re-registration (which increments `eacVersionId`). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#id-types) for details.
+**When:** a token is created during registration (`register()`). Maps a `tokenId` to its corresponding `resource`. It is **not** re-emitted on token regeneration: the `resource` is derived from the `labelHash` and `eacVersionId`, so it stays stable across role-change regenerations (which only bump the `tokenVersionId`), and you should carry it onto the new `tokenId` by following [`TokenRegenerated`](#tokenregenerated) rather than expecting a fresh `TokenResource`. The `resource` does change on re-registration (which increments `eacVersionId`), at which point the new `register()` emits a fresh `TokenResource`. See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#id-types) for details.
 
 ## ERC1155 Transfer Events
 
@@ -367,7 +369,7 @@ This creates a self-expanding set of monitored contracts.
 - **tokenId**: the ERC1155 token ID. Changes when roles are modified (`TokenRegenerated`), because it embeds a version counter that increments on each change.
 - **resource**: the EAC permission key for a name within a registry. Derived from the `labelHash` and `eacVersionId`. Stable across role modifications, but changes on re-registration (when `eacVersionId` increments).
 
-Use the `TokenResource` event to maintain the mapping. The `resource` should be the primary key for domain lookups.
+Use the `TokenResource` event (emitted at registration) to establish the `tokenId → resource` mapping, and follow `TokenRegenerated` to move that mapping onto the new `tokenId` when roles change, since no new `TokenResource` is emitted then. The `resource` should be the primary key for domain lookups, as it stays stable across regenerations.
 
 ### Name Construction
 
@@ -411,20 +413,20 @@ After expiry, names return to `AVAILABLE`. Re-registration creates both a new `t
 
 ### Event Processing Order
 
-For a single registration via `ETHRegistrar.register()`, events fire in this order:
+For a single registration via `ETHRegistrar.register()`, events fire in this order. The registrar calls `ETHRegistry.register()` first (which emits all the registry events) and only then emits its own event, so `NameRegistered` comes **last**, not first:
 
-1. `IETHRegistrar.NameRegistered` - registrar-level event with pricing
-2. `IRegistryEvents.LabelRegistered` - registry-level event with registration details
+1. `IRegistryEvents.LabelRegistered` - registry-level event with registration details
+2. `TransferSingle` (mint) - ERC1155 token creation
 3. `TokenResource` - tokenId-to-resource mapping
-4. `TransferSingle` (mint) - ERC1155 token creation
-5. `SubregistryUpdated` - if a subregistry was provided
-6. `ResolverUpdated` - if a resolver was provided
+4. `SubregistryUpdated` - if a subregistry was provided
+5. `ResolverUpdated` - if a resolver was provided
+6. `IETHRegistrar.NameRegistered` - registrar-level event with pricing
 
 For a direct `IStandardRegistry.register()` call (e.g., on a UserRegistry):
 
 1. `IRegistryEvents.LabelRegistered`
-2. `TokenResource`
-3. `TransferSingle` (mint)
+2. `TransferSingle` (mint)
+3. `TokenResource`
 4. `SubregistryUpdated` - if a subregistry was provided
 5. `ResolverUpdated` - if a resolver was provided
 
