@@ -1,0 +1,97 @@
+---
+authors:
+  - katherine.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 6.47] [6.47] [Social] Election of the New ENS DAO Security Council
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                           |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x3e7acd4a47b246382bf9a3aeb71d0fd1562d38dbb9f7b7760445cf9731229b9d) |
+
+| Status                | Active                                                                                          |
+| :-------------------- | :---------------------------------------------------------------------------------------------- |
+| **Type**              | Social                                                                                          |
+| **Discussion Thread** | [Discuss](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219) |
+
+## Abstract
+
+The two-year mandate of the current Security Council expires soon. The framework was established under [EP 5.7](https://docs.ens.domains/dao/proposals/5.7/), the members were confirmed under [EP 5.10](https://docs.ens.domains/dao/proposals/5.10/), and the contract was deployed under [EP 5.13](https://docs.ens.domains/dao/proposals/5.13/).
+
+This proposal asks the DAO to elect the 8 members of a successor Security Council. The successor Council will operate under a tighter public mandate, a binding Appointment Agreement with the ENS Foundation, a removal mechanism for members who act outside the mandate, and a 5/8 threshold for action. The full framework, rationale, and nomination process were set out in the [draft proposal](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219). The Security Council Charter, the Appointment Agreement, and the Public Pledge are available [here](https://drive.google.com/drive/folders/1dxAfA7qpM3NZAmYFVTd0fPEP9gXUn6rm?usp=drive_link).
+
+The scope of authority granted to the new Council remains the same as that defined by EP 5.13: cancellation of timelocked proposals, nothing more.
+
+## Candidates
+
+Nominations were open to anyone and were collected on the discussion thread. The nomination window closed on Monday, July 6, 2026 at 11:59 PM UTC. Each candidate on this ballot met all of the eligibility requirements set out in the draft proposal, including a public affirmation of the new mandate and charter.
+
+Eligible candidates are listed below in order of nomination submission.
+
+1. Nick Johnson (nick.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/4)
+2. zeroShadow (zeroshadow.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/6)
+3. Pablo Sabbatella (pablito.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/7)
+4. Vladimir S., Officer's Notes (officercia.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/8)
+5. Dylan Brodeur (dylanb.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/9)
+6. Colton Liberacki (coltron.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/10)
+7. Isaac Patka (isaacpatka.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/11)
+8. Hudson Jameson (hudson.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/12)
+9. Cristiano Silva, Nethermind Security — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/13)
+10. Kevin Gaspar (validator.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/14)
+11. Alex Van de Sande (avsa.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/15)
+12. Daniel Nowak — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/16)
+13. Griff Green (griff.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/17)
+14. Alex Netto (netto.eth) — [nomination](https://discuss.ens.domains/t/draft-social-proposal-for-a-new-security-council/22219/18)
+15. NONE BELOW
+
+## Voting Procedure
+
+Voting will use the Copeland method as described in this [RFP](https://discuss.ens.domains/t/rfp-for-improving-ranked-choice-voting-support-in-snapshot/19625). If any discrepancy arises, the result produced by that methodology will be treated as definitive.
+
+**Ballot configuration.** The ballot is a ranked-choice ballot listing every eligible candidate plus NONE BELOW as a rankable option. If any material errors are discovered, the vote will be taken down and reposted correctly before any results are treated as valid.
+
+**How to vote.** Rank the candidates in your order of preference. Rank every candidate you consider qualified to serve above NONE BELOW, and every candidate you do not support below it. Candidates you leave unranked are treated as ranked below NONE BELOW, tied with one another.
+
+**How results are calculated.**
+
+1. Each ballot is used to run a pairwise comparison between every pair of options, including NONE BELOW. In each pairing, the option ranked higher by more voting power wins that matchup.
+2. Each candidate receives a Copeland score equal to the number of pairwise matchups they win. A tied matchup counts as half a win for each candidate.
+3. Candidates are placed in a final ranking by Copeland score, from highest to lowest.
+4. Ties are handled using “average support” as described in the linked RFP above.
+
+The above description is not normative and is intended as a guide to the ranking algorithm for ease of reference only.
+
+**Authoritative counting.** Results are determined solely by the rules written in this proposal, computed with the open-source Copeland tooling the DAO used for EP 6.10 and independently checkable by anyone through the public Copeland visualizer. The results panel displayed in the Snapshot interface is not the authoritative tally.No metric, formula, or tiebreaker not referenced by this proposal will be applied to this election before, during, or after the vote.
+
+**Who is elected.** The 8 highest-ranked candidates who also defeat NONE BELOW in their head-to-head matchup are elected to the Security Council. A candidate who does not defeat NONE BELOW cannot be seated, regardless of ranking. If fewer than 8 candidates defeat NONE BELOW, the candidates who do are seated, and the remaining seats will be filled through a reopened nomination window and a follow-up vote.
+
+## Confirmation Requirements
+
+The election is conditional. To be confirmed and seated, each elected candidate must:
+
+1. Sign the Appointment Agreement with the ENS Foundation within 48 hours of the close of the vote, which gives the publicly affirmed mandate operative legal effect; and
+2. Complete a KYC and background check process.
+
+If an elected candidate does not complete these requirements, their seat is filled under the succession rule below.
+
+## Post-Election Withdrawal or Inability to Serve
+
+If any elected candidate declines the appointment, withdraws from consideration, or is unable to serve following the close of voting, the vacant seat shall be filled by the unelected candidate holding the next-highest position in the final Copeland ranking, provided that candidate defeated NONE BELOW. If that candidate also declines or is unable to serve, the seat shall pass in order to the remaining unelected candidates in descending order of final ranking, subject to the same NONE BELOW requirement and the confirmation requirements above, until the seat is filled.
+
+## Transition
+
+To avoid any gap in veto coverage, the new Security Council will be enabled as an additional veto authority during any overlap period with the current Council. The new Council carries forward the same role, operating under the new public mandate and the Appointment Agreements.
+
+## Success Criteria
+
+For this vote to be valid, total participation must meet the DAO's quorum requirement of 1% of the total $ENS supply (1,000,000 ENS). The vote will be open for 5 days. If quorum is not met, no candidates are elected and the proposal fails.
+
+## Next Steps
+
+1. Elected candidates complete the Appointment Agreement, KYC, and background check.
+2. An executable proposal grants the PROPOSER_ROLE to the new Security Council multisig.
