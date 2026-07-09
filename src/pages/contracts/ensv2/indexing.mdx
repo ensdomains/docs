@@ -52,6 +52,8 @@ event LabelRegistered(
 
 **When:** a new name is registered via `register()`. The full name is constructed by appending the parent name (e.g., label `"test"` under ETHRegistry = `"test.eth"`). The registry contract address that emitted this event identifies which level of the hierarchy this name belongs to.
 
+The `sender` parameter is the account that called `register()`. For normal `.eth` registrations this is the ETHRegistrar; for names [migrated from ENSv1](/contracts/ensv2/migration) it is a migration controller, since migration bypasses the registrar and calls `register()` on the ETHRegistry directly. Checking `sender` against the known migration controller addresses is how an indexer distinguishes migrated names from fresh registrations.
+
 ### LabelReserved
 
 ```solidity
@@ -216,9 +218,9 @@ event NameRegistered(
 
 **When:** step 2 of the commit-reveal registration via `register()`. This is distinct from the registry's `LabelRegistered` event. The registrar emits its own event with pricing information, and the underlying ETHRegistry also emits `LabelRegistered`.
 
-:::note
+<FrenCallout fren="bittu" variant="note">
 Both events fire for the same registration. The registrar event has pricing data; the registry event has the canonical registration data.
-:::
+</FrenCallout>
 
 ### NameRenewed
 
@@ -352,6 +354,27 @@ event NamedAddrResource(uint256 indexed resource, bytes name, uint256 indexed co
 
 **When:** an EAC resource is associated with a specific address coin type for a name, allowing fine-grained permission to modify only a specific address record (e.g., only the ETH address).
 
+## Role Events
+
+### EACRolesChanged
+
+```solidity
+event EACRolesChanged(
+    uint256 indexed resource,
+    address indexed account,
+    uint256 oldRoleBitmap,
+    uint256 newRoleBitmap
+);
+```
+
+**Emitted by:** every contract inheriting [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), which includes **both registries and resolvers**.
+
+**When:** the roles of `account` on `resource` change. On registries this happens via `grantRoles()` / `revokeRoles()` (which also trigger [`TokenRegenerated`](#tokenregenerated)) and once at creation, when the initial root role bitmap is granted to the registry owner (in the `constructor`, or in `initialize()` for proxy-deployed registries). On resolvers it happens via `initialize()` and the `authorize(Name|Text|Addr)Roles()` functions.
+
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+Registries and resolvers use different resource ID spaces: a registry resource is derived from the labelhash and its EAC version counter, while a resolver resource is `keccak256(node, part)`. The same numeric `resource` value can therefore mean different things on different contracts. Always key role state by the emitting contract address together with the resource.
+</FrenCallout>
+
 ## Key Concepts for Indexers
 
 ### Dynamic Contract Discovery
@@ -363,6 +386,10 @@ An indexer cannot know all contract addresses at startup. The core pattern is:
 3. When a `ResolverUpdated` event fires with a new resolver address, add that address to the watch list for resolver events.
 
 This creates a self-expanding set of monitored contracts.
+
+Link-time discovery has a blind spot: anything a registry or resolver emits **before** it is linked (its `RegistryCreated`, the initial `EACRolesChanged` root grant from `initialize()`, or records set before linking) predates the discovery point. Since registries and resolvers are deployed as proxies through the [Verifiable Factory](/contracts/ensv2/verifiable-factory), which emits `ProxyDeployed(sender, proxy, salt, implementation)`, watching the factory address discovers contracts at deployment time instead and closes that gap.
+
+Note the log order inside a deployment transaction: `deployProxy()` calls `initialize()` on the new proxy **before** emitting `ProxyDeployed`. For a UserRegistry deployment the sequence is `Upgraded` → `RegistryCreated` → `EACRolesChanged` → `ProxyDeployed`. An indexer that discovers a contract from `ProxyDeployed` must therefore also process the earlier logs of that same transaction.
 
 ### TokenId vs Resource (Canonical ID)
 
@@ -399,6 +426,8 @@ Aliases are a resolver-level concept, not a registry-level one:
 - When resolving `sub.alias.eth`, the resolver rewrites it to `sub.test.eth` and returns those records
 - The registry hierarchy knows nothing about aliases - they exist only in the resolver's storage
 
+Two consequences for record indexing: record events (`AddressChanged`, `TextChanged`, ...) always fire under the node they were set on, and `setAlias()` emits no record events. During resolution the alias is checked **first**, so it shadows any records stored directly on the source name: once `alias.eth → test.eth` is set, records previously written under `alias.eth` are no longer returned by `resolve()`, even though they remain in storage. Indexed records therefore reflect stored state, not effective resolution; apply alias rewriting before treating them as what a name resolves to.
+
 ### Registration Status
 
 Names can be in one of three states (from `IPermissionedRegistry.Status`):
@@ -410,6 +439,8 @@ Names can be in one of three states (from `IPermissionedRegistry.Status`):
 | `REGISTERED` | 2     | Name is actively registered with an owner                                                        |
 
 After expiry, names return to `AVAILABLE`. Re-registration creates both a new `tokenId` and a new `resource` (both version counters increment).
+
+For `.eth` names, the [ETH Registrar](/contracts/ensv2/eth-registrar) adds a grace period on top of the registry status: `GRACE_PERIOD` is an immutable constructor parameter, and while it runs an expired name cannot be re-registered but can still be renewed. No event marks entering or leaving grace (or the premium window that follows), so `.eth` availability must be computed client-side from the expiry, the grace constant, and the current time. A plain "expired means available" check is wrong for `.eth` names in grace.
 
 ### Event Processing Order
 
@@ -430,19 +461,26 @@ For a direct `IStandardRegistry.register()` call (e.g., on a UserRegistry):
 4. `SubregistryUpdated` - if a subregistry was provided
 5. `ResolverUpdated` - if a resolver was provided
 
+For a name [migrated from ENSv1](/contracts/ensv2/migration), the migration controllers call `register()` on the ETHRegistry directly, so only the registry sequence fires: there is no `CommitmentMade` and no registrar `NameRegistered`, and `LabelRegistered.sender` is the migration controller.
+
 ## Contract Address Summary
 
 | Contract                            | Role                                           | Events to Watch                                                                                                                                                                                                      |
 | ----------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PermissionedRegistry (ETHRegistry)  | Manages `.eth` names                           | All `IRegistry` events, `TokenResource`, ERC1155 transfers                                                                                                                                                           |
+| PermissionedRegistry (ETHRegistry)  | Manages `.eth` names                           | All `IRegistry` events, `TokenResource`, ERC1155 transfers, `EACRolesChanged`                                                                                                                                        |
 | PermissionedRegistry (RootRegistry) | Manages TLDs                                   | Same as above                                                                                                                                                                                                        |
 | UserRegistry                        | Manages subnames (dynamically deployed)        | Same as above                                                                                                                                                                                                        |
 | ETHRegistrar                        | User-facing `.eth` registration                | `CommitmentMade`, `NameRegistered`, `NameRenewed`                                                                                                                                                                    |
-| PermissionedResolver                | Stores resolver records (dynamically deployed) | `AddressChanged`, `TextChanged`, `ContenthashChanged`, `ABIChanged`, `PubkeyChanged`, `NameChanged`, `InterfaceChanged`, `VersionChanged`, `AliasChanged`, `NamedResource`, `NamedTextResource`, `NamedAddrResource` |
+| PermissionedResolver                | Stores resolver records (dynamically deployed) | `AddressChanged`, `TextChanged`, `ContenthashChanged`, `ABIChanged`, `PubkeyChanged`, `NameChanged`, `InterfaceChanged`, `VersionChanged`, `AliasChanged`, `NamedResource`, `NamedTextResource`, `NamedAddrResource`, `EACRolesChanged` |
+| VerifiableFactory                   | Deploys registry/resolver proxies              | `ProxyDeployed`                                                                                                                                                                                                      |
 
 ## Read Functions for State Verification
 
 These view functions are useful for verifying indexed state or backfilling data:
+
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+Several of these views mask state once a name is expired (`block.timestamp >= expiry`): `getOwner()`, `getSubregistry()`, and `getResolver()` return zero, `ownerOf()` returns zero for expired or stale token IDs, and `getResource()` (and `getState().resource`) return the *next* resource, one version ahead of what `TokenResource` announced, without any storage write or event. A mismatch between indexed state and these functions for an expired name is expected behavior, not an indexing bug. `getExpiry()` and `getTokenId()` return raw, unmasked values.
+</FrenCallout>
 
 ### Registry State
 
@@ -458,6 +496,9 @@ function getResolver(string calldata label) external view returns (address);
 
 // Get the owner of a token
 function ownerOf(uint256 tokenId) external view returns (address);
+
+// Get the owner of a name by any of its IDs
+function getOwner(uint256 anyId) external view returns (address);
 
 // Get the stable resource ID
 function getResource(uint256 anyId) external view returns (uint256);
