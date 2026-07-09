@@ -1,0 +1,108 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.51] SPP3: Cohort Recommendation
+
+::authors
+
+:::note
+This was originally published as EP 6.49
+:::
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/22237)                                                                                                                                                                                                                                  |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/30153206728472299340257495645753485226870528642942223493225654414745632348879), [Anticapture](https://app.anticapture.com/ens/governance/proposal/30153206728472299340257495645753485226870528642942223493225654414745632348879) |
+
+## Summary
+
+The committee recommends a four-provider SPP3 cohort totaling $1,690,000 of the \~$3.25M available under the ratified budget. The remaining is not allocated by this proposal.
+
+The committee received 26 applications requesting a combined $12.2M. Each qualifying application was evaluated by every member unless recused, and a structured interview was conducted with each qualifying team.
+
+One application was disqualified at the eligibility gate, the remaining 25 were scored against the published rubric. Five were initially selected with one (EthID) declining the offer
+
+This proposal names the final four selected providers, states the rationale for each, publishes the committee's assessment, and explains in aggregate why the other applicants were not funded.
+
+Per the ratified proposal, this recommendation will be submitted as an on-chain executable. If this proposal passes, streams will begin in accordance with the Award Notices pending the selected providers pass the KYC checkpoint.
+
+### Cohort Scores
+
+| Provider   | Category | Award          | Application                                                                                                                 |
+| ---------- | -------- | -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Namespace  | 1, 2     | $500,000       | [Link](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeiee73y2jwinefaszeng3frn47wmqini562qtcibzgnh42cnqiu2la) |
+| Goldsky    | 1        | $450,000       | [Link](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeidblcll7pt7s4jzlte6khv7twiqnckdoalanj2aoemd27afefhyou) |
+| Unruggable | 1, 2     | $400,000       | [Link](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeiedajocrvgfnj3y6ec2mrqyt62d46uiyfb6xyqraxyyosvto5tmyq) |
+| Fluidkey   | 1, 2     | $340,000       | [Link](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafkreiaplckhk72bu3wuxofgkbdoky7jb3o24kk7olbb6urfaquz2os4sm) |
+| **Total**  |          | **$1,690,000** |                                                                                                                             |
+
+\*sovereignsignal.eth recused from the Namespace evaluation and vote under the program's conflict of interest rules.
+
+## The Cohort
+
+The initial cohort presented included five selectees. The application from EthID was withdrawn. The remaining four will continue unaffected.
+
+#### Namespace: $500,000 ([Application](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeiee73y2jwinefaszeng3frn47wmqini562qtcibzgnh42cnqiu2la))
+
+Namespace is a third-cycle provider and one of the ecosystem's primary subname infrastructure teams: SDKs, APIs, CCIP gateways, and custom deployments including Celo, Filecoin, and Rootstock. Their SPP2 subname issuance exceeded target by more than an order of magnitude, though the committee notes that figure is concentrated in a small number of large deployments. The SPP3 scope covers the ENSv2 migration of their onchain subname stack, continued maintenance of existing tooling, and business development. The award reflects the counterfactual: no comparable subname infrastructure exists at this scale, and the ENSv2 transition makes that infrastructure work time-critical. Key milestones depend on ENSv2 shipping to mainnet; the committee has accounted for this in the negotiated milestone structure.
+
+\*sovereignsignal.eth recused from the Namespace evaluation and vote under the program's conflict of interest rules.
+
+#### Goldsky: $450,000 ([Application](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeidblcll7pt7s4jzlte6khv7twiqnckdoalanj2aoemd27afefhyou))
+
+Goldsky, with eRPC, is funded to operate ENS indexing as a dedicated public service. The award reflects the expanded scope presented as Option B in their application, which the team confirmed at the committee's request before selection. Indexing is a shared dependency consumed across the ecosystem, and it has previously been funded as one component inside larger provider scopes. The committee's judgment is that a dependency of this weight is best held as a standalone mandate: one accountable owner, priced on its own merits, and decoupled from any broader award. Goldsky is new to the SPP and was evaluated accordingly. The team operates production indexing infrastructure across the EVM ecosystem at scale, and selection was conditioned on their explicit commitment to the full scope.
+
+#### Unruggable: $400,000 ([Application](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafybeiedajocrvgfnj3y6ec2mrqyt62d46uiyfb6xyqraxyyosvto5tmyq))
+
+Unruggable is a returning SPP2 provider whose gateway infrastructure powers cross-chain resolution in production, including base.eth and ENSIP-19 reverse resolution. The SPP3 scope continues gateway operation and extends into developer tooling and interoperability R\&D. The committee funded the full ask on the strength of shipped, verifiable protocol infrastructure that ENS depends on today, and a delivery record with no abandoned commitments.
+
+#### Fluidkey: $340,000 ([Application](https://bronze-accused-porpoise-217.mypinata.cloud/ipfs/bafkreiaplckhk72bu3wuxofgkbdoky7jb3o24kk7olbb6urfaquz2os4sm))
+
+Fluidkey is funded to build privacy-preserving ENS infrastructure: an ENSIP, wallet-agnostic contracts, and a resolver kit designed to be maintained independently of Fluidkey's own product. This is the smallest award in the cohort and the committee treats it as a deliberate position on an underdeveloped capability. The proposal cleanly separates the public-goods layer from the company's commercial product, budgets an audit, and self-funds its own reference integration. The registration upside is less proven than elsewhere in the cohort; the cost is priced accordingly.
+
+### Committee Assessment
+
+Scores are the mean of individual Member scores against the published rubric. Weights: Prior Delivery 25%, Scope Clarity 15%, Milestone Structure 15%, Adoption/Revenue/Utility 40%. The 5% discretionary component is excluded from the weighted figure, which is therefore out of 4.75. The Chair scored every application independently but Chair scores enter the mean only in the case of Namespace which saw a recusal, noted below. Individual scoring records remain internal working documents, available to the accountability body or ENS Foundation on request per the ratified proposal.
+
+| Provider   | C1 Prior Delivery | C2 Scope Clarity | C3 Milestones | C4 Adoption/Revenue | Weighted |
+| ---------- | ----------------- | ---------------- | ------------- | ------------------- | -------- |
+| Namespace  | 4.1               | 3.4              | 3.3           | 3.5                 | 3.43     |
+| Goldsky    | 4.0               | 3.8              | 3.4           | 3.3                 | 3.37     |
+| Unruggable | 4.5               | 3.4              | 3.1           | 3.0                 | 3.30     |
+| Fluidkey   | 4.0               | 4.0              | 3.8           | 2.4                 | 3.11     |
+
+\*sovereignsignal.eth recused from the Namespace evaluation under the conflict of interest rules. The Chair's independent scores stand in for the recused seat on this row, keeping four scoring inputs.
+
+### Why Applications Were Not Funded
+
+This section removed to fit character limit. See full post [here](https://discuss.ens.domains/t/draft-spp3-cohort-recommendation/22237).
+
+### Process
+
+This section removed to fit character limit. See full post [here](https://discuss.ens.domains/t/draft-spp3-cohort-recommendation/22237).
+
+### Next Steps
+
+1. Award Notices have been issued to each selected provider for review; they will be finalized by the ENS Foundation
+2. The executable proposal is scheduled for posting on Wednesday, July 8th.
+3. Streams will turn on after successful completion of KYC and signing of Award Notices by both the selected providers and the Foundation.
+
+## Specification
+
+The attached payload includes five transactions that facilitate the provider and committee streams, and four transactions to pay the committee as defined in [\[6.42\] \[Social\] SPP3: Program Authorization and Committee Model](https://discuss.ens.domains/t/6-42-social-spp3-program-authorization-and-committee-model/22086#p-61193-term-and-payment-12). Source: [Github](https://github.com/blockful/dao-proposals/pull/93/changes#diff-abce5ec202f8620398bdf4ede6d54defa3acbee46708fd9b8fcc83e57d9e2e3e).
+
+Nine transactions, all run by the timelock:
+
+1. `USDC.approve(USDCx, 517,500e6)` - lets the USDCx contract pull the USDC we are about to wrap.
+2. `USDCx.upgrade(517,500e18)` - wrap it. 517,500 is one month of the stream ($267,500) plus the pod margin ($250,000).
+3. `USDCx.transfer(pod, 250,000e18)` - send the margin to the pod. It carries the pod through the overlap until the switch.
+4. `CFAv1Forwarder.setFlowrate(USDCx, pod, 101720934415475068)` - set the master stream to $3.21M/yr.
+5. `USDC.approve(autowrapper, 4,547,500e6)` - refresh the autowrap allowance (\~17 months, the ratio SPP2 used).
+6. `USDC.transfer(coltron)` - committee chair 9k USDC
+7. `USDC.transfer(sovereignsignal)` - committee member 7k USDC.
+8. `USDC.transfer(austingriffith)` - committee member 7k USDC.
+9. `USDC.transfer(abdullah)` - committee member 7k USDC.
