@@ -14,7 +14,13 @@ const config = createConfig({
   },
 })
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
