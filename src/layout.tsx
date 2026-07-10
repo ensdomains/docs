@@ -8,11 +8,19 @@ import ChefAI from './components/ChefAI'
 const config = createConfig({
   chains: [mainnet],
   transports: {
-    [mainnet.id]: http('https://ethereum-rpc.publicnode.com'),
+    [mainnet.id]: http('https://ethereum-rpc.publicnode.com', {
+      batch: true,
+    }),
   },
 })
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
