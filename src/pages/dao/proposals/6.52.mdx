@@ -1,0 +1,33 @@
+---
+authors:
+  - nick.eth
+proposal:
+  type: 'executable'
+---
+
+# [EP 6.52] [Executable] Establishing a new Security Council
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                                                                                                                                                                                       |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/77767899528494238518019756391533686963875234067646094287125791110488147463806), [Anticapture](https://app.anticapture.com/ens/governance/proposal/77767899528494238518019756391533686963875234067646094287125791110488147463806) |
+
+## Abstract
+
+This proposal establishes the new ENS Security Council based on the results of EP 6.50 “Election of the New ENS DAO Security Council”. The term will last two years, until 16 July 2028.
+
+## Motivation
+
+The Security Council was originally established in EP 5.13 as a 4-of-8 multisig with a single power: to cancel malicious proposals made to ENS DAO. It cannot propose, amend, or initiate any governance action. Its term was two years, ending 24 July 2026.
+
+The purpose of this proposal is to establish a new Security Council that will inherit the same responsibilities for the coming two years.
+
+## Specification
+
+A single call to the DAO’s TimelockController, granting `PROPOSER_ROLE` to Blockful’s Security Council contract, which is owned by a multisig with the Security Council members elected in EP 6.50.
+
+The Security Council contract has been deployed to `0x2acBf518b3759f6e1fA163294eda55bF1d0ae051`, and the multisig to `0x7101B78638e34444F0a5AdE9e1149fbEeC029931`.
+
+After two years, any address may call `renounceTimelockRoleByExpiration()` to revoke its cancel power unless `extend()` is called first by a separate DAO proposal.
