@@ -65,33 +65,29 @@ There are three main types of governance proposals you can make:
 
 The purpose of the Temperature Check is to determine if there is sufficient will to make changes to the status quo.
 
-To create a Temperature Check, ask a general, non-biased question to the community on [discuss.ens.domains](https://discuss.ens.domains) about a potential change (example: “Should ENS decrease registration costs for 3-letter domains?”). Forum posts should be in the "DAO-wide -> Temperature Check" category.
+To create a Temperature Check, ask a general, non-biased question to the community on [discuss.ens.domains](https://discuss.ens.domains) about a potential change (example: “Should ENS decrease registration costs for 3-letter domains?”). Forum posts should be in the "DAO-wide -> Temperature Check" category and titled with a `[Temp Check]` prefix (see [Titles and Proposal Numbers](/dao/proposals/submit#titles-and-proposal-numbers)).
 
 Temperature checks are informal and optional; it's up to you to use the feedback to decide if you want to proceed further with your proposal.
 
-### **Phase 2: Draft Proposal — GitHub**
+### **Phase 2: Draft Proposal — Discourse**
 
 The purpose of the Draft Proposal is to establish formal discussion around a potential proposal.
 
-To create a Draft Proposal, [create a new governance proposal](https://github.com/ensdomains/governance-docs/new/main/governance-proposals) in the governance-docs repository on GitHub. Start by copying the template for an [executable proposal](executable-proposal-template.md), [social proposal](social-proposal-template.md), or [constitutional amendment](constitutional-amendment-template.md), as appropriate. Once you have written your proposal, create a Draft Pull Request for it. Start a new post in the DAO-wide -> Draft Proposals" category with a link to the PR for discussion.
+To create a Draft Proposal, start by copying the template for an [executable proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/executable-proposal-template.md), [social proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/social-proposal-template.md), or [constitutional amendment](https://github.com/ensdomains/docs/tree/master/src/public/governance/constitutional-amendment-template.md), as appropriate. Once you have written your proposal, post it in the "DAO-wide -> Draft Proposals" category on [discuss.ens.domains](https://discuss.ens.domains). While the proposal remains a draft, keep the `[Temp Check]` prefix on the forum post title.
 
-Reach out to your network to build support for the proposal. Discuss the proposal and solicit delegates to provide feedback on it. Be willing to respond to questions on the Draft Proposal topic and in comments on the pull request. Share your viewpoint, although try to remain as impartial as possible.
+Reach out to your network to build support for the proposal. Discuss the proposal and solicit delegates to provide feedback on it. Be willing to respond to questions on the Draft Proposal topic. Share your viewpoint, although try to remain as impartial as possible.
 
 If your proposal is an executable proposal, you will need to specify the actions your proposal will take while it is in draft stage. You may wish to wait until the proposal is stable before doing this. The executable proposal template explains how to do this.
 
-If your proposal is a constitutional amendment, you will need to produce a diff showing the exact changes you are proposing to make. The easiest way to do this is to go to the [constitution](/dao/constitution), click "Edit on GitHub", then click the pencil icon to edit the document in a fork. You can then create a pull request via the GitHub UI and include this in your proposal. You should do this in a separate branch to your draft proposal; while the proposal will be merged as soon as it goes to a vote, the amendment will only be merged if the proposal passes.
+If your proposal is a constitutional amendment, you will need to produce a diff showing the exact changes you are proposing to make to the [constitution](/dao/constitution), and include it in your proposal.
 
 Once you are confident the proposal is in a stable state, you can proceed to phase 3.
 
 ### **Phase 3: Active Proposal — Snapshot / Governance Portal**
 
-Use GitHub to flag your PR as Ready for Review. A contributor will:
+Once discussion has settled, the proposal can be posted for a vote. Remember to title the vote with the plain proposal title — no `[Temp Check]` prefix, no EP number, and no type tag. The canonical EP number is assigned automatically once the vote is posted, as described in [Titles and Proposal Numbers](/dao/proposals/submit#titles-and-proposal-numbers).
 
-1. Merge your PR if it meets the requirements.
-2. Assign your proposal a proposal number in the form EP###.
-3. Schedule the proposal for a snapshot vote.
-
-If your proposal is a Social Proposal or a Constitutional Amendment, that's it! If the snapshot vote passes, the proposal is passed and you are done.
+If your proposal is a Social Proposal or a Constitutional Amendment, it is posted to [Snapshot](https://vote.ensdao.org) for an offchain vote. That's it! If the snapshot vote passes, the proposal is passed and you are done.
 
 If your proposal is an Executable Proposal, you will now need to submit it to the governor contract for voting onchain.
 
