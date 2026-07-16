@@ -25,15 +25,22 @@ const TYPE_TAG_PATTERN =
 
 const TEMP_CHECK_PATTERN = /\[\s*temp\s*check\s*\]/i
 
-function parseHeadings(markdown: string): Heading[] {
+type ParsedDocument = {
+  headings: Heading[]
+  // Lines that consist entirely of bold text, likely intended as headings
+  boldHeadings: Array<{ text: string; line: number }>
+}
+
+function parseDocument(markdown: string): ParsedDocument {
   const headings: Heading[] = []
+  const boldHeadings: ParsedDocument['boldHeadings'] = []
   const lines = markdown.split('\n')
   let codeFence: string | null = null
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
 
-    // Skip headings inside fenced code blocks
+    // Skip content inside fenced code blocks
     const fenceMatch = line.match(/^\s{0,3}(`{3,}|~{3,})/)
     if (fenceMatch) {
       if (!codeFence) codeFence = fenceMatch[1][0]
@@ -49,10 +56,16 @@ function parseHeadings(markdown: string): Heading[] {
         text: headingMatch[2].trim(),
         line: i + 1,
       })
+      continue
+    }
+
+    const boldMatch = line.match(/^\s{0,3}(\*\*|__)(.+?)\1\s*$/)
+    if (boldMatch && !/\*\*|__/.test(boldMatch[2])) {
+      boldHeadings.push({ text: boldMatch[2].trim(), line: i + 1 })
     }
   }
 
-  return headings
+  return { headings, boldHeadings }
 }
 
 // Pasting from some tools produces literal "\n" sequences instead of real
@@ -69,7 +82,7 @@ export function beautify(markdown: string): string {
 
 export function validate(markdown: string): Finding[] {
   const findings: Finding[] = []
-  const headings = parseHeadings(markdown)
+  const { headings, boldHeadings } = parseDocument(markdown)
   const h1s = headings.filter((h) => h.level === 1)
 
   // A proposal needs headings, but zero H1s is fine: Snapshot and the forum
@@ -148,6 +161,15 @@ export function validate(markdown: string): Finding[] {
         line: curr.line,
       })
     }
+  }
+
+  // Bold text on its own line is usually a heading in disguise
+  for (const bold of boldHeadings) {
+    findings.push({
+      level: 'warning',
+      message: `Bold text used as a heading ("${bold.text}"). Use a markdown heading (\`##\`) instead — bold is for emphasis, not structure.`,
+      line: bold.line,
+    })
   }
 
   // Expected sections
