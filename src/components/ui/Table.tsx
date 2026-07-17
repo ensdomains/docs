@@ -7,27 +7,25 @@ type Props = {
 
 export function Table({ columns, rows }: Props) {
   return (
-    <table className="Vocs_Table">
-      <thead>
-        <tr className="vocs_TableRow">
-          {columns.map((column) => (
-            <th className="vocs_TableHeader" key={column}>
-              {column}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, rowIndex) => (
-          <tr key={rowIndex} className="vocs_TableRow">
-            {row.map((cell, index) => (
-              <td className="vocs_TableCell" key={index}>
-                {cell}
-              </td>
+    <div className="overflow-x-auto">
+      <table data-v data-ens-table>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th key={column}>{column}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, index) => (
+                <td key={index}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

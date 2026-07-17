@@ -96,6 +96,30 @@ article[data-v-content]:has(> [data-ens-home]) {
   padding: 0;
 }
 
+/* Preserve the compact Vocs v1 grid style used by custom tables in cards. */
+table[data-ens-table] {
+  width: auto;
+  line-height: 1.75rem;
+}
+
+table[data-ens-table] :is(th, td) {
+  border: 1px solid var(--vocs-border-color-primary);
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+}
+
+table[data-ens-table] th {
+  color: color-mix(in srgb, var(--vocs-text-color-heading) 70%, transparent);
+  background: var(--vocs-background-color-surfaceMuted);
+  font-weight: 400;
+}
+
+table[data-ens-table] td,
+table[data-ens-table] td:first-child {
+  color: var(--vocs-text-color-primary);
+  font-weight: 300;
+}
+
 :root[data-vocs-theme='dark'] {
   --ens-blue-active: #eef5ff;
   --ens-blue-dim: #d1e4ff;
