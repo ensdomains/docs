@@ -28,9 +28,9 @@ export default defineConfig({
   // Vocs v2 validates links more strictly than v1. Keep reporting the
   // existing generated/legacy links without making production builds fail.
   checkDeadlinks: 'warn',
-  // Workers Static Assets serves the generated site, while worker/index.ts
-  // handles the existing API endpoints.
-  renderStrategy: 'full-static',
+  // Pre-render documentation pages while keeping Vocs-native API routes in
+  // the Waku server bundle deployed to Cloudflare Workers.
+  renderStrategy: 'partial-static',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,

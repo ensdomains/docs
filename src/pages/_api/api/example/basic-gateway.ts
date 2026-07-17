@@ -10,7 +10,7 @@ router.add({
   },
 })
 
-export async function onRequestPost({ request }: { request: Request }) {
+export async function POST(request: Request) {
   const body = (await request.json()) as Parameters<typeof router.call>[0]
   const { body: ccipReadRes } = await router.call(body)
   const response = Response.json(ccipReadRes)
@@ -18,4 +18,15 @@ export async function onRequestPost({ request }: { request: Request }) {
   response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type')
   return response
+}
+
+export function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  })
 }

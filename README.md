@@ -4,7 +4,9 @@ This repository contains the source code for [docs.ens.domains](https://docs.ens
 
 Some content is generated at build time from external sources, such as [ENSIPs](https://github.com/ensdomains/ensips) and [smart contract deployments](https://github.com/ensdomains/ens-contracts). This logic can be found in the `scripts/` directory.
 
-A Cloudflare Worker handles the API routes used to dynamically generate opengraph images and proxy analytics requests. The generated documentation is served directly by Workers Static Assets.
+A Cloudflare Worker runs Vocs' Waku server for native API routes, including opengraph images and analytics proxying. Documentation pages are pre-rendered and served directly by Workers Static Assets.
+
+The Vocs/Waku runtime is larger than the 3 MiB compressed Worker limit on Cloudflare's free plan, so production deployment requires a paid Workers plan. `bun run deploy` builds the site and deploys the generated Worker.
 
 ## 📖 Contributing
 

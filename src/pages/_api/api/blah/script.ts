@@ -3,6 +3,6 @@
 
 const script = 'https://plausible.io/js/script.outbound-links.tagged-events.js'
 
-export function onRequestGet() {
+export function GET() {
   return fetch(script)
 }

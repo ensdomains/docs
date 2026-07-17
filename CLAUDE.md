@@ -37,7 +37,7 @@ bun run generate
 bunx prettier --write .
 ```
 
-**Requirements:** Bun 1.2.8+, Node 22+
+**Requirements:** Bun 1.2.8+, Node 22+, and a paid Cloudflare Workers plan for deployment
 
 ## Architecture
 
@@ -61,8 +61,8 @@ Generated files go to `src/data/generated/` and `src/pages/ensip/`. These are ca
 
 - **`vocs.config.ts`**: Main Vocs config with sidebar structure, theme, and edit links
 - **`public/`**: Static assets plus Cloudflare `_headers` and `_redirects`
-- **`worker/index.ts`**: Cloudflare Worker entrypoint and API router
-- **`functions/api/`**: API handlers for OG image generation, the CCIP-Read example, and analytics proxying
+- **`src/waku.server.tsx`**: Vocs/Waku server entrypoint using the Cloudflare adapter
+- **`src/pages/_api/`**: Vocs-native API routes for OG image generation, the CCIP-Read example, and analytics proxying
 
 ### Code Style
 
