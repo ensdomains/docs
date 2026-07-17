@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo, useState } from 'react'
 import { isHex, keccak256, namehash, toHex } from 'viem'
 import { normalize, packetToBytes } from 'viem/ens'

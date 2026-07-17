@@ -28,15 +28,7 @@ export function A({
   className,
   ...props
 }: PropsWithChildren<React.AnchorHTMLAttributes<HTMLAnchorElement>>) {
-  return (
-    <a
-      className={cn(
-        'vocs_Anchor vocs_Link vocs_Link_accent_underlined',
-        className
-      )}
-      {...props}
-    />
-  )
+  return <a data-v-link className={className} {...props} />
 }
 
 export function UL({

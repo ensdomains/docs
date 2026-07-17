@@ -1,3 +1,5 @@
+'use client'
+
 // This is not currently being used
 import { FC, useState } from 'react'
 import { useDebounce } from 'use-debounce'

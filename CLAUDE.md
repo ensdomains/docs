@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the official ENS documentation site ([docs.ens.domains](https://docs.ens.domains)), built with [Vocs](https://vocs.dev/) and deployed to Cloudflare Pages.
+This is the official ENS documentation site ([docs.ens.domains](https://docs.ens.domains)), built with [Vocs](https://vocs.dev/) and deployed to Cloudflare Workers with Static Assets.
 
 ## Commands
 
@@ -21,6 +21,15 @@ bun run build
 # Preview production build
 bun run preview
 
+# Preview the complete Worker and static-assets deployment
+bun run worker:dev
+
+# Regenerate Cloudflare binding and runtime types
+bun run worker:types
+
+# Build and deploy to Cloudflare Workers
+bun run deploy
+
 # Regenerate external content only
 bun run generate
 
@@ -28,7 +37,7 @@ bun run generate
 bunx prettier --write .
 ```
 
-**Requirements:** Bun 1.2.8+, Node 22+
+**Requirements:** Bun 1.2.8+, Node 22+, and a paid Cloudflare Workers plan for deployment
 
 ## Architecture
 
@@ -50,8 +59,10 @@ Generated files go to `src/data/generated/` and `src/pages/ensip/`. These are ca
 
 ### Configuration
 
-- **`vocs.config.tsx`**: Main Vocs config with sidebar structure, theme, and edit links
-- **`functions/api/`**: Cloudflare Pages Functions for OG image generation and analytics proxy
+- **`vocs.config.ts`**: Main Vocs config with sidebar structure, theme, and edit links
+- **`public/`**: Static assets plus Cloudflare `_headers` and `_redirects`
+- **`src/waku.server.tsx`**: Vocs/Waku server entrypoint using the Cloudflare adapter
+- **`src/pages/_api/`**: Vocs-native API routes for OG image generation, the CCIP-Read example, and analytics proxying
 
 ### Code Style
 

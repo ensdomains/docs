@@ -1,5 +1,5 @@
 import { remarkMermaid } from '@theguild/remark-mermaid'
-import { defineConfig } from 'vocs'
+import { defineConfig } from 'vocs/config'
 
 import { remarkIpfsGateway } from './src/lib/remark-ipfs-gateway'
 
@@ -15,31 +15,32 @@ try {
   )
 } catch {}
 
-// Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround
-const isProd = process.env.CF_PAGES_BRANCH === 'master'
+// Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround.
+// Keep the Pages variables as a fallback while the deployment is being migrated.
+const deployBranch =
+  process.env.WORKERS_CI_BRANCH ?? process.env.CF_PAGES_BRANCH
+const isProd = deployBranch === 'master'
 const baseUrl = isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL
 
 export default defineConfig({
   title: 'ENS Documentation',
   titleTemplate: '%s | ENS Docs',
-  rootDir: 'src',
+  // Vocs v2 validates links more strictly than v1. Keep reporting the
+  // existing generated/legacy links without making production builds fail.
+  checkDeadlinks: 'warn',
+  // Pre-render documentation pages while keeping Vocs-native API routes in
+  // the Waku server bundle deployed to Cloudflare Workers.
+  renderStrategy: 'partial-static',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
-  ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
+  ogImageUrl: baseUrl ? `${baseUrl}/api/og?title=%title` : undefined,
   banner: {
-    content: (
-      <p>
-        Hacking on Sepolia?{' '}
-        <a href="https://pr-543.docs-bao.pages.dev/contracts/ensv2/overview/">
-          Read the ENSv2 docs preview
-        </a>
-        .
-      </p>
-    ),
+    content:
+      'Hacking on Sepolia? [Read the ENSv2 docs preview](https://pr-543.docs-bao.pages.dev/contracts/ensv2/overview/).',
   },
   editLink: {
-    pattern: ({ filePath }) => {
+    link: (filePath) => {
       if (filePath?.startsWith('ensip/')) {
         const ensipNumber = filePath?.split('/')[1].split('.')[0] // ensip/5.mdx -> 5
         return `https://github.com/ensdomains/ensips/edit/master/ensips/${ensipNumber}.md`
@@ -59,51 +60,24 @@ export default defineConfig({
       link: 'https://t.me/+aLmF83si62ZhOGNh',
     },
   ],
-  font: {
-    google: 'Inter',
-  },
-  theme: {
-    variables: {
-      color: {
-        background: {
-          light: 'var(--ens-background)',
-          dark: 'var(--ens-background)',
-        },
-        text: {
-          light: 'var(--ens-text)',
-          dark: 'var(--ens-text)',
-        },
-        textAccent: {
-          light: 'var(--ens-blue-primary)',
-          dark: 'var(--ens-blue-primary)',
-        },
-        borderAccent: {
-          light: 'var(--ens-blue-primary)',
-          dark: 'var(--ens-blue-bright)',
-        },
-      },
-    },
-  },
+  accentColor: '#3889ff',
   markdown: {
     remarkPlugins: [remarkMermaid, remarkIpfsGateway],
   },
-  head() {
+  head: {
     // Plausible Analytics behind a proxy
-    return (
-      <>
-        <script
-          defer
-          data-domain="docs.ens"
-          data-api="/api/blah/event"
-          src="/api/blah/script"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
-          }}
-        ></script>
-      </>
-    )
+    script: [
+      {
+        defer: true,
+        'data-domain': 'docs.ens',
+        'data-api': '/api/blah/event',
+        src: '/api/blah/script',
+      },
+      {
+        textContent:
+          'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }',
+      },
+    ],
   },
   sidebar: [
     {

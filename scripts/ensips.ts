@@ -2,7 +2,10 @@ import fs from 'fs/promises'
 import matter from 'gray-matter'
 import { Tokens, marked } from 'marked'
 import path from 'path'
-import { SidebarItem } from 'vocs'
+import type { Config } from 'vocs/config'
+
+type Sidebar = Extract<NonNullable<Config['sidebar']>, readonly unknown[]>
+type SidebarItem = Sidebar[number]
 
 type DirectoryContents = {
   name: string

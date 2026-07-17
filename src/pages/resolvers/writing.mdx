@@ -136,6 +136,6 @@ contract OffchainResolver {
 This is not secure since it doesn't implement any form of verification in the callback function, and is only suitable for demonstration purposes.
 :::
 
-Any ENS name that sets its resolver to this contract would resolve to whatever address the Gateway returns, which can be changed at any time offchain for free. See the [gateway code here](https://github.com/ensdomains/docs/blob/master/functions/api/example/basic-gateway.ts).
+Any ENS name that sets its resolver to this contract would resolve to whatever address the Gateway returns, which can be changed at any time offchain for free. See the [gateway code here](https://github.com/ensdomains/docs/blob/master/src/pages/_api/api/example/basic-gateway.ts).
 
 For the same functionality to work with subnames, you'd need to implement the `resolve()` method from ENSIP-10. A feature-complete example can be found [here](https://github.com/ensdomains/ccip-tools/blob/master/contracts/OffchainResolver.sol), and easily deployed via https://ccip-tools.pages.dev.

@@ -1,10 +1,12 @@
 # ENS Documentation
 
-This repository contains the source code for [docs.ens.domains](https://docs.ens.domains/?ref=ens-docs-github), as well as the markdown files that make up its contents. It's built with [Vocs](https://vocs.dev/) and deployed to [Cloudflare Pages](https://pages.cloudflare.com/).
+This repository contains the source code for [docs.ens.domains](https://docs.ens.domains/?ref=ens-docs-github), as well as the markdown files that make up its contents. It's built with [Vocs](https://vocs.dev/) and deployed to [Cloudflare Workers](https://workers.cloudflare.com/) with Static Assets.
 
 Some content is generated at build time from external sources, such as [ENSIPs](https://github.com/ensdomains/ensips) and [smart contract deployments](https://github.com/ensdomains/ens-contracts). This logic can be found in the `scripts/` directory.
 
-Cloudflare [Pages Functions](https://developers.cloudflare.com/pages/functions/) are used to dynamically generate opengraph images for each page.
+A Cloudflare Worker runs Vocs' Waku server for native API routes, including opengraph images and analytics proxying. Documentation pages are pre-rendered and served directly by Workers Static Assets.
+
+The Vocs/Waku runtime is larger than the 3 MiB compressed Worker limit on Cloudflare's free plan, so production deployment requires a paid Workers plan. `bun run deploy` builds the site and deploys the generated Worker.
 
 ## 📖 Contributing
 
