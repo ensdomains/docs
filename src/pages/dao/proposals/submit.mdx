@@ -1,52 +1,100 @@
-# Process of Submitting a Proposal
+import { ProposalValidator } from '../../../components/ProposalValidator'
 
-## Passing a Proposal
+# Submitting a Proposal
 
-### Types of Proposal
+## Types of Proposal
 
-There are three main types of governance proposals you can make:
+There are three types of governance proposal:
 
-1. **[Executable Proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/executable-proposal-template.md):** This is a proposal for a series of smart contract operations to be executed by accounts the DAO controls. These can include transfers of tokens as well as arbitrary smart contract calls. Examples of this include allocating funding to a workstream multisig wallet, or upgrading an ENS core contract. Executable proposals have a quorum requirement of 1% and require a minimum approval of 50% to pass.
-2. **[Social Proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/social-proposal-template.md)**: This is a proposal that asks for the agreement of the DAO on something that cannot be enforced onchain. Examples of this include a proposal to change the royalty percentage for the ENS secondary market on OpenSea, or a petition to the root keyholders. Social proposals have a quorum requirement of 1% and require a minimum approval of 50% to pass.
-3. **[Constitutional Amendment](https://github.com/ensdomains/docs/tree/master/src/public/governance/constitutional-amendment-template.md)**: This is a social proposal that asks the DAO to amend the constitution. Your draft proposal should include a [diff](https://en.wikipedia.org/wiki/Diff) showing the exact changes you propose to make to the constitution. Rules for amending the constitution are set in the constitution itself, and currently require a quorum of 1% and a minimum approval of two thirds to pass.
+1. **[Executable Proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/executable-proposal-template.md)**: A series of smart contract operations to be executed by accounts the DAO controls — token transfers or arbitrary contract calls, such as funding a working group multisig or upgrading a core ENS contract. Requires a 1% quorum and 50% approval to pass.
+2. **[Social Proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/social-proposal-template.md)**: Asks for the DAO's agreement on something that can't be enforced onchain, such as changing the royalty percentage for the ENS secondary market on OpenSea, or a petition to the root keyholders. Requires a 1% quorum and 50% approval to pass.
+3. **[Constitutional Amendment](https://github.com/ensdomains/docs/tree/master/src/public/governance/constitutional-amendment-template.md)**: A social proposal that amends the [constitution](/dao/constitution). Rules for amending the constitution are set in the constitution itself — currently a 1% quorum and two-thirds approval.
 
-### **Phase 1: Temperature Check — Discourse**
+## Titles and Proposal Numbers
 
-The purpose of the Temperature Check is to determine if there is sufficient will to make changes to the status quo.
+A proposal's title should contain **only the title itself** — no EP number and no type tag like `[Executable]` or `[Social]`.
 
-To create a Temperature Check, ask a general, non-biased question to the community on [discuss.ens.domains](https://discuss.ens.domains) about a potential change (example: "Should ENS decrease registration costs for 3-letter domains?"). Forum posts should be in the "DAO-wide -> Temperature Check" category.
+Since the DAO's second working group term, most proposals have self-assigned an EP ("ENS Proposal") number and type tag in the title (e.g. "[7.1] [Social] SPP3: Marketplace RFP"). Because titles are free text, this broke down in practice: unrelated proposals have used duplicate numbers, some funding proposals were split into sub-numbers like 6.6.1 while others weren't, and formatting varies from title to title.
 
-Temperature checks are informal and optional; it's up to you to use the feedback to decide if you want to proceed further with your proposal.
+Neither piece of metadata belongs in the title, because both can be derived objectively:
 
-### **Phase 2: Draft Proposal — GitHub**
+- **The EP number** is assigned automatically when the proposal is posted for a vote (see below).
+- **The type** is inferred from where the vote takes place: the [governor contract](https://etherscan.io/address/0x323a76393544d5ecca80cd6ef2a560c6a395b7e3) means Executable, Snapshot means Social.
 
-The purpose of the Draft Proposal is to establish formal discussion around a potential proposal.
+The one exception is a temp check prefix while the proposal is still a draft on the forum:
 
-To create a Draft Proposal, [create a new governance proposal](https://github.com/ensdomains/governance-docs/new/main/governance-proposals) in the governance-docs repository on GitHub. Start by copying the template for an [executable proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/executable-proposal-template.md), [social proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/social-proposal-template.md), or [constitutional amendment](https://github.com/ensdomains/docs/tree/master/src/public/governance/constitutional-amendment-template.md), as appropriate. Once you have written your proposal, create a Draft Pull Request for it. Start a new post in the DAO-wide -> Draft Proposals" category with a link to the PR for discussion.
+- When first sharing a draft on the forum, prepend `[Temp Check]` and a space to the title: "[Temp Check] Do Something Cool".
+- When posting to Snapshot or the governor contract, use the plain title: "Do Something Cool". Ideally, remove the prefix from the forum topic at this point too.
 
-Reach out to your network to build support for the proposal. Discuss the proposal and solicit delegates to provide feedback on it. Be willing to respond to questions on the Draft Proposal topic and in comments on the pull request. Share your viewpoint, although try to remain as impartial as possible.
+### How EP numbers are assigned
 
-If your proposal is an executable proposal, you will need to specify the actions your proposal will take while it is in draft stage. You may wish to wait until the proposal is stable before doing this. The executable proposal template explains how to do this.
+Offchain platforms such as this site assign each proposal a canonical number of the form `{termNumber}.{proposalNumber}`: the working group term in which the vote is posted, and a counter that increments with each vote posted during that term. Each platform displays the number and inferred type as it sees fit — these docs reconstruct titles like "[EP 7.1] [Executable] Do Something Cool".
 
-If your proposal is a constitutional amendment, you will need to produce a diff showing the exact changes you are proposing to make. The easiest way to do this is to go to the [constitution](/dao/constitution), click "Edit on GitHub", then click the pencil icon to edit the document in a fork. You can then create a pull request via the GitHub UI and include this in your proposal. You should do this in a separate branch to your draft proposal; while the proposal will be merged as soon as it goes to a vote, the amendment will only be merged if the proposal passes.
+This system takes effect July 14, 2026. Earlier proposals keep their EP numbers — the [proposals directory in this repository](https://github.com/ensdomains/docs/tree/master/src/pages/dao/proposals) is the canonical list of numbers assigned to date.
 
-Once you are confident the proposal is in a stable state, you can proceed to phase 3.
+A few details:
 
-### **Phase 3: Active Proposal — Snapshot / Governance Portal**
+- A proposal is only numbered once it is posted for a vote. Drafts and temp checks are not.
+- Numbers are never reused. A defeated or cancelled proposal keeps its number, and a resubmission gets the next one.
+- A Snapshot vote and an onchain vote are always separate proposals with separate numbers, even when they concern the same matter (e.g. a social vote followed by an executable vote implementing it).
+- Related proposals voted on separately (e.g. a funding request split into multiple votes) are just separate proposals with sequential numbers. Never construct sub-numbers like 6.6.1 — those only exist in older proposals.
 
-Use GitHub to flag your PR as Ready for Review. A contributor will:
+## Formatting
 
-1. Merge your PR if it meets the requirements.
-2. Assign your proposal a proposal number in the form EP###.
-3. Schedule the proposal for a snapshot vote.
+Proposals are written in markdown, and heading structure matters: multiple H1s render weirdly on governance apps and hurt SEO and accessibility. A document should have at most one H1 — the title — followed by H2 sections:
 
-If your proposal is a Social Proposal or a Constitutional Amendment, that's it! If the snapshot vote passes, the proposal is passed and you are done.
+```md
+# Title
 
-If your proposal is an Executable Proposal, you will now need to submit it to the governor contract for voting onchain.
+## Abstract
 
-To enact an Executable Proposal:
+## Motivation
 
-1. Ensure at least 100k ENS is delegated to your address in order to submit a proposal, or find a delegate who has enough delegated ENS to meet the proposal threshold to propose on your behalf.
-2. Call the propose() function of the ENS governor (at [governor.ensdao.eth](https://etherscan.io/address/0x323a76393544d5ecca80cd6ef2a560c6a395b7e3)) to deploy your proposal.
+## Specification
+```
 
-Once the propose() function has been called, a seven day voting period is started. Ongoing discussion can take place on your proposal post. If the proposal passes successfully, a two day timelock will follow before the proposed code is executed.
+When a platform provides a separate title field, that field is the H1. Snapshot proposals and forum posts both work this way, so their bodies should start at H2.
+
+Two more common mistakes to avoid:
+
+- Don't skip heading levels (e.g. an H4 directly under an H2) — go one level deeper at a time.
+- Don't use bold text as a heading. If a line introduces a section, make it a real heading; bold is for emphasis within text.
+
+Paste your proposal below to check it against these conventions:
+
+<ProposalValidator />
+
+## Phase 1: Temperature Check — Discourse
+
+A Temperature Check gauges whether there is sufficient will to change the status quo.
+
+Ask a general, non-biased question on [discuss.ens.domains](https://discuss.ens.domains) about a potential change (e.g. "Should ENS decrease registration costs for 3-letter domains?"). Post in the "DAO-wide -> Temperature Check" category with the `[Temp Check]` title prefix described above.
+
+Temperature checks are informal and optional — use the feedback to decide whether to proceed.
+
+## Phase 2: Draft Proposal — Discourse
+
+A Draft Proposal establishes formal discussion around a concrete proposal.
+
+Copy the template for an [executable proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/executable-proposal-template.md), [social proposal](https://github.com/ensdomains/docs/tree/master/src/public/governance/social-proposal-template.md), or [constitutional amendment](https://github.com/ensdomains/docs/tree/master/src/public/governance/constitutional-amendment-template.md), write your proposal, and post it in the "DAO-wide -> Draft Proposals" category on [discuss.ens.domains](https://discuss.ens.domains). Keep the `[Temp Check]` prefix on the title while it remains a draft.
+
+Build support: reach out to your network, solicit feedback from delegates, and respond to questions on the topic — while staying as impartial as you can.
+
+Executable proposals must specify the onchain actions they will take before going to a vote; the template explains how. You may want to wait until the proposal is stable to do this.
+
+Constitutional amendments must include a [diff](https://en.wikipedia.org/wiki/Diff) showing the exact changes to the [constitution](/dao/constitution).
+
+Once the proposal is stable, proceed to phase 3.
+
+## Phase 3: Active Proposal — Snapshot / Governance Portal
+
+Once discussion has settled, the proposal is posted for a vote. Title the vote with the plain proposal title — no `[Temp Check]` prefix, no EP number, no type tag. The canonical EP number is assigned automatically at this point, as described in [Titles and Proposal Numbers](#titles-and-proposal-numbers).
+
+Social Proposals and Constitutional Amendments are posted to [Snapshot](https://vote.ensdao.org) for an offchain vote. That's it — if the vote passes, you're done.
+
+Executable Proposals are instead submitted to the governor contract for an onchain vote:
+
+1. Ensure at least 100k ENS is delegated to your address, or find a delegate who meets the proposal threshold to propose on your behalf.
+2. Call the `propose()` function on the ENS governor at [governor.ensdao.eth](https://etherscan.io/address/0x323a76393544d5ecca80cd6ef2a560c6a395b7e3).
+
+This starts a seven-day voting period, during which discussion can continue on the forum topic. If the proposal passes, a two-day timelock follows before the proposed code is executed.
