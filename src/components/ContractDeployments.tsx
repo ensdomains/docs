@@ -54,6 +54,7 @@ function VocsExternalLink({
 }: AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
     <a
+      data-v-link
       href={href}
       target="_blank"
       className="vocs_Anchor vocs_Link vocs_Link_accent_underlined vocs_ExternalLink"

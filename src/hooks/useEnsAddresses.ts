@@ -13,7 +13,7 @@ export function useEnsAddresses({ name, coinTypes }: UseEnsAddressesProps) {
     queryKey: ['ens-addresses', name, coinTypes],
     queryFn: async () => {
       const promises = coinTypes.map((coinType) =>
-        client!.getEnsAddress({ name, coinType })
+        client!.getEnsAddress({ name, coinType: BigInt(coinType) })
       )
 
       const results = await Promise.all(promises)

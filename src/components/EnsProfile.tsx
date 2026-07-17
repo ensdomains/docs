@@ -1,3 +1,5 @@
+'use client'
+
 import { Address, zeroAddress } from 'viem'
 import { useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi'
 
@@ -9,9 +11,9 @@ type EnsProfileProps =
 
 export function EnsProfile({ name, address, hideAddress }: EnsProfileProps) {
   return name
-    ? EnsProfileFromName({ name, hideAddress })
+    ? <EnsProfileFromName name={name} hideAddress={hideAddress} />
     : address
-      ? EnsProfileFromAddress({ address, hideAddress })
+      ? <EnsProfileFromAddress address={address} hideAddress={hideAddress} />
       : null
 }
 

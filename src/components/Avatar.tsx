@@ -1,3 +1,5 @@
+'use client'
+
 import { useEnsAvatar } from 'wagmi'
 
 import { cn } from '../lib/utils'

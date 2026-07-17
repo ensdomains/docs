@@ -78,7 +78,7 @@ const videos = [
 
 export function HomePage() {
   return (
-    <>
+    <div data-ens-home>
       <div className="bg-background-secondary border-grey-light border-t px-4 py-16">
         <div className="mx-auto flex max-w-4xl flex-col gap-4">
           <h1 className="text-3xl font-semibold sm:text-4xl">
@@ -103,7 +103,7 @@ export function HomePage() {
             <div className="font-bold">{column.title}</div>
             {column.links.map(([title, href]) => (
               <div key={title} className="flex items-center gap-3">
-                <a className="vocs_Anchor !no-underline" href={href}>
+                <a data-v-link className="!no-underline" href={href}>
                   {title}
                 </a>
               </div>
@@ -130,6 +130,6 @@ export function HomePage() {
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }

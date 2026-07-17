@@ -1,7 +1,18 @@
 @import 'tailwindcss';
-@config '../tailwind.config.cjs';
+@config '../../tailwind.config.cjs';
+@custom-variant dark (&:where([data-vocs-theme='dark'], [data-vocs-theme='dark'] *));
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+}
 
 :root {
+  --vocs-font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
   --ens-blue-active: #003685;
   --ens-blue-dim: #056aff;
   --ens-blue-primary: #3889ff;
@@ -71,9 +82,21 @@
   --ens-text: var(--ens-grey-active);
   --ens-text-secondary: var(--ens-grey-dim);
   --ens-text-disabled: var(--ens-grey-bright);
+
+  /* Vocs v1 theme.variables.color mappings for the v2 token system. */
+  --vocs-background-color-primary: var(--ens-background);
+  --vocs-text-color-primary: var(--ens-text);
+  --vocs-text-color-link: var(--ens-blue-primary);
+  --vocs-text-color-link-hover: var(--ens-blue-dim);
+  --vocs-border-color-tab-active: var(--ens-blue-primary);
 }
 
-.dark {
+/* Vocs v2 supports full-width pages but not v1's per-page padding controls. */
+article[data-v-content]:has(> [data-ens-home]) {
+  padding: 0;
+}
+
+:root[data-vocs-theme='dark'] {
   --ens-blue-active: #eef5ff;
   --ens-blue-dim: #d1e4ff;
   --ens-blue-primary: #3889ff;
@@ -143,6 +166,8 @@
   --ens-text: var(--ens-grey-dim);
   --ens-text-secondary: var(--ens-grey-primary);
   --ens-text-disabled: var(--ens-grey-bright);
+
+  --vocs-border-color-tab-active: var(--ens-blue-bright);
 }
 
 /* Dampen styling on <code> in <th> */

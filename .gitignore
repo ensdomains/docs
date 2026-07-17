@@ -7,9 +7,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 vocs.config.ts.timestamp-*
-src/dist
+dist
 
 # Generated plugin files
+src/pages.gen.ts
 src/pages/deployments.md
 src/pages/ensip/*
 !src/pages/ensip/index.mdx

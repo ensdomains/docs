@@ -1,6 +1,9 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { SidebarItem } from 'vocs'
+import type { Config } from 'vocs/config'
+
+type Sidebar = Extract<NonNullable<Config['sidebar']>, readonly unknown[]>
+type SidebarItem = Sidebar[number]
 
 // Generate a JSON file for each DAO proposal to be used in the sidebar
 export async function daoProposalsSidebar() {

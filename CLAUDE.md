@@ -50,7 +50,8 @@ Generated files go to `src/data/generated/` and `src/pages/ensip/`. These are ca
 
 ### Configuration
 
-- **`vocs.config.tsx`**: Main Vocs config with sidebar structure, theme, and edit links
+- **`vocs.config.ts`**: Main Vocs config with sidebar structure, theme, and edit links
+- **`public/`**: Static assets plus Cloudflare `_headers` and `_redirects`
 - **`functions/api/`**: Cloudflare Pages Functions for OG image generation and analytics proxy
 
 ### Code Style
