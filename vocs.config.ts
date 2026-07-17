@@ -15,8 +15,11 @@ try {
   )
 } catch {}
 
-// Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround
-const isProd = process.env.CF_PAGES_BRANCH === 'master'
+// Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround.
+// Keep the Pages variables as a fallback while the deployment is being migrated.
+const deployBranch =
+  process.env.WORKERS_CI_BRANCH ?? process.env.CF_PAGES_BRANCH
+const isProd = deployBranch === 'master'
 const baseUrl = isProd ? 'https://docs.ens.domains' : process.env.CF_PAGES_URL
 
 export default defineConfig({
@@ -25,8 +28,8 @@ export default defineConfig({
   // Vocs v2 validates links more strictly than v1. Keep reporting the
   // existing generated/legacy links without making production builds fail.
   checkDeadlinks: 'warn',
-  // Cloudflare Pages deploys the generated static site and runs the existing
-  // functions/ directory as Workers alongside it.
+  // Workers Static Assets serves the generated site, while worker/index.ts
+  // handles the existing API endpoints.
   renderStrategy: 'full-static',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',

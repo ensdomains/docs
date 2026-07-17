@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the official ENS documentation site ([docs.ens.domains](https://docs.ens.domains)), built with [Vocs](https://vocs.dev/) and deployed to Cloudflare Pages.
+This is the official ENS documentation site ([docs.ens.domains](https://docs.ens.domains)), built with [Vocs](https://vocs.dev/) and deployed to Cloudflare Workers with Static Assets.
 
 ## Commands
 
@@ -20,6 +20,15 @@ bun run build
 
 # Preview production build
 bun run preview
+
+# Preview the complete Worker and static-assets deployment
+bun run worker:dev
+
+# Regenerate Cloudflare binding and runtime types
+bun run worker:types
+
+# Build and deploy to Cloudflare Workers
+bun run deploy
 
 # Regenerate external content only
 bun run generate
@@ -52,7 +61,8 @@ Generated files go to `src/data/generated/` and `src/pages/ensip/`. These are ca
 
 - **`vocs.config.ts`**: Main Vocs config with sidebar structure, theme, and edit links
 - **`public/`**: Static assets plus Cloudflare `_headers` and `_redirects`
-- **`functions/api/`**: Cloudflare Pages Functions for OG image generation and analytics proxy
+- **`worker/index.ts`**: Cloudflare Worker entrypoint and API router
+- **`functions/api/`**: API handlers for OG image generation, the CCIP-Read example, and analytics proxying
 
 ### Code Style
 

@@ -9,7 +9,9 @@
     "build": "bun run generate && bunx vocs build",
     "postbuild": "node -e \"require('node:fs').rmSync('.wrangler/deploy/config.json', { force: true })\"",
     "preview": "vocs preview",
-    "deploy": "bun run build && bunx wrangler pages deploy",
+    "deploy": "bun run build && bunx wrangler deploy",
+    "worker:dev": "bun run build && bunx wrangler dev",
+    "worker:types": "bunx wrangler types",
     "format": "prettier --write ."
   },
   "dependencies": {

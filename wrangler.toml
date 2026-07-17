@@ -1,4 +1,0 @@
-name = "ens-docs"
-pages_build_output_dir = "dist/public"
-compatibility_date = "2026-07-16"
-compatibility_flags = ["nodejs_compat"]
