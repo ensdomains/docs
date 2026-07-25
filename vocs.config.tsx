@@ -31,7 +31,7 @@ export default defineConfig({
     content: (
       <p>
         Hacking on Sepolia?{' '}
-        <a href="https://pr-543.docs-bao.pages.dev/contracts/ensv2/overview/">
+        <a href="https://feature-ensv2-docs.docs-bao.pages.dev/contracts/ensv2/overview">
           Read the ENSv2 docs preview
         </a>
         .
