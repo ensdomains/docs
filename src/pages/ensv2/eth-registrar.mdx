@@ -2,13 +2,13 @@
 description: The ENSv2 ETH Registrar - commit-reveal registration, flexible pricing, and multi-token payments for .eth names
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { ContractReference } from '../../../components/ensv2/ContractReference'
-import { Card } from '../../../components/ui/Card'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { ContractReference } from '../../components/ensv2/ContractReference'
+import { Card } from '../../components/ui/Card'
 
 # ETH Registrar
 
-The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registering-a-name) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/contracts/ensv2/permissioned-registry).
+The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registering-a-name) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/ensv2/permissioned-registry).
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -21,8 +21,8 @@ The contracts and interfaces described here are **not yet final** and may change
 | Grace period         | 90-day grace period after expiry    | **28-day grace period**                                                              |
 | Payment              | ETH only                            | ERC20 tokens via `safeTransferFrom`                                                   |
 | Pricing              | USD-denominated, no duration discounts | USD-denominated, multi-year duration discounts                                       |
-| Name ownership       | ERC721 on BaseRegistrar (optionally wrapped to ERC1155 via [NameWrapper](/wrapper/overview)) | [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token on Permissioned Registry |
-| Permissions          | Owner has full control; no granular roles | Registrant receives a fixed set of [EAC](/contracts/ensv2/enhanced-access-control) roles |
+| Name ownership       | ERC721 on BaseRegistrar (optionally wrapped to ERC1155 via [NameWrapper](/wrapper/overview)) | [ERC1155Singleton](/ensv2/erc1155-singleton) token on Permissioned Registry |
+| Permissions          | Owner has full control; no granular roles | Registrant receives a fixed set of [EAC](/ensv2/enhanced-access-control) roles |
 
 ## Pricing
 
@@ -173,7 +173,7 @@ The registration grants the owner a fixed set of roles defined by `REGISTRATION_
 - `ROLE_SET_RESOLVER_ADMIN`: delegate `ROLE_SET_RESOLVER` to others
 - `ROLE_CAN_TRANSFER_ADMIN`: controls whether the token owner can transfer the name (admin-only; there is no non-admin `ROLE_CAN_TRANSFER`)
 
-Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar. See [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) for details on the role system.
+Unlike ENSv1, the role set is not configurable per registration; it is hardcoded in the registrar. See [Enhanced Access Control](/ensv2/enhanced-access-control) for details on the role system.
 
 ## Renewing a Name
 
@@ -206,14 +206,14 @@ The ETH Registrar uses OpenZeppelin `Ownable` for its own governance. The owner 
 
 ### Roles on the ETH Registry
 
-To register and renew names, the ETH Registrar needs roles on the `.eth` [Permissioned Registry](/contracts/ensv2/permissioned-registry). At deployment it is granted two [registry roles](/contracts/ensv2/permissioned-registry#roles) on `ROOT_RESOURCE`:
+To register and renew names, the ETH Registrar needs roles on the `.eth` [Permissioned Registry](/ensv2/permissioned-registry). At deployment it is granted two [registry roles](/ensv2/permissioned-registry#roles) on `ROOT_RESOURCE`:
 
 | Role | Purpose |
 |------|---------|
-| [`ROLE_REGISTRAR`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `register()` to create new `.eth` names |
-| [`ROLE_RENEW`](/contracts/ensv2/permissioned-registry#roles) | Allows calling `renew()` on any `.eth` name |
+| [`ROLE_REGISTRAR`](/ensv2/permissioned-registry#roles) | Allows calling `register()` to create new `.eth` names |
+| [`ROLE_RENEW`](/ensv2/permissioned-registry#roles) | Allows calling `renew()` on any `.eth` name |
 
-Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [checks both root and token-level roles](/contracts/ensv2/enhanced-access-control#roles)). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
+Because these are granted at `ROOT_RESOURCE`, they apply to all names (the EAC [checks both root and token-level roles](/ensv2/enhanced-access-control#roles)). The registrar does not hold admin variants of these roles, so it cannot delegate its own authority to other contracts.
 
 ## Code Examples
 

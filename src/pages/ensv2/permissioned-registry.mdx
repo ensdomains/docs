@@ -2,15 +2,15 @@
 description: Permissioned Registry
 ---
 
-import { Card } from '../../../components/ui/Card'
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
-import { ContractReference } from '../../../components/ensv2/ContractReference'
-import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
+import { Card } from '../../components/ui/Card'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { RoleBitmapComposer } from '../../components/ensv2/RoleBitmapComposer'
+import { ContractReference } from '../../components/ensv2/ContractReference'
+import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Permissioned Registry
 
-The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an [ERC1155Singleton](/ensv2/erc1155-singleton) token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/ensv2/enhanced-access-control).
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -22,12 +22,12 @@ In ENSv1, name management was split across three separate contracts: the ENS Reg
 
 | Feature         | ENSv1                                           | ENSv2 Permissioned Registry                                                  |
 | --------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
-| Architecture    | Single flat registry for all names              | [Hierarchical](/contracts/ensv2/registry-hierarchy): each name can have its own registry |
-| Token standard  | ERC721 (BaseRegistrar) or ERC1155 (Name Wrapper)| [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) with single ownership  |
-| Permissions     | One-way fuse burning (Name Wrapper)             | Reversible role-based [EAC](/contracts/ensv2/enhanced-access-control)         |
-| Token IDs       | Fixed (derived from namehash/labelhash)         | [Mutable](/contracts/ensv2/mutable-token-ids): change on role updates and re-registration |
+| Architecture    | Single flat registry for all names              | [Hierarchical](/ensv2/registry-hierarchy): each name can have its own registry |
+| Token standard  | ERC721 (BaseRegistrar) or ERC1155 (Name Wrapper)| [ERC1155Singleton](/ensv2/erc1155-singleton) with single ownership  |
+| Permissions     | One-way fuse burning (Name Wrapper)             | Reversible role-based [EAC](/ensv2/enhanced-access-control)         |
+| Token IDs       | Fixed (derived from namehash/labelhash)         | [Mutable](/ensv2/mutable-token-ids): change on role updates and re-registration |
 | Subname control | Requires Name Wrapper + fuse configuration      | Built-in via subregistry pointer + per-name roles                            |
-| Upgradeability  | Not upgradeable                                 | UUPS proxy pattern (for [UserRegistry](/contracts/ensv2/registry-template#userregistry)) |
+| Upgradeability  | Not upgradeable                                 | UUPS proxy pattern (for [UserRegistry](/ensv2/registry-template#userregistry)) |
 | Name states     | Registered or not                               | Three-state lifecycle (see [Name Lifecycle](#name-lifecycle))                |
 
 ## Names
@@ -39,10 +39,10 @@ Each name in the registry is identified by its **labelhash** (the `keccak256` ha
 | `subregistry` | `IRegistry` | Pointer to a subregistry for managing subnames |
 | `resolver` | `address` | Resolver contract that holds this name's records |
 | `expiry` | `uint64` | Timestamp after which the name is considered expired (`block.timestamp >= expiry`) |
-| `eacVersionId` | `uint32` | Isolates permissions across registrations (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)) |
-| `tokenVersionId` | `uint32` | Invalidates marketplace approvals on role changes (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)) |
+| `eacVersionId` | `uint32` | Isolates permissions across registrations (see [Mutable Token IDs](/ensv2/mutable-token-ids)) |
+| `tokenVersionId` | `uint32` | Invalidates marketplace approvals on role changes (see [Mutable Token IDs](/ensv2/mutable-token-ids)) |
 
-Entries are stored in a mapping keyed by the [canonical ID](/contracts/ensv2/mutable-token-ids#canonical-id), the labelhash with its lower 32 bits zeroed.
+Entries are stored in a mapping keyed by the [canonical ID](/ensv2/mutable-token-ids#canonical-id), the labelhash with its lower 32 bits zeroed.
 
 ## Name Lifecycle
 
@@ -64,7 +64,7 @@ stateDiagram-v2
 
 **State transitions:** each transition requires a specific [EAC role](#roles) with the indicated scope.
 
-| From | To | Required role | [Scope](/contracts/ensv2/enhanced-access-control#resources) |
+| From | To | Required role | [Scope](/ensv2/enhanced-access-control#resources) |
 |------|----|---------------|-------|
 | AVAILABLE | REGISTERED | `ROLE_REGISTRAR` | root |
 | AVAILABLE | RESERVED | `ROLE_REGISTRAR` | root |
@@ -90,13 +90,13 @@ stateDiagram-v2
 
 ## anyId Polymorphism
 
-Most functions accept an `anyId` parameter that can be a `labelhash`, [token ID](/contracts/ensv2/mutable-token-ids#id-types), or [resource](/contracts/ensv2/enhanced-access-control#resources) interchangeably. Internally, `_entry()` zeroes the version bits to find the canonical storage slot for the name. This means you can pass whichever identifier you have on hand, and the registry resolves it to the same underlying entry.
+Most functions accept an `anyId` parameter that can be a `labelhash`, [token ID](/ensv2/mutable-token-ids#id-types), or [resource](/ensv2/enhanced-access-control#resources) interchangeably. Internally, `_entry()` zeroes the version bits to find the canonical storage slot for the name. This means you can pass whichever identifier you have on hand, and the registry resolves it to the same underlying entry.
 
-See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) for the full explanation and diagram.
+See [Mutable Token IDs](/ensv2/mutable-token-ids#anyid-polymorphism) for the full explanation and diagram.
 
 ## Ownership
 
-The token ID for a name changes when it is re-registered or when roles change (see [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)).
+The token ID for a name changes when it is re-registered or when roles change (see [Mutable Token IDs](/ensv2/mutable-token-ids)).
 
 `ownerOf()` returns `address(0)` for:
 - Expired names (ownership is time-bounded)
@@ -106,7 +106,7 @@ The token ID for a name changes when it is re-registered or when roles change (s
 
 ## EAC Integration
 
-All permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+All permissions are managed through [Enhanced Access Control](/ensv2/enhanced-access-control).
 
 ### Roles
 
@@ -143,7 +143,7 @@ Select roles to compose a bitmap value for use with `grantRoles` and `revokeRole
 
 ### Granting and Revoking Roles
 
-The registry uses the standard EAC [`grantRoles` and `revokeRoles`](/contracts/ensv2/enhanced-access-control#granting-and-revoking) functions with [anyId polymorphism](#anyid-polymorphism). See [Code Examples](#code-examples) for usage.
+The registry uses the standard EAC [`grantRoles` and `revokeRoles`](/ensv2/enhanced-access-control#granting-and-revoking) functions with [anyId polymorphism](#anyid-polymorphism). See [Code Examples](#code-examples) for usage.
 
 <FrenCallout fren="peanut" variant="note">
 You can only grant roles for which you hold the corresponding admin role. The set of roles granted at registration determines what the owner can delegate; see [Emancipation](#emancipation) for the default bitmap.
@@ -151,7 +151,7 @@ You can only grant roles for which you hold the corresponding admin role. The se
 
 ### EAC Hook Overrides
 
-The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv2/enhanced-access-control#callback-hooks) to enforce registry-specific invariants:
+The Permissioned Registry overrides several [EAC callback hooks](/ensv2/enhanced-access-control#callback-hooks) to enforce registry-specific invariants:
 
 **Token regeneration on role changes**: when roles are granted or revoked via `grantRoles()` / `revokeRoles()`, the `_onRolesGranted` and `_onRolesRevoked` hooks trigger a token regeneration (burn + mint with a new token ID). This invalidates any pending ERC1155 transfer approvals tied to the old token ID, preventing an attacker from racing to transfer a token after their roles have been revoked.
 
@@ -160,14 +160,14 @@ The Permissioned Registry overrides several [EAC callback hooks](/contracts/ensv
 ### Resource Scheme
 
 <FrenCallout fren="bittu" variant="tip" title="Developer tip">
-This section explains how [EAC resources](/contracts/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. `grantRoles` and `revokeRoles` handle resource computation automatically via [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism).
+This section explains how [EAC resources](/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. `grantRoles` and `revokeRoles` handle resource computation automatically via [anyId polymorphism](/ensv2/mutable-token-ids#anyid-polymorphism).
 </FrenCallout>
 
 The registry derives each EAC resource from the name's labelhash and its current `eacVersionId`, so permissions are scoped per-name and automatically invalidated on re-registration:
 
 <MonoDiagram content={`255                                   32 31               0\n ┌──────────────────────────────────────┬─────────────────┐\n │       labelhash upper bits           │  eacVersionId   │\n │            (224 bits)                │    (32 bits)    │\n └──────────────────────────────────────┴─────────────────┘`} />
 
-Registry resources participate in [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for how resources, token IDs, and canonical IDs relate.
+Registry resources participate in [anyId polymorphism](/ensv2/mutable-token-ids#anyid-polymorphism). See [Mutable Token IDs](/ensv2/mutable-token-ids) for how resources, token IDs, and canonical IDs relate.
 
 ## Transfers
 
@@ -177,7 +177,7 @@ When a token transfers, all roles are atomically moved from the old owner to the
 
 ### Operator Approval
 
-The owner of a name can call `setApprovalForAll(operator, true)` to approve an operator. An approved operator inherits all of the owner's EAC roles on every name the owner holds (via the [`_getRoles` override](/contracts/ensv2/enhanced-access-control#role-resolution-hook)), allowing them to perform any role-gated action (set resolver, set subregistry, transfer, etc.) on the owner's behalf. This is an all-or-nothing delegation: an approved operator can act on every name the owner holds, with the owner's full set of roles. There is no way to scope operator approval to specific names or roles.
+The owner of a name can call `setApprovalForAll(operator, true)` to approve an operator. An approved operator inherits all of the owner's EAC roles on every name the owner holds (via the [`_getRoles` override](/ensv2/enhanced-access-control#role-resolution-hook)), allowing them to perform any role-gated action (set resolver, set subregistry, transfer, etc.) on the owner's behalf. This is an all-or-nothing delegation: an approved operator can act on every name the owner holds, with the owner's full set of roles. There is no way to scope operator approval to specific names or roles.
 
 ## Token Metadata
 
@@ -230,7 +230,7 @@ Each name's `subregistry` field creates a forward pointer from parent to child. 
   </div>
 </Card>
 
-The backward pointer records both the parent registry's address and the label this registry is known by in the parent. The Universal Resolver's [`findCanonicalName()`](/contracts/ensv2/universal-resolver-v2#findcanonicalname) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
+The backward pointer records both the parent registry's address and the label this registry is known by in the parent. The Universal Resolver's [`findCanonicalName()`](/ensv2/universal-resolver-v2#findcanonicalname) uses these backward pointers to walk up the tree, verifying at each step that `parent.getSubregistry(label)` points back to the current registry, and reconstructing the full name along the way.
 
 Once this pointer is set, the registry has committed to its position in the hierarchy:
 
@@ -273,18 +273,18 @@ A registry has a **locked canonical parent** when it has a canonical parent and 
 ## Emancipation
 
 <FrenCallout fren="earl" variant="note" title="Definition – Emancipation">
-A registry is **emancipated** when it is a [verified](/contracts/ensv2/verifiable-factory#on-chain-verification) registry implementation and no account holds dangerous roles on `ROOT_RESOURCE`. Custom registry implementations cannot be emancipated by definition, because their code has not been verified.
+A registry is **emancipated** when it is a [verified](/ensv2/verifiable-factory#on-chain-verification) registry implementation and no account holds dangerous roles on `ROOT_RESOURCE`. Custom registry implementations cannot be emancipated by definition, because their code has not been verified.
 </FrenCallout>
 
 Emancipation is a property of a registry, but its purpose is protecting names. This section covers how a registry is emancipated, how to verify it on-chain, and how emancipation composes across the hierarchy to fully protect individual names.
 
 Certain roles on `ROOT_RESOURCE` can override individual name owners. For example, `ROLE_SET_RESOLVER` on ROOT can change the resolver on every name, `ROLE_UNREGISTER` can delete any name, and `ROLE_UPGRADE` can replace the registry implementation entirely. These are examples of **dangerous roles**: roles that can override individual name owners' permissions. A registry is emancipated when none of them have any assignees on `ROOT_RESOURCE`.
 
-Non-dangerous roles like `ROLE_REGISTRAR` and `ROLE_RENEW` can safely remain on `ROOT_RESOURCE` (the registrar needs them to function). This is how the `.eth` registry works: the [ETH Registrar](/contracts/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE`, while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/contracts/ensv2/eth-registrar#roles-granted-at-registration). Once all dangerous roles are revoked, the separation is irreversible (you need the admin role to grant the admin role).
+Non-dangerous roles like `ROLE_REGISTRAR` and `ROLE_RENEW` can safely remain on `ROOT_RESOURCE` (the registrar needs them to function). This is how the `.eth` registry works: the [ETH Registrar](/ensv2/eth-registrar) holds `ROLE_REGISTRAR` and `ROLE_RENEW` on `ROOT_RESOURCE`, while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/ensv2/eth-registrar#roles-granted-at-registration). Once all dangerous roles are revoked, the separation is irreversible (you need the admin role to grant the admin role).
 
 ### Verifying Emancipation
 
-Call [`roleCount(ROOT_RESOURCE)`](/contracts/ensv2/enhanced-access-control#bitmap-layout) on the registry to inspect the assignee counts. For emancipation, two categories of roles must have zero assignees on `ROOT_RESOURCE`:
+Call [`roleCount(ROOT_RESOURCE)`](/ensv2/enhanced-access-control#bitmap-layout) on the registry to inspect the assignee counts. For emancipation, two categories of roles must have zero assignees on `ROOT_RESOURCE`:
 
 **Roles that directly endanger name owners** (any account holding these on `ROOT_RESOURCE` can act on any name):
 
@@ -319,11 +319,11 @@ For a subname like `sub.alice.eth` to be fully emancipated, the `alice.eth` owne
 
 ## Code Examples
 
-Subname registries are deployed as UserRegistry proxies through the Verifiable Factory. See [Deploying a Registry Proxy](/contracts/ensv2/verifiable-factory#deploying-a-registry-proxy) for a code example. The examples below use the ETHRegistry, but the same functions are available on any PermissionedRegistry instance.
+Subname registries are deployed as UserRegistry proxies through the Verifiable Factory. See [Deploying a Registry Proxy](/ensv2/verifiable-factory#deploying-a-registry-proxy) for a code example. The examples below use the ETHRegistry, but the same functions are available on any PermissionedRegistry instance.
 
 ### Querying Name State
 
-`getState` returns the full state of a name in a single call: its registration status, expiry, current owner, token ID, and EAC resource. Both `getState` and `getStatus` accept any of a name's three identifiers (labelhash, tokenId, or resource) thanks to [anyId polymorphism](/contracts/ensv2/permissioned-registry#anyid-polymorphism):
+`getState` returns the full state of a name in a single call: its registration status, expiry, current owner, token ID, and EAC resource. Both `getState` and `getStatus` accept any of a name's three identifiers (labelhash, tokenId, or resource) thanks to [anyId polymorphism](/ensv2/permissioned-registry#anyid-polymorphism):
 
 ```ts [Viem]
 import { createPublicClient, http, keccak256, toHex } from 'viem'

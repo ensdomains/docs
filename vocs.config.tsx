@@ -366,34 +366,34 @@ export default defineConfig({
       items: [
         {
           text: 'Overview',
-          link: '/contracts/ensv2/overview',
+          link: '/ensv2/overview',
         },
         {
           text: 'Architecture',
           items: [
             {
               text: 'Registry Hierarchy',
-              link: '/contracts/ensv2/registry-hierarchy',
+              link: '/ensv2/registry-hierarchy',
             },
             {
               text: 'Enhanced Access Control',
-              link: '/contracts/ensv2/enhanced-access-control',
+              link: '/ensv2/enhanced-access-control',
             },
             {
               text: 'ERC1155Singleton',
-              link: '/contracts/ensv2/erc1155-singleton',
+              link: '/ensv2/erc1155-singleton',
             },
             {
               text: 'Mutable Token IDs',
-              link: '/contracts/ensv2/mutable-token-ids',
+              link: '/ensv2/mutable-token-ids',
             },
             {
               text: 'Hidden Contract Accounts',
-              link: '/contracts/ensv2/hca',
+              link: '/ensv2/hca',
             },
             {
               text: 'Verifiable Factory',
-              link: '/contracts/ensv2/verifiable-factory',
+              link: '/ensv2/verifiable-factory',
             },
           ],
         },
@@ -402,31 +402,27 @@ export default defineConfig({
           items: [
             {
               text: 'Permissioned Registry',
-              link: '/contracts/ensv2/permissioned-registry',
+              link: '/ensv2/permissioned-registry',
             },
             {
               text: 'Permissioned Resolver',
-              link: '/contracts/ensv2/permissioned-resolver',
+              link: '/ensv2/permissioned-resolver',
             },
             {
               text: 'ETH Registrar',
-              link: '/contracts/ensv2/eth-registrar',
+              link: '/ensv2/eth-registrar',
             },
             {
               text: 'Universal Resolver V2',
-              link: '/contracts/ensv2/universal-resolver-v2',
-            },
-            {
-              text: 'Registry Metadata',
-              link: '/contracts/ensv2/registry-metadata',
+              link: '/ensv2/universal-resolver-v2',
             },
             {
               text: 'DNS Name Resolution',
-              link: '/contracts/ensv2/dns-resolvers',
+              link: '/ensv2/dns-resolvers',
             },
             {
               text: 'Reverse Resolution',
-              link: '/contracts/ensv2/reverse-resolution',
+              link: '/ensv2/reverse-resolution',
             },
           ],
         },
@@ -435,29 +431,25 @@ export default defineConfig({
           items: [
             {
               text: 'Migration',
-              link: '/contracts/ensv2/migration',
+              link: '/ensv2/migration',
             },
             {
               text: 'For App Developers',
-              link: '/contracts/ensv2/tutorial-app-developers',
+              link: '/ensv2/tutorial-app-developers',
             },
             {
               text: 'For Contract Developers',
-              link: '/contracts/ensv2/tutorial-contract-developers',
+              link: '/ensv2/tutorial-contract-developers',
             },
             {
               text: 'Registry Template',
-              link: '/contracts/ensv2/registry-template',
+              link: '/ensv2/registry-template',
             },
             {
               text: 'Indexing',
-              link: '/contracts/ensv2/indexing',
+              link: '/ensv2/indexing',
             },
           ],
-        },
-        {
-          text: 'FAQ',
-          link: '/contracts/ensv2/faq',
         },
       ],
     },

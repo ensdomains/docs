@@ -2,7 +2,7 @@
 description: Primary names and reverse resolution in ENSv2, including multi-chain support and signature-based claims
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Reverse Resolution
 
@@ -20,16 +20,16 @@ At launch, the reverse namespace (`addr.reverse`, `default.reverse`) stays on v1
 
 **`default.reverse`**: Uses the v1 `DefaultReverseRegistrar`, which stores primary names directly and resolves them via wildcard resolution on-contract. Users set their name via `DefaultReverseRegistrar.setNameForAddr()`.
 
-### HCA Adapters
+### Contract Account Adapters
 
-Smart contract wallets ([HCAs](/contracts/ensv2/hca)) can't interact directly with v1 reverse registrars because those contracts check `msg.sender`. Two adapter contracts bridge HCA support by being added as controllers on the v1 registrars:
+Contract accounts (multisigs, smart wallets, protocol contracts) can't always interact with the v1 reverse registrars directly, because those contracts authorize via `msg.sender`. Two adapter contracts, added as controllers on the v1 registrars, forward reverse-record updates on behalf of a contract:
 
 | Adapter | Method | Forwards to |
 |---------|--------|-------------|
-| `ReverseRegistrarHCAAdapter` | `claimForAddr(resolver)` | `ReverseRegistrar.claimForAddr()` |
-| `DefaultReverseRegistrarHCAAdapter` | `setNameForAddr(name)` | `DefaultReverseRegistrar.setNameForAddr()` |
+| `ReverseRegistrarAdapter` | `claim(account, resolver)` | `ReverseRegistrar.claimForAddr()` |
+| `DefaultReverseRegistrarAdapter` | `setName(account, name)` | `DefaultReverseRegistrar.setNameForAddr()` |
 
-Both adapters resolve the caller's HCA identity via `HCAEquivalence`, then forward the call with the resolved address. The `addr` and `owner` parameters are derived from the resolved `msg.sender` internally.
+Both adapters authorize the caller with the same "namer" check: the caller must be the account itself, the account's `Ownable` owner, or approved by the account's own `IContractNamer.isContractNamer()` implementation.
 
 ### Migration to v2-native
 
@@ -37,7 +37,7 @@ The reverse namespace will be migrated to v2-native infrastructure post-launch. 
 
 ## Multi-Chain Reverse Resolution (Upcoming)
 
-ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chain individually. Each deployment stores the mapping from addresses to their primary names for that chain. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) resolves reverse lookups via the inherited `reverse(lookupAddress, coinType)` function, which queries the appropriate reverse registrar based on the coin type.
+ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chain individually. Each deployment stores the mapping from addresses to their primary names for that chain. The [Universal Resolver V2](/ensv2/universal-resolver-v2) resolves reverse lookups via the inherited `reverse(lookupAddress, coinType)` function, which queries the appropriate reverse registrar based on the coin type.
 
 ### Setting a Primary Name
 
@@ -46,9 +46,9 @@ The L2ReverseRegistrar provides four methods for setting a primary name, coverin
 | Method | Authorization | Use case |
 |--------|--------------|----------|
 | `setName(name)` | `msg.sender` only | EOA setting its own primary name |
-| `setNameForAddr(addr, name)` | Caller is the address, or owns the contract at `addr` via Ownable | Setting from a different caller context |
+| `setNameForAddr(addr, name)` | Caller is the address, its `Ownable` owner, or approved via the address's `IContractNamer` | Setting from a different caller context |
 | `setNameForAddrWithSignature(claim, signature)` | ERC-191 signature from the address | Gasless or cross-chain claims for EOAs |
-| `setNameForOwnableWithSignature(claim, owner, signature)` | Ownable pattern + ERC-1271/6492 signature | Smart contract wallets (Safe, ERC-4337) |
+| `setNameForContractWithSignature(claim, owner, signature)` | `owner` passes the namer check (Ownable or `IContractNamer`) and provides an ERC-191 signature (ERC-1271/6492 supported) | Contracts owned by smart contract wallets (Safe, ERC-4337) |
 
 ### Signature-Based Claims
 
@@ -80,7 +80,7 @@ Signed At: {signedAt}
 
 Where `{chainList}` is a comma-separated list of chain IDs and `{signedAt}` is an ISO 8601 UTC datetime string.
 
-For smart contract wallets (via `setNameForOwnableWithSignature`), the format includes an additional `Owner` field:
+For contracts (via `setNameForContractWithSignature`), the format includes an additional `Owner` field:
 
 ```
 You are setting the ENS primary name for a contract you own to:
@@ -111,8 +111,8 @@ The L2ReverseRegistrar also supports `syncName(addr)` for contracts that impleme
 |----------|--------|---------|
 | `ReverseRegistry` | Deployed at launch | PermissionedRegistry for the `.reverse` TLD |
 | `ENSV1Resolver` | Deployed at launch | Mirrors v1 reverse resolution for `addr.reverse` |
-| `ReverseRegistrarHCAAdapter` | Deployed at launch | HCA adapter for `addr.reverse` claims |
-| `DefaultReverseRegistrarHCAAdapter` | Deployed at launch | HCA adapter for `default.reverse` name setting |
+| `ReverseRegistrarAdapter` | Deployed at launch | Contract-account adapter for `addr.reverse` claims |
+| `DefaultReverseRegistrarAdapter` | Deployed at launch | Contract-account adapter for `default.reverse` name setting |
 | `L2ReverseRegistrar` | Upcoming | Per-chain reverse registrar with signature-based claims |
 | `StandaloneReverseRegistrar` | Upcoming | Abstract base for L2ReverseRegistrar |
 | `L2ReverseRegistrarWithMigration` | Upcoming | Variant supporting migration from older reverse registrar deployments |

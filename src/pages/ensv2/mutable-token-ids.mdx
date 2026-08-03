@@ -2,13 +2,13 @@
 description: How ENSv2's mutable token ID system protects against permission leaks and transfer griefing
 ---
 
-import { Card } from '../../../components/ui/Card'
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { IdExplorer } from '../../../components/ensv2/IdExplorer'
+import { Card } from '../../components/ui/Card'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { IdExplorer } from '../../components/ensv2/IdExplorer'
 
 # Mutable Token IDs
 
-Names in the [Permissioned Registry](/contracts/ensv2/permissioned-registry) are represented as [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) tokens, where each registered name is a token with exactly one owner. ENSv2's [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) system allows name owners to delegate fine-grained permissions to multiple accounts. This flexibility requires a mechanism to keep permissions in sync with a name's lifecycle, for example invalidating delegated roles when a name changes hands or expires. ENSv2 solves this with **mutable token IDs** that change in response to security-relevant events, providing automatic protection against two attack vectors: stale permissions and transfer griefing.
+Names in the [Permissioned Registry](/ensv2/permissioned-registry) are represented as [ERC1155Singleton](/ensv2/erc1155-singleton) tokens, where each registered name is a token with exactly one owner. ENSv2's [Enhanced Access Control](/ensv2/enhanced-access-control) system allows name owners to delegate fine-grained permissions to multiple accounts. This flexibility requires a mechanism to keep permissions in sync with a name's lifecycle, for example invalidating delegated roles when a name changes hands or expires. ENSv2 solves this with **mutable token IDs** that change in response to security-relevant events, providing automatic protection against two attack vectors: stale permissions and transfer griefing.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -30,11 +30,11 @@ Imagine Alice owns `alice.eth` with `ROLE_CAN_TRANSFER_ADMIN` and `ROLE_SET_RESO
 
 Each name in the registry is internally tracked by its **canonical ID**, a stable 256-bit identifier derived from the name's **labelhash** (`keccak256` of the label string) with the lower 32 bits zeroed out. The canonical ID never changes for a given label, regardless of how many times the name is registered, transferred, or has its permissions modified.
 
-The registry uses the canonical ID as the key to look up the name's storage entry, which contains the name's current state: subregistry, resolver, expiry, and two version counters. From this entry, the registry derives the name's current **token ID** (used for ERC1155 ownership) and its current **resource** (used as the key for [EAC](/contracts/ensv2/enhanced-access-control) permission storage). Both are produced by encoding a version counter into the lower 32 bits of the canonical ID.
+The registry uses the canonical ID as the key to look up the name's storage entry, which contains the name's current state: subregistry, resolver, expiry, and two version counters. From this entry, the registry derives the name's current **token ID** (used for ERC1155 ownership) and its current **resource** (used as the key for [EAC](/ensv2/enhanced-access-control) permission storage). Both are produced by encoding a version counter into the lower 32 bits of the canonical ID.
 
 ### Version Counters
 
-The [Permissioned Registry](/contracts/ensv2/permissioned-registry) maintains two version counters in each name's storage entry:
+The [Permissioned Registry](/ensv2/permissioned-registry) maintains two version counters in each name's storage entry:
 
 | Counter          | Incremented when                       | Encoded into | Purpose                                                                      |
 | ---------------- | -------------------------------------- | ------------ | ---------------------------------------------------------------------------- |
@@ -69,7 +69,7 @@ When a version counter increments, the registry performs a **regeneration**: the
 
 ### How This Solves the Problems
 
-**Stale permissions** are solved by `eacVersionId`. When a name expires and is re-registered, both version counters increment. The new registration gets a fresh [resource](/contracts/ensv2/enhanced-access-control#resources) (because `eacVersionId` changed), and all role grants from the previous registration are effectively orphaned - they're stored under the old resource, which no longer corresponds to any active name.
+**Stale permissions** are solved by `eacVersionId`. When a name expires and is re-registered, both version counters increment. The new registration gets a fresh [resource](/ensv2/enhanced-access-control#resources) (because `eacVersionId` changed), and all role grants from the previous registration are effectively orphaned - they're stored under the old resource, which no longer corresponds to any active name.
 
 **Transfer griefing** is solved by `tokenVersionId`. When Alice frontruns with `revokeRoles`, the registry's `_onRolesRevoked` hook fires, triggering regeneration. This increments `tokenVersionId`, burning the old token and minting a new one. The marketplace's `safeTransferFrom` still references the old token ID - but that token no longer exists. The transaction reverts with `ERC1155InsufficientBalance`, protecting the buyer from receiving a degraded name. If the buyer still wants it, they must re-approve using the new token ID, at which point they can inspect the current roles.
 
@@ -93,7 +93,7 @@ A token ID changes in exactly three situations: a role is granted or revoked, th
 
 ## `anyId` Polymorphism
 
-Because token IDs change, you might not always have the current token ID on hand. To make this easier, most [Permissioned Registry](/contracts/ensv2/permissioned-registry) functions accept a `uint256 anyId` parameter that can be any of:
+Because token IDs change, you might not always have the current token ID on hand. To make this easier, most [Permissioned Registry](/ensv2/permissioned-registry) functions accept a `uint256 anyId` parameter that can be any of:
 
 - A **labelhash** (`keccak256` of the label string)
 - A **token ID** (current or even stale)
@@ -143,7 +143,7 @@ flowchart TD
 Functions that accept `anyId` include: `setSubregistry()`, `setResolver()`, `renew()`, `unregister()`, `getExpiry()`, `getStatus()`, `getState()`, `getTokenId()`, `getResource()`, and all EAC role functions.
 
 :::note
-`anyId` polymorphism is specific to the [Permissioned Registry](/contracts/ensv2/permissioned-registry). The [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) uses a [different resource scheme](/contracts/ensv2/enhanced-access-control#resources) based on `keccak256(node, part)` and does not use `anyId`.
+`anyId` polymorphism is specific to the [Permissioned Registry](/ensv2/permissioned-registry). The [Permissioned Resolver](/ensv2/permissioned-resolver) uses a [different resource scheme](/ensv2/enhanced-access-control#resources) based on `keccak256(node, part)` and does not use `anyId`.
 :::
 
 ## Implications for Developers

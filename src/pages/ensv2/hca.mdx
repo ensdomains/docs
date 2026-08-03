@@ -2,7 +2,7 @@
 description: Hidden Contract Accounts
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Hidden Contract Accounts
 
@@ -44,7 +44,7 @@ OpenZeppelin contracts inherit from one of two `Context` base classes. ENSv2 shi
 - **`HCAContext`** extends `Context`, used by non-upgradeable contracts.
 - **`HCAContextUpgradeable`** extends `ContextUpgradeable`, used by UUPS proxies, e.g. `PermissionedResolver`.
 
-Inheriting either makes every downstream `_msgSender()` call HCA-aware, including the role-check modifiers in [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), `Ownable`, and standard ERC-1155 operator/approval logic.
+Inheriting either makes every downstream `_msgSender()` call HCA-aware, including the role-check modifiers in [Enhanced Access Control](/ensv2/enhanced-access-control), `Ownable`, and standard ERC-1155 operator/approval logic.
 
 ## Where HCA Is Wired
 

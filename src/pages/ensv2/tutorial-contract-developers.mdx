@@ -2,11 +2,11 @@
 description: Build a simplified subname registrar that integrates with ENSv2's Permissioned Registry
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # For Contract Developers
 
-This guide walks through building a simplified subname registrar: a minimal smart contract that lets users register and renew subnames under a parent name you own. It demonstrates the core pattern that all ENSv2 registrars follow, including the production [ETH Registrar](/contracts/ensv2/eth-registrar).
+This guide walks through building a simplified subname registrar: a minimal smart contract that lets users register and renew subnames under a parent name you own. It demonstrates the core pattern that all ENSv2 registrars follow, including the production [ETH Registrar](/ensv2/eth-registrar).
 
 The registrar built here is based on the ETH Registrar, but heavily simplified: commit-reveal, oracle-based pricing, grace periods, and referral tracking are stripped away, leaving the essentials of availability checks, flat-fee ERC20 payments, registration, and renewal.
 
@@ -17,14 +17,14 @@ The contracts and interfaces described here are **not yet final** and may change
 </FrenCallout>
 
 <FrenCallout fren="bittu" variant="tip" title="Prerequisites">
-You should understand the basics of the [Permissioned Registry](/contracts/ensv2/permissioned-registry) (where names are stored and permissions are enforced), [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) (the role-based permission system), and the [Verifiable Factory](/contracts/ensv2/verifiable-factory) (how per-name registries are deployed).
+You should understand the basics of the [Permissioned Registry](/ensv2/permissioned-registry) (where names are stored and permissions are enforced), [Enhanced Access Control](/ensv2/enhanced-access-control) (the role-based permission system), and the [Verifiable Factory](/ensv2/verifiable-factory) (how per-name registries are deployed).
 </FrenCallout>
 
 ## Architecture
 
-In ENSv2, registries and registrars have distinct responsibilities. The **registry** (a [Permissioned Registry](/contracts/ensv2/permissioned-registry) or [UserRegistry](/contracts/ensv2/registry-template#userregistry)) stores names, manages ERC1155 tokens, and enforces permissions. Since each registry is its own contract, the subnames it manages form their own NFT collection, distinct from `.eth` names and from every other subname project. The **registrar** is a separate contract that sits in front of the registry and handles business logic: pricing, payment collection, availability checks, and any registration constraints.
+In ENSv2, registries and registrars have distinct responsibilities. The **registry** (a [Permissioned Registry](/ensv2/permissioned-registry) or [UserRegistry](/ensv2/registry-template#userregistry)) stores names, manages ERC1155 tokens, and enforces permissions. Since each registry is its own contract, the subnames it manages form their own NFT collection, distinct from `.eth` names and from every other subname project. The **registrar** is a separate contract that sits in front of the registry and handles business logic: pricing, payment collection, availability checks, and any registration constraints.
 
-The registrar calls `registry.register()` to create names and `registry.renew()` to extend them. For this to work, the registry owner must grant the registrar two roles on `ROOT_RESOURCE` (the registry-wide resource, whose roles apply to every name in the registry; see [Enhanced Access Control](/contracts/ensv2/enhanced-access-control)):
+The registrar calls `registry.register()` to create names and `registry.renew()` to extend them. For this to work, the registry owner must grant the registrar two roles on `ROOT_RESOURCE` (the registry-wide resource, whose roles apply to every name in the registry; see [Enhanced Access Control](/ensv2/enhanced-access-control)):
 
 | Role | Value | Purpose |
 |------|-------|---------|
@@ -85,7 +85,7 @@ import {IRegistry} from "@ensdomains/contracts-v2/registry/interfaces/IRegistry.
 import {RegistryRolesLib} from "@ensdomains/contracts-v2/registry/libraries/RegistryRolesLib.sol";
 ```
 
-Next, define `REGISTRATION_ROLE_BITMAP` as a file-level constant, between the imports and the contract declaration. It determines what permissions each name owner receives at registration. We use the same bitmap as the [ETH Registrar](/contracts/ensv2/eth-registrar#roles-granted-at-registration):
+Next, define `REGISTRATION_ROLE_BITMAP` as a file-level constant, between the imports and the contract declaration. It determines what permissions each name owner receives at registration. We use the same bitmap as the [ETH Registrar](/ensv2/eth-registrar#roles-granted-at-registration):
 
 ```solidity
 uint256 constant REGISTRATION_ROLE_BITMAP =
@@ -96,10 +96,10 @@ uint256 constant REGISTRATION_ROLE_BITMAP =
     | RegistryRolesLib.ROLE_CAN_TRANSFER_ADMIN;
 ```
 
-This grants name owners the ability to change their resolver, set up a child registry for sub-subnames, and transfer their name. The `_ADMIN` variants of the two setter roles let owners delegate those permissions to other accounts. `ROLE_CAN_TRANSFER_ADMIN` works differently: it is the transfer permission itself, an admin-only role with no non-admin counterpart. See [EAC roles](/contracts/ensv2/enhanced-access-control) for full details.
+This grants name owners the ability to change their resolver, set up a child registry for sub-subnames, and transfer their name. The `_ADMIN` variants of the two setter roles let owners delegate those permissions to other accounts. `ROLE_CAN_TRANSFER_ADMIN` works differently: it is the transfer permission itself, an admin-only role with no non-admin counterpart. See [EAC roles](/ensv2/enhanced-access-control) for full details.
 
 <FrenCallout fren="earl" variant="note" title="Definition – Role Bitmap">
-A role bitmap is a 256-bit integer where each role occupies one 4-bit slot (nybble); see [Bitmap Layout](/contracts/ensv2/enhanced-access-control#bitmap-layout). When `register()` is called on the registry, the bitmap determines which [EAC](/contracts/ensv2/enhanced-access-control) roles the new owner receives on their name's resource. Different registrars can use different bitmaps to create different trust models.
+A role bitmap is a 256-bit integer where each role occupies one 4-bit slot (nybble); see [Bitmap Layout](/ensv2/enhanced-access-control#bitmap-layout). When `register()` is called on the registry, the bitmap determines which [EAC](/ensv2/enhanced-access-control) roles the new owner receives on their name's resource. Different registrars can use different bitmaps to create different trust models.
 </FrenCallout>
 
 ### Contract Shell
@@ -151,9 +151,9 @@ All functions in the following sections go inside this contract body.
 
 ### Checking Availability
 
-To check whether a label is available for registration, query the registry's `getState()` function. It returns a [State struct](/contracts/ensv2/permissioned-registry#querying-name-state) containing the name's status, expiry, latest owner (`latestOwner`), token ID, and resource. A name is available if its status is `AVAILABLE` (either never registered or expired).
+To check whether a label is available for registration, query the registry's `getState()` function. It returns a [State struct](/ensv2/permissioned-registry#querying-name-state) containing the name's status, expiry, latest owner (`latestOwner`), token ID, and resource. A name is available if its status is `AVAILABLE` (either never registered or expired).
 
-The `getState()` function accepts an [anyId](/contracts/ensv2/mutable-token-ids#anyid-polymorphism): a labelhash, token ID, or resource. For a fresh lookup by label, use the labelhash (`keccak256(bytes(label))`).
+The `getState()` function accepts an [anyId](/ensv2/mutable-token-ids#anyid-polymorphism): a labelhash, token ID, or resource. For a fresh lookup by label, use the labelhash (`keccak256(bytes(label))`).
 
 ```solidity
     function isAvailable(string calldata label) public view returns (bool) {
@@ -204,12 +204,12 @@ A few things to note about the `REGISTRY.register()` call:
 
 - `label` is the subname label only (e.g., `"sub"` for `sub.nick.eth`), not the full name
 - `IRegistry(address(0))` means no child registry is set; the owner can set one later via `setSubregistry()` if they want sub-subnames
-- `resolver` is the address of a [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy (or any contract implementing the resolver interface), typically [deployed per account via the Verifiable Factory](/contracts/ensv2/verifiable-factory#deploying-a-resolver-proxy); the owner can change it later with `setResolver()` since they hold `ROLE_SET_RESOLVER`
+- `resolver` is the address of a [Permissioned Resolver](/ensv2/permissioned-resolver) proxy (or any contract implementing the resolver interface), typically [deployed per account via the Verifiable Factory](/ensv2/verifiable-factory#deploying-a-resolver-proxy); the owner can change it later with `setResolver()` since they hold `ROLE_SET_RESOLVER`
 - `expiry` is an **absolute Unix timestamp**, not a duration
-- The returned `tokenId` is the [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token minted to the owner
+- The returned `tokenId` is the [ERC1155Singleton](/ensv2/erc1155-singleton) token minted to the owner
 
 <FrenCallout fren="bittu" variant="tip" title="Developer tip">
-Unlike the ETH Registrar, this contract does not use commit-reveal. Commit-reveal prevents front-running by hiding registration parameters until after the commitment is recorded. For subnames this is typically unnecessary: the parent name owner controls the registry and can [reserve names](/contracts/ensv2/permissioned-registry#name-lifecycle) if needed.
+Unlike the ETH Registrar, this contract does not use commit-reveal. Commit-reveal prevents front-running by hiding registration parameters until after the commitment is recorded. For subnames this is typically unnecessary: the parent name owner controls the registry and can [reserve names](/ensv2/permissioned-registry#name-lifecycle) if needed.
 </FrenCallout>
 
 ### Renewing Names
@@ -238,7 +238,7 @@ Renewal extends a name's expiry without changing ownership or permissions. Anyon
 }
 ```
 
-The registry's `renew()` function accepts an [anyId](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) (here we pass the labelhash) and an absolute `newExpiry` timestamp. The registry enforces that `newExpiry >= oldExpiry`, so the expiry can only increase.
+The registry's `renew()` function accepts an [anyId](/ensv2/mutable-token-ids#anyid-polymorphism) (here we pass the labelhash) and an absolute `newExpiry` timestamp. The registry enforces that `newExpiry >= oldExpiry`, so the expiry can only increase.
 
 The closing brace after `renew()` completes the contract. The full file is below; `forge build` should compile it cleanly.
 
@@ -366,9 +366,9 @@ This contract is provided for educational purposes only, not as a production-gra
 
 The registrar needs a registry to register into. If your parent name does not have one yet, two setup steps are required: deploy a UserRegistry proxy via the Verifiable Factory, then point your parent name at it with `setSubregistry()` on the parent registry.
 
-For the first step, follow [Deploying a Registry Proxy](/contracts/ensv2/verifiable-factory#deploying-a-registry-proxy); the `ProxyDeployed` event in the receipt gives you the proxy address (`userRegistryAddress` below). Choose the `roleBitmap` passed to `initialize()` carefully: granting a role later via `grantRootRoles()` requires holding that role's `_ADMIN` variant, so the bitmap must include at least `ROLE_REGISTRAR_ADMIN` and `ROLE_RENEW_ADMIN` for the authorization step below to succeed.
+For the first step, follow [Deploying a Registry Proxy](/ensv2/verifiable-factory#deploying-a-registry-proxy); the `ProxyDeployed` event in the receipt gives you the proxy address (`userRegistryAddress` below). Choose the `roleBitmap` passed to `initialize()` carefully: granting a role later via `grantRootRoles()` requires holding that role's `_ADMIN` variant, so the bitmap must include at least `ROLE_REGISTRAR_ADMIN` and `ROLE_RENEW_ADMIN` for the authorization step below to succeed.
 
-The second step is what connects the new registry to the ENS hierarchy. The [Universal Resolver](/contracts/ensv2/universal-resolver-v2) finds subnames by walking `getSubregistry()` calls down from the root, so until your parent name points at the UserRegistry, names registered in it mint tokens but never resolve. You hold `ROLE_SET_SUBREGISTRY` on your name from registration, so this call needs no extra setup:
+The second step is what connects the new registry to the ENS hierarchy. The [Universal Resolver](/ensv2/universal-resolver-v2) finds subnames by walking `getSubregistry()` calls down from the root, so until your parent name points at the UserRegistry, names registered in it mint tokens but never resolve. You hold `ROLE_SET_SUBREGISTRY` on your name from registration, so this call needs no extra setup:
 
 ```typescript
 import { keccak256, toHex, parseAbi } from 'viem'
@@ -387,7 +387,7 @@ await wallet.writeContract({
 })
 ```
 
-The `wallet` object in the TypeScript snippets on this page is a viem wallet client; its setup is shown in [Client Integration](#client-integration) below. The protocol contract addresses (like `ethRegistryAddress`) are listed in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
+The `wallet` object in the TypeScript snippets on this page is a viem wallet client; its setup is shown in [Client Integration](#client-integration) below. The protocol contract addresses (like `ethRegistryAddress`) are listed in the [Deployments](/ensv2/overview#deployments-sepolia) table.
 
 ### Deploy the Registrar
 
@@ -459,7 +459,7 @@ await wallet.writeContract({
 `ROLE_REGISTRAR` authorizes the registrar to register **any** name under your registry, and `ROLE_RENEW` lets it extend **any** name's expiry. Only grant these roles to contracts you trust and have audited.
 </FrenCallout>
 
-Trust works in both directions: the roles that remain on `ROOT_RESOURCE` define how much subname owners must trust *you*. See [Configuration Patterns](/contracts/ensv2/registry-template#configuration-patterns) for the managed versus emancipated trade-off, and [Emancipation](/contracts/ensv2/permissioned-registry#emancipation) for how owners can verify your registry's setup.
+Trust works in both directions: the roles that remain on `ROOT_RESOURCE` define how much subname owners must trust *you*. See [Configuration Patterns](/ensv2/registry-template#configuration-patterns) for the managed versus emancipated trade-off, and [Emancipation](/ensv2/permissioned-registry#emancipation) for how owners can verify your registry's setup.
 
 ## Client Integration
 
@@ -609,10 +609,10 @@ A single `register()` call triggers events from **two contracts**: the registrar
 Renewals follow the same pattern: `renew()` emits the registrar's `NameRenewed` and the registry's `ExpiryUpdated`. Indexing only the registrar's events would miss renewals performed by other `ROLE_RENEW` holders directly on the registry.
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-Both custom events index the token ID, but token IDs in ENSv2 are **mutable**: they change whenever roles are granted or revoked on a name, and on re-registration after expiry. Key your index on the labelhash and follow `TokenRegenerated` events to track ID changes. See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#dont-cache-token-ids).
+Both custom events index the token ID, but token IDs in ENSv2 are **mutable**: they change whenever roles are granted or revoked on a name, and on re-registration after expiry. Key your index on the labelhash and follow `TokenRegenerated` events to track ID changes. See [Mutable Token IDs](/ensv2/mutable-token-ids#dont-cache-token-ids).
 </FrenCallout>
 
-For the full event reference, parameter details, and indexing patterns, see [Indexing ENSv2](/contracts/ensv2/indexing).
+For the full event reference, parameter details, and indexing patterns, see [Indexing ENSv2](/ensv2/indexing).
 
 ## Troubleshooting
 
@@ -627,9 +627,9 @@ For the full event reference, parameter details, and indexing patterns, see [Ind
 
 The `SimpleSubnameRegistrar` covers the core registration pattern. Here are common extensions you might add:
 
-- **Commit-reveal**: prevent front-running by requiring a commitment before registration. See how the [ETH Registrar](/contracts/ensv2/eth-registrar#commit-reveal) implements this.
+- **Commit-reveal**: prevent front-running by requiring a commitment before registration. See how the [ETH Registrar](/ensv2/eth-registrar#commit-reveal) implements this.
 - **Allowlists or NFT-gating**: restrict who can register by checking token balances or merkle proofs in `register()`.
 - **Custom role bitmaps**: use different `REGISTRATION_ROLE_BITMAP` values for different registration tiers (e.g., premium names get fewer restrictions).
 - **Infinite-duration claims**: for permanent subnames, pass `type(uint64).max` as the expiry instead of computing it from a duration. `renew()` and the `ROLE_RENEW` grant become unnecessary, but abandoned names never return to the available pool; removing one then requires the operator to hold `ROLE_UNREGISTER`, a trust tradeoff expiry-based recycling avoids.
 - **Grace periods**: keep expired names renewable for a window before they become available to others.
-- **Custom registries**: for deeper customization, build your own registry by extending `PermissionedRegistry` directly. See [Registry Template](/contracts/ensv2/registry-template#building-your-own-registry).
+- **Custom registries**: for deeper customization, build your own registry by extending `PermissionedRegistry` directly. See [Registry Template](/ensv2/registry-template#building-your-own-registry).

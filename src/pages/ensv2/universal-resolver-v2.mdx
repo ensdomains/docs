@@ -2,13 +2,13 @@
 description: The Universal Resolver V2 - single entry point for resolving names and navigating the ENSv2 registry hierarchy
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { ContractReference } from '../../../components/ensv2/ContractReference'
-import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { ContractReference } from '../../components/ensv2/ContractReference'
+import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Universal Resolver V2
 
-The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/contracts/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. It also provides functions for navigating and verifying the registry hierarchy itself.
+The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. It also provides functions for navigating and verifying the registry hierarchy itself.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -31,7 +31,7 @@ The Universal Resolver resolves names by walking down the registry tree from the
 
 `resolve()` and `reverse()` both call `findResolver` internally via `requireResolver`, which reverts if no suitable resolver is found.
 
-Using the structure from the [registry hierarchy diagrams](/contracts/ensv2/registry-hierarchy#from-flat-to-hierarchical), here are two examples showing how `findResolver()` walks the tree:
+Using the structure from the [registry hierarchy diagrams](/ensv2/registry-hierarchy#from-flat-to-hierarchical), here are two examples showing how `findResolver()` walks the tree:
 
 ### Example 1
 
@@ -236,10 +236,10 @@ If a name has no subregistry at some level, that position in the array is `addre
 ### findCanonicalName
 
 <FrenCallout fren="earl" variant="note" title="Definition – Canonical Name">
-A registry's **canonical name** is the DNS-encoded name produced by `findCanonicalName`: it walks up the verified [parent pointer](/contracts/ensv2/permissioned-registry#parent-pointer) chain from the registry to root, reconstructing the name at each step.
+A registry's **canonical name** is the DNS-encoded name produced by `findCanonicalName`: it walks up the verified [parent pointer](/ensv2/permissioned-registry#parent-pointer) chain from the registry to root, reconstructing the name at each step.
 </FrenCallout>
 
-Because registries have no inherent concept of "their name" (a registry can be mounted at multiple positions via [namespace aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing)), a canonical name only exists when both directions of the hierarchy agree: `setParent()` establishes the backward pointer, and `findCanonicalName` verifies at each step that the parent's forward pointer (`getSubregistry`) points back to the same registry.
+Because registries have no inherent concept of "their name" (a registry can be mounted at multiple positions via [namespace aliasing](/ensv2/registry-hierarchy#namespace-aliasing)), a canonical name only exists when both directions of the hierarchy agree: `setParent()` establishes the backward pointer, and `findCanonicalName` verifies at each step that the parent's forward pointer (`getSubregistry`) points back to the same registry.
 
 For the `nick.eth` subregistry (walking upward):
 
@@ -263,7 +263,7 @@ The bidirectional check prevents aliasing attacks: a registry could be mounted a
 
 ### findOwner
 
-Finds the current owner of a name. `IOwnedRegistry` is a minimal interface that extends `IRegistry` with a single `findOwner(label)` function, returning the owner of a label. [PermissionedRegistry](/contracts/ensv2/permissioned-registry) implements it, but any custom registry with ownership can too.
+Finds the current owner of a name. `IOwnedRegistry` is a minimal interface that extends `IRegistry` with a single `findOwner(label)` function, returning the owner of a label. [PermissionedRegistry](/ensv2/permissioned-registry) implements it, but any custom registry with ownership can too.
 
 For `nick.eth`:
 
