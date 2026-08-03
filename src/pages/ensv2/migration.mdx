@@ -2,7 +2,7 @@
 description: Migrating ENS names from v1 to v2 - premigration, migration paths, fuse conversion, and ENSv1 continuity
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Migration
 
@@ -13,7 +13,7 @@ The contracts and interfaces described here are **not yet final** and may change
 </FrenCallout>
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. New registrations go through the v2 [ETH Registrar](/contracts/ensv2/eth-registrar). Migrated names are renewed via the ETH Registrar; unmigrated ([RESERVED](#key-definitions)) names are renewed via [`ETHRenewerV1`](#renewals), which syncs the expiry back to v1. Names in v1 will simply expire and can never be re-registered through v1.
+Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. New registrations go through the v2 [ETH Registrar](/ensv2/eth-registrar). Migrated names are renewed via the ETH Registrar; unmigrated ([RESERVED](#key-definitions)) names are renewed via [`ETHRenewerV1`](#renewals), which syncs the expiry back to v1. Names in v1 will simply expire and can never be re-registered through v1.
 </FrenCallout>
 
 ## What You Need to Do
@@ -35,7 +35,7 @@ Premigration happens automatically. To migrate your name to v2:
 If your name is in the v1 grace period, use `ETHRenewerV1` to renew it first.
 
 <FrenCallout fren="peanut" variant="note">
-Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/contracts/ensv2/permissioned-resolver#eac-integration), [aliasing](/contracts/ensv2/permissioned-resolver#aliasing), and the new resolver.
+Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/ensv2/permissioned-resolver#eac-integration), [aliasing](/ensv2/permissioned-resolver#aliasing), and the new resolver.
 </FrenCallout>
 
 ### Subname Owners
@@ -97,7 +97,7 @@ Both Locked and Detached are subtypes of **Emancipated** (`PARENT_CANNOT_CONTROL
 | Constant | Value | Description |
 |----------|-------|-------------|
 | `GRACE_PERIOD_V1` | 90 days | Post-expiry window in ENSv1 where the owner can still renew |
-| `GRACE_PERIOD_V2` | 28 days | Post-expiry window in ENSv2 where the owner can still renew via the [ETH Registrar](/contracts/ensv2/eth-registrar) |
+| `GRACE_PERIOD_V2` | 28 days | Post-expiry window in ENSv2 where the owner can still renew via the [ETH Registrar](/ensv2/eth-registrar) |
 | `BONUS_PERIOD` | ~62 days | `GRACE_PERIOD_V1 - GRACE_PERIOD_V2` (plus 1 second due to boundary handling). Added to v1 expiry during premigration so that the v2 reservation does not expire before v1's grace period ends |
 
 ## Premigration
@@ -126,7 +126,7 @@ Unwrapped 2LD names (BaseRegistrar ERC-721 tokens) are migrated via the `Unlocke
 2. The controller reclaims the token on the BaseRegistrar, transfers v1 registry ownership to the Graveyard, and clears the v1 resolver
 3. The ERC-721 token is sent to the Graveyard
 4. The name is promoted from RESERVED to REGISTERED in the v2 ETH Registry with the provided parameters
-5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/contracts/ensv2/eth-registrar#roles-granted-at-registration))
+5. The token is granted the same roles as a fresh `ETHRegistrar.register()` ([REGISTRATION_ROLE_BITMAP](/ensv2/eth-registrar#roles-granted-at-registration))
 
 ### Unlocked Wrapped Names
 
@@ -155,7 +155,7 @@ The migration flow:
 2. The receiver branches on the token type: locked tokens continue with the steps below, detached tokens follow their own path (see [Detached Names](#detached-names)), and anything else reverts (`NameNotLocked`)
 3. If `CANNOT_APPROVE` is burned and `getApproved()` is non-null after transfer, migration reverts (`FrozenTokenApproval`). If `CANNOT_APPROVE` is not burned, any approval is automatically cleared during the transfer, so this cannot trigger.
 4. ENSv1 [fuses](/wrapper/fuses) are converted to ENSv2 roles (see [Fuse-to-Role Conversion](#fuse-to-role-conversion))
-5. A `WrapperRegistry` is always deployed as the subregistry, replicating the v1 fuse-based access control using v2's [EAC](/contracts/ensv2/enhanced-access-control) system
+5. A `WrapperRegistry` is always deployed as the subregistry, replicating the v1 fuse-based access control using v2's [EAC](/ensv2/enhanced-access-control) system
 6. The v1 resolver is cleared and the v2 name gets the resolver from the transfer data, **unless** `CANNOT_SET_RESOLVER` is burned, in which case the transfer-data resolver is ignored and the existing v1 resolver is carried over to v2. If the carried-over resolver is a known `PublicResolver`, it is replaced with `PublicResolverV2`
 7. The token is **not unwrapped** but is transferred to the Graveyard as an ERC-1155 token
 8. The name is promoted from RESERVED to REGISTERED (for 2LD) or registered directly (for 3LD+) with the converted roles
@@ -186,7 +186,7 @@ Admin roles (the `<< 128` shifted counterparts) are only granted when `CANNOT_BU
 
 ### Subregistry Roles
 
-These roles are granted to the name owner on the WrapperRegistry's [`ROOT_RESOURCE`](/contracts/ensv2/enhanced-access-control#resources), giving them contract-wide authority over the subregistry.
+These roles are granted to the name owner on the WrapperRegistry's [`ROOT_RESOURCE`](/ensv2/enhanced-access-control#resources), giving them contract-wide authority over the subregistry.
 
 | ENSv1 Fuse | ENSv2 Role | Granted when fuse is... |
 |------------|-----------|------------------------|

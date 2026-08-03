@@ -2,7 +2,7 @@
 description: How PermissionedRegistry serves as a unified, extensible template for all ENSv2 registries
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Registry Template
 
@@ -14,14 +14,14 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## One Registry to Rule Them All
 
-[PermissionedRegistry](/contracts/ensv2/permissioned-registry) is not just the contract that manages `.eth` names. It's the template that every registry in the ENSv2 hierarchy is built from. Whether it's the root `.eth` registry, a project running a subdomain service, or a DAO managing community names, they all use the same base contract.
+[PermissionedRegistry](/ensv2/permissioned-registry) is not just the contract that manages `.eth` names. It's the template that every registry in the ENSv2 hierarchy is built from. Whether it's the root `.eth` registry, a project running a subdomain service, or a DAO managing community names, they all use the same base contract.
 
 This means every registry in the tree shares the same:
 
-- **[ERC1155Singleton](/contracts/ensv2/erc1155-singleton)** token model: each name is an NFT with a single owner
-- **[Enhanced Access Control](/contracts/ensv2/enhanced-access-control)** permission system: roles, admin roles, resource scoping
-- **[Mutable Token IDs](/contracts/ensv2/mutable-token-ids)**: version counters that protect against stale permissions and transfer griefing
-- **[anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism)**: accept labelhash, tokenId, or resource interchangeably
+- **[ERC1155Singleton](/ensv2/erc1155-singleton)** token model: each name is an NFT with a single owner
+- **[Enhanced Access Control](/ensv2/enhanced-access-control)** permission system: roles, admin roles, resource scoping
+- **[Mutable Token IDs](/ensv2/mutable-token-ids)**: version counters that protect against stale permissions and transfer griefing
+- **[anyId polymorphism](/ensv2/mutable-token-ids#anyid-polymorphism)**: accept labelhash, tokenId, or resource interchangeably
 - **Name lifecycle**: the same AVAILABLE → REGISTERED state machine (with optional reservation)
 
 ## Customizing via Inheritance
@@ -31,13 +31,13 @@ To create a custom registry, you inherit from `PermissionedRegistry` and overrid
 ENSv2 ships two derived registries:
 
 - **UserRegistry**: for user-owned subdomain registries (described below)
-- **WrapperRegistry**: a migration-specific variant that receives locked Name Wrapper tokens from ENSv1 (see [Migration](/contracts/ensv2/migration))
+- **WrapperRegistry**: a migration-specific variant that receives locked Name Wrapper tokens from ENSv1 (see [Migration](/ensv2/migration))
 
 ### UserRegistry
 
 A UUPS-upgradeable proxy designed for user-owned subdomain registries. It adds:
 
-- Proxy-based deployment via [`VerifiableFactory`](/contracts/ensv2/verifiable-factory) (cheap per-name deployments)
+- Proxy-based deployment via [`VerifiableFactory`](/ensv2/verifiable-factory) (cheap per-name deployments)
 - An `initialize()` function that grants initial roles to the `rootAccount`
 - Upgrade authorization gated by `ROLE_UPGRADE`
 
@@ -91,7 +91,7 @@ graph BT
 | `IStandardRegistry` | `ITemporalRegistry`, `ITokenizedRegistry` | `register`, `renew`, `unregister`, `setSubregistry`, `setResolver`, `setParent`, `getExpiry` |
 | `IPermissionedRegistry` | `IStandardRegistry`, `IEnhancedAccessControl` | `latestOwnerOf`, `getState`, `getStatus`, `getResource`, `getTokenId` |
 
-`IRegistry` is the minimum for participating in ENS resolution: the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) only needs `getSubregistry`, `getResolver`, and `getParent` to walk the hierarchy. The intermediate interfaces are opt-in capability layers that URv2 detects via [ERC-165](https://eips.ethereum.org/EIPS/eip-165) (for example, [`findOwner`](/contracts/ensv2/universal-resolver-v2#findowner) checks for `IOwnedRegistry` before calling it). Most custom registries should extend PermissionedRegistry directly for the full feature set.
+`IRegistry` is the minimum for participating in ENS resolution: the [Universal Resolver V2](/ensv2/universal-resolver-v2) only needs `getSubregistry`, `getResolver`, and `getParent` to walk the hierarchy. The intermediate interfaces are opt-in capability layers that URv2 detects via [ERC-165](https://eips.ethereum.org/EIPS/eip-165) (for example, [`findOwner`](/ensv2/universal-resolver-v2#findowner) checks for `IOwnedRegistry` before calling it). Most custom registries should extend PermissionedRegistry directly for the full feature set.
 
 ### Which Interface to Target
 
@@ -132,7 +132,7 @@ Since the roles on `ROOT_RESOURCE` overlap with member token roles (e.g. the ope
 
 An emancipated registry separates operator and owner roles so that no `ROOT_RESOURCE` role can interfere with individual name owners. This is how the `.eth` registry works: the registrar holds only `ROLE_REGISTRAR` and `ROLE_RENEW`, while name owners hold `ROLE_SET_RESOLVER`, `ROLE_SET_SUBREGISTRY`, and `ROLE_CAN_TRANSFER_ADMIN` on their own tokens.
 
-See [Permissioned Registry: Emancipation](/contracts/ensv2/permissioned-registry#emancipation) for the full definition, verification steps, and how emancipation works across the hierarchy.
+See [Permissioned Registry: Emancipation](/ensv2/permissioned-registry#emancipation) for the full definition, verification steps, and how emancipation works across the hierarchy.
 
 ## Building Your Own Registry
 

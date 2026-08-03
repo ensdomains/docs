@@ -2,8 +2,8 @@
 description: Guide to indexing ENSv2 contracts, functions, and events for building indexers and subgraphs
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { MonoDiagram } from '../../../components/ensv2/MonoDiagram'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Indexing ENSv2
 
@@ -19,9 +19,9 @@ ENSv2 uses a hierarchical registry model. There is no single registry contract t
 
 <MonoDiagram content={`RootRegistry (PermissionedRegistry)\n└── ETHRegistry (PermissionedRegistry) — manages *.eth\n    ├── name.eth (token in ETHRegistry)\n    │   └── UserRegistry — manages *.name.eth\n    │       ├── sub.name.eth (token in UserRegistry)\n    │       │   └── UserRegistry — manages *.sub.name.eth\n    │       │       └── ...\n    │       └── ...\n    └── ...`} />
 
-Each registry is a [Permissioned Registry](/contracts/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) (one token per name).
+Each registry is a [Permissioned Registry](/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/ensv2/erc1155-singleton) (one token per name).
 
-Resolvers are separate contracts ([Permissioned Resolver](/contracts/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [aliases](/contracts/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
+Resolvers are separate contracts ([Permissioned Resolver](/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [aliases](/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
 
 ## Registry Events
 
@@ -52,7 +52,7 @@ event LabelRegistered(
 
 **When:** a new name is registered via `register()`. The full name is constructed by appending the parent name (e.g., label `"test"` under ETHRegistry = `"test.eth"`). The registry contract address that emitted this event identifies which level of the hierarchy this name belongs to.
 
-The `sender` parameter is the account that called `register()`. For normal `.eth` registrations this is the ETHRegistrar; for names [migrated from ENSv1](/contracts/ensv2/migration) it is a migration controller, since migration bypasses the registrar and calls `register()` on the ETHRegistry directly. Checking `sender` against the known migration controller addresses is how an indexer distinguishes migrated names from fresh registrations.
+The `sender` parameter is the account that called `register()`. For normal `.eth` registrations this is the ETHRegistrar; for names [migrated from ENSv1](/ensv2/migration) it is a migration controller, since migration bypasses the registrar and calls `register()` on the ETHRegistry directly. Checking `sender` against the known migration controller addresses is how an indexer distinguishes migrated names from fresh registrations.
 
 ### LabelReserved
 
@@ -122,7 +122,7 @@ event TokenRegenerated(uint256 indexed oldTokenId, uint256 indexed newTokenId);
 
 **Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
 
-**When:** a name's [EAC roles](/contracts/ensv2/enhanced-access-control) are modified via `grantRoles()` or `revokeRoles()`. The ERC1155 token ID changes (its version counter increments), while the underlying name (canonical ID / resource) remains the same. Always accompanied by ERC1155 `TransferSingle` events (burn old + mint new). See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids) for details.
+**When:** a name's [EAC roles](/ensv2/enhanced-access-control) are modified via `grantRoles()` or `revokeRoles()`. The ERC1155 token ID changes (its version counter increments), while the underlying name (canonical ID / resource) remains the same. Always accompanied by ERC1155 `TransferSingle` events (burn old + mint new). See [Mutable Token IDs](/ensv2/mutable-token-ids) for details.
 
 ### ParentUpdated
 
@@ -144,7 +144,7 @@ event TokenResource(uint256 indexed tokenId, uint256 indexed resource);
 
 **Emitted by:** `IPermissionedRegistry`
 
-**When:** a token is created during registration (`register()`). Maps a `tokenId` to its corresponding `resource`. It is **not** re-emitted on token regeneration: the `resource` is derived from the `labelHash` and `eacVersionId`, so it stays stable across role-change regenerations (which only bump the `tokenVersionId`), and you should carry it onto the new `tokenId` by following [`TokenRegenerated`](#tokenregenerated) rather than expecting a fresh `TokenResource`. The `resource` does change on re-registration (which increments `eacVersionId`), at which point the new `register()` emits a fresh `TokenResource`. See [Mutable Token IDs](/contracts/ensv2/mutable-token-ids#id-types) for details.
+**When:** a token is created during registration (`register()`). Maps a `tokenId` to its corresponding `resource`. It is **not** re-emitted on token regeneration: the `resource` is derived from the `labelHash` and `eacVersionId`, so it stays stable across role-change regenerations (which only bump the `tokenVersionId`), and you should carry it onto the new `tokenId` by following [`TokenRegenerated`](#tokenregenerated) rather than expecting a fresh `TokenResource`. The `resource` does change on re-registration (which increments `eacVersionId`), at which point the new `register()` emits a fresh `TokenResource`. See [Mutable Token IDs](/ensv2/mutable-token-ids#id-types) for details.
 
 ## ERC1155 Transfer Events
 
@@ -185,7 +185,7 @@ event TransferBatch(
 
 ## Registrar Events
 
-These events are emitted by the [ETH Registrar](/contracts/ensv2/eth-registrar) contract, which is the user-facing entry point for `.eth` name registration (with commit-reveal and pricing).
+These events are emitted by the [ETH Registrar](/ensv2/eth-registrar) contract, which is the user-facing entry point for `.eth` name registration (with commit-reveal and pricing).
 
 ### CommitmentMade
 
@@ -242,7 +242,7 @@ event NameRenewed(
 
 ## Resolver Events
 
-These events are emitted by [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) contracts and any contract implementing the standard resolver profile interfaces. Resolvers are keyed by `node` (namehash of the full name).
+These events are emitted by [Permissioned Resolver](/ensv2/permissioned-resolver) contracts and any contract implementing the standard resolver profile interfaces. Resolvers are keyed by `node` (namehash of the full name).
 
 ### AddressChanged
 
@@ -336,7 +336,7 @@ event AliasChanged(
 event NamedResource(uint256 indexed resource, bytes name);
 ```
 
-**When:** an EAC resource is associated with a name for [fine-grained permission control](/contracts/ensv2/permissioned-resolver#eac-integration) on the resolver.
+**When:** an EAC resource is associated with a name for [fine-grained permission control](/ensv2/permissioned-resolver#eac-integration) on the resolver.
 
 ### NamedTextResource
 
@@ -367,7 +367,7 @@ event EACRolesChanged(
 );
 ```
 
-**Emitted by:** every contract inheriting [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), which includes **both registries and resolvers**.
+**Emitted by:** every contract inheriting [Enhanced Access Control](/ensv2/enhanced-access-control), which includes **both registries and resolvers**.
 
 **When:** the roles of `account` on `resource` change. On registries this happens via `grantRoles()` / `revokeRoles()` (which also trigger [`TokenRegenerated`](#tokenregenerated)) and once at creation, when the initial root role bitmap is granted to the registry owner (in the `constructor`, or in `initialize()` for proxy-deployed registries). On resolvers it happens via `initialize()` and the `authorize(Name|Text|Addr)Roles()` functions.
 
@@ -387,7 +387,7 @@ An indexer cannot know all contract addresses at startup. The core pattern is:
 
 This creates a self-expanding set of monitored contracts.
 
-Link-time discovery has a blind spot: anything a registry or resolver emits **before** it is linked (its `RegistryCreated`, the initial `EACRolesChanged` root grant from `initialize()`, or records set before linking) predates the discovery point. Since registries and resolvers are deployed as proxies through the [Verifiable Factory](/contracts/ensv2/verifiable-factory), which emits `ProxyDeployed(sender, proxy, salt, implementation)`, watching the factory address discovers contracts at deployment time instead and closes that gap.
+Link-time discovery has a blind spot: anything a registry or resolver emits **before** it is linked (its `RegistryCreated`, the initial `EACRolesChanged` root grant from `initialize()`, or records set before linking) predates the discovery point. Since registries and resolvers are deployed as proxies through the [Verifiable Factory](/ensv2/verifiable-factory), which emits `ProxyDeployed(sender, proxy, salt, implementation)`, watching the factory address discovers contracts at deployment time instead and closes that gap.
 
 Note the log order inside a deployment transaction: `deployProxy()` calls `initialize()` on the new proxy **before** emitting `ProxyDeployed`. For a UserRegistry deployment the sequence is `Upgraded` → `RegistryCreated` → `EACRolesChanged` → `ProxyDeployed`. An indexer that discovers a contract from `ProxyDeployed` must therefore also process the earlier logs of that same transaction.
 
@@ -440,7 +440,7 @@ Names can be in one of three states (from `IPermissionedRegistry.Status`):
 
 After expiry, names return to `AVAILABLE`. Re-registration creates both a new `tokenId` and a new `resource` (both version counters increment).
 
-For `.eth` names, the [ETH Registrar](/contracts/ensv2/eth-registrar) adds a grace period on top of the registry status: `GRACE_PERIOD` is an immutable constructor parameter, and while it runs an expired name cannot be re-registered but can still be renewed. No event marks entering or leaving grace (or the premium window that follows), so `.eth` availability must be computed client-side from the expiry, the grace constant, and the current time. A plain "expired means available" check is wrong for `.eth` names in grace.
+For `.eth` names, the [ETH Registrar](/ensv2/eth-registrar) adds a grace period on top of the registry status: `GRACE_PERIOD` is an immutable constructor parameter, and while it runs an expired name cannot be re-registered but can still be renewed. No event marks entering or leaving grace (or the premium window that follows), so `.eth` availability must be computed client-side from the expiry, the grace constant, and the current time. A plain "expired means available" check is wrong for `.eth` names in grace.
 
 ### Event Processing Order
 
@@ -461,7 +461,7 @@ For a direct `IStandardRegistry.register()` call (e.g., on a UserRegistry):
 4. `SubregistryUpdated` - if a subregistry was provided
 5. `ResolverUpdated` - if a resolver was provided
 
-For a name [migrated from ENSv1](/contracts/ensv2/migration), the migration controllers call `register()` on the ETHRegistry directly, so only the registry sequence fires: there is no `CommitmentMade` and no registrar `NameRegistered`, and `LabelRegistered.sender` is the migration controller.
+For a name [migrated from ENSv1](/ensv2/migration), the migration controllers call `register()` on the ETHRegistry directly, so only the registry sequence fires: there is no `CommitmentMade` and no registrar `NameRegistered`, and `LabelRegistered.sender` is the migration controller.
 
 ## Contract Address Summary
 

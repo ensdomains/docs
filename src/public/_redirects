@@ -124,3 +124,7 @@
 /dao/airdrop /dao/token
 /web/namehash /resolution/names#namehash
 /ensips /ensip
+/contracts/ensv2/registries /ensv2/registry-hierarchy 301
+/contracts/ensv2/resolvers /ensv2/permissioned-resolver 301
+/contracts/ensv2/* /ensv2/:splat 301
+/v2ready /web/ensv2-readiness 302

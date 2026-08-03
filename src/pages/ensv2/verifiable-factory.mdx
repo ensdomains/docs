@@ -2,13 +2,13 @@
 description: Verifiable Factory
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Verifiable Factory
 
-ENSv2's default setup deploys per-account resolvers and per-name subname registries through a single shared factory, replacing the v1 Public Resolver with individual [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxies per account. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. The factory is maintained in a [separate repository](https://github.com/ensdomains/verifiable-factory). This page covers how the protocol uses it.
+ENSv2's default setup deploys per-account resolvers and per-name subname registries through a single shared factory, replacing the v1 Public Resolver with individual [Permissioned Resolver](/ensv2/permissioned-resolver) proxies per account. Each instance is a UUPS proxy with a deterministic CREATE2 address and an on-chain proof of provenance. The factory is maintained in a [separate repository](https://github.com/ensdomains/verifiable-factory). This page covers how the protocol uses it.
 
-The factory is the **default** deployment mechanism, not a protocol requirement. Custom resolver contracts are fully supported: `setResolver()` on the [Permissioned Registry](/contracts/ensv2/permissioned-registry) accepts any address. You can deploy your own resolver implementing `IExtendedResolver` (or the standard resolver profiles) without using the factory.
+The factory is the **default** deployment mechanism, not a protocol requirement. Custom resolver contracts are fully supported: `setResolver()` on the [Permissioned Registry](/ensv2/permissioned-registry) accepts any address. You can deploy your own resolver implementing `IExtendedResolver` (or the standard resolver profiles) without using the factory.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -16,7 +16,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## Why a Factory
 
-ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/contracts/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
+ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
 
 - **Deterministic**: the address is known before deployment.
 - **Verifiable**: anyone can prove on-chain that an arbitrary address really came from this factory with a known proxy bytecode.
@@ -136,7 +136,7 @@ This is useful whenever you need a name's resolver or subname-registry address b
 Every proxy deployment follows the same steps: compute a salt, encode the implementation's `initialize` call as the `data` argument, and call `deployProxy` on the factory. The salt and initializer differ per implementation.
 
 <FrenCallout fren="bittu" variant="tip">
-The contract addresses used below (`VERIFIABLE_FACTORY`, `PERMISSIONED_RESOLVER_IMPL`, `USER_REGISTRY_IMPL`) are protocol-deployed contracts. Find them in the [Deployments](/contracts/ensv2/overview#deployments-sepolia) table.
+The contract addresses used below (`VERIFIABLE_FACTORY`, `PERMISSIONED_RESOLVER_IMPL`, `USER_REGISTRY_IMPL`) are protocol-deployed contracts. Find them in the [Deployments](/ensv2/overview#deployments-sepolia) table.
 </FrenCallout>
 
 Both examples below share this setup:
@@ -175,7 +175,7 @@ const ALL_ROLES =
 
 ### Deploying a Resolver Proxy
 
-Deploy a per-account [Permissioned Resolver](/contracts/ensv2/permissioned-resolver). The salt is derived from the owner's address so that any client can predict the resolver address before it exists.
+Deploy a per-account [Permissioned Resolver](/ensv2/permissioned-resolver). The salt is derived from the owner's address so that any client can predict the resolver address before it exists.
 
 ```ts [Viem]
 const resolverInitAbi = parseAbi([
@@ -217,11 +217,11 @@ const [resolverLog] = parseEventLogs({
 const resolverAddress = resolverLog.args.proxyAddress
 ```
 
-The `resolverAddress` is now a fully initialized Permissioned Resolver proxy. Point a name to it via `setResolver` on the registry, then use it to [set records and delegate access](/contracts/ensv2/permissioned-resolver#code-examples).
+The `resolverAddress` is now a fully initialized Permissioned Resolver proxy. Point a name to it via `setResolver` on the registry, then use it to [set records and delegate access](/ensv2/permissioned-resolver#code-examples).
 
 ### Deploying a Registry Proxy
 
-Deploy a per-name [User Registry](/contracts/ensv2/permissioned-registry) for managing subnames. The salt is derived from the name's namehash.
+Deploy a per-name [User Registry](/ensv2/permissioned-registry) for managing subnames. The salt is derived from the name's namehash.
 
 ```ts [Viem]
 const registryInitAbi = parseAbi([
@@ -263,4 +263,4 @@ const [registryLog] = parseEventLogs({
 const registryAddress = registryLog.args.proxyAddress
 ```
 
-The `registryAddress` is now a User Registry proxy. Set it as the subregistry for a name via `setSubregistry` on the parent registry, then use it to [manage subnames and roles](/contracts/ensv2/permissioned-registry#code-examples).
+The `registryAddress` is now a User Registry proxy. Set it as the subregistry for a name via `setSubregistry` on the parent registry, then use it to [manage subnames and roles](/ensv2/permissioned-registry#code-examples).

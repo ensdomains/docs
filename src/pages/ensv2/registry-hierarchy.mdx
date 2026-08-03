@@ -2,7 +2,7 @@
 description: How ENSv2's hierarchical registry model works - tree structure, resolution, subtree operations, and namespace aliasing
 ---
 
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # Registry Hierarchy
 
@@ -91,9 +91,9 @@ These three functions are what enable the hierarchical model:
 
 - **`getSubregistry(label)`**: links a name to its child registry. This is how the tree is traversed downward during resolution.
 - **`getResolver(label)`**: links a name to its resolver contract. This is how records are found during resolution.
-- **`getParent()`**: links a registry back to its parent. This is how the [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) verifies canonical registry chains.
+- **`getParent()`**: links a registry back to its parent. This is how the [Universal Resolver V2](/ensv2/universal-resolver-v2) verifies canonical registry chains.
 
-`IRegistry` is deliberately minimal. It says nothing about tokens, permissions, or name lifecycle. The [Permissioned Registry](/contracts/ensv2/permissioned-registry) is the standard implementation that adds [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) tokenization, [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), expiry management, and [mutable token IDs](/contracts/ensv2/mutable-token-ids). But a custom registry could implement `IRegistry` with entirely different ownership and access models.
+`IRegistry` is deliberately minimal. It says nothing about tokens, permissions, or name lifecycle. The [Permissioned Registry](/ensv2/permissioned-registry) is the standard implementation that adds [ERC1155Singleton](/ensv2/erc1155-singleton) tokenization, [Enhanced Access Control](/ensv2/enhanced-access-control), expiry management, and [mutable token IDs](/ensv2/mutable-token-ids). But a custom registry could implement `IRegistry` with entirely different ownership and access models.
 
 ### IRegistryEvents
 
@@ -114,7 +114,7 @@ These three functions are what enable the hierarchical model:
 
 Resolution works by walking down the registry tree from root, querying `getResolver()` and `getSubregistry()` at each level. The deepest resolver found along the path wins (longest-suffix match). If a name has no resolver of its own, it inherits the resolver of its closest ancestor that does.
 
-See [Resolution: findResolver](/contracts/ensv2/universal-resolver-v2#resolution) on the Universal Resolver V2 page for the full algorithm and step-by-step examples with diagrams.
+See [Resolution: findResolver](/ensv2/universal-resolver-v2#resolution) on the Universal Resolver V2 page for the full algorithm and step-by-step examples with diagrams.
 
 ## Subtree Operations
 
@@ -176,6 +176,6 @@ at all!
 
 ## Token Representation and Permissions
 
-Registries in ENSv2 are typically implemented as [ERC1155Singleton](/contracts/ensv2/erc1155-singleton) token contracts, where each subname is an NFT with exactly one owner. Because of the hierarchical structure, merely owning a subname token does not guarantee anything in isolation: the registry must be referenced by a parent registry, and so on up to the root. Client authors must take care in how they represent names to users. The [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) provides `findCanonicalRegistry()` to verify a registry's position in the hierarchy.
+Registries in ENSv2 are typically implemented as [ERC1155Singleton](/ensv2/erc1155-singleton) token contracts, where each subname is an NFT with exactly one owner. Because of the hierarchical structure, merely owning a subname token does not guarantee anything in isolation: the registry must be referenced by a parent registry, and so on up to the root. Client authors must take care in how they represent names to users. The [Universal Resolver V2](/ensv2/universal-resolver-v2) provides `findCanonicalRegistry()` to verify a registry's position in the hierarchy.
 
-Permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control), a role-based system where each name has its own set of grantable and revokable roles. By selectively revoking roles, all the functionality of the [ENSv1 Name Wrapper](/wrapper/overview) can be replicated. See the [Permissioned Registry](/contracts/ensv2/permissioned-registry) page for the full role table, transfer behavior, and code examples.
+Permissions are managed through [Enhanced Access Control](/ensv2/enhanced-access-control), a role-based system where each name has its own set of grantable and revokable roles. By selectively revoking roles, all the functionality of the [ENSv1 Name Wrapper](/wrapper/overview) can be replicated. See the [Permissioned Registry](/ensv2/permissioned-registry) page for the full role table, transfer behavior, and code examples.

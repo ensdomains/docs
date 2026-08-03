@@ -2,8 +2,8 @@
 description: Overview of ENSv2
 ---
 
-import { ENSv2Deployments } from '../../../components/ensv2/ENSv2Deployments'
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
+import { ENSv2Deployments } from '../../components/ensv2/ENSv2Deployments'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # ENSv2 Overview
 
@@ -38,18 +38,18 @@ architecture, guiding principles and migration strategy for ENSv2.
 ## What's new in ENSv2?
 
 - **Hierarchical Registries** - While ENSv1 used a single flat registry for all
-  names, ENSv2 uses a [hierarchical model](/contracts/ensv2/registry-hierarchy) where a full
+  names, ENSv2 uses a [hierarchical model](/ensv2/registry-hierarchy) where a full
   name like `sub.alice.eth` is a chain of entries across registries linked by
   subregistry pointers. Name owners can deploy their own subname registry on
   demand. Registries and resolvers are deployed as proxies via the
-  [Verifiable Factory](/contracts/ensv2/verifiable-factory).
+  [Verifiable Factory](/ensv2/verifiable-factory).
 - **Permissions as Standard** - All of the functionality enabled by the [Name Wrapper
   in ENSv1](/wrapper/overview) has been integrated into the core of ENSv2 via a new role-based
-  permission system called [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+  permission system called [Enhanced Access Control](/ensv2/enhanced-access-control).
 - **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed (by anyone, not just the owner). After the grace period, names enter a temporary premium period.
 - **Per-Account Resolvers** - Rather than sharing a single Public Resolver, every
-  account gets its own [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) proxy
-  with fine-grained per-record permissions and [record aliasing](/contracts/ensv2/permissioned-resolver#aliasing).
+  account gets its own [Permissioned Resolver](/ensv2/permissioned-resolver) proxy
+  with fine-grained per-record permissions and [record aliasing](/ensv2/permissioned-resolver#aliasing).
 
 ```mermaid
 flowchart LR
@@ -81,40 +81,38 @@ flowchart LR
 - **True Ownership** - ENSv2 continues to prioritize trust minimization, enabling
   you to own your name fully, without having to worry about interference from
   centralized third-parties.
-- **Truly multi-chain** - ENS continues to support all L2s.
 
 ## Architecture
 
 | Page                                                                | Description                                                                 |
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [Registry Hierarchy](/contracts/ensv2/registry-hierarchy)           | Hierarchical registry model, tree structure, resolution, namespace aliasing |
-| [Enhanced Access Control](/contracts/ensv2/enhanced-access-control) | Role-based permission system replacing ENSv1 fuses                          |
-| [ERC1155Singleton](/contracts/ensv2/erc1155-singleton)              | Gas-optimized token standard with single ownership per token                |
-| [Mutable Token IDs](/contracts/ensv2/mutable-token-ids)             | Dynamic token IDs that protect against permission leaks and griefing        |
-| [Hidden Contract Accounts](/contracts/ensv2/hca)                    | Smart-account attribution for HCA proxy wallets                             |
-| [Verifiable Factory](/contracts/ensv2/verifiable-factory)           | Deterministic CREATE2 proxy deployment with on-chain verification           |
+| [Registry Hierarchy](/ensv2/registry-hierarchy)           | Hierarchical registry model, tree structure, resolution, namespace aliasing |
+| [Enhanced Access Control](/ensv2/enhanced-access-control) | Role-based permission system replacing ENSv1 fuses                          |
+| [ERC1155Singleton](/ensv2/erc1155-singleton)              | Gas-optimized token standard with single ownership per token                |
+| [Mutable Token IDs](/ensv2/mutable-token-ids)             | Dynamic token IDs that protect against permission leaks and griefing        |
+| [Hidden Contract Accounts](/ensv2/hca)                    | Smart-account attribution for HCA proxy wallets                             |
+| [Verifiable Factory](/ensv2/verifiable-factory)           | Deterministic CREATE2 proxy deployment with on-chain verification           |
 
 ## Contracts
 
 | Page                                                            | Description                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [Permissioned Registry](/contracts/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
-| [Permissioned Resolver](/contracts/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record aliasing     |
-| [ETH Registrar](/contracts/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
-| [Universal Resolver V2](/contracts/ensv2/universal-resolver-v2) | Single entry point for name resolution across the hierarchy        |
-| [DNS Name Resolution](/contracts/ensv2/dns-resolvers)           | Resolving DNS domain names through the ENS protocol                |
-| [Reverse Resolution](/contracts/ensv2/reverse-resolution)       | Primary names and multi-chain reverse resolution                   |
+| [Permissioned Registry](/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
+| [Permissioned Resolver](/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record aliasing     |
+| [ETH Registrar](/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
+| [Universal Resolver V2](/ensv2/universal-resolver-v2) | Single entry point for name resolution across the hierarchy        |
+| [DNS Name Resolution](/ensv2/dns-resolvers)           | Resolving DNS domain names through the ENS protocol                |
+| [Reverse Resolution](/ensv2/reverse-resolution)       | Primary names and multi-chain reverse resolution                   |
 
 ## Guides
 
 | Page                                                                     | Description                                                           |
 | ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| [Migration](/contracts/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
-| [For App Developers](/contracts/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                          |
-| [For Contract Developers](/contracts/ensv2/tutorial-contract-developers) | Tutorial: build a subname registrar on the Permissioned Registry      |
-| [Registry Template](/contracts/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation      |
-| [Indexing](/contracts/ensv2/indexing)                                    | Events and functions for building indexers and subgraphs              |
-| [FAQ](/contracts/ensv2/faq)                                              | Frequently asked questions about ENSv2                                |
+| [Migration](/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
+| [For App Developers](/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                          |
+| [For Contract Developers](/ensv2/tutorial-contract-developers) | Tutorial: build a subname registrar on the Permissioned Registry      |
+| [Registry Template](/ensv2/registry-template)                  | Building custom registries, configuration patterns, emancipation      |
+| [Indexing](/ensv2/indexing)                                    | Events and functions for building indexers and subgraphs              |
 
 ## Deployments (Sepolia)
 

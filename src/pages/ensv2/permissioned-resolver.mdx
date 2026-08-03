@@ -2,11 +2,11 @@
 description: Per-account resolver with role-based access control, record aliasing, and DNS resolution
 ---
 
-import { Card } from '../../../components/ui/Card'
-import { FrenCallout } from '../../../components/ensv2/FrenCallout'
-import { ResourceCalculator } from '../../../components/ensv2/ResourceCalculator'
-import { RoleBitmapComposer } from '../../../components/ensv2/RoleBitmapComposer'
-import { ContractReference } from '../../../components/ensv2/ContractReference'
+import { Card } from '../../components/ui/Card'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { ResourceCalculator } from '../../components/ensv2/ResourceCalculator'
+import { RoleBitmapComposer } from '../../components/ensv2/RoleBitmapComposer'
+import { ContractReference } from '../../components/ensv2/ContractReference'
 
 # Permissioned Resolver
 
@@ -21,7 +21,7 @@ The contracts and interfaces described here are **not yet final** and may change
 | Feature         | ENSv1 Public Resolver      | ENSv2 Permissioned Resolver                                               |
 | --------------- | -------------------------- | ------------------------------------------------------------------------- |
 | Deployment      | Single shared contract     | Per-account proxy instances                                               |
-| Permissions     | Owner controls all records | Per-record-type roles via [EAC](/contracts/ensv2/enhanced-access-control) |
+| Permissions     | Owner controls all records | Per-record-type roles via [EAC](/ensv2/enhanced-access-control) |
 | Aliasing        | Not supported              | Built-in name aliasing with cycle protection                              |
 | Record clearing | `clearRecords()` by owner  | Record versioning                                                         |
 | Upgradeability  | Not upgradeable            | UUPS proxy pattern                                                        |
@@ -44,7 +44,7 @@ The Permissioned Resolver supports all standard ENS record types:
 
 ## EAC Integration
 
-All permissions are managed through [Enhanced Access Control](/contracts/ensv2/enhanced-access-control).
+All permissions are managed through [Enhanced Access Control](/ensv2/enhanced-access-control).
 
 ### Roles
 
@@ -67,7 +67,7 @@ Each record type has its own role, allowing you to delegate specific record-sett
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_TEXT_ADMIN = (1 << 4) << 128`). In TypeScript, use `1n << 4n` for the bigint equivalent.
 
 <FrenCallout fren="earl" variant="note" title="Default Deployment Roles">
-When deployed through the [Verifiable Factory](/contracts/ensv2/verifiable-factory), the deployer is granted **every role and its admin counterpart** on `ROOT_RESOURCE` by default, giving full control over all record types, aliasing, clearing, and upgrades.
+When deployed through the [Verifiable Factory](/ensv2/verifiable-factory), the deployer is granted **every role and its admin counterpart** on `ROOT_RESOURCE` by default, giving full control over all record types, aliasing, clearing, and upgrades.
 </FrenCallout>
 
 ### Role Bitmap Composer
@@ -85,7 +85,7 @@ Select roles to compose a bitmap value for use with `authorizeNameRoles`.
 Use the `authorize*` functions below to manage permissions (pass `true` to grant, `false` to revoke).
 
 <FrenCallout fren="bittu" variant="tip">
-For root-level (`ROOT_RESOURCE`) permissions, you can also use `grantRootRoles()` / `revokeRootRoles()` inherited from [EAC](/contracts/ensv2/enhanced-access-control). `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver; use the `authorize*` functions for name and record-level permissions.
+For root-level (`ROOT_RESOURCE`) permissions, you can also use `grantRootRoles()` / `revokeRootRoles()` inherited from [EAC](/ensv2/enhanced-access-control). `grantRoles()` and `revokeRoles()` are disabled on the Permissioned Resolver; use the `authorize*` functions for name and record-level permissions.
 </FrenCallout>
 
 | Function | Scope | Grants/revokes |
@@ -102,10 +102,10 @@ All four functions take a DNS-encoded name (`bytes`) as the first parameter (`to
 ### Resource Scheme
 
 <FrenCallout fren="bittu" variant="tip" title="Developer tip">
-This section explains how [EAC resources](/contracts/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. The `authorize*` functions handle resource computation automatically.
+This section explains how [EAC resources](/ensv2/enhanced-access-control#resources) are computed internally. You don't need this for normal use. The `authorize*` functions handle resource computation automatically.
 </FrenCallout>
 
-Unlike the registry's labelhash-based resources, resolver resources are opaque hashes with no version structure, and the [anyId polymorphism](/contracts/ensv2/mutable-token-ids#anyid-polymorphism) used in the registry does not apply here. The resolver computes each EAC resource as a hash of the name's namehash and a record-type identifier:
+Unlike the registry's labelhash-based resources, resolver resources are opaque hashes with no version structure, and the [anyId polymorphism](/ensv2/mutable-token-ids#anyid-polymorphism) used in the registry does not apply here. The resolver computes each EAC resource as a hash of the name's namehash and a record-type identifier:
 
 ```solidity
 resource = keccak256(node, part)
@@ -201,7 +201,7 @@ The resolver detects self-referential aliases (A aliased to itself) and applies 
 - **Name migration**: alias an old name to a new one so existing references continue to work
 - **Subname delegation**: let subnames of a parent (e.g., `pay.alice.eth`, `nft.alice.eth`) resolve to the parent's records without duplicating them
 
-Note that aliasing at the resolver level is different from [namespace aliasing](/contracts/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
+Note that aliasing at the resolver level is different from [namespace aliasing](/ensv2/registry-hierarchy#namespace-aliasing) at the registry level. Resolver aliasing shares records; registry aliasing shares entire namespaces.
 
 ## Record Versioning
 
@@ -215,11 +215,11 @@ Each resolver instance is a UUPS proxy pointing to a shared implementation contr
 - The implementation can be upgraded to support new record types in the future
 - Individual name owners can upgrade their resolver if they hold the upgrade role
 
-See [Verifiable Factory](/contracts/ensv2/verifiable-factory) for how resolver proxies are deployed.
+See [Verifiable Factory](/ensv2/verifiable-factory) for how resolver proxies are deployed.
 
 ## Code Examples
 
-Each account deploys its own resolver instance. See [Deploying a Resolver Proxy](/contracts/ensv2/verifiable-factory#deploying-a-resolver-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
+Each account deploys its own resolver instance. See [Deploying a Resolver Proxy](/ensv2/verifiable-factory#deploying-a-resolver-proxy) for a code example showing how to deploy a Permissioned Resolver through the Verifiable Factory. The examples below assume you already have a `resolverAddress`.
 
 ### Setting and Reading Records
 
