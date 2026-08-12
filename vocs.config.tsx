@@ -6,14 +6,14 @@ import { remarkIpfsGateway } from './src/lib/remark-ipfs-gateway'
 const ensipSidebarItems = new Array()
 try {
   ensipSidebarItems.push(...require('./src/data/generated/ensips-sidebar.json'))
-} catch {}
+} catch { }
 
 const daoProposalsSidebarItems = new Array()
 try {
   daoProposalsSidebarItems.push(
     ...require('./src/data/generated/dao-proposals-sidebar.json')
   )
-} catch {}
+} catch { }
 
 // Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround
 const isProd = process.env.CF_PAGES_BRANCH === 'master'
@@ -23,21 +23,11 @@ export default defineConfig({
   title: 'ENS Documentation',
   titleTemplate: '%s | ENS Docs',
   rootDir: 'src',
+  css: './src/styles.css',
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
   ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
-  banner: {
-    content: (
-      <p>
-        Hacking on Sepolia?{' '}
-        <a href="https://feature-ensv2-docs.docs-bao.pages.dev/contracts/ensv2/overview">
-          Read the ENSv2 docs preview
-        </a>
-        .
-      </p>
-    ),
-  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
@@ -59,11 +49,12 @@ export default defineConfig({
       link: 'https://t.me/+aLmF83si62ZhOGNh',
     },
   ],
-  font: {
-    google: 'Inter',
-  },
   theme: {
     variables: {
+      fontFamily: {
+        default: "'ABCMonumentGrotesk', Inter, sans-serif",
+        mono: "'ABCMonumentGroteskMono', monospace",
+      },
       color: {
         background: {
           light: 'var(--ens-background)',
@@ -80,6 +71,10 @@ export default defineConfig({
         borderAccent: {
           light: 'var(--ens-blue-primary)',
           dark: 'var(--ens-blue-bright)',
+        },
+        codeInlineBackground: {
+          light: '#EBF7FD',
+          dark: 'var(--ens-background)',
         },
       },
     },
@@ -363,21 +358,93 @@ export default defineConfig({
             },
           ],
         },
+      ],
+    },
+    {
+      text: 'ENSv2',
+      collapsed: true,
+      items: [
         {
-          text: 'ENSv2',
+          text: 'Overview',
+          link: '/ensv2/overview',
+        },
+        {
+          text: 'Architecture',
           items: [
             {
-              text: 'Overview',
-              link: '/contracts/ensv2/overview',
+              text: 'Registry Hierarchy',
+              link: '/ensv2/registry-hierarchy',
             },
-            // {
-            //   text: 'Registries',
-            //   link: '/contracts/ensv2/registries',
-            // },
-            // {
-            //   text: 'Resolvers',
-            //   link: '/contracts/ensv2/resolvers',
-            // },
+            {
+              text: 'Enhanced Access Control',
+              link: '/ensv2/enhanced-access-control',
+            },
+            {
+              text: 'ERC1155Singleton',
+              link: '/ensv2/erc1155-singleton',
+            },
+            {
+              text: 'Mutable Token IDs',
+              link: '/ensv2/mutable-token-ids',
+            },
+            {
+              text: 'Verifiable Factory',
+              link: '/ensv2/verifiable-factory',
+            },
+          ],
+        },
+        {
+          text: 'Contracts',
+          items: [
+            {
+              text: 'Permissioned Registry',
+              link: '/ensv2/permissioned-registry',
+            },
+            {
+              text: 'Permissioned Resolver',
+              link: '/ensv2/permissioned-resolver',
+            },
+            {
+              text: 'ETH Registrar',
+              link: '/ensv2/eth-registrar',
+            },
+            {
+              text: 'Universal Resolver V2',
+              link: '/ensv2/universal-resolver-v2',
+            },
+            {
+              text: 'DNS Name Resolution',
+              link: '/ensv2/dns-resolvers',
+            },
+            {
+              text: 'Reverse Resolution',
+              link: '/ensv2/reverse-resolution',
+            },
+          ],
+        },
+        {
+          text: 'Guides',
+          items: [
+            {
+              text: 'Migration',
+              link: '/ensv2/migration',
+            },
+            {
+              text: 'For App Developers',
+              link: '/ensv2/tutorial-app-developers',
+            },
+            {
+              text: 'For Contract Developers',
+              link: '/ensv2/tutorial-contract-developers',
+            },
+            {
+              text: 'Registry Template',
+              link: '/ensv2/registry-template',
+            },
+            {
+              text: 'Indexing',
+              link: '/ensv2/indexing',
+            },
           ],
         },
       ],
