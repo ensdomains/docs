@@ -67,7 +67,7 @@ Each record type has its own role, allowing you to delegate specific record-sett
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_TEXT_ADMIN = (1 << 4) << 128`). In TypeScript, use `1n << 4n` for the bigint equivalent.
 
 <FrenCallout fren="earl" variant="note" title="Default Deployment Roles">
-When deployed through the [Verifiable Factory](/ensv2/verifiable-factory), the deployer is granted **every role and its admin counterpart** on `ROOT_RESOURCE` by default, giving full control over all record types, aliasing, clearing, and upgrades.
+When deployed through the [Verifiable Factory](/ensv2/verifiable-factory), the deployer chooses the initial permissions: `initialize(admin, roleBitmap, ...)` grants exactly the bitmap passed. The standard ENS tooling passes **every role and its admin counterpart** on `ROOT_RESOURCE`, giving the deployer full control over all record types, aliasing, clearing, and upgrades.
 </FrenCallout>
 
 ### Role Bitmap Composer
@@ -176,12 +176,15 @@ await wallet.writeContract({
   ],
 })
 
-// To remove an alias, set the target to empty
+// To remove an alias, set the target to empty bytes ('0x').
+// Storing empty bytes restores the no-alias state. Do not use '0x00':
+// that is the DNS encoding of the root name and would set an alias
+// instead of removing one.
 await wallet.writeContract({
   address: resolverAddress,
   abi: permissionedResolverAbi,
   functionName: 'setAlias',
-  args: [toHex(packetToBytes('wallet.eth')), '0x00'],
+  args: [toHex(packetToBytes('wallet.eth')), '0x'],
 })
 ```
 
@@ -440,7 +443,7 @@ const versionAfter = await client.readContract({
     description: 'Set the reverse name. Requires ROLE_SET_NAME.',
     params: [
       { name: 'node', type: 'bytes32', description: 'The namehash of the name' },
-      { name: 'name', type: 'string', description: 'The primary name' },
+      { name: 'primary', type: 'string', description: 'The primary name' },
     ],
   },
   {
@@ -543,7 +546,7 @@ const versionAfter = await client.readContract({
       { name: 'grant', type: 'bool', description: 'True to grant, false to revoke' },
     ],
     returns: [
-      { name: 'success', type: 'bool', description: 'Whether the roles were updated' },
+      { name: 'updated', type: 'bool', description: 'Whether the roles were updated' },
     ],
   },
   {
@@ -682,7 +685,7 @@ const versionAfter = await client.readContract({
     name: 'getAlias',
     description: 'Get the alias target for a name.',
     params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded source name' },
+      { name: 'fromName', type: 'bytes', description: 'DNS-encoded source name' },
     ],
     returns: [
       { name: 'toName', type: 'bytes', description: 'DNS-encoded target name, or empty if no alias' },
@@ -789,7 +792,7 @@ const versionAfter = await client.readContract({
     description: 'Interface implementer changed.',
     params: [
       { name: 'node', type: 'bytes32', indexed: true, description: 'Namehash of the name' },
-      { name: 'interfaceId', type: 'bytes4', indexed: true, description: 'The EIP-165 interface ID' },
+      { name: 'interfaceID', type: 'bytes4', indexed: true, description: 'The EIP-165 interface ID' },
       { name: 'implementer', type: 'address', description: 'New implementer address' },
     ],
   },

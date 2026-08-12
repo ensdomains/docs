@@ -36,11 +36,11 @@ Each name in the registry is identified by its **labelhash** (the `keccak256` ha
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `subregistry` | `IRegistry` | Pointer to a subregistry for managing subnames |
-| `resolver` | `address` | Resolver contract that holds this name's records |
-| `expiry` | `uint64` | Timestamp after which the name is considered expired (`block.timestamp >= expiry`) |
 | `eacVersionId` | `uint32` | Isolates permissions across registrations (see [Mutable Token IDs](/ensv2/mutable-token-ids)) |
 | `tokenVersionId` | `uint32` | Invalidates marketplace approvals on role changes (see [Mutable Token IDs](/ensv2/mutable-token-ids)) |
+| `subregistry` | `IRegistry` | Pointer to a subregistry for managing subnames |
+| `expiry` | `uint64` | Timestamp after which the name is considered expired (`block.timestamp >= expiry`) |
+| `resolver` | `address` | Resolver contract that holds this name's records |
 
 Entries are stored in a mapping keyed by the [canonical ID](/ensv2/mutable-token-ids#canonical-id), the labelhash with its lower 32 bits zeroed.
 
@@ -51,8 +51,8 @@ Names exist in one of three states:
 ```mermaid
 stateDiagram-v2
     [*] --> AVAILABLE
-    AVAILABLE --> REGISTERED: register()
-    AVAILABLE --> RESERVED: register() with owner=0
+    AVAILABLE --> REGISTERED: register() or renew()
+    AVAILABLE --> RESERVED: register() with owner=0 or renew()
     RESERVED --> REGISTERED: register()
     REGISTERED --> AVAILABLE: unregister() or expiry
     RESERVED --> AVAILABLE: unregister() or expiry
@@ -68,6 +68,7 @@ stateDiagram-v2
 |------|----|---------------|-------|
 | AVAILABLE | REGISTERED | `ROLE_REGISTRAR` | root |
 | AVAILABLE | RESERVED | `ROLE_REGISTRAR` | root |
+| AVAILABLE (expired) | REGISTERED / RESERVED | `ROLE_RENEW` | root |
 | RESERVED | REGISTERED | `ROLE_REGISTER_RESERVED` | root |
 | REGISTERED / RESERVED | AVAILABLE | `ROLE_UNREGISTER` | root or name |
 
@@ -86,7 +87,7 @@ stateDiagram-v2
 
 ### Renewal
 
-`renew()` extends a name's expiry but cannot reduce it. Both `REGISTERED` and `RESERVED` names can be renewed. Expired names cannot be renewed; they must be re-registered.
+`renew()` extends a name's expiry but cannot reduce it. Both `REGISTERED` and `RESERVED` names can be renewed. An expired name can also be revived by calling `renew()` on it, restoring it with its previous owner, token, and roles; re-registering the expired name instead starts fresh, with a new token and whatever owner and roles the new registration assigns. Reviving requires `ROLE_RENEW` on `ROOT_RESOURCE`; a name-scoped `ROLE_RENEW` grant works only while the name is unexpired. Names that were never registered cannot be renewed.
 
 ## anyId Polymorphism
 
@@ -102,7 +103,7 @@ The token ID for a name changes when it is re-registered or when roles change (s
 - Expired names (ownership is time-bounded)
 - Stale token IDs (after versioning changes, old token IDs are no longer valid)
 
-`latestOwnerOf()` returns the owner regardless of expiry or version staleness. This is useful for historical queries or determining who last held a name.
+`latestOwnerOf()` returns the recorded owner of a token even after the name has expired. Burned token IDs, including stale IDs from earlier versions, return the zero address.
 
 ## EAC Integration
 
@@ -442,7 +443,7 @@ await wallet.writeContract({
   },
   {
     name: 'renew',
-    description: 'Extend a name\'s expiry. Cannot reduce the current expiry. Requires ROLE_RENEW.',
+    description: 'Extend a name\'s expiry. Cannot reduce the current expiry. Requires ROLE_RENEW (root or name scope) while the name is unexpired; reviving an expired name requires ROLE_RENEW on ROOT_RESOURCE.',
     params: [
       { name: 'anyId', type: 'uint256', description: 'Labelhash, token ID, or resource of the name' },
       { name: 'newExpiry', type: 'uint64', description: 'New expiry timestamp (must be >= current)' },
@@ -583,7 +584,7 @@ await wallet.writeContract({
   },
   {
     name: 'latestOwnerOf',
-    description: 'Get the owner of a token regardless of expiry or version validity.',
+    description: 'Get the recorded owner of a token, ignoring expiry. Burned or stale token IDs return the zero address.',
     params: [
       { name: 'tokenId', type: 'uint256', description: 'The token ID to query' },
     ],

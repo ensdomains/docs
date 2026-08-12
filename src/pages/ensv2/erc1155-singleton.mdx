@@ -50,15 +50,6 @@ The key gas saving comes from eliminating balance accounting. In a standard ERC1
 
 In ERC1155Singleton, a transfer is just a single storage write: updating the `id -> owner` mapping. This makes transfers noticeably cheaper.
 
-## HCA Support
-
-ERC1155Singleton integrates with the [Hidden Contract Account (HCA)](/ensv2/hca) system. When resolving `msg.sender`, the contract checks whether the caller is a registered HCA (a smart contract wallet) and, if so, uses the HCA's owner address instead.
-
-This means that if you interact with an ENSv2 registry through a smart contract wallet that is registered as an HCA, the registry recognizes you as the owner rather than the wallet contract. This is particularly important for:
-
-- Smart contract wallets (e.g., Safe, ERC-4337 accounts) that hold names
-- Proxy contracts that act on behalf of users
-
 ## Integration with the Registry
 
 The [Permissioned Registry](/ensv2/permissioned-registry) inherits from ERC1155Singleton. Every registered name becomes a singleton token:
