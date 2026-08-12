@@ -5,6 +5,7 @@ description: ENS is multichain, but it all starts with Ethereum Mainnet. This pa
 import { ContractDeployments } from '../../components/ContractDeployments'
 import { EmbedLink } from '../../components/EmbedLink'
 import { Card } from '../../components/ui/Card'
+import { ENSv2Deployments } from '../../components/ensv2/ENSv2Deployments'
 
 # Deployments
 
@@ -39,9 +40,17 @@ Interact with ENS on Ethereum Mainnet via [app.ens.domains](https://app.ens.doma
 
 <ContractDeployments chain="mainnet" />
 
-### Sepolia
+### Sepolia (ENSv2 Beta)
 
-Interact with ENS on the Sepolia testnet via [sepolia.app.ens.domains](https://sepolia.app.ens.domains).
+Sepolia runs the [ENSv2](/ensv2/overview) contracts: the [Universal Resolver](/ensv2/universal-resolver-v2) and the ENS apps for Sepolia resolve through this deployment. Interact with it via the [ENS App](https://app.ens.dev) and the [ENS Explorer](https://explorer.ens.dev).
+
+<ENSv2Deployments chain="sepolia" />
+
+### Sepolia (Legacy)
+
+:::warning
+These ENSv1 contracts still exist on Sepolia but are no longer in use: the Universal Resolver and the ENS apps for Sepolia are linked against the ENSv2 deployment above.
+:::
 
 <ContractDeployments chain="sepolia" />
 
