@@ -464,12 +464,12 @@ For the general patterns (and ENSv1 options that keep working), see [Listing Nam
 ## Testing Your Integration
 
 - **Resolution path**: the [readiness page](/web/ensv2-readiness#universal-resolver) provides test names (like `ur.integration-tests.eth`) that verify your app reaches the correct Universal Resolver and handles CCIP-Read.
-- **End to end on Sepolia**: register a test name on the Sepolia deployment, set records with the snippets above, and confirm the resolution calls return them. The protocol contract addresses are in the [Deployments table](/ensv2/overview#deployments-sepolia).
+- **End to end on Sepolia**: register a test name on the Sepolia deployment, set records with the snippets above, and confirm the resolution calls return them. The protocol contract addresses are in the [Deployments table](/learn/deployments#sepolia-ensv2-beta).
 - **DNS names**: make sure your name detection does not assume `.eth`; see [name detection](/web/ensv2-readiness#dns-names-and-name-detection).
 
 ### Getting Test Funds
 
-Registering a name on the Sepolia deployment costs two things: Sepolia ETH for gas (any public faucet works) and the registration fee, which the [ETH Registrar](/ensv2/eth-registrar) collects in an ERC20 token. On Sepolia that token is `MockUSDC` (address in the [Deployments table](/ensv2/overview#deployments-sepolia)), and it is free: its `mint` function has no access control, so anyone can mint themselves a balance.
+Registering a name on the Sepolia deployment costs two things: Sepolia ETH for gas (any public faucet works) and the registration fee, which the [ETH Registrar](/ensv2/eth-registrar) collects in an ERC20 token. On Sepolia that token is `MockUSDC` (address in the [Deployments table](/learn/deployments#sepolia-ensv2-beta)), and it is free: its `mint` function has no access control, so anyone can mint themselves a balance.
 
 ```typescript
 import { parseAbi } from 'viem'
