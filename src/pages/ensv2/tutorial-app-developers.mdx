@@ -1,0 +1,503 @@
+---
+description: Integrate ENSv2 into your app with existing web3 libraries - resolution, records, primary names, and record updates without deploying any contracts
+---
+
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
+# For App Developers
+
+This guide walks through integrating ENSv2 into an application: resolving names like `nick.eth` to addresses, reading profile records, displaying primary names, and letting users update their own records.
+
+<FrenCallout fren="lili" variant="tip">
+**If your application only reads ENS data, updating to a [supported library](#supported-libraries) is the whole job.** The resolver interface is unchanged from ENSv1 and resolution goes through the Universal Resolver at a fixed address, so your integration keeps working even as the ENSv2 contracts (**not yet final**) evolve underneath. Only the write flows are ENSv2-specific, and their authorization details ([Who Can Write](#who-can-write)) may still change before mainnet.
+</FrenCallout>
+
+## What Changes for Apps
+
+The short answer: very little, by design. Forward resolution, text records, avatars, and primary names all work through the same library calls you use today; for read-only integrations, a library update is the entire migration. The ENSv2-specific parts of this page start at [Writing Records](#writing-records): letting users update their records touches the new permission model.
+
+What changes underneath:
+
+- **One entry point, new address.** All resolution goes through the [Universal Resolver](/ensv2/universal-resolver-v2), which walks the new hierarchical registries and orchestrates CCIP-Read (the actual gateway HTTP requests are made by your client library, as in ENSv1; a contract cannot fetch offchain data itself). Updated libraries target it automatically.
+- **Records move to per-account resolvers.** In ENSv1 most names shared a single Public Resolver contract. In the standard ENSv2 flow each account gets its own [Permissioned Resolver](/ensv2/permissioned-resolver) instance. Reading records is unchanged (the Universal Resolver finds the right contract for you), but *writing* records means calling whatever resolver the name actually uses instead of a well-known shared one.
+- **Names are ERC1155 tokens in per-name registries.** Each parent name can have its own registry contract, so subnames form separate NFT collections. Token IDs are [mutable](/ensv2/mutable-token-ids), which matters if you index or cache them.
+- **ENSv1 names keep working.** Names that have not migrated resolve through a mirror resolver that forwards lookups into the v1 registry, so your integration does not need to distinguish between migrated and unmigrated names.
+
+## Supported Libraries
+
+The examples in this guide show four libraries side by side: viem, wagmi (which inherits ENS support from its installed viem), ethers, and ENSjs. Everything below assumes an ENSv2-ready version of your library; the [ENSv2 readiness page](/web/ensv2-readiness) tracks which versions those are, both for these four and for the wider ecosystem (web3.py, web3j, and others). ENSjs stands out for write flows: among the four shown here, it is the only one with purpose-built helpers for updating records.
+
+## Project Setup
+
+ENSv2 is currently deployed on Sepolia for testing. The Universal Resolver is an upgradeable proxy that lives at the **same address on mainnet and Sepolia**, and supported libraries ship that address for both networks. Targeting the ENSv2 test deployment is therefore nothing more than selecting the Sepolia chain; no address configuration is needed, and the same code runs against mainnet by switching the chain back.
+
+:::code-group
+
+```ts [viem]
+import { createPublicClient, http } from 'viem'
+import { sepolia } from 'viem/chains'
+
+const client = createPublicClient({
+  chain: sepolia,
+  transport: http(),
+})
+```
+
+```tsx [Wagmi]
+import { createConfig, http } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
+
+export const config = createConfig({
+  chains: [sepolia],
+  transports: {
+    [sepolia.id]: http(),
+  },
+})
+```
+
+```ts [Ethers]
+import { JsonRpcProvider } from 'ethers'
+
+// Naming the network selects the ENS configuration,
+// including the Universal Resolver address
+const provider = new JsonRpcProvider(RPC_URL, 'sepolia')
+```
+
+```ts [ENSjs]
+import { createPublicClient, http } from 'viem'
+import { sepolia } from 'viem/chains'
+import { addEnsContracts } from '@ensdomains/ensjs'
+
+const client = createPublicClient({
+  chain: addEnsContracts(sepolia),
+  transport: http(),
+})
+```
+
+:::
+
+The `client`, `config`, and `provider` objects created here are reused by every snippet below. Write snippets additionally assume a connected wallet client (`wallet` in viem/ENSjs, `signer` in ethers).
+
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+Do not hardcode a Universal Resolver address in your application. Your library resolves through the canonical proxy on its own, and any address you pin today (for example, an implementation address from a deployments table) can be superseded while the proxy stays current.
+</FrenCallout>
+
+## Resolving Names
+
+Forward resolution (name to address) is one call. Always [normalize](/resolution/names) user input first:
+
+:::code-group
+
+```ts [viem]
+import { normalize } from 'viem/ens'
+
+const address = await client.getEnsAddress({
+  name: normalize('nick.eth'),
+})
+```
+
+```tsx [Wagmi]
+import { normalize } from 'viem/ens'
+import { useEnsAddress } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
+
+function Address() {
+  const { data: address } = useEnsAddress({
+    name: normalize('nick.eth'),
+    chainId: sepolia.id,
+  })
+}
+```
+
+```ts [Ethers]
+import { ensNormalize } from 'ethers'
+
+const address = await provider.resolveName(ensNormalize('nick.eth'))
+```
+
+```ts [ENSjs]
+import { normalize } from 'viem/ens'
+import { getAddressRecord } from '@ensdomains/ensjs/public'
+
+const record = await getAddressRecord(client, {
+  name: normalize('nick.eth'),
+})
+const address = record?.value
+```
+
+:::
+
+Under the hood, the Universal Resolver starts at the root registry and walks down one label at a time, asking each registry for the next one (`sub.nick.eth`: root to `eth` to `nick` to `sub`). Along the way it remembers the nearest resolver it has seen and calls it. When a name's data lives offchain or on an L2, the Universal Resolver drives the CCIP-Read protocol by telling your library which gateway to query; the library performs the HTTP request and feeds the response back for onchain verification. Your app never touches this machinery directly, but one consequence is worth knowing:
+
+- A subname without its own resolver is served by the closest ancestor resolver. Registration alone is enough for a subname to resolve if its parent's resolver has records for it.
+
+For chain-specific addresses (resolving a name for use on an L2), pass a `coinType`. See [Multichain Considerations](/web/ensv2-readiness#multichain-considerations) for the full pattern, including why resolution always runs against L1 even for L2 apps.
+
+## Reading Records
+
+Text records and avatars follow the same shape:
+
+:::code-group
+
+```ts [viem]
+import { normalize } from 'viem/ens'
+
+const twitter = await client.getEnsText({
+  name: normalize('nick.eth'),
+  key: 'com.twitter',
+})
+
+const avatar = await client.getEnsAvatar({
+  name: normalize('nick.eth'),
+})
+```
+
+```tsx [Wagmi]
+import { normalize } from 'viem/ens'
+import { useEnsAvatar, useEnsText } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
+
+function Profile() {
+  const { data: twitter } = useEnsText({
+    name: normalize('nick.eth'),
+    key: 'com.twitter',
+    chainId: sepolia.id,
+  })
+  const { data: avatar } = useEnsAvatar({
+    name: normalize('nick.eth'),
+    chainId: sepolia.id,
+  })
+}
+```
+
+```ts [Ethers]
+import { ensNormalize } from 'ethers'
+
+const resolver = await provider.getResolver(ensNormalize('nick.eth'))
+const twitter = await resolver?.getText('com.twitter')
+const avatar = await resolver?.getAvatar()
+```
+
+```ts [ENSjs]
+import { normalize } from 'viem/ens'
+import { getRecords } from '@ensdomains/ensjs/public'
+
+const records = await getRecords(client, {
+  name: normalize('nick.eth'),
+  texts: ['com.twitter', 'avatar'],
+})
+```
+
+:::
+
+The standard record keys (`avatar`, `description`, `com.twitter`, and so on) are unchanged from ENSv1; see [Text Records](/web/records) for the list.
+
+## Primary Names
+
+Displaying a primary name (reverse resolution: address to name) is also unchanged at the library level:
+
+:::code-group
+
+```ts [viem]
+const name = await client.getEnsName({
+  address: '0x1111111111111111111111111111111111111111',
+})
+```
+
+```tsx [Wagmi]
+import { useEnsName } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
+
+function Name() {
+  const { data: name } = useEnsName({
+    address: '0x1111111111111111111111111111111111111111',
+    chainId: sepolia.id,
+  })
+}
+```
+
+```ts [Ethers]
+const name = await provider.lookupAddress(
+  '0x1111111111111111111111111111111111111111',
+)
+```
+
+```ts [ENSjs]
+import { getName } from '@ensdomains/ensjs/public'
+
+const result = await getName(client, {
+  address: '0x1111111111111111111111111111111111111111',
+})
+const name = result?.name
+```
+
+:::
+
+A primary name must never be displayed without verifying that it forward-resolves back to the address. In ENSv2 the Universal Resolver enforces this onchain: during reverse resolution it forward-resolves the returned name and reverts with `ReverseAddressMismatch` if the addresses differ, so any result your library hands you has already passed the check. How primary names are *set* is evolving in ENSv2, including multi-chain primary names; see [Reverse Resolution](/ensv2/reverse-resolution) for the current state.
+
+## Writing Records
+
+This is the one place where ENSv2 changes your app's write path. The setter functions themselves are unchanged from ENSv1's public resolver interface, but there is no longer one well-known shared resolver your app can assume every name uses. In the standard flow, each account's records live on its own resolver instance, and records are keyed by the namehash of the full name. What is new is *where* records live and *who* is authorized to write them, not how they are written.
+
+The flow: find the resolver the name actually uses, then call its setters as the name owner.
+
+### Find the Resolver
+
+:::code-group
+
+```ts [viem]
+import { normalize } from 'viem/ens'
+
+const resolverAddress = await client.getEnsResolver({
+  name: normalize('nick.eth'),
+})
+```
+
+```tsx [Wagmi]
+import { normalize } from 'viem/ens'
+import { useEnsResolver } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
+
+function Resolver() {
+  const { data: resolverAddress } = useEnsResolver({
+    name: normalize('nick.eth'),
+    chainId: sepolia.id,
+  })
+}
+```
+
+```ts [Ethers]
+import { ensNormalize } from 'ethers'
+
+const resolver = await provider.getResolver(ensNormalize('nick.eth'))
+const resolverAddress = resolver?.address
+```
+
+```ts [ENSjs]
+import { normalize } from 'viem/ens'
+import { getResolver } from '@ensdomains/ensjs/public'
+
+const resolverAddress = await getResolver(client, {
+  name: normalize('nick.eth'),
+})
+```
+
+:::
+
+### Set Records
+
+ENSjs is the only library in this guide with dedicated record-writing helpers (`setRecords`, `setTextRecord`, `setAddressRecord`, and friends); it computes the namehash and batches multiple updates into a single resolver `multicall` for you. With the other libraries you call the resolver contract directly: the setters take the name's namehash as their first parameter, and the signatures below are the resolver's actual interface.
+
+:::code-group
+
+```ts [viem]
+import { parseAbi } from 'viem'
+import { namehash, normalize } from 'viem/ens'
+
+const resolverAbi = parseAbi([
+  'function setAddr(bytes32 node, address addr_)',
+  'function setText(bytes32 node, string key, string value)',
+  'function multicall(bytes[] data) returns (bytes[])',
+])
+
+const node = namehash(normalize('nick.eth'))
+
+// wallet is a viem wallet client connected to the name owner's account
+// resolverAddress: from "Find the Resolver" above
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: resolverAbi,
+  functionName: 'setText',
+  args: [node, 'com.twitter', 'nicksdjohnson'],
+})
+```
+
+```tsx [Wagmi]
+import { useWriteContract } from 'wagmi'
+import { parseAbi } from 'viem'
+import { namehash, normalize } from 'viem/ens'
+
+const resolverAbi = parseAbi([
+  'function setAddr(bytes32 node, address addr_)',
+  'function setText(bytes32 node, string key, string value)',
+  'function multicall(bytes[] data) returns (bytes[])',
+])
+
+const node = namehash(normalize('nick.eth'))
+
+// resolverAddress: from "Find the Resolver" above
+function EditRecord() {
+  const { writeContract } = useWriteContract()
+
+  return (
+    <button
+      onClick={() =>
+        writeContract({
+          address: resolverAddress,
+          abi: resolverAbi,
+          functionName: 'setText',
+          args: [node, 'com.twitter', 'nicksdjohnson'],
+        })
+      }
+    >
+      Save
+    </button>
+  )
+}
+```
+
+```ts [Ethers]
+import { Contract, ensNormalize, namehash } from 'ethers'
+
+const resolverAbi = [
+  'function setAddr(bytes32 node, address addr_)',
+  'function setText(bytes32 node, string key, string value)',
+  'function multicall(bytes[] data) returns (bytes[])',
+]
+
+const node = namehash(ensNormalize('nick.eth'))
+
+// signer is connected to the name owner's account
+// resolverAddress: from "Find the Resolver" above
+const contract = new Contract(resolverAddress, resolverAbi, signer)
+await contract.setText(node, 'com.twitter', 'nicksdjohnson')
+```
+
+```ts [ENSjs]
+import { normalize } from 'viem/ens'
+import { setRecords } from '@ensdomains/ensjs/wallet'
+
+// wallet is a viem wallet client created with
+// chain: addEnsContracts(sepolia), connected to the name owner
+// userAddress: the address the name should resolve to
+const hash = await setRecords(wallet, {
+  name: normalize('nick.eth'),
+  texts: [{ key: 'com.twitter', value: 'nicksdjohnson' }],
+  coins: [{ coin: 'ETH', value: userAddress }],
+  resolverAddress,
+})
+```
+
+:::
+
+To update several records in one transaction with viem, wagmi, or ethers, encode the individual calls and batch them through the resolver's `multicall` (ENSjs's `setRecords` does this automatically whenever you pass more than one record; wagmi's `writeContract` takes the same arguments as the viem call below):
+
+:::code-group
+
+```ts [viem]
+import { encodeFunctionData, parseAbi } from 'viem'
+import { namehash, normalize } from 'viem/ens'
+
+const resolverAbi = parseAbi([
+  'function setAddr(bytes32 node, address addr_)',
+  'function setText(bytes32 node, string key, string value)',
+  'function multicall(bytes[] data) returns (bytes[])',
+])
+
+const node = namehash(normalize('nick.eth'))
+
+// userAddress: the address the name should resolve to
+await wallet.writeContract({
+  address: resolverAddress,
+  abi: resolverAbi,
+  functionName: 'multicall',
+  args: [[
+    encodeFunctionData({
+      abi: resolverAbi,
+      functionName: 'setAddr',
+      args: [node, userAddress],
+    }),
+    encodeFunctionData({
+      abi: resolverAbi,
+      functionName: 'setText',
+      args: [node, 'com.twitter', 'nicksdjohnson'],
+    }),
+  ]],
+})
+```
+
+```ts [Ethers]
+import { Contract, ensNormalize, namehash } from 'ethers'
+
+const resolverAbi = [
+  'function setAddr(bytes32 node, address addr_)',
+  'function setText(bytes32 node, string key, string value)',
+  'function multicall(bytes[] data) returns (bytes[])',
+]
+
+const node = namehash(ensNormalize('nick.eth'))
+
+const contract = new Contract(resolverAddress, resolverAbi, signer)
+
+// userAddress: the address the name should resolve to
+await contract.multicall([
+  contract.interface.encodeFunctionData('setAddr', [node, userAddress]),
+  contract.interface.encodeFunctionData('setText', [
+    node,
+    'com.twitter',
+    'nicksdjohnson',
+  ]),
+])
+```
+
+:::
+
+### Who Can Write
+
+Writes are permissioned through [Enhanced Access Control](/ensv2/enhanced-access-control) roles on the resolver. In the common case this is invisible to your app: an account that registers a name and deploys its resolver typically holds every role, so its setter calls simply succeed.
+
+The case to be aware of is subnames. A subname owner typically uses the parent's resolver and holds **no** roles on it, so a `setText` from their wallet reverts with `EACUnauthorizedAccountRoles`. Depending on the setup, records for such names are managed by the parent owner, delegated per name or per record key via the resolver's `authorize*Roles` functions, or moved fully under the subname owner's control by pointing the subname at a resolver of their own. See [Permissioned Resolver](/ensv2/permissioned-resolver) for the delegation model.
+
+<FrenCallout fren="kuzco" variant="warning" title="Watch out!">
+Do not hardcode a resolver address for write flows, not even one you deployed. A name's resolver pointer can change at any time, and writing to a resolver a name no longer uses silently updates records nobody reads. Always look the resolver up fresh, and handle the revert case in your UI.
+</FrenCallout>
+
+## Listing a User's Names
+
+Enumerating all names an account owns is an indexed-data problem in ENSv2, same as in ENSv1: onchain lookups alone cannot enumerate names. Two v2-specific points if you build or consume an index:
+
+- Names are ERC1155 tokens, but each registry is its own contract and collection, and token IDs change when roles change. Key any cache by labelhash, never by token ID; see [Mutable Token IDs](/ensv2/mutable-token-ids).
+- See [Indexing ENSv2](/ensv2/indexing) for the event-level details needed to index registries and resolvers yourself.
+
+For the general patterns (and ENSv1 options that keep working), see [Listing Names](/web/enumerate).
+
+## Testing Your Integration
+
+- **Resolution path**: the [readiness page](/web/ensv2-readiness#universal-resolver) provides test names (like `ur.integration-tests.eth`) that verify your app reaches the correct Universal Resolver and handles CCIP-Read.
+- **End to end on Sepolia**: register a test name on the Sepolia deployment, set records with the snippets above, and confirm the resolution calls return them. The protocol contract addresses are in the [Deployments table](/learn/deployments#sepolia-ensv2-beta).
+- **DNS names**: make sure your name detection does not assume `.eth`; see [name detection](/web/ensv2-readiness#dns-names-and-name-detection).
+
+### Getting Test Funds
+
+Registering a name on the Sepolia deployment costs two things: Sepolia ETH for gas (any public faucet works) and the registration fee, which the [ETH Registrar](/ensv2/eth-registrar) collects in an ERC20 token. On Sepolia that token is `MockUSDC` (address in the [Deployments table](/learn/deployments#sepolia-ensv2-beta)), and it is free: its `mint` function has no access control, so anyone can mint themselves a balance.
+
+```typescript
+import { parseAbi } from 'viem'
+
+// MockUSDC, from the Deployments table
+await wallet.writeContract({
+  address: mockUsdcAddress,
+  abi: parseAbi(['function mint(address to, uint256 amount)']),
+  functionName: 'mint',
+  args: [account, 100_000_000n], // 100 USDC (6 decimals)
+})
+```
+
+Before registering, `approve` the ETH Registrar to spend the minted balance; the registration flow itself is described on the [ETH Registrar](/ensv2/eth-registrar) page.
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+|---------|--------------|
+| Names that resolve in other apps return `null` in yours | Library version predates ENSv2 support; check the [readiness page](/web/ensv2-readiness) minimums |
+| A name your user just registered resolves to `null` | No address record set yet; registration and records are separate steps |
+| Record writes revert with `EACUnauthorizedAccountRoles` | The connected account holds no roles on that resolver, most commonly a subname owner writing to the parent's resolver (see [Who Can Write](#who-can-write)) |
+| Record writes succeed but reads return old values | The write went to a resolver the name no longer points at; look up the resolver again instead of caching it |
+| Resolution works in scripts but fails in the app | The app's environment blocks the HTTP requests CCIP-Read needs; see [CCIP Read](/web/ensv2-readiness#offchain-and-l2-resolution-with-ccip-read) |
+
+## Next Steps
+
+- Track library support and test names on the [ENSv2 readiness page](/web/ensv2-readiness)
+- Understand the resolution machinery in [Universal Resolver V2](/ensv2/universal-resolver-v2)
+- Go deeper on record permissions and delegation in [Permissioned Resolver](/ensv2/permissioned-resolver)
+- Building a subname product on top of your integration? Continue with the [contract developers guide](/ensv2/tutorial-contract-developers)

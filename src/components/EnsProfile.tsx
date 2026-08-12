@@ -49,14 +49,14 @@ function Profile({
   const { data: avatar } = useEnsAvatar({ name: name || undefined, chainId: 1 })
 
   return (
-    <div className="border-grey-light flex w-fit min-w-fit items-center justify-center rounded-full border bg-white p-1 pr-6 shadow-sm dark:bg-black">
+    <div className="border-grey-light flex w-fit min-w-fit items-center justify-center rounded-lg border bg-white p-1 pr-6  dark:bg-black">
       <div className="flex items-center gap-2">
         <img
           src={avatar || '/img/fallback-avatar.svg'}
-          className="border-grey-light h-10 w-10 rounded-full border"
+          className="border-grey-light h-10 w-10 rounded-sm border-0.5"
         />
         <div className="flex flex-col gap-0.5 leading-none">
-          <span className="font-semibold">{name || 'No name'}</span>
+          <span className="font-semibold font-semi-mono">{name || 'No name'}</span>
 
           {!hideAddress && (
             <span className={cn('text-grey text-xs')}>

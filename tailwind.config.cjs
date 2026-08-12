@@ -3,6 +3,13 @@ module.exports = {
   content: ['./src/**/*.{html,md,mdx,tsx,js,jsx}'],
   darkMode: 'class',
   theme: {
+    fontWeight: {
+      light: 280,
+      normal: 360,
+      medium: 425,
+      semibold: 500,
+      bold: 560,
+    },
     // Reset Tailwind default colors
     colors: {
       white: '#FFFFFF',
@@ -103,7 +110,14 @@ module.exports = {
         disabled: 'var(--ens-text-disabled)',
       },
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['ABCMonumentGrotesk', 'Inter', 'sans-serif'],
+        serif: ['ABCMarist', 'Inter', 'serif'],
+        mono: ['ABCMonumentGroteskMono', 'Inter', 'monospace'],
+        'semi-mono': ['ABCMonumentGroteskSemiMono', 'Inter', 'monospace'],
+      },
+    },
   },
   plugins: [],
 }
