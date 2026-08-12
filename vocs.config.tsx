@@ -388,10 +388,6 @@ export default defineConfig({
               link: '/ensv2/mutable-token-ids',
             },
             {
-              text: 'Hidden Contract Accounts',
-              link: '/ensv2/hca',
-            },
-            {
               text: 'Verifiable Factory',
               link: '/ensv2/verifiable-factory',
             },
