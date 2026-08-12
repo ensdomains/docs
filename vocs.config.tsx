@@ -27,7 +27,18 @@ export default defineConfig({
   iconUrl: '/img/icon.svg',
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
-  ogImageUrl: baseUrl ? `${baseUrl}/api/og?title=%title` : undefined,
+  ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
+  banner: {
+    content: (
+      <p>
+        Hacking on Sepolia?{' '}
+        <a href="https://feature-ensv2-docs.docs-bao.pages.dev/contracts/ensv2/overview">
+          Read the ENSv2 docs preview
+        </a>
+        .
+      </p>
+    ),
+  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
