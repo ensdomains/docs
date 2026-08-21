@@ -166,18 +166,18 @@ Omitting the coinType currently resolves the Ethereum Mainnet (or Sepolia on tes
 
 ## If Your Application Writes to ENS
 
-Reading ENS data is abstracted away by the libraries above. Writing is not: registering a name or setting a record is a direct contract interaction, and the write-side contracts change with ENSv2. At the time of writing, no library release abstracts ENSv2 writes yet, so applications that write to ENS need to update these code paths themselves.
+Reading ENS data is abstracted away by the libraries above. Writing is not: registering a name or setting a record is a direct contract interaction, and the write-side contracts change with ENSv2. At the time of writing, ENSv2 write support in libraries is limited to preview releases (ENSjs v5), so applications that write to ENS need to update these code paths themselves.
 
 During the migration, both systems run side by side: names that are still on ENSv1 keep their existing write paths, while newly registered and migrated names live in the ENSv2 contracts. Everything below can be tested against the [ENSv2 deployment on Sepolia](/learn/deployments#sepolia-ensv2-beta) today.
 
-| Operation                        | ENSv1                                              | ENSv2                                                                                                                                    |
-| -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Register or renew a `.eth` name  | `ETHRegistrarController`, paid in ETH              | New [ETH Registrar](/ensv2/eth-registrar): commit-reveal stays, but fees are paid in stablecoins and the grace period is 28 days         |
-| Set address, text or contenthash | Public Resolver                                    | Same setter interface (`setAddr`, `setText`, `multicall`) on the name's configured [Permissioned Resolver](/ensv2/permissioned-resolver) |
-| Change a name's resolver         | `setResolver(node, ...)` on the ENS registry       | `setResolver(tokenId, ...)` on the [registry that holds the name](/ensv2/permissioned-registry)                                          |
-| Create subnames                  | `setSubnodeRecord` on the registry or Name Wrapper | `register()` on the parent name's subregistry                                                                                            |
-| Transfer a name                  | ERC-721 (unwrapped) or ERC-1155 (wrapped)          | [ERC1155Singleton](/ensv2/erc1155-singleton) transfer with [mutable token IDs](/ensv2/mutable-token-ids)                                 |
-| Set a primary name               | Reverse Registrar `setName`                        | See [Reverse Resolution](/ensv2/reverse-resolution)                                                                                      |
+| Operation                        | ENSv1                                              | ENSv2                                                                                                                                                                        |
+| -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Register or renew a `.eth` name  | `ETHRegistrarController`, paid in ETH              | New [ETH Registrar](/ensv2/eth-registrar): commit-reveal stays, but fees are paid in stablecoins and the grace period is 28 days                                             |
+| Set address, text or contenthash | Setters on the name's configured resolver          | Unchanged, but the configured resolver is now typically a per-account [Permissioned Resolver](/ensv2/permissioned-resolver): see [below](#never-hardcode-a-resolver-address) |
+| Change a name's resolver         | `setResolver(node, ...)` on the ENS registry       | `setResolver(tokenId, ...)` on the [registry that holds the name](/ensv2/permissioned-registry)                                                                              |
+| Create subnames                  | `setSubnodeRecord` on the registry or Name Wrapper | `register()` on the parent name's subregistry                                                                                                                                |
+| Transfer a name                  | ERC-721 (unwrapped) or ERC-1155 (wrapped)          | [ERC1155Singleton](/ensv2/erc1155-singleton) transfer with [mutable token IDs](/ensv2/mutable-token-ids)                                                                     |
+| Set a primary name               | Reverse Registrar `setName`                        | See [Reverse Resolution](/ensv2/reverse-resolution)                                                                                                                          |
 
 Some changes deserve special attention:
 
