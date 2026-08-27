@@ -13,7 +13,10 @@ The good news? For most applications, preparing for ENSv2 is as simple as updati
 - **web3.js:** Deprecated.
 
 :::info
-**Using a supported library? You're done!** Everything is handled automatically.
+**If your application only reads ENS data, you're done!** Everything is handled automatically by a supported library.
+
+- If your application also writes to ENS, see [If Your Application Writes to ENS](#if-your-application-writes-to-ens).
+- If your application indexes ENS data, see [Indexing ENSv2](/ensv2/indexing).
 
 The sections below are optional reading for those who want to understand the technical details or test their integration manually.
 :::
@@ -160,3 +163,36 @@ From an application point of view it is important to be aware and always request
 :::warning
 Omitting the coinType currently resolves the Ethereum Mainnet (or Sepolia on testnet) address. This address is not guaranteed to work on L2s. Always double check with your user when sending funds to such an address.
 :::
+
+## If Your Application Writes to ENS
+
+Reading ENS data is abstracted away by the libraries above. Writing is not: registering a name or setting a record is a direct contract interaction, and the write-side contracts change with ENSv2. At the time of writing, ENSv2 write support in libraries is limited to preview releases ([ENSjs v5](https://github.com/ensdomains/ensjs)), so applications that write to ENS need to update these code paths themselves.
+
+During the migration from ENSv1 to ENSv2, new registrations happen exclusively in ENSv2, while names that have not migrated yet keep their ENSv1 write paths, renewals included. Applications should support ENSv2, which every new and migrated name uses. Additionally keeping the ENSv1 write paths for unmigrated names is optional. Everything below can be tested against the [ENSv2 deployment on Sepolia](/learn/deployments#sepolia-ensv2-beta) today.
+
+| Operation                        | ENSv1                                              | ENSv2                                                                                                                                                                        |
+| -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Register or renew a `.eth` name  | `ETHRegistrarController`, paid in ETH              | New [ETH Registrar](/ensv2/eth-registrar): commit-reveal stays, but fees are paid in stablecoins and the grace period is 28 days                                             |
+| Set address, text or contenthash | Setters on the name's configured resolver          | Unchanged, but the configured resolver is now typically a per-account [Permissioned Resolver](/ensv2/permissioned-resolver): see [below](#never-hardcode-a-resolver-address) |
+| Change a name's resolver         | `setResolver(node, ...)` on the ENS registry       | `setResolver(tokenId, ...)` on the [registry that holds the name](/ensv2/permissioned-registry)                                                                              |
+| Create subnames                  | `setSubnodeRecord` on the registry or Name Wrapper | `register()` on the parent name's subregistry                                                                                                                                |
+| Transfer a name                  | ERC-721 (unwrapped) or ERC-1155 (wrapped)          | [ERC1155Singleton](/ensv2/erc1155-singleton) transfer with [mutable token IDs](/ensv2/mutable-token-ids)                                                                     |
+| Set a primary name               | Reverse Registrar `setName`                        | See [Reverse Resolution](/ensv2/reverse-resolution)                                                                                                                          |
+
+Some changes deserve special attention:
+
+### Registration Fees Are Paid in Stablecoins
+
+The new ETH Registrar keeps the commit-reveal flow, but the fee is no longer sent as ETH along with the transaction: `register` and `renew` are paid in an approved stablecoin of the caller's choice. The Sepolia deployment currently accepts USDC (both [Circle's Sepolia USDC](https://sepolia.etherscan.io/token/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238) and a freely mintable [test USDC](https://sepolia.etherscan.io/token/0x768f42455a2d082e23ceef7d51e5787c82d67a39)) and a [test DAI](https://sepolia.etherscan.io/token/0x5472c5725a00b7ba11f0794a79d08ade6f4683bd). For a registration UI this means a token approval step before registering, and balance checks against the stablecoin instead of ETH.
+
+### Token IDs Are Mutable
+
+If your application caches token IDs, this is a breaking change: in ENSv2 a name's [token ID can change](/ensv2/mutable-token-ids) over its lifetime. Always resolve the name to its current token ID at transaction time instead of storing it, using [`findTokenId(label)`](/ensv2/permissioned-registry#view-functions) on the registry that holds the name.
+
+### Never Hardcode a Resolver Address
+
+When a name is resolved, only the resolver configured for that name in the registry is queried. Records written to any other resolver contract are never returned. Hardcoding a resolver address was therefore already an anti-pattern in ENSv1, but it usually worked anyway, because the configured resolver of most names is the shared Public Resolver. In ENSv2 resolvers are deployed per account, so a name's configured resolver is its owner's own deployment and a hardcoded shared address is guaranteed to be the wrong contract. Always look up the name's configured resolver at write time, and don't cache the result either: the resolver can be reconfigured at any point, for example when the name changes hands. Once found, the setter interface is the same. The same applies to registries: a name's subnames live in its individual subregistry, not in a single global registry contract, so obtain it fresh before writing.
+
+### Name Wrapper and Fuses
+
+If your application manages names through the [Name Wrapper](/wrapper/overview) (wrapping, unwrapping or burning fuses), read the [Enhanced Access Control](/ensv2/enhanced-access-control) page: the wrapper's functionality is built into the core of ENSv2, and fuses are replaced by roles.
