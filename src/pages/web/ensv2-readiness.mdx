@@ -166,9 +166,9 @@ Omitting the coinType currently resolves the Ethereum Mainnet (or Sepolia on tes
 
 ## If Your Application Writes to ENS
 
-Reading ENS data is abstracted away by the libraries above. Writing is not: registering a name or setting a record is a direct contract interaction, and the write-side contracts change with ENSv2. At the time of writing, ENSv2 write support in libraries is limited to preview releases (ENSjs v5), so applications that write to ENS need to update these code paths themselves.
+Reading ENS data is abstracted away by the libraries above. Writing is not: registering a name or setting a record is a direct contract interaction, and the write-side contracts change with ENSv2. At the time of writing, ENSv2 write support in libraries is limited to preview releases ([ENSjs v5](https://github.com/ensdomains/ensjs)), so applications that write to ENS need to update these code paths themselves.
 
-During the migration, both systems run side by side: names that are still on ENSv1 keep their existing write paths, while newly registered and migrated names live in the ENSv2 contracts. Everything below can be tested against the [ENSv2 deployment on Sepolia](/learn/deployments#sepolia-ensv2-beta) today.
+During the migration from ENSv1 to ENSv2, new registrations happen exclusively in ENSv2, while names that have not migrated yet keep their ENSv1 write paths, renewals included. Applications should support ENSv2, which every new and migrated name uses. Additionally keeping the ENSv1 write paths for unmigrated names is optional. Everything below can be tested against the [ENSv2 deployment on Sepolia](/learn/deployments#sepolia-ensv2-beta) today.
 
 | Operation                        | ENSv1                                              | ENSv2                                                                                                                                                                        |
 | -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
