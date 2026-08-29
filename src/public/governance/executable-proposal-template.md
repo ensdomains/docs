@@ -26,8 +26,10 @@ description: A short (1-2 sentence) description of the proposal.
 ## Transactions
 
 <!--
-  The transactions section describes all the calls that should be encoded in the onchain version of this proposal. List one block per call, using the format below as a starting point.
+  The transactions section describes all the calls that should be encoded in the onchain version of this proposal. List one block per call, each preceded by a heading describing what it does, using the format below as a starting point.
 -->
+
+### Transfer 100k USDC to Metagov
 
 ```
 Target: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (USDC token)
@@ -36,5 +38,5 @@ Function: transfer(address to, uint256 value)
 
 Arguments:
 - 0x91c32893216dE3eA0a55ABb9851f581d4503d39b (Metagov Safe)
-- 100000000000 (100k tokens)
+- 100000000000 (100k USDC)
 ```
