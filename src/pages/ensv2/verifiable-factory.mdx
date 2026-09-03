@@ -64,10 +64,10 @@ Each proxy stores two pieces of provenance:
 ## On-chain Verification
 
 ```solidity
-function verifyContract(address proxy, address expectedImplementation) external view returns (bool);
+function verifyContract(address proxy) external view returns (address implementation);
 ```
 
-`verifyContract` calls `getVerifiableProxyData()` on the proxy to retrieve its stored salt and actual implementation address. It first checks that the implementation matches `expectedImplementation`, then reconstructs the expected CREATE2 address from `(UUPSProxy creation code, factory, salt)` and returns `true` if it matches `proxy`. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory with a known implementation, without trusting metadata or off-chain data.
+`verifyContract` calls `getVerifiableProxyData()` on the proxy to retrieve its stored salt and current implementation address, reconstructs the expected CREATE2 address from `(clone creation code, factory, salt)`, and returns the implementation if the reconstruction matches `proxy`. If it does not match — or `proxy` is not a contract, or does not implement `getVerifiableProxyData()` — the call **reverts** with `VerificationFailed(proxy)` rather than returning a value. A caller that needs to confirm a specific implementation compares the returned address itself. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory with a known implementation, without trusting metadata or off-chain data.
 
 ## Available Implementations
 
@@ -95,19 +95,19 @@ Upgrades target a single proxy, not the shared implementation; an upgrade to one
 
 ## Computing Addresses Off-chain
 
-Because the proxy address is fully determined by `(factory, deployer, salt, UUPSProxy bytecode)`, clients can compute it before any transaction is sent:
+Because the proxy address is fully determined by `(factory, deployer, salt, proxyLogic)`, clients can compute it before any transaction is sent. The creation code is an ERC-1167 minimal proxy over the factory's `proxyLogic()`, with the 32-byte `outerSalt` appended raw: the factory address is not part of it, and the salt is not ABI-encoded.
 
 ```ts
-import { encodeAbiParameters, getCreate2Address, keccak256 } from 'viem'
+import { concat, encodeAbiParameters, getCreate2Address, keccak256 } from 'viem'
 
 function predictProxyAddress({
   factoryAddress,
-  proxyBytecode,
+  proxyLogic, // read from VerifiableFactory.proxyLogic()
   deployer,
   salt,
 }: {
   factoryAddress: `0x${string}`
-  proxyBytecode: `0x${string}`
+  proxyLogic: `0x${string}`
   deployer: `0x${string}`
   salt: bigint
 }) {
@@ -117,10 +117,12 @@ function predictProxyAddress({
       [deployer, salt]
     )
   )
-  const initCode = `${proxyBytecode}${encodeAbiParameters(
-    [{ type: 'address' }, { type: 'bytes32' }],
-    [factoryAddress, outerSalt]
-  ).slice(2)}` as `0x${string}`
+  const initCode = concat([
+    '0x3d604d80600a3d3981f3363d3d373d3d3d363d73',
+    proxyLogic,
+    '0x5af43d82803e903d91602b57fd5bf3',
+    outerSalt,
+  ])
   return getCreate2Address({
     from: factoryAddress,
     salt: outerSalt,
@@ -129,7 +131,7 @@ function predictProxyAddress({
 }
 ```
 
-This is useful whenever you need a name's resolver or subname-registry address before the user actually creates it.
+`deployer` must be the account that will call `deployProxy`, because `outerSalt` mixes in `msg.sender`. This is useful whenever you need a name's resolver or subname-registry address before the user actually creates it.
 
 ## Code Examples
 
