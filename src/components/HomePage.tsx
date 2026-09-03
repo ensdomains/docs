@@ -101,10 +101,12 @@ export function HomePage() {
         <div className="border-blue rounded-lg border p-4 lg:-mx-4">
           <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
             <div className="flex items-center gap-3">
-              <span className="bg-blue rounded-md px-2 py-0.5 text-sm font-semibold text-white">
-                Beta
-              </span>
-              <span className="font-medium">ENSv2 is live on Sepolia</span>
+              <img
+                src="/img/ensv2-logo-offblack.svg"
+                alt="ENSv2"
+                className="h-7 dark:invert"
+              />
+              <span className="font-medium">Beta is live on Sepolia</span>
             </div>
             <div>
               <div>
