@@ -21,7 +21,7 @@ ENSv2 uses a hierarchical registry model. There is no single registry contract t
 
 Each registry is a [Permissioned Registry](/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/ensv2/erc1155-singleton) (one token per name).
 
-Resolvers are separate contracts ([Permissioned Resolver](/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [aliases](/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
+Resolvers are separate contracts ([Permissioned Resolver](/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [record links](/ensv2/permissioned-resolver#records-and-linking) (`linkToNode` / `linkToRecord`).
 
 ## Registry Events
 
