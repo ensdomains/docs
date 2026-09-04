@@ -6,14 +6,14 @@ import { remarkIpfsGateway } from './src/lib/remark-ipfs-gateway'
 const ensipSidebarItems = new Array()
 try {
   ensipSidebarItems.push(...require('./src/data/generated/ensips-sidebar.json'))
-} catch { }
+} catch {}
 
 const daoProposalsSidebarItems = new Array()
 try {
   daoProposalsSidebarItems.push(
     ...require('./src/data/generated/dao-proposals-sidebar.json')
   )
-} catch { }
+} catch {}
 
 // Cloudflare doesn't expose NODE_ENV, so checking the source branch is our easiest workaround
 const isProd = process.env.CF_PAGES_BRANCH === 'master'
@@ -28,6 +28,17 @@ export default defineConfig({
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
   ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
+  banner: {
+    content: (
+      <p>
+        Hacking at ETHOnline 2026?{' '}
+        <a href="https://feature-permres-inode-refact.docs-bao.pages.dev/ensv2/overview">
+          Read the ENSv2 hackathon docs
+        </a>
+        .
+      </p>
+    ),
+  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
