@@ -97,6 +97,54 @@ export function HomePage() {
         </div>
       </div>
 
+      <div className="mx-auto max-w-4xl px-4 pt-6">
+        <div className="border-blue rounded-lg border p-4 lg:-mx-4">
+          <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
+            <div className="flex items-center gap-3">
+              <img
+                src="/img/ensv2-logo-offblack.svg"
+                alt="ENSv2"
+                className="h-7 dark:invert"
+              />
+              <span className="font-medium">Beta is live on Sepolia</span>
+            </div>
+            <div>
+              <div>
+                <a className="vocs_Anchor !no-underline" href="/ensv2/overview">
+                  Overview
+                </a>
+              </div>
+              <div>
+                <a
+                  className="vocs_Anchor !no-underline"
+                  href="/ensv2/tutorial-app-developers"
+                >
+                  For App Developers
+                </a>
+              </div>
+            </div>
+            <div>
+              <div>
+                <a
+                  className="vocs_Anchor !no-underline"
+                  href="/learn/deployments#sepolia-ensv2-beta"
+                >
+                  Deployments
+                </a>
+              </div>
+              <div>
+                <a
+                  className="vocs_Anchor !no-underline"
+                  href="/web/ensv2-readiness"
+                >
+                  Readiness
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mx-auto grid max-w-4xl grid-cols-2 gap-6 px-4 pt-6 lg:grid-cols-3 lg:gap-y-10">
         {navigation.map((column) => (
           <div key={column.title}>
