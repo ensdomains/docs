@@ -6,9 +6,25 @@ import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 # ENSv2 Overview
 
-<FrenCallout fren="bittu" variant="tip">
-  ENSv2 is deployed on the Sepolia testnet, where you can already try the new
-  contracts with the [ENS Explorer](https://explorer.ens.dev).
+<FrenCallout fren="bittu" variant="note" title="ETHOnline 2026">
+
+A dedicated ENSv2 deployment is live on Sepolia for the ETHOnline hackathon.
+Its addresses are listed under
+[Deployments](/learn/deployments#sepolia-ensv2-beta): please build your
+hackathon project against these, not the addresses found on the production
+docs.
+
+For resolution to work against the hackathon deployment, the Universal
+Resolver address built into viem and ethers must be overwritten once in your
+code with the one from the
+[Deployments section](/learn/deployments#sepolia-ensv2-beta), where you can
+find ready-made snippets.
+
+These serve the hackathon deployment exclusively:
+
+- [ENS Explorer](https://hackathon-deployment-portal-app.ens-cf.workers.dev/)
+- [ENS App](https://hackathon-deployment-manager-app-v4.ens-cf.workers.dev/), where you can register a name in the hackathon ENSv2 deployment
+
 </FrenCallout>
 
 Welcome to the next evolution of the Ethereum Name Service!
@@ -81,8 +97,8 @@ flowchart LR
 
 ## Architecture
 
-| Page                                                                | Description                                                                 |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Page                                                      | Description                                                                 |
+| --------------------------------------------------------- | --------------------------------------------------------------------------- |
 | [Registry Hierarchy](/ensv2/registry-hierarchy)           | Hierarchical registry model, tree structure, resolution, namespace aliasing |
 | [Enhanced Access Control](/ensv2/enhanced-access-control) | Role-based permission system replacing ENSv1 fuses                          |
 | [ERC1155Singleton](/ensv2/erc1155-singleton)              | Gas-optimized token standard with single ownership per token                |
@@ -91,8 +107,8 @@ flowchart LR
 
 ## Contracts
 
-| Page                                                            | Description                                                        |
-| --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Page                                                  | Description                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------------ |
 | [Permissioned Registry](/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
 | [Permissioned Resolver](/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record linking      |
 | [ETH Registrar](/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
@@ -102,8 +118,8 @@ flowchart LR
 
 ## Guides
 
-| Page                                                                     | Description                                                           |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Page                                                           | Description                                                           |
+| -------------------------------------------------------------- | --------------------------------------------------------------------- |
 | [Migration](/ensv2/migration)                                  | Guide to migrating ENSv1 names (locked, unlocked, unwrapped) to ENSv2 |
 | [For App Developers](/ensv2/tutorial-app-developers)           | What changes for apps that resolve ENS names                          |
 | [For Contract Developers](/ensv2/tutorial-contract-developers) | Tutorial: build a subname registrar on the Permissioned Registry      |

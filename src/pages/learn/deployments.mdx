@@ -4,8 +4,8 @@ description: ENS is multichain, but it all starts with Ethereum Mainnet. This pa
 
 import { ContractDeployments } from '../../components/ContractDeployments'
 import { EmbedLink } from '../../components/EmbedLink'
-import { Card } from '../../components/ui/Card'
 import { ENSv2Deployments } from '../../components/ensv2/ENSv2Deployments'
+import { Card } from '../../components/ui/Card'
 
 # Deployments
 
@@ -42,7 +42,57 @@ Interact with ENS on Ethereum Mainnet via [app.ens.domains](https://app.ens.doma
 
 ### Sepolia (ENSv2 Beta)
 
-Sepolia runs the [ENSv2](/ensv2/overview) contracts: the [Universal Resolver](/ensv2/universal-resolver-v2) and the ENS apps for Sepolia resolve through this deployment. Interact with it via the [ENS App](https://app.ens.dev) and the [ENS Explorer](https://explorer.ens.dev).
+:::warning
+**ETHOnline 2026**: the table below lists the dedicated hackathon [ENSv2](/ensv2/overview) deployment, which is separate from the standard ENSv2 Beta deployment on Sepolia. Build your hackathon project against these addresses. Interact with this deployment via the hackathon [ENS App](https://hackathon-deployment-manager-app-v4.ens-cf.workers.dev/) and [ENS Explorer](https://hackathon-deployment-portal-app.ens-cf.workers.dev/), which serve it exclusively.
+:::
+
+For name resolution to use the hackathon deployment, the [Universal Resolver](/ensv2/universal-resolver-v2) address built into viem and ethers must be overwritten once in your code with the hackathon Universal Resolver (`UpgradableUniversalResolverProxy` in the table below):
+
+:::code-group
+
+```ts [Viem]
+import { createPublicClient, http } from 'viem'
+import { sepolia } from 'viem/chains'
+
+// Sepolia with the hackathon Universal Resolver instead of the built-in one
+const hackathonSepolia = {
+  ...sepolia,
+  contracts: {
+    ...sepolia.contracts,
+    ensUniversalResolver: {
+      address: '0xd26f2040d083af1cd2962ba303f4bea0c4faf142',
+    },
+  },
+} as const
+
+const client = createPublicClient({
+  chain: hackathonSepolia,
+  transport: http(),
+})
+
+// getEnsAddress, getEnsName, getEnsText, ... now resolve
+// against the hackathon deployment
+```
+
+```ts [Ethers (>= 6.17)]
+import { JsonRpcProvider } from 'ethers'
+
+// Sepolia network with the hackathon Universal Resolver
+const network = {
+  name: 'sepolia',
+  chainId: 11155111,
+  ensUniversalResolver: '0xd26f2040d083af1cd2962ba303f4bea0c4faf142', // hackathon Universal Resolver
+}
+
+const provider = new JsonRpcProvider(RPC_URL, network, {
+  staticNetwork: true,
+})
+
+// provider.resolveName, provider.lookupAddress, ... now resolve
+// against the hackathon deployment
+```
+
+:::
 
 <ENSv2Deployments chain="sepolia" />
 
