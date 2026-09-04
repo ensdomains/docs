@@ -179,7 +179,7 @@ Deploy a per-account [Permissioned Resolver](/ensv2/permissioned-resolver). The 
 
 ```ts [Viem]
 const resolverInitAbi = parseAbi([
-  'function initialize(address admin, uint256 roleBitmap, bytes[] setters)',
+  'function initialize((address account, uint256 roleBitmap)[] grants, bytes[] calls)',
 ])
 
 // Salt scheme: keccak256("OwnedResolver", owner, version)
@@ -196,7 +196,7 @@ const resolverSalt = BigInt(
 const resolverInitData = encodeFunctionData({
   abi: resolverInitAbi,
   functionName: 'initialize',
-  args: [account.address, ALL_ROLES, []],
+  args: [[{ account: account.address, roleBitmap: ALL_ROLES }], []],
 })
 
 const resolverTx = await wallet.writeContract({
