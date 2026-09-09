@@ -25,6 +25,18 @@ These serve the hackathon deployment exclusively:
 - [ENS Explorer](https://hackathon-deployment-portal-app.ens-cf.workers.dev/)
 - [ENS App](https://hackathon-deployment-manager-app-v4.ens-cf.workers.dev/), where you can register a name in the hackathon ENSv2 deployment
 
+Registration also works directly against the contracts:
+
+1. Mint yourself test USDC (`MockUSDC` has an open `mint(to, amount)`)
+2. `approve` the `ETHRegistrar` for the fee from `getRegisterPrice(label, duration, paymentToken)`
+3. Call `commit(makeCommitment(label, owner, secret, subregistry, resolver, duration, referrer))`
+4. Wait 60 seconds
+5. Call `register` with the same parameters plus `MockUSDC` as the payment token
+
+`subregistry` and `resolver` can be the zero address and set later. Both
+contract addresses are in the
+[Deployments table](/learn/deployments#sepolia-ensv2-beta).
+
 </FrenCallout>
 
 Welcome to the next evolution of the Ethereum Name Service!
