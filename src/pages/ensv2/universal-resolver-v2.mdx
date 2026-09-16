@@ -8,7 +8,7 @@ import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Universal Resolver V2
 
-The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. It also provides functions for navigating and verifying the registry hierarchy itself.
+The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. Its companion contract [UniversalHelper](#universalhelper) provides functions for navigating and verifying the registry hierarchy itself.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -190,9 +190,9 @@ Resolver 1 is found at the .eth level, but `domingo` has no resolver set. **Reso
 
 The final remembered resolver is the one used for the actual record query.
 
-## Registry Navigation
+## UniversalHelper
 
-ENSv2 provides functions for locating registries within the hierarchy and verifying their position. All functions described here are exposed on the `UniversalResolverV2` contract.
+ENSv2 provides functions for locating registries within the hierarchy and verifying their position. All functions described here are exposed on the **UniversalHelper** contract, a companion to the Universal Resolver deployed alongside it (see [Deployments](/learn/deployments#sepolia-ensv2-beta)).
 
 All navigation functions walk **down** from the root registry except `findCanonicalName`, which walks **up** via `getParent()`, and `findCanonicalRegistry`, which does both.
 
