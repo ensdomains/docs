@@ -17,11 +17,11 @@ The factory is the **default** deployment mechanism, not a protocol requirement.
 
 ## Why a Factory
 
-ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/ensv2/overview#whats-new-in-ensv2)). Each instance is a UUPS proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
+ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/ensv2/overview#whats-new-in-ensv2)). Each instance is an upgradeable proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
 
 - **Deterministic**: the address is known before deployment.
 - **Verifiable**: anyone can prove on-chain that an arbitrary address really came from this factory with a known proxy bytecode.
-- **Cheap**: only the proxy is deployed; the implementation is shared.
+- **Cheap**: each deployment writes only 77 bytes of proxy code. The proxy logic and the implementation are shared.
 
 ## Deterministic Deployment
 
@@ -33,7 +33,13 @@ function deployProxy(
 ) external returns (address proxy);
 ```
 
-`deployProxy` uses CREATE2 to deploy a `UUPSProxy` with `outerSalt = keccak256(abi.encode(msg.sender, salt))`. After construction, the factory calls `proxy.initialize(implementation, data)` to point the proxy at the implementation and forward `data` as initialisation calldata.
+`deployProxy` uses CREATE2 to deploy a proxy, with the salt derived from the caller:
+
+```solidity
+outerSalt = keccak256(abi.encode(msg.sender, salt))
+```
+
+After construction, the factory calls `proxy.initialize(implementation, data)`, which stores the implementation and forwards `data` as initialisation calldata.
 
 Because `outerSalt` mixes in `msg.sender`, the same `salt` value submitted by two different deployers produces two different proxy addresses. There is no contention between callers and no need for global salt coordination.
 
@@ -41,48 +47,53 @@ Because `outerSalt` mixes in `msg.sender`, the same `salt` value submitted by tw
 sequenceDiagram
     participant Caller
     participant Factory as VerifiableFactory
-    participant Proxy as UUPSProxy
+    participant Proxy
     participant Impl as Implementation
 
     Caller->>Factory: deployProxy(impl, salt, data)
     Factory->>Factory: outerSalt = keccak256(sender, salt)
     Factory->>Proxy: CREATE2 with outerSalt
-    Proxy->>Proxy: store factory & salt
+    Note over Proxy: bytecode embeds proxy logic & outerSalt
     Factory->>Proxy: initialize(impl, data)
+    Proxy->>Proxy: store impl in ERC-1967 slot
     Proxy->>Impl: delegatecall(data)
     Factory-->>Caller: proxy address
 ```
 
-## The UUPSProxy
+## The Proxy
 
-Each proxy stores two pieces of provenance:
+Each deployed proxy is a [minimal proxy (EIP-1167)](https://eips.ethereum.org/EIPS/eip-1167) that delegates all calls to a single shared `UUPSProxyLogic` contract, deployed once in the factory's constructor and readable via `proxyLogic()`. The proxy's runtime bytecode is 77 bytes: the standard 45-byte minimal proxy pointing at `UUPSProxyLogic`, followed by the CREATE2 `outerSalt` as the last 32 bytes. The appended salt is what makes the proxy verifiable later.
 
-- An immutable `verifiableProxyFactory` address baked into the proxy bytecode at construction.
-- A salt appended to the proxy bytecode at construction, readable via `getVerifiableProxyData()` (which also returns the current implementation address from the ERC-1967 slot).
+Every call to the proxy first lands in `UUPSProxyLogic`, which handles the proxy functions itself and forwards everything else to the implementation stored in the proxy's [ERC-1967](https://eips.ethereum.org/EIPS/eip-1967) implementation slot:
 
-`initialize(implementation, data)` runs once. It calls OpenZeppelin's `ERC1967Utils.upgradeToAndCall`, which sets the implementation slot and delegate-calls the implementation with `data` so it can run its own initializer.
+- `initialize(implementation, data)` runs once (it reverts `AlreadyInitialized` afterwards). It stores the implementation in the ERC-1967 slot and delegate-calls the implementation with `data` so it can run its own initializer.
+- `getVerifiableProxyData()` returns the salt (read from the proxy's own bytecode) and the current implementation address.
+- `verifiableProxyFactory()` returns the factory address.
+- `upgradeToAndCall(newImplementation, data)` performs upgrades (see [Upgrade Authorization](#upgrade-authorization)).
 
 ## On-chain Verification
 
 ```solidity
-function verifyContract(address proxy, address expectedImplementation) external view returns (bool);
+function verifyContract(address proxy) external view returns (address implementation);
 ```
 
-`verifyContract` calls `getVerifiableProxyData()` on the proxy to retrieve its stored salt and actual implementation address. It first checks that the implementation matches `expectedImplementation`, then reconstructs the expected CREATE2 address from `(UUPSProxy creation code, factory, salt)` and returns `true` if it matches `proxy`. This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a UUPS proxy deployed by this factory with a known implementation, without trusting metadata or off-chain data.
+`verifyContract` proves that `proxy` was deployed by this factory and returns the proxy's current implementation. It retrieves the proxy's stored salt via `getVerifiableProxyData()`, reconstructs the expected CREATE2 address from `(proxy creation code, factory, salt)`, and reverts with `VerificationFailed(proxy)` on any mismatch, including when `proxy` has no code or does not respond to `getVerifiableProxyData()`. A caller that requires a specific implementation compares the returned address itself.
+
+This is the property that makes the factory **verifiable**: a smart contract can prove that an arbitrary address really is a proxy deployed by this factory, and learn which implementation it currently runs, without trusting metadata or off-chain data.
 
 ## Available Implementations
 
-Three implementation contracts are deployed once and then proxied through the factory:
+Three implementation contracts are deployed once and then proxied through the factory. Their addresses are listed in the [Deployments](/learn/deployments#sepolia-ensv2-beta) table, and you need them to deploy your own instance: `deployProxy` takes the implementation address as its first argument.
 
 | Implementation             | Salt scheme                                                                    | Where it's deployed                                           |
 | -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-| `PermissionedResolverImpl` | `keccak256("OwnedResolver", owner, version)` — one resolver per owner          | On demand by users                                            |
-| `UserRegistryImpl`         | `keccak256("UserRegistry", namehash, version)` — one subname registry per name | On demand by name owners                                      |
+| `PermissionedResolverImpl` | `keccak256("OwnedResolver", owner, version)`, one resolver per owner          | On demand by users                                            |
+| `UserRegistryImpl`         | `keccak256("UserRegistry", namehash, version)`, one subname registry per name | On demand by name owners                                      |
 | `WrapperRegistryImpl`      | per-name                                                                       | Inside migration controllers when a locked v1 name is wrapped |
 
 ## Upgrade Authorization
 
-Each implementation overrides `_authorizeUpgrade`. In ENSv2 the check is uniform: only an account holding `ROLE_UPGRADE` on the proxy's `ROOT_RESOURCE` can upgrade the implementation:
+Each proxy's implementation can be upgraded individually via `upgradeToAndCall(newImplementation, data)` on that proxy. The factory itself is not upgradeable. Who may upgrade is decided by the current implementation's `_authorizeUpgrade` override. In ENSv2 the check is uniform: only an account holding `ROLE_UPGRADE` on the proxy's `ROOT_RESOURCE` can upgrade the implementation:
 
 ```solidity
 function _authorizeUpgrade(address newImplementation)
@@ -92,23 +103,23 @@ function _authorizeUpgrade(address newImplementation)
 {}
 ```
 
-Upgrades target a single proxy, not the shared implementation; an upgrade to one user's resolver or subname registry does not affect anyone else's.
+Upgrades target a single proxy, not the shared implementation. An upgrade to one user's resolver or subname registry does not affect anyone else's.
 
 ## Computing Addresses Off-chain
 
-Because the proxy address is fully determined by `(factory, deployer, salt, UUPSProxy bytecode)`, clients can compute it before any transaction is sent:
+Because the proxy address is fully determined by `(factory, proxy logic address, deployer, salt)`, clients can compute it before any transaction is sent. The proxy creation code is the EIP-1167 template with the shared logic address in the implementation slot and the salt appended, so it can be assembled directly (`proxyLogic` is read once from the factory's `proxyLogic()` getter):
 
 ```ts
-import { encodeAbiParameters, getCreate2Address, keccak256 } from 'viem'
+import { concat, encodeAbiParameters, getCreate2Address, keccak256 } from 'viem'
 
 function predictProxyAddress({
   factoryAddress,
-  proxyBytecode,
+  proxyLogic,
   deployer,
   salt,
 }: {
   factoryAddress: `0x${string}`
-  proxyBytecode: `0x${string}`
+  proxyLogic: `0x${string}`
   deployer: `0x${string}`
   salt: bigint
 }) {
@@ -118,10 +129,12 @@ function predictProxyAddress({
       [deployer, salt]
     )
   )
-  const initCode = `${proxyBytecode}${encodeAbiParameters(
-    [{ type: 'address' }, { type: 'bytes32' }],
-    [factoryAddress, outerSalt]
-  ).slice(2)}` as `0x${string}`
+  const initCode = concat([
+    '0x3d604d80600a3d3981f3363d3d373d3d3d363d73',
+    proxyLogic,
+    '0x5af43d82803e903d91602b57fd5bf3',
+    outerSalt,
+  ])
   return getCreate2Address({
     from: factoryAddress,
     salt: outerSalt,
