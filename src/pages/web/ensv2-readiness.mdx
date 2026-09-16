@@ -183,7 +183,7 @@ Some changes deserve special attention:
 
 ### Registration Fees Are Paid in Stablecoins
 
-The new ETH Registrar keeps the commit-reveal flow, but the fee is no longer sent as ETH along with the transaction: `register` and `renew` are paid in an approved stablecoin of the caller's choice. The Sepolia deployment currently accepts USDC (both [Circle's Sepolia USDC](https://sepolia.etherscan.io/token/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238) and a freely mintable [test USDC](https://sepolia.etherscan.io/token/0x768f42455a2d082e23ceef7d51e5787c82d67a39)) and a [test DAI](https://sepolia.etherscan.io/token/0x5472c5725a00b7ba11f0794a79d08ade6f4683bd). For a registration UI this means a token approval step before registering, and balance checks against the stablecoin instead of ETH.
+The new ETH Registrar keeps the commit-reveal flow, but the fee is no longer sent as ETH along with the transaction: `register` and `renew` are paid in an approved stablecoin of the caller's choice. The Sepolia deployment currently accepts USDC (both [Circle's Sepolia USDC](https://sepolia.etherscan.io/token/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238) and a freely mintable [test USDC](https://sepolia.etherscan.io/token/0x16f95d91dba7da3aca778ec053df0ff6c6a8aa8e)) and a [test DAI](https://sepolia.etherscan.io/token/0x278053acc97888e63ec81c80fec641bf0bf19664). For a registration UI this means a token approval step before registering, and balance checks against the stablecoin instead of ETH.
 
 ### Token IDs Are Mutable
 
