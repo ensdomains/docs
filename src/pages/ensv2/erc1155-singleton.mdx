@@ -58,7 +58,7 @@ The [Permissioned Registry](/ensv2/permissioned-registry) inherits from ERC1155S
 - **Burning** happens when a name is unregistered via `unregister()`, or when it expires and is re-registered
 - **Token regeneration** happens when roles change on a name - the old token is burned and a new one is minted to the same owner with a new ID (see [Mutable Token IDs](/ensv2/mutable-token-ids))
 
-The singleton constraint means that standard ERC1155 operations like `safeTransferFrom` work as expected, but attempting to transfer a value greater than `1` will revert.
+The singleton constraint means that standard ERC1155 operations like `safeTransferFrom` work as expected, but attempting to transfer a value greater than `1` will revert. Actual ENS registries specialize this further: [PermissionedRegistry](/ensv2/permissioned-registry#transfers) overrides the transfer logic with additional safeguards, so transfers on a deployed registry are more restricted than on this base contract.
 
 ## Marketplace Compatibility
 

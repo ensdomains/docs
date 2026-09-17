@@ -180,13 +180,21 @@ Unlike ENSv1, the role set is not configurable per registration; it is hardcoded
 Any account can renew any name, not just the owner. Renewal extends the expiry without changing ownership or permissions. Only the base rate is charged (no premium).
 
 ```solidity
+struct RenewData {
+    string label;     // The label to renew
+    uint64 duration;  // Duration to extend by (in seconds)
+    bytes32 referrer; // Referral identifier
+}
+
 ETHRegistrar.renew(
-    label string,        // The label to renew
-    duration uint64,     // Duration to extend by (in seconds)
-    paymentToken IERC20, // ERC20 token to pay with (must be approved)
-    referrer bytes32     // Referral identifier
+    rd RenewData,        // The renewal data
+    paymentToken IERC20  // ERC20 token to pay with (must be approved)
 )
 ```
+
+### Batch Renewals
+
+Multiple names can be renewed in a single transaction via `renewBatch(RenewData[] rds, IERC20 paymentToken)`. Every renewal in the batch is paid with the same payment token.
 
 ## BatchRegistrar
 
@@ -327,7 +335,7 @@ await wallet.writeContract({
   address: ethRegistrarAddress,
   abi: ethRegistrarAbi,
   functionName: 'renew',
-  args: [label, duration, paymentToken, referrer],
+  args: [{ label, duration, referrer }, paymentToken],
 })
 ```
 
@@ -365,10 +373,16 @@ await wallet.writeContract({
     name: 'renew',
     description: "Extend a name's expiry. Any account can renew any name.",
     params: [
-      { name: 'label', type: 'string', description: 'The label to renew' },
-      { name: 'duration', type: 'uint64', description: 'Duration to extend by in seconds' },
+      { name: 'rd', type: 'RenewData', description: 'Renewal data: (label, duration, referrer)' },
       { name: 'paymentToken', type: 'IERC20', description: 'ERC20 token to pay with' },
-      { name: 'referrer', type: 'bytes32', description: 'Referral identifier' },
+    ],
+  },
+  {
+    name: 'renewBatch',
+    description: 'Renew multiple names in one transaction, paid with a single token.',
+    params: [
+      { name: 'rds', type: 'RenewData[]', description: 'Renewal data per name: (label, duration, referrer)' },
+      { name: 'paymentToken', type: 'IERC20', description: 'ERC20 token to pay with' },
     ],
   },
   {
@@ -434,7 +448,7 @@ await wallet.writeContract({
   },
   {
     name: 'getRenewPrice',
-    description: 'Get the renewal price for a name (base rate only, no premium).',
+    description: 'Get the renewal price for a name (base rate only, no premium). Reverts NameNotRenewable if the name is not currently renewable.',
     params: [
       { name: 'label', type: 'string', description: 'The label to price' },
       { name: 'duration', type: 'uint64', description: 'Duration in seconds' },

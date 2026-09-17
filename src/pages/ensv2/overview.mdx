@@ -46,7 +46,7 @@ architecture, guiding principles and migration strategy for ENSv2.
 - **Shorter Grace Period** - The grace period has been reduced from 90 days in ENSv1 to 28 days. During this window, the expired name can still be renewed (by anyone, not just the owner). After the grace period, names enter a temporary premium period.
 - **Per-Account Resolvers** - Rather than sharing a single Public Resolver, every
   account gets its own [Permissioned Resolver](/ensv2/permissioned-resolver) proxy
-  with fine-grained per-record permissions and [record aliasing](/ensv2/permissioned-resolver#aliasing).
+  with fine-grained per-record permissions and [record linking](/ensv2/permissioned-resolver#records-and-linking).
 
 ```mermaid
 flowchart LR
@@ -94,7 +94,7 @@ flowchart LR
 | Page                                                            | Description                                                        |
 | --------------------------------------------------------------- | ------------------------------------------------------------------ |
 | [Permissioned Registry](/ensv2/permissioned-registry) | Tokenized registry managing name ownership, state, and permissions |
-| [Permissioned Resolver](/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record aliasing     |
+| [Permissioned Resolver](/ensv2/permissioned-resolver) | Per-account resolver with per-record roles and record linking      |
 | [ETH Registrar](/ensv2/eth-registrar)                 | Commit-reveal registration and renewal for .eth names              |
 | [Universal Resolver V2](/ensv2/universal-resolver-v2) | Single entry point for name resolution across the hierarchy        |
 | [DNS Name Resolution](/ensv2/dns-resolvers)           | Resolving DNS domain names through the ENS protocol                |

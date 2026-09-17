@@ -71,9 +71,16 @@ When a version counter increments, the registry performs a **regeneration**: the
 
 **Stale permissions** are solved by `eacVersionId`. When a name expires and is re-registered, both version counters increment. The new registration gets a fresh [resource](/ensv2/enhanced-access-control#resources) (because `eacVersionId` changed), and all role grants from the previous registration are effectively orphaned - they're stored under the old resource, which no longer corresponds to any active name.
 
-**Transfer griefing** is solved by `tokenVersionId`. When Alice frontruns with `revokeRoles`, the registry's `_onRolesRevoked` hook fires, triggering regeneration. This increments `tokenVersionId`, burning the old token and minting a new one. The marketplace's `safeTransferFrom` still references the old token ID - but that token no longer exists. The transaction reverts with `ERC1155InsufficientBalance`, protecting the buyer from receiving a degraded name. If the buyer still wants it, they must re-approve using the new token ID, at which point they can inspect the current roles.
+**Transfer griefing** is solved by `tokenVersionId`. When Alice tries to frontrun the sale by revoking roles on the listed name, the role change triggers a regeneration: the old token is burned and a new one with a new ID is minted. The marketplace's transfer still references the old token ID, so it cannot go through - the token it points to no longer exists. If the buyer still wants the name, the order must be re-created against the new token ID, at which point the roles can be inspected again.
 
-Note that legitimate ERC1155 transfers (`safeTransferFrom`) move roles from the old owner to the new owner *without* triggering regeneration. The internal role transfer bypasses the callbacks. This is intentional: a transfer should not invalidate the token ID that the transfer itself is using.
+Note that legitimate transfers move roles from the old owner to the new owner without triggering regeneration, so a transfer never invalidates the token ID it is using.
+
+Regeneration is not the only safeguard: a safe transfer also makes sure the buyer actually receives what they expect. It reverts in two more situations:
+
+- `TransferUnsafeUntilRegistryIsEmancipated`: the registry holding the name is not [emancipated](/ensv2/permissioned-registry#emancipation), so an account with root roles could still override the new owner.
+- `TransferUnsafeWithMultipleAssignees`: an account other than the sender still holds roles on the token, so the name would arrive with third parties controlling parts of it.
+
+Users who want to knowingly bypass these checks can use the registry's unsafe transfer variants, `unsafeTransfer` and `unsafeBatchTransfer`.
 
 ### When Token IDs Change
 

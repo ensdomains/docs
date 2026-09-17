@@ -8,7 +8,7 @@ import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Universal Resolver V2
 
-The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. It also provides functions for navigating and verifying the registry hierarchy itself.
+The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. Its companion contract [UniversalHelper](#universalhelper) provides functions for navigating and verifying the registry hierarchy itself.
 
 <FrenCallout fren="lili" variant="tip">
 The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
@@ -16,7 +16,7 @@ The contracts and interfaces described here are **not yet final** and may change
 
 ## Architecture
 
-`UniversalResolverV2` extends `AbstractUniversalResolver`, a shared base contract that implements all resolution logic: forward resolution, reverse resolution, [CCIP-Read](/resolvers/ccip-read) gateway batching, and callback chaining. The only function the base leaves abstract is `findResolver()`, which each version overrides with its own registry traversal strategy:
+Both Universal Resolver versions share a base contract that implements all resolution logic: forward resolution, reverse resolution, [CCIP-Read](/resolvers/ccip-read) gateway batching, and callback chaining. The only function the base leaves abstract is `findResolver()`, which each version overrides with its own registry traversal strategy:
 
 - **URv1** walks a flat ENS registry
 - **URv2** walks the hierarchical registry tree via `getSubregistry()` at each level
@@ -24,6 +24,8 @@ The contracts and interfaces described here are **not yet final** and may change
 Because the walk passes through each parent registry, if a parent name expires or its subregistry is removed, the registry returns `address(0)` and all subnames stop resolving automatically.
 
 `resolve()`, `reverse()`, and all CCIP-Read infrastructure work identically across both versions.
+
+Functions for inspecting the registry hierarchy itself live on the separate [UniversalHelper](#universalhelper) contract, keeping the Universal Resolver focused on resolution.
 
 ## Resolution
 
@@ -190,13 +192,17 @@ Resolver 1 is found at the .eth level, but `domingo` has no resolver set. **Reso
 
 The final remembered resolver is the one used for the actual record query.
 
-## Registry Navigation
+## UniversalHelper
 
-ENSv2 provides functions for locating registries within the hierarchy and verifying their position. All functions described here are exposed on the `UniversalResolverV2` contract.
+ENSv2 provides functions for locating registries within the hierarchy and verifying their position. All functions described here are exposed on the **UniversalHelper** contract, a companion to the Universal Resolver deployed alongside it (see [Deployments](/learn/deployments#sepolia-ensv2-beta)).
 
 All navigation functions walk **down** from the root registry except `findCanonicalName`, which walks **up** via `getParent()`, and `findCanonicalRegistry`, which does both.
 
-### findExactRegistry
+The `findNearest*` functions return a byte **offset** alongside their result. It marks the label boundary in the DNS-encoded input where the returned result was found: cutting the input bytes at that position (`name[offset:]` in pseudocode, where `name` is the DNS-encoded byte array) yields the ancestor's own DNS-encoded name, because every suffix of a DNS-encoded name that starts at a label boundary is itself a valid DNS-encoded name. The cut result can be passed directly to any other function that takes a name (onchain via a bytes slice such as `BytesUtils.substring`, offchain by slicing the byte array).
+
+### findExactRegistry and findNearestRegistry
+
+#### findExactRegistry
 
 Walks top-down from root, calling `getSubregistry()` at each label. Returns the subregistry that the target name points to, or `address(0)` if any link in the chain is missing.
 
@@ -206,7 +212,9 @@ For `nick.eth`:
 
 This is the registry where `nick.eth`'s subnames live. If `nick.eth` has no subregistry set, the final step returns `address(0)`.
 
-Use `findExactRegistry` when you need to interact with a specific registry and trust the hierarchy (e.g., checking roles or reading name state). For security-sensitive contexts, use [`findCanonicalRegistry`](#findcanonicalregistry) instead.
+#### findNearestRegistry
+
+The tolerant variant: instead of failing when the chain stops early, it returns the deepest registry found along the path, together with the offset of the ancestor name it belongs to, so that `findExactRegistry(name[offset:])` returns the same registry. An offset of `0` means the exact registry exists.
 
 ### findParentRegistry
 
@@ -218,7 +226,7 @@ For `nick.eth`:
 
 The `.eth` registry is where `nick` is an entry. Contrast with `findExactRegistry("nick.eth")`, which returns `nick.eth`'s own subregistry (one level deeper).
 
-This is used internally by [`findOwner`](#findowner) to locate the registry that holds ownership information for a name.
+This is the registry that holds ownership information for a name, which is what [`findExactOwner`](#findexactowner-and-findnearestowner) queries.
 
 ### findRegistries
 
@@ -261,7 +269,9 @@ For `nick.eth`:
 
 The bidirectional check prevents aliasing attacks: a registry could be mounted at one position in the tree but claim (via `getParent()`) to be at another. This is the function to use when verifying a registry's legitimacy, for example in marketplaces or any context where a name is being purchased or trusted.
 
-### findOwner
+### findExactOwner and findNearestOwner
+
+#### findExactOwner
 
 Finds the current owner of a name. `IOwnedRegistry` is a minimal interface that extends `IRegistry` with a single `findOwner(label)` function, returning the owner of a label. [PermissionedRegistry](/ensv2/permissioned-registry) implements it, but any custom registry with ownership can too.
 
@@ -269,11 +279,17 @@ For `nick.eth`:
 
 <MonoDiagram content={`findParentRegistry("nick.eth") → .eth registry\n├── supports IOwnedRegistry? (ERC-165 check) ✓\n└── .eth.findOwner("nick") → 0x1234 ← returned`} />
 
-Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IOwnedRegistry`, or the label has no owner.
+Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IOwnedRegistry`, or the label has no owner (unregistered, expired, or [reserved](/ensv2/permissioned-registry#name-lifecycle)).
+
+#### findNearestOwner
+
+Returns the owner of the closest owned ancestor instead: the deepest owner found along the path, together with the offset of the ancestor it belongs to, so that `findExactOwner(name[offset:])` returns the same owner. An offset of `0` means the name itself is owned.
+
+This answers "who is responsible for this name?" for subnames that exist only as [resolver data](/ensv2/permissioned-resolver): a name with no registry entry of its own has no owner, but its closest registered ancestor does.
 
 ## Reference
 
-### View Functions
+### Universal Resolver Functions
 
 <ContractReference functions={[
   {
@@ -286,66 +302,6 @@ Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IO
       { name: 'resolver', type: 'address', description: 'Resolver covering the longest suffix, or address(0)' },
       { name: 'node', type: 'bytes32', description: 'Namehash of the full name' },
       { name: 'offset', type: 'uint256', description: 'Byte offset into the DNS-encoded name where the resolver was found. 0 means an exact match; non-zero means the resolver was found at a parent suffix. Used by requireResolver to enforce that non-wildcard resolvers only serve exact matches.' },
-    ],
-  },
-  {
-    name: 'findExactRegistry',
-    description: "Find the registry at a name's position by walking down from root.",
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registry', type: 'IRegistry', description: 'Registry at that position, or address(0) if not found' },
-    ],
-  },
-  {
-    name: 'findParentRegistry',
-    description: "Find the parent registry for a name (the registry containing the name's entry).",
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'parentRegistry', type: 'IRegistry', description: 'Parent registry, or address(0) if not found' },
-    ],
-  },
-  {
-    name: 'findRegistries',
-    description: "Return all registries in a name's ancestry, innermost first.",
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registries', type: 'IRegistry[]', description: 'Array in label order, e.g. [<nick>, <eth>, <root>] for nick.eth' },
-    ],
-  },
-  {
-    name: 'findCanonicalName',
-    description: "Reconstruct a registry's DNS-encoded name by walking up via getParent().",
-    params: [
-      { name: 'registry', type: 'IRegistry', description: 'The registry to name' },
-    ],
-    returns: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name, or empty if not canonical' },
-    ],
-  },
-  {
-    name: 'findCanonicalRegistry',
-    description: 'Find the registry for a name, verified canonical via bidirectional walk.',
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'registry', type: 'IRegistry', description: 'Canonical registry, or address(0) if not found or not canonical' },
-    ],
-  },
-  {
-    name: 'findOwner',
-    description: 'Find the current owner of a name.',
-    params: [
-      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
-    ],
-    returns: [
-      { name: 'owner', type: 'address', description: 'Owner address, or address(0) if not found or registry does not implement IOwnedRegistry' },
     ],
   },
   {
@@ -423,6 +379,139 @@ Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IO
       { name: 'info', type: 'ResolverInfo', description: 'Struct with name, offset, node, resolver address, and whether it supports IExtendedResolver' },
     ],
   },
+  {
+    name: 'resolveWithNormalization',
+    description: 'Like resolve, but first normalizes the name onchain via the supplied ENSIP-15 normalizer contract. Intended for future use, no normalizer contract is deployed yet. The variant resolveWithGatewaysAndNormalization additionally takes custom gateway URLs.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name to resolve' },
+      { name: 'data', type: 'bytes', description: 'ABI-encoded resolver calldata' },
+      { name: 'ensip15', type: 'IENSIP15', description: 'Normalizer contract implementing normalize(label)' },
+    ],
+    returns: [
+      { name: 'result', type: 'bytes', description: 'ABI-encoded response' },
+      { name: 'resolver', type: 'address', description: 'The resolver that was used' },
+    ],
+  },
+  {
+    name: 'reverseWithNormalization',
+    description: 'Like reverse, but verifies onchain that the returned primary name is normalized per the supplied ENSIP-15 normalizer contract. Intended for future use. The variant reverseWithGatewaysAndNormalization additionally takes custom gateway URLs.',
+    params: [
+      { name: 'lookupAddress', type: 'bytes', description: 'Byte-encoded address to look up' },
+      { name: 'coinType', type: 'uint256', description: 'Coin type of the address' },
+      { name: 'ensip15', type: 'IENSIP15', description: 'Normalizer contract implementing normalize(label)' },
+    ],
+    returns: [
+      { name: 'primary', type: 'string', description: 'Verified primary name, or empty if not set' },
+      { name: 'resolver', type: 'address', description: 'Forward resolver for the primary name' },
+      { name: 'reverseResolver', type: 'address', description: 'Reverse resolver that provided the name' },
+    ],
+  },
+  {
+    name: 'normalize',
+    description: 'Normalize a DNS-encoded name label by label via the supplied ENSIP-15 normalizer contract.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+      { name: 'ensip15', type: 'IENSIP15', description: 'Normalizer contract implementing normalize(label)' },
+    ],
+    returns: [
+      { name: 'wasNormalized', type: 'bool', description: 'True if the input was already normalized' },
+      { name: 'normalizedName', type: 'bytes', description: 'The normalized DNS-encoded name' },
+    ],
+  },
+  {
+    name: 'isENSv2',
+    description: 'Marker distinguishing the v2 Universal Resolver from v1. Returns true.',
+    returns: [
+      { name: 'ensv2', type: 'bool', description: 'Always true on UniversalResolverV2' },
+    ],
+  },
+]} />
+
+### UniversalHelper Functions
+
+<ContractReference functions={[
+  {
+    name: 'findExactOwner',
+    description: 'Find the current owner of a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Owner address, or address(0) if unowned, not found, or the registry does not implement IOwnedRegistry' },
+    ],
+  },
+  {
+    name: 'findNearestOwner',
+    description: 'Find the owner of the closest owned ancestor of a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'owner', type: 'address', description: 'Nearest owner, or address(0) if none found' },
+      { name: 'offset', type: 'uint256', description: 'Byte offset into the name such that findExactOwner(name[offset:]) returns the same owner' },
+    ],
+  },
+  {
+    name: 'findExactRegistry',
+    description: "Find the registry at a name's position by walking down from root.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Registry at that position, or address(0) if not found' },
+    ],
+  },
+  {
+    name: 'findNearestRegistry',
+    description: 'Find the deepest registry along the path of a name.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Nearest registry, or address(0) if not found' },
+      { name: 'offset', type: 'uint256', description: 'Byte offset into the name such that findExactRegistry(name[offset:]) returns the same registry' },
+    ],
+  },
+  {
+    name: 'findParentRegistry',
+    description: "Find the parent registry for a name (the registry containing the name's entry).",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'parentRegistry', type: 'IRegistry', description: 'Parent registry, or address(0) if not found' },
+    ],
+  },
+  {
+    name: 'findRegistries',
+    description: "Return all registries in a name's ancestry, innermost first.",
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registries', type: 'IRegistry[]', description: 'Array in label order, e.g. [<nick>, <eth>, <root>] for nick.eth' },
+    ],
+  },
+  {
+    name: 'findCanonicalName',
+    description: "Reconstruct a registry's DNS-encoded name by walking up via getParent().",
+    params: [
+      { name: 'registry', type: 'IRegistry', description: 'The registry to name' },
+    ],
+    returns: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name, or empty if not canonical' },
+    ],
+  },
+  {
+    name: 'findCanonicalRegistry',
+    description: 'Find the registry for a name, verified canonical via bidirectional walk.',
+    params: [
+      { name: 'name', type: 'bytes', description: 'DNS-encoded name' },
+    ],
+    returns: [
+      { name: 'registry', type: 'IRegistry', description: 'Canonical registry, or address(0) if not found or not canonical' },
+    ],
+  },
 ]} />
 
 ### Constants
@@ -430,7 +519,7 @@ Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IO
 <ContractReference functions={[
   {
     name: 'ROOT_REGISTRY',
-    description: 'The ENSv2 root registry. All hierarchy traversal starts from this address. Set once at deployment (immutable).',
+    description: 'The ENSv2 root registry. All hierarchy traversal starts from this address. Set once at deployment (immutable). UniversalHelper exposes the same constant.',
   },
   {
     name: 'batchGatewayProvider',
@@ -476,6 +565,22 @@ Returns `address(0)` if the parent registry doesn't exist, doesn't implement `IO
     params: [
       { name: 'primary', type: 'string', description: 'The primary name that was looked up' },
       { name: 'primaryAddress', type: 'bytes', description: 'The address the primary name resolved to' },
+    ],
+  },
+  {
+    name: 'NormalizationChangedName',
+    description: 'resolveWithNormalization (or its gateway variant) was given a non-normalized name. The error carries the result for the normalized name instead.',
+    params: [
+      { name: 'normalizedName', type: 'bytes', description: 'The normalized DNS-encoded name' },
+      { name: 'result', type: 'bytes', description: 'ABI-encoded response for the normalized name' },
+      { name: 'resolver', type: 'address', description: 'The resolver that was used' },
+    ],
+  },
+  {
+    name: 'PrimaryNameNotNormalized',
+    description: 'reverseWithNormalization (or its gateway variant) found a primary name that is not normalized.',
+    params: [
+      { name: 'primary', type: 'string', description: 'The non-normalized primary name' },
     ],
   },
   {
