@@ -67,10 +67,15 @@ export function FrenCallout({
           marginTop: '2px',
         }}
       />
-      <div style={{ width: '100%' }}>
-        {title && (
-          <div style={{ fontWeight: 600, marginBottom: '4px' }}>{title}</div>
-        )}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+        }}
+      >
+        {title && <div style={{ fontWeight: 600 }}>{title}</div>}
         {children}
       </div>
     </aside>

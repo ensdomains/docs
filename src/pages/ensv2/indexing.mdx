@@ -7,10 +7,10 @@ import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 # Indexing ENSv2
 
-This page describes the ENSv2 contract events and functions relevant to building an indexer. It covers the full lifecycle of names - registration, transfer, renewal, subname creation, resolver record changes, role management, and aliasing.
+This page describes the ENSv2 contract events and functions relevant to building an indexer. It covers the full lifecycle of names - registration, transfer, renewal, subname creation, resolver record changes, record linking, and role management.
 
 <FrenCallout fren="lili" variant="tip">
-The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment. In particular, [indexer-breaking changes to the resolver event model](https://gist.github.com/makoto/37d1e78c03c6f608a6bd280a181695d0#-indexer-breaking-resolver-event-model-replaced-pr-354) will be merged soon. This page describes the [current Sepolia deployment](/learn/deployments#sepolia-ensv2-beta).
+The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment. This page describes the [current Sepolia deployment](/learn/deployments#sepolia-ensv2-beta).
 </FrenCallout>
 
 ## Contract Hierarchy
@@ -21,7 +21,7 @@ ENSv2 uses a hierarchical registry model. There is no single registry contract t
 
 Each registry is a [Permissioned Registry](/ensv2/permissioned-registry) (or UserRegistry for subnames), implementing `IRegistry`, `IStandardRegistry`, `IPermissionedRegistry`, and `IEnhancedAccessControl`. Tokens are [ERC1155Singleton](/ensv2/erc1155-singleton) (one token per name).
 
-Resolvers are separate contracts ([Permissioned Resolver](/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [aliases](/ensv2/permissioned-resolver#aliasing) (`setAlias`), which rewrite the name suffix during resolution (e.g., `sub.alias.eth` → `sub.test.eth`).
+Resolvers are separate contracts ([Permissioned Resolver](/ensv2/permissioned-resolver)) deployed per-account as UUPS proxies. All names owned by the same account share one resolver. Names on the same resolver can also share records via [record links](/ensv2/permissioned-resolver#records-and-linking) (`linkToNode` / `linkToRecord`).
 
 ## Registry Events
 
@@ -78,15 +78,15 @@ event LabelUnregistered(uint256 indexed tokenId, address indexed sender);
 
 **Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
-**When:** a name is explicitly deleted via `unregister()`. The ERC1155 token is burned and the expiry is set to `block.timestamp`.
+**When:** a name is explicitly deleted via `unregister()`, which works on both `REGISTERED` and `RESERVED` names. The expiry is set to `block.timestamp`, and if a token exists it is burned. Unregistering a `RESERVED` name burns nothing, since no token was ever minted.
 
 ### ExpiryUpdated
 
 ```solidity
-event ExpiryUpdated(uint256 indexed tokenId, uint64 newExpiry, address indexed sender);
+event ExpiryUpdated(uint256 indexed tokenId, uint64 indexed newExpiry, address indexed sender);
 ```
 
-**Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
+**Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
 **When:** a name's expiry is extended via `renew()` on the registry.
 
@@ -95,22 +95,22 @@ event ExpiryUpdated(uint256 indexed tokenId, uint64 newExpiry, address indexed s
 ```solidity
 event SubregistryUpdated(
     uint256 indexed tokenId,
-    IRegistry subregistry,
+    IRegistry indexed subregistry,
     address indexed sender
 );
 ```
 
-**Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
+**Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
 **When:** a name's child registry is set or changed via `setSubregistry()`. This also fires during `register()` if a subregistry is provided. New subregistry addresses indicate dynamically deployed UserRegistry contracts for subnames.
 
 ### ResolverUpdated
 
 ```solidity
-event ResolverUpdated(uint256 indexed tokenId, address resolver, address indexed sender);
+event ResolverUpdated(uint256 indexed tokenId, address indexed resolver, address indexed sender);
 ```
 
-**Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
+**Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
 **When:** a name's resolver is set or changed via `setResolver()`. Also fires during `register()` if a resolver is provided. New resolver addresses indicate dynamically deployed PermissionedResolver contracts.
 
@@ -120,7 +120,7 @@ event ResolverUpdated(uint256 indexed tokenId, address resolver, address indexed
 event TokenRegenerated(uint256 indexed oldTokenId, uint256 indexed newTokenId);
 ```
 
-**Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
+**Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
 **When:** a name's [EAC roles](/ensv2/enhanced-access-control) are modified via `grantRoles()` or `revokeRoles()`. The ERC1155 token ID changes (its version counter increments), while the underlying name (canonical ID / resource) remains the same. Always accompanied by ERC1155 `TransferSingle` events (burn old + mint new). See [Mutable Token IDs](/ensv2/mutable-token-ids) for details.
 
@@ -130,7 +130,7 @@ event TokenRegenerated(uint256 indexed oldTokenId, uint256 indexed newTokenId);
 event ParentUpdated(IRegistry indexed parent, string label, address indexed sender);
 ```
 
-**Emitted by:** `IRegistry` (on PermissionedRegistry, UserRegistry)
+**Emitted by:** `IRegistryEvents` (on PermissionedRegistry, UserRegistry)
 
 **When:** a registry's parent reference is set via `setParent()`. This establishes the upward link in the registry hierarchy, complementing `SubregistryUpdated` (which links parent → child) by establishing the child → parent direction.
 
@@ -145,6 +145,16 @@ event TokenResource(uint256 indexed tokenId, uint256 indexed resource);
 **Emitted by:** `IPermissionedRegistry`
 
 **When:** a token is created during registration (`register()`). Maps a `tokenId` to its corresponding `resource`. It is **not** re-emitted on token regeneration: the `resource` is derived from the `labelHash` and `eacVersionId`, so it stays stable across role-change regenerations (which only bump the `tokenVersionId`), and you should carry it onto the new `tokenId` by following [`TokenRegenerated`](#tokenregenerated) rather than expecting a fresh `TokenResource`. The `resource` does change on re-registration (which increments `eacVersionId`), at which point the new `register()` emits a fresh `TokenResource`. See [Mutable Token IDs](/ensv2/mutable-token-ids#id-types) for details.
+
+### URIUpdated
+
+```solidity
+event URIUpdated(string uri, address renderer, address indexed sender);
+```
+
+**Emitted by:** `IRegistryEvents`
+
+**When:** the registry's ERC1155 metadata configuration changes via `setURI(uri, renderer)` (requires `ROLE_SET_URI` on `ROOT_RESOURCE`). This is registry-wide token metadata, not per-name state.
 
 ## ERC1155 Transfer Events
 
@@ -208,7 +218,7 @@ event NameRegistered(
     address resolver,
     uint64 duration,
     IERC20 paymentToken,
-    bytes32 referrer,
+    bytes32 indexed referrer,
     uint256 base,
     uint256 premium
 );
@@ -231,128 +241,100 @@ event NameRenewed(
     uint64 duration,
     uint64 newExpiry,
     IERC20 paymentToken,
-    bytes32 referrer,
-    uint256 base
+    bytes32 indexed referrer,
+    uint256 amount
 );
 ```
 
-**Emitted by:** `IETHRegistrar`
+**Emitted by:** `IETHRenewer`, implemented by both the ETH Registrar and `ETHRenewerV1` (which renews not-yet-migrated names during the [migration](/ensv2/migration) and emits this event from its own address)
 
-**When:** a `.eth` name is renewed via `renew()`. The registrar also calls `renew()` on the ETHRegistry, which emits `ExpiryUpdated`.
+**When:** a `.eth` name is renewed via `renew()` or `renewBatch()` (one event per name). The renewer also calls `renew()` on the ETHRegistry, which emits `ExpiryUpdated`.
 
 ## Resolver Events
 
-These events are emitted by [Permissioned Resolver](/ensv2/permissioned-resolver) contracts and any contract implementing the standard resolver profile interfaces. Resolvers are keyed by `node` (namehash of the full name).
+These events are emitted by [Permissioned Resolver](/ensv2/permissioned-resolver) contracts. Record values live in numbered **record bundles**, so the record events are keyed by `recordId`, not by name. Which names a record serves is a separate event stream: `Linked` associates a `node` (namehash) with a `recordId`. An indexer therefore maintains two tables, record contents (from the `*Updated` events) and name-to-record links (from `Linked`), and joins them at query time.
 
-### AddressChanged
-
-```solidity
-event AddressChanged(bytes32 indexed node, uint256 coinType, bytes newAddress);
-```
-
-**When:** an address record is set via `setAddr(node, coinType, address)`. `coinType = 60` is ETH. Other coin types follow [SLIP-44](https://github.com/AdrianSimionov/slip-0044/blob/main/slip-0044.md) (e.g., 0 = BTC, 501 = SOL). The `node` maps to a domain via namehash.
-
-### TextChanged
+### Linked
 
 ```solidity
-event TextChanged(
-    bytes32 indexed node,
-    string indexed indexedKey,
-    string key,
-    string value
-);
+event Linked(uint256 indexed recordId, bytes32 indexed node, bytes name);
 ```
 
-**When:** a text record is set via `setText(node, key, value)`. Common keys: `avatar`, `url`, `description`, `com.twitter`, `com.github`, `email`, etc.
+**When:** a name is associated with a record: on the first write to a name (the resolver auto-creates a record and links it) and on explicit `linkToNode` / `linkToRecord` calls. `name` is DNS-encoded and `node` is its namehash. `recordId = 0` means the name was unlinked. The record linked to the root name (node `bytes32(0)`) serves as the **default record** for names without a link of their own.
 
-### ContenthashChanged
+### ResolverCreated
 
 ```solidity
-event ContenthashChanged(bytes32 indexed node, bytes hash);
+event ResolverCreated();
 ```
 
-**When:** a content hash is set via `setContenthash(node, hash)`. Supports IPFS, Arweave, Swarm, etc.
+**When:** the resolver proxy is initialized, marking a new resolver instance (see [Dynamic Contract Discovery](#dynamic-contract-discovery)).
 
-### ABIChanged
+### AddressUpdated
 
 ```solidity
-event ABIChanged(bytes32 indexed node, uint256 indexed contentType);
+event AddressUpdated(uint256 indexed recordId, uint256 coinType, bytes addressBytes);
 ```
 
-**When:** an ABI record is set.
+**When:** an address record is set via `setAddress(name, coinType, addressBytes)`. `coinType = 60` is ETH. Other coin types follow [SLIP-44](https://github.com/AdrianSimionov/slip-0044/blob/main/slip-0044.md) (e.g., 0 = BTC, 501 = SOL).
 
-### PubkeyChanged
+### TextUpdated
 
 ```solidity
-event PubkeyChanged(bytes32 indexed node, bytes32 x, bytes32 y);
+event TextUpdated(uint256 indexed recordId, string indexed keyHash, string key, string value);
 ```
 
-**When:** a public key record is set (secp256k1 x, y coordinates).
+**When:** a text record is set via `setText(name, key, value)`. `keyHash` is an indexed copy of `key` (the topic holds its keccak hash), so specific keys can be filtered without decoding the data. Common keys: `avatar`, `url`, `description`, `com.twitter`, `com.github`, `email`, etc.
 
-### NameChanged
+### DataUpdated
 
 ```solidity
-event NameChanged(bytes32 indexed node, string name);
+event DataUpdated(uint256 indexed recordId, string indexed keyHash, string key, bytes value);
 ```
 
-**When:** a reverse name record is set.
+**When:** a raw data record is set via `setData(name, key, value)`, the byte-valued counterpart of text records.
 
-### InterfaceChanged
+### ContenthashUpdated
 
 ```solidity
-event InterfaceChanged(
-    bytes32 indexed node,
-    bytes4 indexed interfaceID,
-    address implementer
-);
+event ContenthashUpdated(uint256 indexed recordId, bytes hash);
 ```
 
-**When:** an EIP-165 interface implementer is set.
+**When:** a content hash is set via `setContenthash(name, hash)`. Supports IPFS, Arweave, Swarm, etc.
 
-### VersionChanged
+### ABIUpdated
 
 ```solidity
-event VersionChanged(bytes32 indexed node, uint64 newVersion);
+event ABIUpdated(uint256 indexed recordId, uint256 indexed contentType);
 ```
 
-**When:** all records for a node are cleared via `clearRecords(node)`. The version counter is incremented, invalidating all previously stored records for that node.
+**When:** an ABI record is set via `setABI(name, contentType, data)`. The data itself is not in the event.
 
-### AliasChanged
+### NameUpdated
 
 ```solidity
-event AliasChanged(
-    bytes indexed indexedFromName,
-    bytes indexed indexedToName,
-    bytes fromName,
-    bytes toName
-);
+event NameUpdated(uint256 indexed recordId, string primaryName);
 ```
 
-**When:** an alias is set via `setAlias(fromName, toName)`. Names are DNS-encoded. Setting `toName` to empty bytes removes the alias. The resolver rewrites the suffix during resolution (e.g., if `alias.eth → test.eth`, then `sub.alias.eth` resolves records for `sub.test.eth`). Aliases are resolver-level constructs - the registry does not know about them.
+**When:** a primary (reverse) name record is set via `setName(name, primaryName)`.
 
-### NamedResource
+### InterfaceUpdated
 
 ```solidity
-event NamedResource(uint256 indexed resource, bytes name);
+event InterfaceUpdated(uint256 indexed recordId, bytes4 indexed interfaceId, address implementer);
 ```
 
-**When:** an EAC resource is associated with a name for [fine-grained permission control](/ensv2/permissioned-resolver#eac-integration) on the resolver.
+**When:** an EIP-165 interface implementer is set via `setInterface(name, interfaceId, implementer)`.
 
-### NamedTextResource
+### ResourceArgument
 
 ```solidity
-event NamedTextResource(uint256 indexed resource, bytes name, bytes32 indexed keyHash, string key);
+event ResourceArgument(uint256 indexed resource, bytes arg);
 ```
 
-**When:** an EAC resource is associated with a specific text record key for a name, allowing fine-grained permission to modify only a specific text record (e.g., only the `avatar` key).
+**When:** a role is granted on an argument-scoped [EAC resource](/ensv2/permissioned-resolver#eac-integration) that currently has no assignees. It publishes the preimage (`arg`, e.g. the text key or coin type) of the resource hash, letting indexers label resources. It can fire more than once for the same resource.
 
-### NamedAddrResource
-
-```solidity
-event NamedAddrResource(uint256 indexed resource, bytes name, uint256 indexed coinType);
-```
-
-**When:** an EAC resource is associated with a specific address coin type for a name, allowing fine-grained permission to modify only a specific address record (e.g., only the ETH address).
+The resolver interface also declares `Cleared(uint256 indexed recordId)`, which the current implementation never emits.
 
 ## Role Events
 
@@ -369,10 +351,18 @@ event EACRolesChanged(
 
 **Emitted by:** every contract inheriting [Enhanced Access Control](/ensv2/enhanced-access-control), which includes **both registries and resolvers**.
 
-**When:** the roles of `account` on `resource` change. On registries this happens via `grantRoles()` / `revokeRoles()` (which also trigger [`TokenRegenerated`](#tokenregenerated)) and once at creation, when the initial root role bitmap is granted to the registry owner (in the `constructor`, or in `initialize()` for proxy-deployed registries). On resolvers it happens via `initialize()` and the `authorize(Name|Text|Addr)Roles()` functions.
+**When:** the roles of `account` on `resource` change. On registries this fires:
+
+- at creation, for each initial root grant (in the `constructor`, or in `initialize()` for proxy-deployed registries)
+- on every registration that passes a nonzero role bitmap, when the new owner's roles are granted (always the case for [ETH Registrar](/ensv2/eth-registrar) registrations)
+- on `grantRoles()` / `revokeRoles()`, which also trigger [`TokenRegenerated`](#tokenregenerated)
+- on `grantRootRoles()` / `revokeRootRoles()`, which never regenerate
+- twice per token transfer, when all roles move from the old owner to the new owner (a revoke followed by a grant, no regeneration)
+
+Only `grantRoles()` / `revokeRoles()` regenerate the token, so an `EACRolesChanged` cannot be assumed to pair with a `TokenRegenerated`. On resolvers the event fires via `initialize()`, `grantSetterRoles()`, and the inherited `revokeRoles()` / `grantRootRoles()` / `revokeRootRoles()` (plain `grantRoles()` is disabled on resolvers and always reverts).
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
-Registries and resolvers use different resource ID spaces: a registry resource is derived from the labelhash and its EAC version counter, while a resolver resource is `keccak256(node, part)`. The same numeric `resource` value can therefore mean different things on different contracts. Always key role state by the emitting contract address together with the resource.
+Registries and resolvers use different resource ID spaces: a registry resource is derived from the labelhash and its EAC version counter, while a resolver resource is `keccak256(arg)` of the bare setter argument (the text key, coin type, content type, or interface ID), independent of any name. The same numeric `resource` value can therefore mean different things on different contracts. Always key role state by the emitting contract address together with the resource.
 </FrenCallout>
 
 ## Key Concepts for Indexers
@@ -387,9 +377,11 @@ An indexer cannot know all contract addresses at startup. The core pattern is:
 
 This creates a self-expanding set of monitored contracts.
 
-Link-time discovery has a blind spot: anything a registry or resolver emits **before** it is linked (its `RegistryCreated`, the initial `EACRolesChanged` root grant from `initialize()`, or records set before linking) predates the discovery point. Since registries and resolvers are deployed as proxies through the [Verifiable Factory](/ensv2/verifiable-factory), which emits `ProxyDeployed(sender, proxy, salt, implementation)`, watching the factory address discovers contracts at deployment time instead and closes that gap.
+Link-time discovery has a blind spot: anything a registry or resolver emits **before** it is linked (its `RegistryCreated` or `ResolverCreated`, the initial `EACRolesChanged` root grant from `initialize()`, or records set before linking) predates the discovery point. Since registries and resolvers are deployed as proxies through the [Verifiable Factory](/ensv2/verifiable-factory), which emits `ProxyDeployed(sender, proxy, salt, implementation)`, watching the factory address discovers contracts at deployment time instead and closes that gap.
 
 Note the log order inside a deployment transaction: `deployProxy()` calls `initialize()` on the new proxy **before** emitting `ProxyDeployed`. For a UserRegistry deployment the sequence is `Upgraded` → `RegistryCreated` → `EACRolesChanged` → `ProxyDeployed`. An indexer that discovers a contract from `ProxyDeployed` must therefore also process the earlier logs of that same transaction.
+
+The implementation contracts behind the proxies (`UserRegistryImpl`, `WrapperRegistryImpl`, `PermissionedResolverImpl`) each also emitted one of these events, from their constructors at deployment. They are shared logic targets, not usable instances, so a registry/resolver list built purely from creation events contains these three extra addresses. Discovery via `ProxyDeployed` is unaffected.
 
 ### TokenId vs Resource (Canonical ID)
 
@@ -408,7 +400,7 @@ The indexer must track the registry hierarchy to construct full names:
 
 The indexer must map each registry address to its parent name to build the complete DNS name.
 
-### Shared Subregistries (Linked Names)
+### Shared Subregistries
 
 Multiple parent names can point to the same subregistry via `setSubregistry()`. For example:
 
@@ -417,16 +409,16 @@ Multiple parent names can point to the same subregistry via `setSubregistry()`. 
 
 Children registered in `0xABC` appear under both parents. The token `wallet` in registry `0xABC` is simultaneously `wallet.sub1.sub2.parent.eth` and `wallet.linked.parent.eth` - they share the same tokenId.
 
-### Alias Resolution
+### Records and Linking
 
-Aliases are a resolver-level concept, not a registry-level one:
+Record storage is a resolver-level concept, decoupled from names:
 
-- `alias.eth` and `test.eth` may share the same resolver
-- The resolver stores an `alias.eth → test.eth` alias mapping
-- When resolving `sub.alias.eth`, the resolver rewrites it to `sub.test.eth` and returns those records
-- The registry hierarchy knows nothing about aliases - they exist only in the resolver's storage
+- Values live in numbered record bundles, and record events fire under `recordId`
+- `Linked(recordId, node, name)` associates names with records, and one record can be linked from any number of names
+- A name with no record link of its own resolves via the **default record**, the one linked to the root name (node `bytes32(0)`)
+- `Linked` with `recordId = 0` unlinks a name
 
-Two consequences for record indexing: record events (`AddressChanged`, `TextChanged`, ...) always fire under the node they were set on, and `setAlias()` emits no record events. During resolution the alias is checked **first**, so it shadows any records stored directly on the source name: once `alias.eth → test.eth` is set, records previously written under `alias.eth` are no longer returned by `resolve()`, even though they remain in storage. Indexed records therefore reflect stored state, not effective resolution; apply alias rewriting before treating them as what a name resolves to.
+Two consequences for record indexing: a single `*Updated` event can change the effective records of many names at once (every name linked to that record, and every unlinked name if it is the default record), and resolving a name requires the join: node to recordId (latest `Linked`, falling back to the default record), then recordId to values. Indexed record rows are per-record, not per-name; apply the link mapping before treating them as what a name resolves to.
 
 ### Registration Status
 
@@ -449,19 +441,23 @@ For a single registration via `ETHRegistrar.register()`, events fire in this ord
 1. `IRegistryEvents.LabelRegistered` - registry-level event with registration details
 2. `TransferSingle` (mint) - ERC1155 token creation
 3. `TokenResource` - tokenId-to-resource mapping
-4. `SubregistryUpdated` - if a subregistry was provided
-5. `ResolverUpdated` - if a resolver was provided
-6. `IETHRegistrar.NameRegistered` - registrar-level event with pricing
+4. `EACRolesChanged` - the owner's initial roles on the name (always fires on this path)
+5. `SubregistryUpdated` - if a subregistry was provided
+6. `ResolverUpdated` - if a resolver was provided
+7. `IETHRegistrar.NameRegistered` - registrar-level event with pricing
 
 For a direct `IStandardRegistry.register()` call (e.g., on a UserRegistry):
 
 1. `IRegistryEvents.LabelRegistered`
 2. `TransferSingle` (mint)
 3. `TokenResource`
-4. `SubregistryUpdated` - if a subregistry was provided
-5. `ResolverUpdated` - if a resolver was provided
+4. `EACRolesChanged` - if a nonzero role bitmap was passed
+5. `SubregistryUpdated` - if a subregistry was provided
+6. `ResolverUpdated` - if a resolver was provided
 
 For a name [migrated from ENSv1](/ensv2/migration), the migration controllers call `register()` on the ETHRegistry directly, so only the registry sequence fires: there is no `CommitmentMade` and no registrar `NameRegistered`, and `LabelRegistered.sender` is the migration controller.
+
+One more same-transaction caveat: re-registering an expired name whose token was never unregistered emits a burn `TransferSingle` for the old token ID **before** `LabelRegistered`, so a burn does not always mean unregistration or regeneration.
 
 ## Contract Address Summary
 
@@ -471,7 +467,7 @@ For a name [migrated from ENSv1](/ensv2/migration), the migration controllers ca
 | PermissionedRegistry (RootRegistry) | Manages TLDs                                   | Same as above                                                                                                                                                                                                        |
 | UserRegistry                        | Manages subnames (dynamically deployed)        | Same as above                                                                                                                                                                                                        |
 | ETHRegistrar                        | User-facing `.eth` registration                | `CommitmentMade`, `NameRegistered`, `NameRenewed`                                                                                                                                                                    |
-| PermissionedResolver                | Stores resolver records (dynamically deployed) | `AddressChanged`, `TextChanged`, `ContenthashChanged`, `ABIChanged`, `PubkeyChanged`, `NameChanged`, `InterfaceChanged`, `VersionChanged`, `AliasChanged`, `NamedResource`, `NamedTextResource`, `NamedAddrResource`, `EACRolesChanged` |
+| PermissionedResolver                | Stores resolver records (dynamically deployed) | `Linked`, `ResolverCreated`, `AddressUpdated`, `TextUpdated`, `DataUpdated`, `ContenthashUpdated`, `ABIUpdated`, `NameUpdated`, `InterfaceUpdated`, `ResourceArgument`, `EACRolesChanged` |
 | VerifiableFactory                   | Deploys registry/resolver proxies              | `ProxyDeployed`                                                                                                                                                                                                      |
 
 ## Read Functions for State Verification
@@ -516,27 +512,35 @@ function getExpiry(uint256 anyId) external view returns (uint64);
 // Check if a name is available for registration
 function isAvailable(string memory label) external view returns (bool);
 
-// Get rental price
-function rentPrice(
+// Get the registration price
+// (reverts NameNotAvailable if the name is not registerable)
+function getRegisterPrice(
     string memory label,
-    address buyer,
     uint64 duration,
     IERC20 paymentToken
 ) external view returns (uint256 base, uint256 premium);
+
+// Get the renewal price, the total amount of paymentToken
+// (reverts NameNotRenewable if the name is not renewable)
+function getRenewPrice(
+    string memory label,
+    uint64 duration,
+    IERC20 paymentToken
+) external view returns (uint256);
 ```
 
 ### Resolver State
 
 ```solidity
-// Get address record
-function addr(bytes32 node, uint256 coinType) external view returns (bytes memory);
+// Read any record (ENSIP-10): data carries the ABI-encoded profile call,
+// e.g. addr(node, coinType) or text(node, key)
+function resolve(bytes calldata name, bytes calldata data) external view returns (bytes memory);
 
-// Get text record
-function text(bytes32 node, string calldata key) external view returns (string memory);
+// Record linked to a node (0 = no link; the name falls back to the default record)
+function getRecordId(bytes32 node) external view returns (uint256);
 
-// Get content hash
-function contenthash(bytes32 node) external view returns (bytes memory);
-
-// Get alias
-function getAlias(bytes calldata name) external view returns (bytes memory);
+// Number of records created on this resolver
+function getRecordCount() external view returns (uint256);
 ```
+
+The resolver has no per-profile getters: all record reads go through `resolve()`. The name determines which record is read, and the node inside the profile calldata is ignored.

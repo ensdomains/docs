@@ -35,7 +35,7 @@ Premigration happens automatically. To migrate your name to v2:
 If your name is in the v1 grace period, use `ETHRenewerV1` to renew it first.
 
 <FrenCallout fren="peanut" variant="note">
-Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/ensv2/permissioned-resolver#eac-integration), [aliasing](/ensv2/permissioned-resolver#aliasing), and the new resolver.
+Migration is **not required** immediately. Unmigrated names continue to resolve through v1 via `ENSV1Resolver`. However, migrating gives you access to v2 features like [per-record permissions](/ensv2/permissioned-resolver#eac-integration), [record linking](/ensv2/permissioned-resolver#records-and-linking), and the new resolver.
 </FrenCallout>
 
 ### Subname Owners
@@ -233,7 +233,7 @@ Some names are structurally unable to migrate (see [Restrictions](#restrictions)
 - Renewals work via `ETHRenewerV1`, keeping the v1 and v2 expiries in sync
 - v1 fuses, resolver, and ownership remain unchanged
 
-The only v2 features unavailable to unmigratable names are per-record permissions, aliasing, and the new resolver. Once the v2 reservation expires and the 28-day v2 grace period has passed, the name becomes available for fresh registration in v2 (during the grace window it can still be renewed via `ETHRenewerV1`). The `Graveyard` can clear the expired v1 namespace.
+The only v2 features unavailable to unmigratable names are per-record permissions, record linking, and the new resolver. Once the v2 reservation expires and the 28-day v2 grace period has passed, the name becomes available for fresh registration in v2 (during the grace window it can still be renewed via `ETHRenewerV1`). The `Graveyard` can clear the expired v1 namespace.
 
 ### What Happens to Unmigrated Names
 
