@@ -28,17 +28,6 @@ export default defineConfig({
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
   ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
-  banner: {
-    content: (
-      <p>
-        Hacking at ETHOnline 2026?{' '}
-        <a href="https://feature-permres-inode-refact.docs-bao.pages.dev/ensv2/overview">
-          Read the ENSv2 hackathon docs
-        </a>
-        .
-      </p>
-    ),
-  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
