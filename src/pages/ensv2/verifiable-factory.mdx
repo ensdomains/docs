@@ -78,7 +78,7 @@ This is the property that makes the factory **verifiable**: a smart contract can
 
 ## Available Implementations
 
-Three implementation contracts are deployed once and then proxied through the factory. Their addresses are listed in the [Deployments](/learn/deployments#sepolia-ensv2-beta) table, and you need them to deploy your own instance: `deployProxy` takes the implementation address as its first argument.
+Three implementation contracts are deployed once and then proxied through the factory. Their addresses are listed in the [Deployments](/learn/deployments#sepolia-ensv2) table, and you need them to deploy your own instance: `deployProxy` takes the implementation address as its first argument.
 
 | Implementation             | Salt scheme                                                                    | Where it's deployed                                           |
 | -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------- |
@@ -148,7 +148,7 @@ Every proxy deployment follows the same steps: compute a salt, encode the implem
   The contract addresses used below (`VERIFIABLE_FACTORY`,
   `PERMISSIONED_RESOLVER_IMPL`, `USER_REGISTRY_IMPL`) are protocol-deployed
   contracts. Find them in the
-  [Deployments](/learn/deployments#sepolia-ensv2-beta) table.
+  [Deployments](/learn/deployments#sepolia-ensv2) table.
 </FrenCallout>
 
 Both examples below share this setup:
