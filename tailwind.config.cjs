@@ -112,10 +112,10 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['ABCMonumentGrotesk', 'Inter', 'sans-serif'],
-        serif: ['ABCMarist', 'Inter', 'serif'],
-        mono: ['ABCMonumentGroteskMono', 'Inter', 'monospace'],
-        'semi-mono': ['ABCMonumentGroteskSemiMono', 'Inter', 'monospace'],
+        sans: ['Geist', 'Inter', 'sans-serif'],
+        serif: ['Georgia', 'serif'],
+        mono: ['Geist Mono', 'monospace'],
+        'semi-mono': ['Geist Mono', 'monospace'],
       },
     },
   },
