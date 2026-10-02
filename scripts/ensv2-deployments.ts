@@ -10,7 +10,7 @@ import { Hex } from 'viem'
 // `contracts/docs/addresses/sepolia.md` and `contracts/deployments/sepolia/`
 // describe the same deployment, then delete
 // src/data/generated/ensv2-deployments.json to re-fetch.
-const CONTRACTS_V2_COMMIT = '71a3b7339dbc55ab47667abdfe8303bac4f4c24e'
+const CONTRACTS_V2_COMMIT = '07e55a056f5b6a9c90119f501bdd05714e67dddd'
 
 const ADDRESSES_MD_RAW = `https://raw.githubusercontent.com/ensdomains/contracts-v2/${CONTRACTS_V2_COMMIT}/contracts/docs/addresses/sepolia.md`
 const ARTIFACTS_RAW = `https://raw.githubusercontent.com/ensdomains/contracts-v2/${CONTRACTS_V2_COMMIT}/contracts/deployments/sepolia`
