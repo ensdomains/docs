@@ -12,11 +12,6 @@ import { Card } from '../../components/ui/Card'
 
 In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each account gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. All names owned by the same account share one resolver. Records are stored as numbered bundles that names link to, so several names can share one set of records, and permissions are managed per record type through fine-grained roles.
 
-<FrenCallout fren="lili" variant="tip">
-  The contracts and interfaces described here are **not yet final** and may
-  change prior to mainnet deployment.
-</FrenCallout>
-
 ## What Changed from ENSv1
 
 | Feature         | ENSv1 Public Resolver             | ENSv2 Permissioned Resolver                                                 |

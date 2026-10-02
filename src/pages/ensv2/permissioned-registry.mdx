@@ -12,10 +12,6 @@ import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 The Permissioned Registry is the tokenized registry at the heart of ENSv2 name management. Each registered name becomes an [ERC1155Singleton](/ensv2/erc1155-singleton) token with exactly one owner, and all permissions are managed through [Enhanced Access Control](/ensv2/enhanced-access-control).
 
-<FrenCallout fren="lili" variant="tip">
-The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-</FrenCallout>
-
 ## What Changed from ENSv1
 
 In ENSv1, name management was split across three separate contracts: the ENS Registry (flat mapping of all names), the BaseRegistrar (ERC721 tokens for .eth), and the Name Wrapper (ERC1155 wrapping + fuses). ENSv2 replaces all three with a single unified contract. The table below summarizes the key differences; each concept is explained in the sections that follow.
@@ -394,7 +390,6 @@ await wallet.writeContract({
 })
 // ROLE_SET_SUBREGISTRY remains active
 ```
-
 
 ## Reference
 

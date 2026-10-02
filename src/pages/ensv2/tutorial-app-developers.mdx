@@ -9,7 +9,7 @@ import { FrenCallout } from '../../components/ensv2/FrenCallout'
 This guide walks through integrating ENSv2 into an application: resolving names like `nick.eth` to addresses, reading profile records, displaying primary names, and letting users update their own records.
 
 <FrenCallout fren="lili" variant="tip">
-**If your application only reads ENS data, updating to a [supported library](#supported-libraries) is the whole job.** The resolver interface is unchanged from ENSv1 and resolution goes through the Universal Resolver at a fixed address, so your integration keeps working even as the ENSv2 contracts (**not yet final**) evolve underneath. Only the write flows are ENSv2-specific, and their authorization details ([Who Can Write](#who-can-write)) may still change before mainnet.
+**If your application only reads ENS data, updating to a [supported library](#supported-libraries) is the whole job.** The resolver interface is unchanged from ENSv1 and resolution goes through the Universal Resolver at a fixed address, so your integration keeps working even as the ENSv2 contracts evolve underneath. Only the write flows are ENSv2-specific, and their authorization details are covered in [Who Can Write](#who-can-write).
 </FrenCallout>
 
 ## What Changes for Apps

@@ -10,10 +10,6 @@ import { MonoDiagram } from '../../components/ensv2/MonoDiagram'
 
 The Universal Resolver V2 is the primary public entry point for ENS name resolution. It resolves names by traversing the [hierarchical registry tree](/ensv2/registry-hierarchy), walking from the root registry down through subregistries to locate the correct resolver for any name. Its companion contract [UniversalHelper](#universalhelper) provides functions for navigating and verifying the registry hierarchy itself.
 
-<FrenCallout fren="lili" variant="tip">
-The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-</FrenCallout>
-
 ## Architecture
 
 Both Universal Resolver versions share a base contract that implements all resolution logic: forward resolution, reverse resolution, [CCIP-Read](/resolvers/ccip-read) gateway batching, and callback chaining. The only function the base leaves abstract is `findResolver()`, which each version overrides with its own registry traversal strategy:
