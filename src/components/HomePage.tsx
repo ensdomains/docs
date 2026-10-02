@@ -106,7 +106,7 @@ export function HomePage() {
                 alt="ENSv2"
                 className="h-7 dark:invert"
               />
-              <span className="font-medium">Beta is live on Sepolia</span>
+              <span className="font-medium">Live on Sepolia</span>
             </div>
             <div>
               <div>
@@ -127,7 +127,7 @@ export function HomePage() {
               <div>
                 <a
                   className="vocs_Anchor !no-underline"
-                  href="/learn/deployments#sepolia-ensv2-beta"
+                  href="/learn/deployments#sepolia-ensv2"
                 >
                   Deployments
                 </a>

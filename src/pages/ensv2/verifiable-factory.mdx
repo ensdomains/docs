@@ -10,11 +10,6 @@ ENSv2's default setup deploys per-account resolvers and per-name subname registr
 
 The factory is the **default** deployment mechanism, not a protocol requirement. Custom resolver contracts are fully supported: `setResolver()` on the [Permissioned Registry](/ensv2/permissioned-registry) accepts any address. You can deploy your own resolver implementing `IExtendedResolver` (or the standard resolver profiles) without using the factory.
 
-<FrenCallout fren="lili" variant="tip">
-  The contracts and interfaces described here are **not yet final** and may
-  change prior to mainnet deployment.
-</FrenCallout>
-
 ## Why a Factory
 
 ENSv2 chooses per-account resolver and per-name registry instances over a single shared contract (see [Overview](/ensv2/overview#whats-new-in-ensv2)). Each instance is an upgradeable proxy, so deployment is cheap and any single instance can be upgraded without touching the rest of the system. The factory makes every such deployment:
@@ -83,7 +78,7 @@ This is the property that makes the factory **verifiable**: a smart contract can
 
 ## Available Implementations
 
-Three implementation contracts are deployed once and then proxied through the factory. Their addresses are listed in the [Deployments](/learn/deployments#sepolia-ensv2-beta) table, and you need them to deploy your own instance: `deployProxy` takes the implementation address as its first argument.
+Three implementation contracts are deployed once and then proxied through the factory. Their addresses are listed in the [Deployments](/learn/deployments#sepolia-ensv2) table, and you need them to deploy your own instance: `deployProxy` takes the implementation address as its first argument.
 
 | Implementation             | Salt scheme                                                                    | Where it's deployed                                           |
 | -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------- |
@@ -153,7 +148,7 @@ Every proxy deployment follows the same steps: compute a salt, encode the implem
   The contract addresses used below (`VERIFIABLE_FACTORY`,
   `PERMISSIONED_RESOLVER_IMPL`, `USER_REGISTRY_IMPL`) are protocol-deployed
   contracts. Find them in the
-  [Deployments](/learn/deployments#sepolia-ensv2-beta) table.
+  [Deployments](/learn/deployments#sepolia-ensv2) table.
 </FrenCallout>
 
 Both examples below share this setup:

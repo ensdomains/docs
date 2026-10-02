@@ -10,10 +10,6 @@ import { Card } from '../../components/ui/Card'
 
 The ETH Registrar manages the registration and renewal of `.eth` names in ENSv2. It retains the proven [commit-reveal pattern from ENSv1](/registry/eth#registering-a-name) while adding multi-year registration discounts, ERC20 payment support, and integration with the [Permissioned Registry](/ensv2/permissioned-registry).
 
-<FrenCallout fren="lili" variant="tip">
-The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-</FrenCallout>
-
 ## What Changed from ENSv1
 
 | Feature              | ENSv1                               | ENSv2                                                                                 |
@@ -338,7 +334,6 @@ await wallet.writeContract({
   args: [{ label, duration, referrer }, paymentToken],
 })
 ```
-
 
 ## Reference
 

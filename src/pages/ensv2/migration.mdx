@@ -8,10 +8,6 @@ import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
 ENSv2 provides a migration framework for transitioning ENSv1 `.eth` names to the new system. Migration is a two-phase process: **premigration** reserves all existing names in v2 automatically, then **migration** lets owners claim their names by transferring their v1 tokens to a migration controller.
 
-<FrenCallout fren="lili" variant="tip">
-The contracts and interfaces described here are **not yet final** and may change prior to mainnet deployment.
-</FrenCallout>
-
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
 Once ENSv2 is live, v1 `.eth` registrations and renewals are disabled. New registrations go through the v2 [ETH Registrar](/ensv2/eth-registrar). Migrated names are renewed via the ETH Registrar; unmigrated ([RESERVED](#key-definitions)) names are renewed via [`ETHRenewerV1`](#renewals), which syncs the expiry back to v1. Names in v1 will simply expire and can never be re-registered through v1.
 </FrenCallout>
