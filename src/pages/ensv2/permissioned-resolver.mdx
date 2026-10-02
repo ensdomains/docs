@@ -12,11 +12,6 @@ import { Card } from '../../components/ui/Card'
 
 In ENSv1, most names shared a single [Public Resolver](/resolvers/public) contract. In ENSv2, **each account gets its own resolver instance**, deployed as a UUPS-upgradeable proxy. All names owned by the same account share one resolver. Records are stored as numbered bundles that names link to, so several names can share one set of records, and permissions are managed per record type through fine-grained roles.
 
-<FrenCallout fren="lili" variant="tip">
-  The contracts and interfaces described here are **not yet final** and may
-  change prior to mainnet deployment.
-</FrenCallout>
-
 ## What Changed from ENSv1
 
 | Feature         | ENSv1 Public Resolver             | ENSv2 Permissioned Resolver                                                 |
@@ -187,7 +182,7 @@ When a resource that currently has no role holders receives a grant through `gra
 
 ## Deploying a Permissioned Resolver
 
-Each account deploys its own resolver instance through the [Verifiable Factory](/ensv2/verifiable-factory): a UUPS proxy with a deterministic address, pointing at the protocol-provided implementation contract from the [deployments table](/learn/deployments#sepolia-ensv2-beta). The deploy call runs `initialize(grants, calls)`, which defines the initial permissions and can set initial records in the same transaction (see [Roles](#roles)). Afterwards, point a name at the new instance via `setResolver` on the [registry that holds the name](/ensv2/permissioned-registry).
+Each account deploys its own resolver instance through the [Verifiable Factory](/ensv2/verifiable-factory): a UUPS proxy with a deterministic address, pointing at the protocol-provided implementation contract from the [deployments table](/learn/deployments#sepolia-ensv2). The deploy call runs `initialize(grants, calls)`, which defines the initial permissions and can set initial records in the same transaction (see [Roles](#roles)). Afterwards, point a name at the new instance via `setResolver` on the [registry that holds the name](/ensv2/permissioned-registry).
 
 See [Deploying a Resolver Proxy](/ensv2/verifiable-factory#deploying-a-resolver-proxy) for the full code example.
 
