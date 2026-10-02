@@ -52,8 +52,8 @@ export default defineConfig({
   theme: {
     variables: {
       fontFamily: {
-        default: "'ABCMonumentGrotesk', Inter, sans-serif",
-        mono: "'ABCMonumentGroteskMono', monospace",
+        default: "'Geist', Inter, sans-serif",
+        mono: "'Geist Mono', monospace",
       },
       color: {
         background: {
