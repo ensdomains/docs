@@ -1,0 +1,42 @@
+---
+authors:
+  - coltron.eth
+proposal:
+  type: "executable"
+---
+
+# [EP 7.1] [Executable] SPP3 Marketplace RFP Award: Nomentum Labs (Grails)
+
+::authors
+
+| **Status**            | Active                                                                                                                                                                                                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/22374)                                                                                                                                                                                                                                  |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/onchain/19667497139373951686084433718987773325019389190188449031876262520356769920394), [Anticapture](https://app.anticapture.com/ens/governance/proposal/19667497139373951686084433718987773325019389190188449031876262520356769920394) |
+
+https://discuss.ens.domains/t/spp3-marketplace-rfp-recommendation/22371
+
+## Abstract
+
+The SPP3 Marketplace RFP committee recommends Nomentum Labs, operating Grails (grails.app), as the Marketplace RFP awardee. The total award is $500,000, the maximum authorized under \[7.1] \[Social] SPP3 Marketplace RFP, consisting of a $400,000 base award and up to $100,000 released on performance-based traction gates. This executable moves the full award in USDC to the MetaGov Stream Management Pod (`stream.mg.wg.ens.eth`), from which it is released to Nomentum Labs under the Award Notice, after KYC. The awardee joins the SPP3 cohort's reporting and oversight structure for a term co-terminating with the cohort in Q3 2027. Unreleased funds return to the treasury at term end.
+
+## Specification
+
+The award moves to the MetaGov Stream Management Pod (`stream.mg.wg.ens.eth`, `0xB162Bf7A7fD64eF32b787719335d06B2780e31D1`) in three USDC transfers, one per tranche of the payment structure:
+
+1. **$90,000 upfront:** released to Nomentum Labs in $30,000 monthly installments over the first quarter, subject to KYC and the executed Award Notice.
+2. **$100,000 performance-gated:** held in the pod across four $25,000 gates and released only on verified results. Q1 2027: attributed protocol revenue at or above the at-signing baseline, and at least 150 distinct wallets completing value-transferring actions in the quarter. Term end: revenue on pace for $1,000,000 a year, and at least 250 ETH of filtered secondary volume over the prior two quarters. The revenue baseline is Grails's attributed revenue over the 90 days before signing.
+3. **$310,000 as a stream:** opened by MetaGov from the pod on committee verification of the ENSv2 readiness milestone (target Q4 2026, or sufficient progress at the committee's judgment), running to term end. The $25,000 wind-down escrow is funded from the award when the stream opens.
+
+Release mechanics (installments, gates, stream open, wind-down escrow) are executed pod-side by the MetaGov stewards using the existing custody structures. Unreleased funds return to the treasury at term end.
+
+## Transactions
+
+| Address                                             | Value | Function   | Argument | Value                                                                 |
+| --------------------------------------------------- | ----- | ---------- | -------- | --------------------------------------------------------------------- |
+| `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC) | 0     | `transfer` | to       | `0xB162Bf7A7fD64eF32b787719335d06B2780e31D1` (`stream.mg.wg.ens.eth`) |
+|                                                     |       |            | value    | `90000000000` (90,000 USDC)                                           |
+| `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC) | 0     | `transfer` | to       | `0xB162Bf7A7fD64eF32b787719335d06B2780e31D1` (`stream.mg.wg.ens.eth`) |
+|                                                     |       |            | value    | `100000000000` (100,000 USDC)                                         |
+| `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC) | 0     | `transfer` | to       | `0xB162Bf7A7fD64eF32b787719335d06B2780e31D1` (`stream.mg.wg.ens.eth`) |
+|                                                     |       |            | value    | `310000000000` (310,000 USDC)                                         |
