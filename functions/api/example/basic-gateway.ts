@@ -10,6 +10,15 @@ router.add({
   },
 })
 
+router.add({
+  type: 'function addr(bytes32 node, uint256 coinType) external view returns (bytes)',
+  handle: ([_node, _coinType]) => {
+    // Always return the same address (offchain.integration-tests.eth)
+    // https://github.com/ensdomains/resolution-tests
+    return ['0xeE9eeaAB0Bb7D9B969D701f6f8212609EDeA252E' as const]
+  },
+})
+
 export async function onRequestPost({ request }: { request: Request }) {
   const body = await request.json()
   const { body: ccipReadRes } = await router.call(body)
