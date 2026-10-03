@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils'
 type Props = PropsWithChildren<
   | ({
       as: 'a'
-    } & React.AnchorHTMLAttributes<HTMLLinkElement>)
+    } & React.AnchorHTMLAttributes<HTMLAnchorElement>)
   | ({
       as: 'div'
     } & React.HTMLAttributes<HTMLDivElement>)

@@ -8,7 +8,7 @@ type Props = {
   title: string
   tag?: string
   description: string
-} & React.AnchorHTMLAttributes<HTMLLinkElement>
+} & React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 export const EmbedLink: FC<Props> = ({ title, description, tag, ...props }) => {
   return (
