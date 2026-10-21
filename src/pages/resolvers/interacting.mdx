@@ -57,7 +57,7 @@ const hash = await setRecords(wallet, {
 
 :::
 
-Note that only the [Manager](/terminology#manager) of a name can set records on the resolver. For unwrapped names, the manager can be found by calling `owner()` on the ENS Registry. For wrapped names, the manager can be found by calling `ownerOf()` on the Name Wrapper. You can find the contract addresses [here](/learn/deployments#mainnet).
+Note that only the [Manager](/terminology#manager) of a name can set records on the resolver. For unwrapped names, the manager can be found by calling `owner()` on the ENS Registry. For wrapped names, the manager can be found by calling `ownerOf()` on the Name Wrapper. You can find the contract addresses [here](/learn/deployments#mainnet-ensv1).
 
 ## Update a User's Resolver
 
@@ -65,7 +65,7 @@ Overwriting a user's resolver involves overwriting the behaviour of their ENS na
 
 To change the resolver of a name, the Manager must call `setResolver()` on either the ENS Registry or the Name Wrapper, depending on whether the name is wrapped or not.
 
-To figure out if a name is wrapped, call `owner()` on the ENS Registry. If this returns the address of the Name Wrapper, that indicates the name is wrapped and you should call `ownerOf()` on the Name Wrapper to get the effective owner of the name. You can find the contract addresses [here](/learn/deployments#mainnet).
+To figure out if a name is wrapped, call `owner()` on the ENS Registry. If this returns the address of the Name Wrapper, that indicates the name is wrapped and you should call `ownerOf()` on the Name Wrapper to get the effective owner of the name. You can find the contract addresses [here](/learn/deployments#mainnet-ensv1).
 
 :::code-group
 
