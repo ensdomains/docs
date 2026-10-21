@@ -82,9 +82,22 @@ Both the registrar and the oracle expose `getRegisterPrice` and `getRenewPrice`,
 
 ## Multi-Token Payments
 
-Unlike ENSv1 which only accepted ETH, the ENSv2 registrar supports payment in multiple ERC20 tokens. The `StandardRentPriceOracle` maintains exchange rate ratios for each accepted token. Check accepted tokens via `isPaymentToken(token)` on the `StandardRentPriceOracle`.
+Unlike ENSv1 which only accepted ETH, the ENSv2 registrar supports payment in multiple ERC20 tokens. The `StandardRentPriceOracle` keeps an exchange rate ratio for each accepted token, which rescales the oracle's internal USD price units to that token's decimals.
 
-Payment is collected via `safeTransferFrom` to an immutable beneficiary address. The caller must approve the registrar for the payment token before calling `register()` or `renew()`.
+At launch the contracts accept **USDC** and **DAI**. More tokens will be added over time.
+
+| Token | Address |
+|-------|---------|
+| USDC  | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` |
+| DAI   | `0x6B175474E89094C44Da98b954EedeAC495271d0F` |
+
+Frontends may accept a narrower set than the contracts do. At launch the ENS Manager app pays with mainnet USDC, plus L2 USDC via crosschain intents, and the ENS Explorer pays with mainnet USDC.
+
+### Querying Accepted Tokens
+
+The registrar exposes the oracle through `rentPriceOracle()`, and the `StandardRentPriceOracle` answers per-token lookups: `isPaymentToken(token)` returns whether a token is accepted, and `getPaymentTokenRatio(token)` returns its `(numer, denom)` ratio.
+
+There is no getter for the full set. To enumerate accepted tokens, read the `PaymentTokenUpdated(token, numer, denom)` events, where `denom > 0` marks a token as enabled and `denom == 0` marks it as removed.
 
 ## Registering a Name
 
