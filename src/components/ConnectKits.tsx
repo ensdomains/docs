@@ -39,11 +39,6 @@ export const kits: Kit[] = [
     demo: 'https://docs.family.co/connectkit/try-it-out',
     templates: [
       {
-        name: 'Create React App',
-        url: 'https://github.com/family/connectkit/tree/main/examples/cra',
-        icon: <FaReact />,
-      },
-      {
         name: 'Vite + React',
         url: 'https://github.com/family/connectkit/tree/main/examples/vite',
         icon: <TbBrandVite />,
