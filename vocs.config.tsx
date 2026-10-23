@@ -92,11 +92,7 @@ export default defineConfig({
           data-api="/api/blah/event"
           src="/api/blah/script"
         ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
-          }}
-        ></script>
+        <script src="/js/plausible-init.js"></script>
       </>
     )
   },
