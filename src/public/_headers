@@ -1,1 +1,10 @@
-Content-Security-Policy: default-src 'self'; script-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev https://fonts.googleapis.com 'unsafe-inline'; style-src-attr 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src-elem 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; connect-src 'self' https://eth.merkle.io https://euc.li https://api.opensea.io https://ipfs.io https://docs.ens.domains; img-src 'self' data: blob: https://*.docs-bao.pages.dev https://euc.li https://api.opensea.io https://ipfs.io https://i.seadn.io; font-src 'self' https://*.docs-bao.pages.dev https://fonts.gstatic.com; object-src 'none';
+# Prevent the site from being framed by other origins (clickjacking)
+/*
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Frame-Options: SAMEORIGIN
+
+# A full CSP was previously listed here without a URL pattern, so Cloudflare
+# never applied it. It is kept for reference but not enforced, since it lacks
+# a frame-src for the embedded YouTube videos and would block them as written.
+#
+# Content-Security-Policy: default-src 'self'; script-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev https://fonts.googleapis.com 'unsafe-inline'; style-src-attr 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src-elem 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; connect-src 'self' https://eth.merkle.io https://euc.li https://api.opensea.io https://ipfs.io https://docs.ens.domains; img-src 'self' data: blob: https://*.docs-bao.pages.dev https://euc.li https://api.opensea.io https://ipfs.io https://i.seadn.io; font-src 'self' https://*.docs-bao.pages.dev https://fonts.gstatic.com; object-src 'none';
