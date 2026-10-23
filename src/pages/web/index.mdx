@@ -1,6 +1,6 @@
+import { Avatar } from '../../components/Avatar'
 import { EmbedLink } from '../../components/EmbedLink'
 import { Card } from '../../components/ui/Card'
-import { ImageWithFallback } from '../../components/ui/ImageWithFallback'
 
 # Getting Started [Integrate ENS into your dApp]
 
@@ -11,12 +11,7 @@ This section walks you through how to leverage the ENS open standards to improve
 <Card className="flex items-center justify-center gap-2">
   <div className="flex flex-col gap-2 rounded-md border p-2 px-3">
     <div className="flex items-center gap-2">
-      <ImageWithFallback
-        src="https://ens-api.gregskril.com/avatar/vitalik.eth?width=64"
-        fallback="/img/fallback-avatar.svg"
-        alt="vitalik.eth"
-        className="aspect-square h-full w-8 rounded"
-      />
+      <Avatar name="vitalik.eth" width={32} className="rounded" />
       <span>vitalik.eth</span>
     </div>
   </div>
@@ -42,12 +37,7 @@ This section walks you through how to leverage the ENS open standards to improve
     <div className="flex flex-col gap-2 rounded-md border p-2 px-3">
       {['nick.eth', 'jefflau.eth', 'vitalik.eth'].map((name) => (
         <div className="flex items-center gap-2" key={name}>
-          <ImageWithFallback
-            src={'https://ens-api.gregskril.com/avatar/' + name + '?width=64'}
-            fallback="/img/fallback-avatar.svg"
-            alt={name}
-            className="aspect-square h-full w-8 rounded"
-          />
+          <Avatar name={name} width={32} className="rounded" />
           <span>{name}</span>
         </div>
       ))}
