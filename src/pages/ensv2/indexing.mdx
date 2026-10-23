@@ -272,7 +272,7 @@ event ResolverCreated();
 event AddressUpdated(uint256 indexed recordId, uint256 coinType, bytes addressBytes);
 ```
 
-**When:** an address record is set via `setAddress(name, coinType, addressBytes)`. `coinType = 60` is ETH. Other coin types follow [SLIP-44](https://github.com/AdrianSimionov/slip-0044/blob/main/slip-0044.md) (e.g., 0 = BTC, 501 = SOL).
+**When:** an address record is set via `setAddress(name, coinType, addressBytes)`. `coinType = 60` is ETH. Other coin types follow [SLIP-44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) (e.g., 0 = BTC, 501 = SOL).
 
 ### TextUpdated
 
