@@ -1,26 +1,23 @@
-import { ImgHTMLAttributes, useEffect, useRef, useState } from 'react'
+import { ImgHTMLAttributes } from 'react'
 
 type Props = ImgHTMLAttributes<HTMLImageElement> & {
   fallback: string
 }
 
-// Swaps to `fallback` if `src` fails to load, including failures that happen before hydration
+// Swaps to `fallback` if `src` fails to load. The ref check catches failures
+// that happened before hydration, when onError wasn't attached yet.
 export function ImageWithFallback({ src, fallback, ...props }: Props) {
-  const ref = useRef<HTMLImageElement>(null)
-  const [failed, setFailed] = useState(false)
-
-  useEffect(() => setFailed(false), [src])
-
-  useEffect(() => {
-    const img = ref.current
-    if (img?.complete && img.naturalWidth === 0) setFailed(true)
-  }, [src])
+  const showFallback = (img: HTMLImageElement) => {
+    if (img.getAttribute('src') !== fallback) img.src = fallback
+  }
 
   return (
     <img
-      ref={ref}
-      src={failed || !src ? fallback : src}
-      onError={() => setFailed(true)}
+      src={src || fallback}
+      ref={(img) => {
+        if (img?.complete && img.naturalWidth === 0) showFallback(img)
+      }}
+      onError={(e) => showFallback(e.currentTarget)}
       {...props}
     />
   )
