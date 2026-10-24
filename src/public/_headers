@@ -1,1 +1,12 @@
-Content-Security-Policy: default-src 'self'; script-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src 'self' https://docs.ens.domains https://*.docs-bao.pages.dev https://fonts.googleapis.com 'unsafe-inline'; style-src-attr 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; style-src-elem 'self' https://docs.ens.domains https://*.docs-bao.pages.dev 'unsafe-inline'; connect-src 'self' https://eth.merkle.io https://euc.li https://api.opensea.io https://ipfs.io https://docs.ens.domains; img-src 'self' data: blob: https://*.docs-bao.pages.dev https://euc.li https://api.opensea.io https://ipfs.io https://i.seadn.io; font-src 'self' https://*.docs-bao.pages.dev https://fonts.gstatic.com; object-src 'none';
+# Notes on the Content-Security-Policy:
+# - script-src needs 'unsafe-eval' because Vocs rebuilds functions from
+#   vocs.config.tsx with new Function(). Avoid inline scripts so it can keep
+#   omitting 'unsafe-inline'
+# - img-src allows any https origin because DAO proposals embed images from many
+#   hosts and ENS avatars can point anywhere
+# - connect-src allows any https origin because ENS resolution can hit arbitrary
+#   CCIP-Read gateways and avatar/NFT metadata URLs
+# - frame-src only allows the YouTube embeds
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  X-Frame-Options: SAMEORIGIN

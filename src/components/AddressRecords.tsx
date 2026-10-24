@@ -1,6 +1,7 @@
 import { useEnsAvatar } from 'wagmi'
 
 import { UseEnsAddressesProps, useEnsAddresses } from '../hooks/useEnsAddresses'
+import { ImageWithFallback } from './ui/ImageWithFallback'
 import { Table } from './ui/Table'
 
 export const AddressRecords = ({ name, coinTypes }: UseEnsAddressesProps) => {
@@ -10,11 +11,13 @@ export const AddressRecords = ({ name, coinTypes }: UseEnsAddressesProps) => {
   return (
     <>
       <div className="mb-4 flex items-center gap-2">
-        <img
-          src={avatar || '/img/fallback-avatar.svg'}
+        <ImageWithFallback
+          src={avatar ?? undefined}
+          fallback="/img/fallback-avatar.svg"
+          alt={name}
           className="h-8 w-8 rounded"
         />
-        <span className="font-semibold font-semi-mono">{name}</span>
+        <span className="font-semi-mono font-semibold">{name}</span>
       </div>
 
       <Table

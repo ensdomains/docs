@@ -2,6 +2,7 @@ import { Address, zeroAddress } from 'viem'
 import { useEnsAddress, useEnsAvatar, useEnsName } from 'wagmi'
 
 import { cn, truncateAddress } from '../lib/utils'
+import { ImageWithFallback } from './ui/ImageWithFallback'
 
 type EnsProfileProps =
   | { name: string; address: undefined; hideAddress?: boolean }
@@ -49,14 +50,18 @@ function Profile({
   const { data: avatar } = useEnsAvatar({ name: name || undefined, chainId: 1 })
 
   return (
-    <div className="border-grey-light flex w-fit min-w-fit items-center justify-center rounded-lg border bg-white p-1 pr-6  dark:bg-black">
+    <div className="border-grey-light flex w-fit min-w-fit items-center justify-center rounded-lg border bg-white p-1 pr-6 dark:bg-black">
       <div className="flex items-center gap-2">
-        <img
-          src={avatar || '/img/fallback-avatar.svg'}
-          className="border-grey-light h-10 w-10 rounded-sm border-0.5"
+        <ImageWithFallback
+          src={avatar ?? undefined}
+          fallback="/img/fallback-avatar.svg"
+          alt={name || ''}
+          className="border-grey-light border-0.5 h-10 w-10 rounded-sm"
         />
         <div className="flex flex-col gap-0.5 leading-none">
-          <span className="font-semibold font-semi-mono">{name || 'No name'}</span>
+          <span className="font-semi-mono font-semibold">
+            {name || 'No name'}
+          </span>
 
           {!hideAddress && (
             <span className={cn('text-grey text-xs')}>
