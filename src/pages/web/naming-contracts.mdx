@@ -8,6 +8,8 @@ In order for you to manage the primary name of your smart contract, you need to 
 To enable reverse resolution, you must set both the reverse record and the ETH address to the contract’s deployed address.
 :::
 
+Skip to [Naming Tools](#naming-tools) for a tool that can name your smart contracts for you.
+
 ## New Contracts
 
 Depending on your use case, there are a few ways to set a smart contract's primary name.
@@ -120,3 +122,27 @@ If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/
 If your contract is a Safe, Multisig, DAO or otherwise has the ability to execute arbitrary calldata, you can use a [Reverse Registrar](/registry/reverse) contract directly to set a name for it.
 
 You might even be able to use the [ENS Manager App](https://app.ens.domains/) inside of your safe app to set a primary name.
+
+## Naming Tools
+
+:::warning
+These are 3rd party tools and not officially supported by ENS Labs.
+:::
+
+### Remix IDE
+
+[Remix IDE](https://remix.ethereum.org/) supports naming smart contracts with ENS directly from the Deployed Contracts panel. Remix registers a subname of `remixcontract.eth` in the form `label.project.remixcontract.eth` on Ethereum Mainnet and covers the gas for registering it.
+
+To be named this way, a contract must:
+
+- Be [Ownable](#ownable-recommended), so that its owner can set the reverse record
+- Be deployed to Ethereum Mainnet or a supported L2 (testnets such as Sepolia are not supported)
+
+To name a deployed contract:
+
+1. Open the menu on your contract in the Deployed Contracts section and select **Name Contract (ENS)**
+2. Enter a label and a project name. Remix checks that the resulting name is available
+3. Click **Register ENS Name** to create the forward record that points the name to the contract address
+4. Click **Set Reverse** and confirm the transaction from the contract owner's account on the network the contract is deployed to. This sets the contract's primary name so that block explorers and wallets can display it
+
+To learn more, refer to the [Remix docs](https://remix-ide.readthedocs.io/en/latest/naming-contracts.html).
