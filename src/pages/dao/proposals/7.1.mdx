@@ -1,0 +1,55 @@
+---
+authors:
+  - gov.blockful.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 7.1] [Social] [7.3] Select OpenZeppelin to audit Governor Nexus
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                           |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x1d606135097ceeee752498b265486cd966a73a44ed4af13eaf48d6cb96a7a0e0) |
+
+_TL;DR:_ Governor Nexus is implemented and needs an external audit before any deployment proposal. We propose OpenZeppelin as the auditor. If this vote passes, the Meta-Governance Working Group will fund the audit from its existing contract audits budget.
+
+---
+
+## Context
+
+In August we published the [Governor Nexus implementation report](https://discuss.ens.domains/t/governor-nexus-implementation-report/22363) and opened a feedback window before moving to an external audit. In the same thread we shared the audit firm options we were considering, and we worked through the selection with the MetaGov stewards.
+
+Governor Nexus is built on OpenZeppelin Governor v5.6.1. The audit covers the code blockful wrote on top of it: the proposal type registry, the Standard, Optimistic and Bond rulesets, mutable voting, and the late-vote extension.
+
+---
+
+## Why OpenZeppelin
+
+OpenZeppelin wrote the Governor code that Nexus builds on, so their team already knows the base contracts our changes extend. In the forum thread, nick.eth said that "OZ would definitely be my top choice here, by a fair margin." OpenZeppelin was also the recommended auditor in EP 5.15, the last governor change the DAO discussed.
+
+---
+
+## Proposal
+
+- _Auditor:_ OpenZeppelin
+- _Scope:_ the Governor Nexus contracts as published in the implementation report, with no changes since.
+- _Funding:_ paid by the Meta-Governance Working Group from the contract audits line of its [Term 7 budget](https://discuss.ens.domains/t/22475). No new funding request to the DAO.
+
+A vote _For_ approves OpenZeppelin as the Governor Nexus auditor. A vote _Against_ means we go back to the other options with the stewards.
+
+---
+
+## Timeline and next steps
+
+| Step                                          | Status           |
+| --------------------------------------------- | ---------------- |
+| Implementation report and feedback window     | ✅ Done          |
+| Snapshot to select the auditor                | _⬅️ We are here_ |
+| Audit by OpenZeppelin                         | Next             |
+| Deployment proposal for the audited contracts | Pending          |
+
+1. Once this vote passes, MetaGov releases the funds and we schedule the audit with OpenZeppelin.
+2. Once the audit is done, we publish the report and our fixes, then post the deployment proposal.
