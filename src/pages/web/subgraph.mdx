@@ -2,10 +2,19 @@
 description: The ENS subgraph
 ---
 
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Subgraph
 
 This is a page covering the graph's ENS subgraph. The ENS subgraph indexes onchain events of second-level .eth names, and DNS imported names.
 It allows us to build a reasonable approximation of the ENS names an address owns.
+
+<FrenCallout fren="kuzco" variant="warning" title="ENSv2">
+  The subgraph currently covers ENSv1 only. Names registered on
+  [ENSv2](/ensv2/overview) may not appear yet, and names [migrated](/ensv2/migration)
+  to ENSv2 appear with stale ownership. Until ENSv2 indexing is fully available, see
+  [Indexing ENSv2](/ensv2/indexing) for what a complete listing requires.
+</FrenCallout>
 
 To read more about why not all names (such as Offchain & Gasless Names) show up in the subgraph read the [listing names](/web/enumerate) page.
 

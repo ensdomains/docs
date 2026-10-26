@@ -5,14 +5,23 @@ description: To lookup the name of an address we use a reverse resolution. This 
 import { EmbedLink } from '../../components/EmbedLink'
 import { EnsProfile } from '../../components/EnsProfile'
 import { QandA } from '../../components/QandA'
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 import { Badge } from '../../components/ui/Badge'
 import { Card } from '../../components/ui/Card'
 
 # Primary Names
 
-:::info
-Primary names are now supported on both Ethereum Mainnet and popular L2s (Base, OP Mainnet, Arbitrum One, Scroll, and Linea). This enables users to have an end-to-end experience with ENS on their preferred L2!
-:::
+<FrenCallout fren="lili" variant="note" title="ENSv2 at launch">
+  Reverse lookups use the ENSv2 Universal Resolver, which mirrors existing
+  reverse records through `ENSV1Resolver`. Setting a primary name still uses the
+  existing reverse registrars, so the v1 registrar steps on this page remain
+  valid. Set the forward address using the [write API of the name's current
+  resolver](/resolvers/interacting). For contract accounts, use the [reverse
+  registrar adapters](/ensv2/reverse-resolution#contract-account-adapters). The
+  new ENSv2 L2 registrar and signature system are
+  [upcoming](/ensv2/reverse-resolution#multi-chain-reverse-resolution-upcoming),
+  separate from the existing L2 support described below.
+</FrenCallout>
 
 A "primary name" is the result of a bi-directional relationship between an EVM address and a human-readable ENS name. The two directions are:
 
@@ -179,7 +188,7 @@ If you're a library developer looking to implement this functionality, we recomm
 
 Since primary names require two-way resolution, there are technically two steps to setting it up. Let's say that user `0x1234...5678` wants to set their primary name on Base to `nick.eth`.
 
-First, the user would need to set the Base address for `nick.eth` to `0x1234...5678`. [Read more about multichain addresses](/web/resolution#multi-chain-addresses-btc-ltc-etc) to understand how this works.
+First, the user would need to set the Base address for `nick.eth` to `0x1234...5678`. [Read more about multichain addresses](/web/resolution#multichain-addresses) to understand how this works.
 
 Next, the user would need to set the reverse record for `0x1234...5678` to `nick.eth` in the Base Reverse Registrar. [Read more about reverse records](/registry/reverse) to understand how this works.
 

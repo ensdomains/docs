@@ -1,8 +1,17 @@
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # The Registry [Root Registry of the Ethereum Name Service]
 
 The ENS registry is the core contract that lies at the heart of ENS resolution. All ENS lookups start by querying the registry. The registry maintains a list of domains, recording the owner, resolver, and TTL for each, and allows the owner of a domain to make changes to that data.
 
 The ENS registry is specified in [EIP 137](https://eips.ethereum.org/EIPS/eip-137).
+
+<FrenCallout fren="lili" variant="note" title="ENSv2">
+  This page describes the ENSv1 registry. With the launch of
+  [ENSv2](/ensv2/overview), resolution starts at the ENSv2 [registry
+  hierarchy](/ensv2/registry-hierarchy), and the contract described here only
+  backs names that have not [migrated](/ensv2/migration) yet.
+</FrenCallout>
 
 ## Why Registries?
 

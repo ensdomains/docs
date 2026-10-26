@@ -2,9 +2,18 @@ import { FiBookOpen, FiClock, FiHash } from 'react-icons/fi'
 
 import { Card } from '../../components/ui/Card'
 
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # ETH Registrar [Smart contracts responsible for the ".eth" TLD]
 
 The ETH Registrar is a special registrar. It allows for trustless onchain name registration and is in charge of the ".eth" TLD.
+
+<FrenCallout fren="kuzco" variant="warning" title="ENSv2 launch">
+This page describes the ENSv1 registrar. With the launch of [ENSv2](/ensv2/overview), new `.eth` registrations through the controllers on this page are permanently disabled. New registrations use the [ENSv2 ETH Registrar](/ensv2/eth-registrar).
+
+Existing ENSv1 names keep resolving and can still be renewed. The ENS apps route renewals to `ETHRenewerV1` for unmigrated names and to the ENSv2 ETH Registrar for migrated or newly registered names. A direct call to `ETHRegistrarController.renew()` reverts. Integrations must update their renewal code to select the appropriate contract, even when using a library. See [ENSv2 write support](/web/ensv2-readiness#if-your-application-writes-to-ens) and [migration](/ensv2/migration).
+
+</FrenCallout>
 
 ## BaseRegistrar vs Controller
 
@@ -76,7 +85,7 @@ Today, users can interact with the ETH Registrar to transfer their name just lik
 
 ## Registering a Name
 
-Registering a name is a trustless process that takes place onchain (more on this below). Some open source frontends for registering names are the [ENS Manager App](https://app.ens.domains/), [ENS Fairy](https://ensfairy.xyz/), Rainbow Wallet.
+Registering a name is a trustless process that takes place onchain (more on this below). Some open source frontends for registering names are the [ENS App](https://app.ens.domains/), [ENS Fairy](https://ensfairy.xyz/), Rainbow Wallet.
 
 The process of registering a `.eth` name uses a commit-reveal process.
 
@@ -177,6 +186,12 @@ register(
 ```
 
 ## Renewing a Name
+
+<FrenCallout fren="lili" variant="note">
+  After the ENSv2 launch this controller function no longer works. Unmigrated
+  ENSv1 names are renewed through `ETHRenewerV1`, and migrated names through the
+  [ENSv2 ETH Registrar](/ensv2/eth-registrar#renewing-a-name).
+</FrenCallout>
 
 ```solidity
 ETHRegistrarController.renew()

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Table } from './ui/Table'
-import { A, Code, CodeBlock, H2, H3, LI, UL } from './ui/Typography'
+import { A, Code, CodeBlock, H3, LI, UL } from './ui/Typography'
 
 export type ContractParameter = {
   name?: string
@@ -20,6 +20,120 @@ export type ContractMethod = {
   examples?: React.ReactNode[]
 }
 
+export function InterfaceSummary({
+  methods,
+}: {
+  methods: Array<ContractMethod>
+}) {
+  return (
+    <Table
+      columns={['Usage', 'Function Definition']}
+      rows={methods.map((method) => [
+        <A href={`#${method.interface}`} key={method.interface}>
+          {method.usage}
+        </A>,
+        method.name,
+      ])}
+    />
+  )
+}
+
+export function InterfaceMethodDetails({
+  method,
+}: {
+  method: ContractMethod | undefined
+}) {
+  if (!method) throw new Error('Unknown resolver interface')
+  return (
+    <section id={method.interface}>
+      <CodeBlock className="mb-4" title="Function">
+        {method.name}
+      </CodeBlock>
+
+      {method.events && (
+        <CodeBlock className="mb-4" title="Emitted events">
+          {method.events.join('\n')}
+        </CodeBlock>
+      )}
+
+      {method.seeMore && (
+        <div className="mb-2">{convertEIPLinks(method.seeMore)}</div>
+      )}
+
+      <UL>
+        <LI>
+          <strong>Interface ID: </strong>
+          <Code>{method.interface}</Code>
+        </LI>
+      </UL>
+
+      {method.input && (
+        <>
+          <h4 className="vocs_H4 vocs_Heading" id={`${method.interface}-input`}>
+            Parameters
+          </h4>
+          <UL>
+            {method.input.map((input) => {
+              return (
+                <LI key={input.name ?? input.description}>
+                  <strong>
+                    {input.name ? `${input.name} (${input.type})` : input.type}
+                    {': '}
+                  </strong>
+                  <span>{convertCodeTags(input.description)}</span>
+                </LI>
+              )
+            })}
+          </UL>
+        </>
+      )}
+
+      {method.output && (
+        <>
+          <h4
+            className="vocs_H4 vocs_Heading"
+            id={`${method.interface}-output`}
+          >
+            Returns
+          </h4>
+          <UL>
+            {method.output.map((output) => {
+              return (
+                <LI key={output.name ?? output.description}>
+                  <strong>
+                    {output.name
+                      ? `${output.name} (${output.type})`
+                      : output.type}
+                    {': '}
+                  </strong>
+                  {convertCodeTags(output.description)}
+                </LI>
+              )
+            })}
+          </UL>
+        </>
+      )}
+
+      {method.examples &&
+        method.examples.map((example, i) => (
+          <React.Fragment key={`${method.interface}-example-${i}`}>
+            <h4
+              className="vocs_H4 vocs_Heading"
+              id={
+                i === 0
+                  ? `${method.interface}-examples`
+                  : `${method.interface}-examples-${i}`
+              }
+            >
+              Examples
+            </h4>
+            {example}
+          </React.Fragment>
+        ))}
+    </section>
+  )
+}
+
 export function InterfaceDetails({
   methods,
 }: {
@@ -27,93 +141,13 @@ export function InterfaceDetails({
 }) {
   return (
     <>
-      <Table
-        columns={['Usage', 'Function Definition']}
-        rows={methods.map((method) => [
-          <A href={`#${method.interface}`} key={method.interface}>
-            {method.usage}
-          </A>,
-          method.name,
-        ])}
-      />
-
-      {methods.map((method) => {
-        return (
-          <div className="vocs_Content" key={method.interface}>
-            <H2 id={method.interface}>{method.usage}</H2>
-            <CodeBlock className="mb-4" title="Function">
-              {method.name}
-            </CodeBlock>
-
-            {method.events && (
-              <CodeBlock className="mb-4" title="Emitted events">
-                {method.events.join('\n')}
-              </CodeBlock>
-            )}
-
-            {method.seeMore && (
-              <div className="mb-2">{convertEIPLinks(method.seeMore)}</div>
-            )}
-
-            <UL>
-              <LI>
-                <strong>Interface ID: </strong>
-                <Code>{method.interface}</Code>
-              </LI>
-            </UL>
-
-            {method.input && (
-              <>
-                <H3 id={`${method.interface}-input`}>Parameters</H3>
-                <UL>
-                  {method.input.map((input) => {
-                    return (
-                      <LI key={input.name ?? input.description}>
-                        <strong>
-                          {input.name
-                            ? `${input.name} (${input.type})`
-                            : input.type}
-                          {': '}
-                        </strong>
-                        <span>{convertCodeTags(input.description)}</span>
-                      </LI>
-                    )
-                  })}
-                </UL>
-              </>
-            )}
-
-            {method.output && (
-              <>
-                <H3 id={`${method.interface}-output`}>Returns</H3>
-                <UL>
-                  {method.output.map((output) => {
-                    return (
-                      <LI key={output.name ?? output.description}>
-                        <strong>
-                          {output.name
-                            ? `${output.name} (${output.type})`
-                            : output.type}
-                          {': '}
-                        </strong>
-                        {convertCodeTags(output.description)}
-                      </LI>
-                    )
-                  })}
-                </UL>
-              </>
-            )}
-
-            {method.examples &&
-              method.examples.map((example, i) => (
-                <React.Fragment key={`${method.interface}-example-${i}`}>
-                  <H3 id={`${method.interface}-examples`}>Examples</H3>
-                  {example}
-                </React.Fragment>
-              ))}
-          </div>
-        )
-      })}
+      <InterfaceSummary methods={methods} />
+      {methods.map((method) => (
+        <React.Fragment key={method.interface}>
+          <H3>{method.usage}</H3>
+          <InterfaceMethodDetails method={method} />
+        </React.Fragment>
+      ))}
     </>
   )
 }

@@ -5,10 +5,19 @@ description: Issue subdomains to your users, yourself, or your friends. Program 
 import { EmbedLink } from '../../components/EmbedLink'
 import { Card } from '../../components/ui/Card'
 
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Subdomains
 
 We believe that any place an address is used, a name should be able to be used instead.
 The smart contracts you interact with have names, the deposit address for your favorite exchange has a name, your favorite DAO has a name, or maybe you use subnames to keep your wallets organized.
+
+<FrenCallout fren="lili" variant="note" title="ENSv2">
+  The L1 subname mechanics on this page are ENSv1. In [ENSv2](/ensv2/overview),
+  subnames can live as plain resolver records or become tokens in your own
+  registry, which replaces both the registry and Name Wrapper approaches below.
+  See [Issuing Subnames in ENSv2](/ensv2/subnames).
+</FrenCallout>
 
 <Card className="flex items-center justify-center text-xl">
   <div className="text-right font-bold">
@@ -38,14 +47,14 @@ ENS subnames come in a variety of forms: L1, L2, and offchain. From a technical 
 
 ### L1 Subnames
 
-If you own a .eth name like nick.eth and go to create a subname in [the manager app](https://app.ens.domains/nick.eth?tab=subnames), you will be creating a subname on Ethereum Mainnet (L1) by default. This is the simplest way to create a subname with the least amount of moving pieces, but ultimately you are limited by the gas fees of Ethereum Mainnet.
+If you own a .eth name like nick.eth and go to create a subname in [the ENS App](https://app.ens.domains/nick.eth?tab=subnames), you will be creating a subname on Ethereum Mainnet (L1) by default. This is the simplest way to create a subname with the least amount of moving pieces, but ultimately you are limited by the gas fees of Ethereum Mainnet.
 
-If you'd like to issue L1 subnames to your users, read our guide on [creating an onchain subname registrar](/wrapper/creating-subname-registrar).
+For new projects, read the guide to [issuing subnames in ENSv2](/ensv2/subnames). The [Name Wrapper registrar guide](/wrapper/creating-subname-registrar) documents the legacy ENSv1 approach.
 
 <EmbedLink
-  title="Creating an Onchain Subname Registrar"
-  href="/wrapper/creating-subname-registrar"
-  description="Issue NFTs that represent subdomains on Ethereum Mainnet."
+  title="Issuing Subnames in ENSv2"
+  href="/ensv2/subnames"
+  description="Choose resolver records, owned tokens, or reserved entries for your subnames."
 />
 
 ### L2 Subnames

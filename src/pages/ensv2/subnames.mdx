@@ -1,0 +1,110 @@
+---
+description: Choose how to issue and manage subnames with ENSv2 registries and resolvers.
+---
+
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+import { SubnameDiagram } from '../../components/ensv2/SubnameDiagram'
+
+# Issuing Subnames in ENSv2
+
+An ENSv2 name can serve subnames through its resolver, its subregistry, or both. Choose the setup based on who should own the subnames and who should update their records.
+
+## Subnames as Resolver Records
+
+If you manage every subname, you can keep their records in one [Permissioned Resolver](/ensv2/permissioned-resolver). Set that resolver on your parent name, such as `wallet.eth`, and write records for full names such as `alice.wallet.eth` and `bob.wallet.eth`.
+
+The [Universal Resolver](/resolvers/universal) finds the parent's resolver and passes it the full name through [wildcard resolution](/ensip/10). No subregistry or subname token is required. These are onchain records, even though there is no token for each subname.
+
+The resolver's role holders control the records. Giving Alice an address record does not give her ownership of `alice.wallet.eth` or permission to edit it.
+
+<SubnameDiagram kind="records" />
+
+### Share Records Across Names
+
+A Permissioned Resolver can link several names to the same record bundle. Updating that bundle updates the records returned for every linked name.
+
+Names without their own record bundle use the resolver's default bundle. Write that bundle using the DNS-encoded empty name (`0x00`). This can provide a shared website, avatar, or address for subnames without individual setup.
+
+<SubnameDiagram kind="default" />
+
+<FrenCallout
+  fren="lili"
+  variant="note"
+  title="Default records apply to a whole name"
+>
+  Once a name has its own record bundle, it stops using the default bundle
+  entirely. Missing fields in its bundle do not fall back individually.
+  Unlinking the name with `linkToRecord(name, 0)` restores the default behavior.
+</FrenCallout>
+
+## Subnames as Owned Tokens
+
+Use a [UserRegistry](/ensv2/registry-template) when subnames need separate owners or should appear as tokens in wallets.
+
+1. Deploy and initialize a UserRegistry with the required roles.
+2. Attach it to the parent name using `setSubregistry()` on the registry that holds that name.
+3. Register each label with an owner, resolver, expiry, and role bitmap. For `alice.wallet.eth`, register `alice` in the registry attached to `wallet.eth`.
+
+Each owned entry is an ERC-1155 token. The registry stores its resolver and optional child registry. Several entries can use one resolver, or each can point to a different resolver.
+
+Token ownership and resolver permissions are separate. Giving Alice a token does not grant her roles on an operator's shared Permissioned Resolver. If Alice should control her own records, she can use a resolver she controls, provided her token roles allow changing the resolver.
+
+<SubnameDiagram kind="tokens" />
+
+### Choose the Owner's Permissions
+
+The registration's role bitmap determines what the owner may do:
+
+- `ROLE_SET_RESOLVER`: change the name's resolver.
+- `ROLE_SET_SUBREGISTRY`: attach a registry for further subnames.
+- `ROLE_RENEW`: extend the expiry.
+- `ROLE_CAN_TRANSFER_ADMIN`: permit the owner to transfer the token, subject to the registry's transfer checks.
+
+Also decide which roles the operator retains on the registry's root resource. Root permissions can allow the operator to change resolvers, replace child registries, unregister names, or upgrade the registry. Tokenizing a name alone does not remove that control. See [Permissioned Registry](/ensv2/permissioned-registry) for emancipation and safe-transfer requirements.
+
+### Automate Registration with a Registrar
+
+For a registration service, grant a registrar contract `ROLE_REGISTRAR` on the registry. That contract can enforce your pricing and eligibility rules. Grant `ROLE_RENEW` as well if it should handle renewals. The [contract developer tutorial](/ensv2/tutorial-contract-developers) walks through this approach.
+
+<SubnameDiagram kind="registrar" />
+
+## Reserved Entries Without Tokens
+
+A registry entry can have an expiry, resolver, and child registry without having an owner. Registering with the zero address as owner and a zero role bitmap creates a reserved entry without minting a token.
+
+Use reserved entries to route a subtree to a different resolver or to hold protected labels. An unexpired reservation cannot be registered through the ordinary registration path. Assigning it an owner requires `ROLE_REGISTER_RESERVED`.
+
+## Delegate Record Updates
+
+### Root Roles and Individual Keys
+
+Roles on a resolver's [`ROOT_RESOURCE`](/ensv2/enhanced-access-control#resources) apply across that resolver. A root `ROLE_SET_TEXT` grant allows updates to every text key. A grant scoped to the `url` key permits URL updates across the resolver's records, without permitting avatar updates.
+
+<SubnameDiagram kind="permissions" />
+
+### Delegate a Single Address Field
+
+Permissioned Resolver roles can be restricted to a setter argument, such as a text key or address coin type. For example, `grantSetterRoles()` can authorize a payment service to change Bitcoin addresses without allowing it to change Ethereum addresses or avatars.
+
+For a code example using a text key, see [Delegating a Single Text Key](/ensv2/permissioned-resolver#delegating-a-single-text-key).
+
+<SubnameDiagram kind="delegation" />
+
+These permissions apply across every record bundle in that resolver. They are not restricted to one name.
+
+### Limit a Writer to a Group of Names
+
+To give a writer access to only a group of names, point those names at a separate resolver instance and grant the role there. Registry entries, including reserved entries, let you assign those resolver pointers.
+
+<SubnameDiagram kind="separate-resolvers" />
+
+## Choose a Starting Point
+
+- For subnames whose records you manage, start with resolver records.
+- For separately owned or transferable subnames, use a UserRegistry and choose the token roles deliberately.
+- For routing or holding labels without ownership, use reserved entries.
+- For automated record updates, limit setter permissions and use separate resolver instances where writers need different access.
+
+These approaches can be combined. Adding a subregistry later does not require replacing existing resolver records, but its resolver pointers determine whether resolution continues to reach those records.
+
+This guide and its diagrams adapt [Exploring Subnames in ENSv2](https://ens.domains/blog/post/exploring-subnames-ensv2). The [registry template](/ensv2/registry-template) and [Permissioned Resolver](/ensv2/permissioned-resolver) pages cover the contract APIs.

@@ -1,14 +1,54 @@
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Naming Contracts [Learn how to name your smart contracts with ENS]
+
+<FrenCallout fren="lili" variant="note" title="ENSv2 at launch">
+  Use the [reverse registrar
+  adapters](/ensv2/reverse-resolution#contract-account-adapters) for contract
+  primary names on Ethereum Mainnet. They forward authorized updates to the
+  existing v1 registrars. Reads go through the ENSv2 Universal Resolver. The
+  legacy constructor and `ReverseClaimer` approaches below still work at launch.
+  The new ENSv2 L2 registrar and signature system are upcoming.
+</FrenCallout>
 
 While it's commonly known that regular user accounts can have [primary names](/web/reverse), it's less known that smart contracts can also have names.
 
-In order for you to manage the primary name of your smart contract, you need to own the [reverse node](/terminology#reverse-node) for the contract address. There are several ways of doing this, depending on if you are actively developing your contract or if it is already deployed.
+To manage a contract's primary name, you need authorization to set its reverse record. The adapters support calls from the contract itself or an authorized namer. The legacy `addr.reverse` approach can also assign ownership of the contract's [reverse node](/terminology#reverse-node).
 
 :::note
 To enable reverse resolution, you must set both the reverse record and the ETH address to the contract’s deployed address.
 :::
 
-## New Contracts
+## ENSv2 Contract Account Adapters
+
+First, set the forward address on the name's current resolver to your contract's address. A reverse record is only a valid primary name when the forward lookup matches.
+
+For a default primary name, call `DefaultReverseRegistrarAdapter.setName(account, name)`. The caller must be the account itself, its `Ownable` owner, or authorized by the account's `IContractNamer.isContractNamer()` implementation.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.21;
+
+interface IDefaultReverseRegistrarAdapter {
+    function setName(address account, string calldata name) external;
+}
+
+contract NamedContract {
+    constructor(IDefaultReverseRegistrarAdapter adapter, string memory name) {
+        adapter.setName(address(this), name);
+    }
+}
+```
+
+Pass the [deployed DefaultReverseRegistrarAdapter](/learn/deployments#mainnet-ensv2) as `adapter`. A Safe or other contract that can execute calls can invoke the same method with its own address as `account`. An existing Ethereum-specific reverse record takes precedence over a default name, so update that record too if one is already set.
+
+To manage the Ethereum-specific `addr.reverse` record, call `ReverseRegistrarAdapter.claim(account, resolver)`. This claims the reverse node for the caller and points it at the supplied resolver. It does **not** set the name record. The caller must then write the name on that resolver using its supported API. Use a resolver whose permissions allow the caller to do so. See [Interacting with a Resolver](/resolvers/interacting).
+
+## Existing Registrar Approaches
+
+The following patterns use the existing reverse registrars and remain valid at ENSv2 launch.
+
+### New Contracts
 
 Depending on your use case, there are a few ways to set a smart contract's primary name.
 
@@ -23,7 +63,7 @@ For immutable smart contracts (without an owner), you can set the reverse record
 
 Let's look at a few examples.
 
-### Ownable (recommended)
+### Ownable
 
 :::note
 An example of this is [ownable.contract.gtest.eth](https://etherscan.io/address/ownable.contract.gtest.eth#code)
@@ -113,10 +153,10 @@ console.log(node)
 ## Existing Contracts
 
 If your contract is already deployed you might still be able to set a name for it.
-If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, [read the section above](#ownable-recommended).
+If your contract supports the [Ownable](https://docs.openzeppelin.com/contracts/5.x/api/access#Ownable) interface from OpenZeppelin, its owner can use the [adapters](#ensv2-contract-account-adapters) on Ethereum Mainnet or the [existing registrar approach](#ownable).
 
 ### Safe, Multisig & DAO
 
-If your contract is a Safe, Multisig, DAO or otherwise has the ability to execute arbitrary calldata, you can use a [Reverse Registrar](/registry/reverse) contract directly to set a name for it.
+If your contract is a Safe, Multisig, DAO or otherwise has the ability to execute arbitrary calldata, use the [adapter flow](#ensv2-contract-account-adapters) on Ethereum Mainnet. Direct calls to the existing [Reverse Registrars](/registry/reverse) remain supported.
 
-You might even be able to use the [ENS Manager App](https://app.ens.domains/) inside of your safe app to set a primary name.
+You might even be able to use the [ENS App](https://app.ens.domains/) inside of your safe app to set a primary name.

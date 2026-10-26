@@ -2,124 +2,72 @@ import { Card } from '../../components/ui/Card'
 
 # Resolution
 
-The process by which we load information about a name is called resolution. It's a simple process, but it's important to understand.
-Here is a diagram of some of the contracts involved when resolving a name.
+Resolution loads information about an ENS name, such as an address or a text record. In ENSv2, the [Universal Resolver](/resolvers/universal) is the entry point for resolution.
 
 <Card>
-  <img
-    src="/img/resolution-diagram-1.png"
-    alt="Diagram of the ENS resolution process"
-  />
+  <div
+    className="flex flex-wrap items-center justify-center gap-3 p-4"
+    aria-label="App or library calls the Universal Resolver, which returns the requested record"
+  >
+    <span>App / library</span>
+    <span aria-hidden="true">→</span>
+    <span>Universal Resolver</span>
+    <span aria-hidden="true">→</span>
+    <span>Record</span>
+  </div>
 </Card>
 
-The resolution process involves multiple parts. Most notably the [Registry](/registry/ens), multiple Registrars ([ETH Registrar](/registry/eth), [DNS Registrar](/registry/dns), [Reverse Registrar](/registry/reverse), etc)
-and the concept of a [Resolver](/resolvers/quickstart).
+## Under the Hood of Your Library
 
-## How to resolve
+Your library makes one resolution call to the Universal Resolver. The resolver walks the registry hierarchy internally, finds the authoritative resolver, and returns the requested record. It handles [wildcard resolution](/ensip/10) and [CCIP Read](/learn/ccip-read), with your client following gateway requests when needed. Unmigrated names are resolved through the [v1 mirror](/ensv2/migration).
 
-Here is a little peek at what happens under the hood of your favourite library when you do a name lookup.
+Use an [ENSv2-ready library](/web/ensv2-readiness). For example, with viem 2.35.0 or later, replace `<MAINNET_RPC_URL>` with your Ethereum Mainnet RPC endpoint:
 
-### 1. Find the Resolver
-
-Every name has a "resolver". A resolver is simply a contract that implements the [resolver specification](/resolvers/quickstart) and can be queried for information about a name.
-To get the resolver responsible for a name, you can query [The Registry](/registry/ens) for the `resolver` of a name.
-
-:::code-group
-
-```solidity [Solidity]
-ENS.resolver(bytes32 node) view returns (address)
-```
-
-```tsx [Wagmi]
-// https://wagmi.sh/react/api/hooks/useEnsResolver
-import { normalize } from 'viem/ens'
-import { useEnsResolver } from 'wagmi'
-
-export const MyResolver = () => {
-  const { data: myResolver } = useEnsResolver({
-    name: normalize('nick.eth'), // The name to lookup
-  })
-
-  return <div>{myResolver}</div>
-}
-```
-
-```ts [Ethers]
-const resolver = await provider.getResolver('nick.eth')
-```
-
-```ts [viem]
-// https://viem.sh/docs/ens/actions/getEnsResolver.html
+```ts
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
 import { normalize } from 'viem/ens'
 
-import { publicClient } from './client'
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http('<MAINNET_RPC_URL>'),
+})
 
-const ensResolver = await publicClient.getEnsResolver({
+const address = await client.getEnsAddress({
   name: normalize('nick.eth'),
 })
+// The current Ethereum address record for nick.eth
 ```
 
-```py [Web3.py]
-# https://web3py.readthedocs.io/en/latest/ens_overview.html#working-with-resolvers
-from ens.auto import ns
-
-resolver = ns.resolver('alice.eth')
-```
-
-:::
-
-To verify which specifications are implemented by a resolver, you can call the `supportsInterface(bytes4 interfaceID)` on the resolver with the interfaceID you would like to test for.
-
-### 2. Query the Resolver
-
-Now you have found the resolver responsible for the name in question, you can query it for the information you are interested in.
-There are many ways you can query the resolver, `addr()` `text()` `contenthash()` `abi()` etc.
-
-If the resolver supports text records, you can call `text()` to get that text record for the name.
-More about loading information from a resolver can be found [here](/resolvers/interacting).
-
-#### Wildcard Resolution
-
-In addition, all of the above functions can be sent to the `resolve()` function, specified in [ENSIP-10](/ensip/10).
-This allows for not only multicall functionality, but also easier implementation of EIP-3668, and more.
-Most clients & many resolvers utilize wildcard resolution as their primary form of resolution.
+Libraries use the [upgradable Universal Resolver entry point](/resolvers/universal). Do not hardcode an individual name's resolver or look it up through the v1 registry. See [Address Lookup](/web/resolution) and [Text Records](/web/records) for application examples.
 
 ## Reverse Resolution
 
-Due to the modular nature of how ENS is designed, it is also possible to lookup the "primary name" of an address.
-This process actually uses forward resolution under the hood, you read that right - its just forwards resolution.
+Reverse resolution finds an address's primary name. It uses forward resolution under the hood: the address is encoded into a name in the reverse namespace, and the resolver for that name is queried for its `name()` record.
 
-To look up the primary name of a given address, you must do a resolver lookup for `addr.reverse` and then query the `name()` field on the resolver.
-This name field returns the "preferred" name for the address. You should always follow up a reverse lookup with a forward lookup to verify that the resulting name points back to the original address. If the address doesn't match, display the address rather than the reversed name.
+For example, an Ethereum address such as `0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5` has a reverse name of `b8c2c29ee19d8307cb7255e1cd9cbde883a267d5.addr.reverse`. The address portion is lowercase and has no `0x` prefix. Its name record provides a candidate primary name, such as `nick.eth`. The reverse-resolution system can also fall back to a [default primary name](/web/reverse#l2-primary-names).
 
-```solidity
-/// @dev The starting point for all ENS resolution is the Registry
-ENS ens = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e;
+A reverse record alone is not enough to trust that name. The Universal Resolver then resolves the candidate name's address record and checks that it matches the original address. Anyone can set a reverse record naming someone else's ENS name, so this forward check is essential. If the addresses do not match, display the address instead.
 
-/// @dev The node hash for "addr.reverse"
-bytes32 ADDR_REVERSE_NODE = 0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2;
+At ENSv2 launch, the [existing v1 reverse namespace remains in use](/ensv2/reverse-resolution#at-launch). The ENSv2 Universal Resolver reaches it through the ReverseMirror, so existing primary names continue to work.
 
-/// @dev Returns the node hash for a given account's reverse records, `{address}.addr.reverse`
-function reverseNode(address addr) public pure returns (bytes32) {
-  return keccak256(
-      abi.encodePacked(ADDR_REVERSE_NODE, sha3HexAddress(addr))
-    );
-}
+### Look Up a Primary Name with Viem
 
-/// @dev Get the reverse record for an address
-function getReverseRecord(address addr) public view returns (string) {
-    bytes32 reverseNodeHash = reverseNode(addr);
+With viem 2.35.0 or later, `getEnsName()` uses the Universal Resolver and includes the forward-address verification. It returns `null` when there is no valid primary name, including when the forward address does not match. Replace `<MAINNET_RPC_URL>` with your Ethereum Mainnet RPC endpoint:
 
-    // Get the resolver for the reverse node
-    Resolver resolver = ens.resolver(reverseNodeHash);
+```ts [Viem]
+import { createPublicClient, http } from 'viem'
+import { mainnet } from 'viem/chains'
 
-    // Get the address's preferred name
-    return resolver.name(reverseNodeHash);
-}
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http('<MAINNET_RPC_URL>'),
+})
+
+const address = '0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5'
+const primaryName = await client.getEnsName({ address })
+const displayName = primaryName ?? address
+console.log(displayName)
 ```
 
-:::info
-**Important**: The client MUST perform a forward resolution on a user's reverse record to verify the address matches the one you are looking up. The example above does not perform this verification.
-:::
-
-Please note that many libraries already have functionality to do this. You can read more about it in the [Getting a Primary Name](/web/reverse) section.
+Handle RPC or gateway errors separately from a missing primary name. For setting primary names and requesting records for other chains, see [Getting a Primary Name](/web/reverse#getting-a-primary-name).

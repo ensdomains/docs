@@ -1,3 +1,5 @@
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Writing a Resolver
 
 Every ENS name has a resolver, which is responsible for resolving information about a name.
@@ -5,6 +7,13 @@ Every ENS name has a resolver, which is responsible for resolving information ab
 Resolvers are a core part of the ENS protocol. They give each name, represented as a ["node"](/resolution/names#namehash), the power to control the resolution process for itself and all of its subnames. Resolvers were originally standardized in [EIP 137](https://eips.ethereum.org/EIPS/eip-137), but have since received a few updates such as [EIP 181](https://eips.ethereum.org/EIPS/eip-181), [EIP 2304](https://eips.ethereum.org/EIPS/eip-2304), and [ENSIP-10](/ensip/10).
 
 You can find the latest default resolver implementation, called the Public Resolver, on [GitHub](https://github.com/ensdomains/ens-contracts/blob/mainnet/contracts/resolvers/PublicResolver.sol) and [Etherscan](/learn/deployments).
+
+<FrenCallout fren="lili" variant="note" title="ENSv2">
+  The resolver interface on this page stays valid in [ENSv2](/ensv2/overview),
+  the read path is unchanged. For new resolvers, however, consider extending the
+  ENSv2 [Permissioned Resolver](/ensv2/permissioned-resolver), which adds record
+  bundles, linking, and fine-grained permissions on top of this interface.
+</FrenCallout>
 
 ## Resolver Interface
 

@@ -2,11 +2,20 @@
 description: List all names a user has, owns, or might have access to.
 ---
 
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Listing a Users Names
 
 In some cases you might want to show off all names that a user owns. Due to the nature of how the ENS Protocol works under the hood, this might be a slightly more difficult task than expected.
 
 Fortunately, tooling has been developed to accommodate for this and to make it easier.
+
+<FrenCallout fren="kuzco" variant="warning" title="ENSv2">
+  The subgraph currently covers ENSv1 only. Names registered on
+  [ENSv2](/ensv2/overview) may not appear yet, and names [migrated](/ensv2/migration)
+  to ENSv2 appear with stale ownership. Until ENSv2 indexing is fully available, see
+  [Indexing ENSv2](/ensv2/indexing) for what a complete listing requires.
+</FrenCallout>
 
 ## Why not all names?
 

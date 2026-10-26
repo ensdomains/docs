@@ -9,7 +9,7 @@ import { FrenCallout } from '../../components/ensv2/FrenCallout'
 This guide walks through integrating ENSv2 into an application: resolving names like `nick.eth` to addresses, reading profile records, displaying primary names, and letting users update their own records.
 
 <FrenCallout fren="lili" variant="tip">
-**If your application only reads ENS data, updating to a [supported library](#supported-libraries) is the whole job.** The resolver interface is unchanged from ENSv1 and resolution goes through the Universal Resolver at a fixed address, so your integration keeps working even as the ENSv2 contracts evolve underneath. Only the write flows are ENSv2-specific, and their authorization details are covered in [Who Can Write](#who-can-write).
+**If your application only reads ENS data, updating to a [supported library](#supported-libraries) is the whole job.** The library read APIs are unchanged from ENSv1 and resolution goes through the Universal Resolver at a fixed address, so your integration keeps working even as the ENSv2 contracts evolve underneath. Only the write flows are ENSv2-specific, and their authorization details are covered in [Who Can Write](#who-can-write).
 </FrenCallout>
 
 ## What Changes for Apps
@@ -237,11 +237,13 @@ A primary name must never be displayed without verifying that it forward-resolve
 
 ## Writing Records
 
-This is the one place where ENSv2 changes your app's write path. The setter functions themselves are unchanged from ENSv1's public resolver interface, but there is no longer one well-known shared resolver your app can assume every name uses. In the standard flow, each account's records live on its own resolver instance, and records are keyed by the namehash of the full name. What is new is *where* records live and *who* is authorized to write them, not how they are written.
+ENSv2 changes the resolver write interface as well as where records live and who can update them. The [Permissioned Resolver](/ensv2/permissioned-resolver) takes DNS-encoded names in its setters, while the ENSv1 Public Resolver takes namehashes. In the standard ENSv2 flow, each account's records live on its own resolver instance.
 
-The flow: find the resolver the name actually uses, then call its setters as the name owner.
+The flow: find the resolver the name actually uses, then call its supported setters from an account with the required resolver roles. Name ownership alone does not grant those roles.
 
 ### Find the Resolver
+
+The examples below target an ENSv2 Permissioned Resolver. Check its setter interfaces before writing. For unmigrated ENSv1 names, the Universal Resolver can return a mirror resolver instead of the writable v1 resolver. Use the [version-aware ENSjs example](/resolvers/interacting#updating-a-users-record) to discover the writable resolver and select the correct v1 or v2 action.
 
 :::code-group
 
@@ -286,44 +288,44 @@ const resolverAddress = await getResolver(client, {
 
 ### Set Records
 
-ENSjs is the only library in this guide with dedicated record-writing helpers (`setRecords`, `setTextRecord`, `setAddressRecord`, and friends); it computes the namehash and batches multiple updates into a single resolver `multicall` for you. With the other libraries you call the resolver contract directly: the setters take the name's namehash as their first parameter, and the signatures below are the resolver's actual interface.
+ENSjs 5.2.5 or later provides stable ENSv2 record-writing helpers through `@ensdomains/ensjs/wallet/v2`. Its `setRecords` action encodes names and batches multiple updates for you. With the other libraries, call the resolver contract directly using its ENSv2 setter ABI and a DNS-encoded name, as shown below.
 
 :::code-group
 
 ```ts [viem]
-import { parseAbi } from 'viem'
-import { namehash, normalize } from 'viem/ens'
+import { parseAbi, toHex } from 'viem'
+import { normalize, packetToBytes } from 'viem/ens'
 
 const resolverAbi = parseAbi([
-  'function setAddr(bytes32 node, address addr_)',
-  'function setText(bytes32 node, string key, string value)',
+  'function setAddress(bytes name, uint256 coinType, bytes addressBytes)',
+  'function setText(bytes name, string key, string value)',
   'function multicall(bytes[] data) returns (bytes[])',
 ])
 
-const node = namehash(normalize('nick.eth'))
+const dnsName = toHex(packetToBytes(normalize('nick.eth')))
 
-// wallet is a viem wallet client connected to the name owner's account
+// wallet is a viem wallet client with an account holding ROLE_SET_TEXT
 // resolverAddress: from "Find the Resolver" above
 await wallet.writeContract({
   address: resolverAddress,
   abi: resolverAbi,
   functionName: 'setText',
-  args: [node, 'com.twitter', 'nicksdjohnson'],
+  args: [dnsName, 'com.twitter', 'nicksdjohnson'],
 })
 ```
 
 ```tsx [Wagmi]
 import { useWriteContract } from 'wagmi'
-import { parseAbi } from 'viem'
-import { namehash, normalize } from 'viem/ens'
+import { parseAbi, toHex } from 'viem'
+import { normalize, packetToBytes } from 'viem/ens'
 
 const resolverAbi = parseAbi([
-  'function setAddr(bytes32 node, address addr_)',
-  'function setText(bytes32 node, string key, string value)',
+  'function setAddress(bytes name, uint256 coinType, bytes addressBytes)',
+  'function setText(bytes name, string key, string value)',
   'function multicall(bytes[] data) returns (bytes[])',
 ])
 
-const node = namehash(normalize('nick.eth'))
+const dnsName = toHex(packetToBytes(normalize('nick.eth')))
 
 // resolverAddress: from "Find the Resolver" above
 function EditRecord() {
@@ -336,7 +338,7 @@ function EditRecord() {
           address: resolverAddress,
           abi: resolverAbi,
           functionName: 'setText',
-          args: [node, 'com.twitter', 'nicksdjohnson'],
+          args: [dnsName, 'com.twitter', 'nicksdjohnson'],
         })
       }
     >
@@ -347,28 +349,28 @@ function EditRecord() {
 ```
 
 ```ts [Ethers]
-import { Contract, ensNormalize, namehash } from 'ethers'
+import { Contract, dnsEncode, ensNormalize } from 'ethers'
 
 const resolverAbi = [
-  'function setAddr(bytes32 node, address addr_)',
-  'function setText(bytes32 node, string key, string value)',
+  'function setAddress(bytes name, uint256 coinType, bytes addressBytes)',
+  'function setText(bytes name, string key, string value)',
   'function multicall(bytes[] data) returns (bytes[])',
 ]
 
-const node = namehash(ensNormalize('nick.eth'))
+const dnsName = dnsEncode(ensNormalize('nick.eth'))
 
-// signer is connected to the name owner's account
+// signer is connected to an account holding ROLE_SET_TEXT
 // resolverAddress: from "Find the Resolver" above
 const contract = new Contract(resolverAddress, resolverAbi, signer)
-await contract.setText(node, 'com.twitter', 'nicksdjohnson')
+await contract.setText(dnsName, 'com.twitter', 'nicksdjohnson')
 ```
 
 ```ts [ENSjs]
 import { normalize } from 'viem/ens'
-import { setRecords } from '@ensdomains/ensjs/wallet'
+import { setRecords } from '@ensdomains/ensjs/wallet/v2'
 
 // wallet is a viem wallet client created with
-// chain: addEnsContracts(sepolia), connected to the name owner
+// chain: addEnsContracts(sepolia), with an account holding the required resolver roles
 // userAddress: the address the name should resolve to
 const hash = await setRecords(wallet, {
   name: normalize('nick.eth'),
@@ -385,16 +387,16 @@ To update several records in one transaction with viem, wagmi, or ethers, encode
 :::code-group
 
 ```ts [viem]
-import { encodeFunctionData, parseAbi } from 'viem'
-import { namehash, normalize } from 'viem/ens'
+import { encodeFunctionData, parseAbi, toHex } from 'viem'
+import { normalize, packetToBytes } from 'viem/ens'
 
 const resolverAbi = parseAbi([
-  'function setAddr(bytes32 node, address addr_)',
-  'function setText(bytes32 node, string key, string value)',
+  'function setAddress(bytes name, uint256 coinType, bytes addressBytes)',
+  'function setText(bytes name, string key, string value)',
   'function multicall(bytes[] data) returns (bytes[])',
 ])
 
-const node = namehash(normalize('nick.eth'))
+const dnsName = toHex(packetToBytes(normalize('nick.eth')))
 
 // userAddress: the address the name should resolve to
 await wallet.writeContract({
@@ -404,36 +406,36 @@ await wallet.writeContract({
   args: [[
     encodeFunctionData({
       abi: resolverAbi,
-      functionName: 'setAddr',
-      args: [node, userAddress],
+      functionName: 'setAddress',
+      args: [dnsName, 60n, userAddress],
     }),
     encodeFunctionData({
       abi: resolverAbi,
       functionName: 'setText',
-      args: [node, 'com.twitter', 'nicksdjohnson'],
+      args: [dnsName, 'com.twitter', 'nicksdjohnson'],
     }),
   ]],
 })
 ```
 
 ```ts [Ethers]
-import { Contract, ensNormalize, namehash } from 'ethers'
+import { Contract, dnsEncode, ensNormalize } from 'ethers'
 
 const resolverAbi = [
-  'function setAddr(bytes32 node, address addr_)',
-  'function setText(bytes32 node, string key, string value)',
+  'function setAddress(bytes name, uint256 coinType, bytes addressBytes)',
+  'function setText(bytes name, string key, string value)',
   'function multicall(bytes[] data) returns (bytes[])',
 ]
 
-const node = namehash(ensNormalize('nick.eth'))
+const dnsName = dnsEncode(ensNormalize('nick.eth'))
 
 const contract = new Contract(resolverAddress, resolverAbi, signer)
 
 // userAddress: the address the name should resolve to
 await contract.multicall([
-  contract.interface.encodeFunctionData('setAddr', [node, userAddress]),
+  contract.interface.encodeFunctionData('setAddress', [dnsName, 60, userAddress]),
   contract.interface.encodeFunctionData('setText', [
-    node,
+    dnsName,
     'com.twitter',
     'nicksdjohnson',
   ]),
@@ -446,7 +448,7 @@ await contract.multicall([
 
 Writes are permissioned through [Enhanced Access Control](/ensv2/enhanced-access-control) roles on the resolver. In the common case this is invisible to your app: an account that registers a name and deploys its resolver typically holds every role, so its setter calls simply succeed.
 
-The case to be aware of is subnames. A subname owner typically uses the parent's resolver and holds **no** roles on it, so a `setText` from their wallet reverts with `EACUnauthorizedAccountRoles`. Depending on the setup, records for such names are managed by the parent owner, delegated per name or per record key via the resolver's `authorize*Roles` functions, or moved fully under the subname owner's control by pointing the subname at a resolver of their own. See [Permissioned Resolver](/ensv2/permissioned-resolver) for the delegation model.
+The case to be aware of is subnames. A subname owner typically uses the parent's resolver and holds **no** roles on it, so a `setText` from their wallet reverts with `EACUnauthorizedAccountRoles`. Depending on the setup, records for such names are managed by the parent owner, delegated by setter argument (such as a text key) via `grantSetterRoles()` or by root roles via `grantRootRoles()`, or moved fully under the subname owner's control by pointing the subname at a resolver of their own. See [Permissioned Resolver](/ensv2/permissioned-resolver) for the delegation model.
 
 <FrenCallout fren="kuzco" variant="warning" title="Watch out!">
 Do not hardcode a resolver address for write flows, not even one you deployed. A name's resolver pointer can change at any time, and writing to a resolver a name no longer uses silently updates records nobody reads. Always look the resolver up fresh, and handle the revert case in your UI.

@@ -1,4 +1,17 @@
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
+
 # Reverse Registrars
+
+<FrenCallout fren="lili" variant="note" title="ENSv2 at launch">
+  The ENSv1 `ReverseRegistrar` and `DefaultReverseRegistrar` remain the write
+  path at launch. Their `setName`, `setNameForAddr`, and claim methods remain
+  usable. Reads use the ENSv2 Universal Resolver, which mirrors the v1 reverse
+  namespace through `ENSV1Resolver`. Contract accounts can use
+  `ReverseRegistrarAdapter` and `DefaultReverseRegistrarAdapter`, listed in the
+  [mainnet deployments](/learn/deployments#mainnet-ensv2). See [ENSv2 reverse
+  resolution](/ensv2/reverse-resolution) for the adapters and the upcoming ENSv2
+  L2 registrar and signature system.
+</FrenCallout>
 
 :::info
 Reverse resolution is part of the [primary name](/web/reverse) feature. If you're just trying to fetch a name for an address, you should start there.

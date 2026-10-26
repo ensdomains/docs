@@ -8,16 +8,14 @@ import { Hex } from 'viem'
 // Each chain is pinned to a commit so the build cannot break if a branch
 // moves. To pick up a new deployment set, bump that chain's SHA to a commit
 // whose `contracts/docs/addresses/<slug>.md` and
-// `contracts/deployments/<slug>/` describe the same deployment, then delete
-// src/data/generated/ensv2-deployments.json to re-fetch.
+// `contracts/deployments/<slug>/` describe the same deployment. The generated
+// cache is refreshed automatically when a chain's pin changes.
 const CHAINS = [
   {
     name: 'Mainnet',
     slug: 'mainnet',
-    // deploy/mainnet-v2-20261002 branch tip (contracts-v2 PR #465),
-    // deployment of 2026-10-02, with the 2026-10-13 root-registry replacement
-    // and the 2026-10-18 contract redeploy (the set the DAO proposal targets)
-    commit: 'fce23470d9d9cd7cad3da02bb4b447119fdf4c42',
+    // deploy/mainnet-v2-20261002, deployment manifest dated 2026-10-26.
+    commit: '4f47cbcc11462fb413196e6b5c0f8090247a6c08',
   },
   {
     name: 'Sepolia',
@@ -37,6 +35,7 @@ type ENSv2Deployment = {
 export type ENSv2DeploymentsByChain = {
   name: string // Sepolia, etc.
   slug: string // sepolia, etc.
+  sourceCommit: string
   contracts: ENSv2Deployment[]
 }
 
@@ -137,11 +136,16 @@ async function fetchChain(chain: (typeof CHAINS)[number]): Promise<ENSv2Deployme
     })
   )
 
-  return { name: chain.name, slug: chain.slug, contracts }
+  return {
+    name: chain.name,
+    slug: chain.slug,
+    sourceCommit: chain.commit,
+    contracts,
+  }
 }
 
 // Generate a JSON file with ENSv2 contract deployment info from contracts-v2.
-// Only runs once; delete the generated file to re-fetch.
+// Reuse the generated file only while its source commits match the pins.
 export async function ensv2Deployments() {
   const outFile = path.join(
     __dirname,
@@ -149,11 +153,19 @@ export async function ensv2Deployments() {
     'src/data/generated/ensv2-deployments.json'
   )
 
-  const alreadyExists = await fs
-    .access(outFile)
-    .then(() => true)
-    .catch(() => false)
-  if (alreadyExists) {
+  const cached = await fs
+    .readFile(outFile, 'utf8')
+    .then((source) => JSON.parse(source) as ENSv2DeploymentsByChain[])
+    .catch(() => undefined)
+  if (
+    Array.isArray(cached) &&
+    cached.length === CHAINS.length &&
+    CHAINS.every((chain) =>
+      cached.some(
+        (entry) => entry.slug === chain.slug && entry.sourceCommit === chain.commit
+      )
+    )
+  ) {
     return
   }
 
