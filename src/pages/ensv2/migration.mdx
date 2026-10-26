@@ -39,7 +39,9 @@ Migration is **not required** immediately. Unmigrated names continue to resolve 
 If you own an emancipated subname (3LD+), your parent must migrate first. Once the parent has migrated, transfer your token to the parent's `WrapperRegistry`:
 
 - **Locked subnames** (`CANNOT_UNWRAP` set): fuses are converted to v2 roles, a new WrapperRegistry is deployed as the subregistry
-- **Detached subnames** (emancipated without `CANNOT_UNWRAP`): unwrapped to the [Graveyard](#graveyard) and registered with the standard role set (plus renewal roles if `CAN_EXTEND_EXPIRY` was set)
+- **Detached subnames** (emancipated without `CANNOT_UNWRAP`): unwrapped to the [Graveyard](#graveyard) and registered with the standard role set
+
+For both types of subname, `CAN_EXTEND_EXPIRY` produces a non-expiring v2 entry (`type(uint64).max`) instead of granting token renewal roles. Migrated `.eth` 2LDs keep their reserved expiry.
 
 Non-emancipated 3LD+ subnames cannot be migrated through the migration controllers. They must be registered directly in v2 once their parent has a v2 registry.
 
@@ -162,7 +164,7 @@ Detached names are emancipated children of locked parents that don't have `CANNO
 
 1. Transfer the ERC-1155 token to the parent's WrapperRegistry
 2. The token is unwrapped to the Graveyard and the v1 resolver is cleared (the v2 name gets the resolver from the transfer data)
-3. The name is registered with the same token roles as `ETHRegistrar.register()`, plus `ROLE_RENEW` and `ROLE_RENEW_ADMIN` if the v1 token had `CAN_EXTEND_EXPIRY` set
+3. The name is registered with the same token roles as `ETHRegistrar.register()`. If the v1 token had `CAN_EXTEND_EXPIRY` set, its v2 entry receives the maximum `uint64` expiry instead of additional renewal roles
 
 ## Fuse-to-Role Conversion
 
@@ -174,11 +176,12 @@ Admin roles (the `<< 128` shifted counterparts) are only granted when `CANNOT_BU
 
 | ENSv1 Fuse | ENSv2 Role | Granted when fuse is... |
 |------------|-----------|------------------------|
-| `CAN_EXTEND_EXPIRY` | `ROLE_RENEW` | Set (enabled) |
 | `CANNOT_SET_RESOLVER` | `ROLE_SET_RESOLVER` | Not set (not burned) |
 | `CANNOT_TRANSFER` | `ROLE_CAN_TRANSFER_ADMIN` | Not set (not burned) |
 | `CANNOT_BURN_FUSES` | Admin counterparts of above | Not set (not frozen) |
 | `CANNOT_SET_TTL` | N/A | Ignored (no TTL in v2) |
+
+`CAN_EXTEND_EXPIRY` does not grant a token role. For migrated 3LD+ names, it sets the entry's expiry to `type(uint64).max`. Migrated `.eth` 2LDs keep their reserved expiry.
 
 ### Subregistry Roles
 

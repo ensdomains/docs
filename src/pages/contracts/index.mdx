@@ -26,7 +26,7 @@ This includes the process of finding a resolver, and then using that resolver to
 Every name has a resolver, responsible for fetching information about a name, such as address, avatar, and more.
 Resolvers allow for programmatic control over the information associated with a name, implemented in solidity.
 
-There are various resolvers to choose from, such as the [Public Resolver](/resolvers/public) or [write your own](/resolvers/writing).
+For ENSv2, use or extend the [Permissioned Resolver](/ensv2/permissioned-resolver). The [ENSv1 Public Resolver](/resolvers/public) remains a reference for unmigrated names. You can also [write your own resolver](/resolvers/writing).
 
 <EmbedLink
   title="Resolvers Quickstart"
@@ -34,12 +34,42 @@ There are various resolvers to choose from, such as the [Public Resolver](/resol
   href="/resolvers/quickstart"
 />
 
-## Registry & Registrars
+## ENSv2 Contracts
 
-The smart contracts can be found on github at [ensdomains/ens-contracts](https://github.com/ensdomains/ens-contracts).
+Start with the [ENSv2 overview](/ensv2/overview) for the architecture and how these contracts fit together.
+
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+  {[
+    ['ETH Registrar', '/ensv2/eth-registrar'],
+    ['Permissioned Registry', '/ensv2/permissioned-registry'],
+    ['Permissioned Resolver', '/ensv2/permissioned-resolver'],
+    ['Universal Resolver V2', '/ensv2/universal-resolver-v2'],
+    ['DNS Name Resolution', '/ensv2/dns-resolvers'],
+    ['Reverse Resolution', '/ensv2/reverse-resolution'],
+  ].map(([title, href]) => (
+    <EmbedLink
+      title={title}
+      href={href}
+      key={href}
+      description="ENSv2 contract reference"
+      className="p-4"
+    />
+  ))}
+</div>
+
+### Source Code
+
+<Repository
+  src="ensdomains/contracts-v2"
+  description="ENSv2 contracts, deployments, and tests"
+/>
+
+## ENSv1 Contracts
+
+These pages document the legacy contracts. New `.eth` registrations use the [ENSv2 ETH Registrar](/ensv2/eth-registrar).
 
 <div>
-  <div className="grid grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
     {[
       ['The Registry', '/registry/ens'],
       ['ETH Registrar', '/registry/eth'],
@@ -48,7 +78,7 @@ The smart contracts can be found on github at [ensdomains/ens-contracts](https:/
     ].map((list) => (
       <EmbedLink
         title={list[0]}
-        description="The resolution process"
+        description="ENSv1 contract reference"
         href={list[1]}
         key={list[1]}
         className="p-4"
@@ -57,7 +87,7 @@ The smart contracts can be found on github at [ensdomains/ens-contracts](https:/
   </div>
 </div>
 
-## Source Code
+### Source Code
 
 The code for the ENS Smart Contracts as well as information around the latest deploys, tests, and more can be found on github.
 
@@ -67,11 +97,3 @@ The code for the ENS Smart Contracts as well as information around the latest de
     description="Ethereum Name Service Contracts"
   />
 </div>
-
-## ENSv2
-
-<EmbedLink
-  title="ENSv2"
-  description="Overview of the ENSv2 smart contracts"
-  href="/ensv2/overview"
-/>

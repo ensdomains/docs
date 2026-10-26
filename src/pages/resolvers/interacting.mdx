@@ -1,105 +1,193 @@
-# Interacting with a Resolver [Set Addresses, Text Records, and more]
+import { FrenCallout } from '../../components/ensv2/FrenCallout'
 
-Some apps may want to allow for users to edit, update, or modify their name and its behaviour at a more advanced level.
-This is possible by interacting with the resolver contract of a name directly.
+# Interacting with a Resolver [Set addresses, text records, and more]
+
+Record updates go to the name's current resolver. Changing which resolver a name uses is a separate transaction on the registry that holds the name.
+
+<FrenCallout fren="lili" variant="note" title="ENSv2 writes">
+  Use ENSjs 5.2.5 or later for these examples. ENSjs discovers the current
+  resolver, including the underlying v1 resolver behind the ENSv1 mirror. Its v1
+  and v2 write actions are separate: selecting a resolver address alone does not
+  select the correct setter ABI. Never hardcode the ENSv1 Public Resolver as the
+  write target for a name.
+</FrenCallout>
+
+## Use a Connected Wallet
+
+These examples assume your web app has already connected to the user's browser wallet, such as MetaMask, and the wallet is on Ethereum Mainnet. `window.ethereum` is the connection provided by that wallet. ENSjs uses a standard [viem Wallet Client](https://viem.sh/docs/clients/wallet) to request transactions for the user to approve.
+
+The shared `client.ts` setup below reads the already-connected account and attaches it to the wallet client, as ENSjs requires. Load it after your app's wallet connection has completed, and replace `<MAINNET_RPC_URL>` with your Ethereum Mainnet RPC endpoint. If your app already has viem clients and a connected account, reuse those in the examples below.
+
+```ts [client.ts]
+import 'viem/window'
+
+import { addEnsContracts } from '@ensdomains/ensjs'
+import { createPublicClient, createWalletClient, custom, http } from 'viem'
+import { mainnet } from 'viem/chains'
+
+if (!window.ethereum) throw new Error('No browser wallet found')
+
+export const [account] = await window.ethereum.request({ method: 'eth_accounts' })
+if (!account) throw new Error('Connect your wallet before running this example')
+
+const chain = addEnsContracts(mainnet)
+export const client = createPublicClient({
+  chain,
+  transport: http('<MAINNET_RPC_URL>'),
+})
+export const wallet = createWalletClient({
+  account,
+  chain,
+  transport: custom(window.ethereum),
+})
+```
 
 ## Checking Interface Support
 
-Before you start sending transactions to users resolvers, you should check if they support the interface you want to use. This is done by calling the `supportsInterface` (see [EIP-165](https://eips.ethereum.org/EIPS/eip-165)) function on the resolver contract.
+Call `supportsInterface(bytes4)` on the discovered resolver before selecting a setter. A positive result describes the API, not the caller's permission to use it. See [Resolver Interface Standards](/resolvers/interfaces#ensv2-permissioned-resolver) for the ENSv2 interfaces.
 
-```solidity
-function supportsInterface(bytes4 interfaceID) external pure returns (bool)
-```
-
-In order to ensure that resolvers we interact with are compatible with specific standards you can call the above function on contracts with an interfaceID and then check the boolean it returns.
-
-Interface IDs are calculated according to solidity ABI and stored in a four-byte value.
+The [Permissioned Resolver](/ensv2/permissioned-resolver) exposes records through `resolve(bytes,bytes)`. Its setters take a DNS-encoded name. In contrast, the v1 Public Resolver's setters take a namehash. For text writes, the v2 setter interface is `0xc7279f88`, while the legacy text-reading interface is `0x59d1d43c`.
 
 ## Updating a User's Record
 
-If you want to help a user set their avatar, specify a preferred color scheme, or set any other record on their ENS name you can do so in specific cases.
+This example finds the writable resolver with ENSjs, checks its interface, and selects the matching `setRecords` action. It supports the v1 Public Resolver and the v2 Permissioned Resolver. Custom resolvers may require a different write API.
 
-First we need to <b>check if the user's resolver supports the interface</b> we want to use (see [setText](/resolvers/interfaces#0x10f13a8c)).
-Afterwhich you can call the `setText()` function on the user's resolver contract.
+```ts [ENSjs]
+import { getResolver } from '@ensdomains/ensjs/public'
+import { setRecords as setRecordsV1 } from '@ensdomains/ensjs/wallet/v1'
+import { setRecords as setRecordsV2 } from '@ensdomains/ensjs/wallet/v2'
+import { parseAbi } from 'viem'
+import { normalize } from 'viem/ens'
 
-:::code-group
+import { account, client, wallet } from './client'
 
-```solidity [Solidity]
-interface Resolver {
-    function setText(bytes32 node, string calldata key, string calldata value) external;
+export async function setProfileText(
+  input: string,
+  key: string,
+  value: string
+) {
+  const name = normalize(input)
+  const resolverAddress = await getResolver(client, { name })
+  if (!resolverAddress) throw new Error('No resolver set')
+
+  const supports = (interfaceId: `0x${string}`) =>
+    client.readContract({
+      address: resolverAddress,
+      abi: parseAbi(['function supportsInterface(bytes4) view returns (bool)']),
+      functionName: 'supportsInterface',
+      args: [interfaceId],
+    })
+
+  const isV2 = await supports('0xc7279f88')
+  if (!isV2 && !(await supports('0x59d1d43c'))) {
+    throw new Error('This resolver needs a custom record editor')
+  }
+  const setRecords = isV2 ? setRecordsV2 : setRecordsV1
+  const hash = await setRecords(wallet, {
+    account,
+    name,
+    resolverAddress,
+    texts: [{ key, value }],
+  })
+  const receipt = await client.waitForTransactionReceipt({ hash })
+  if (receipt.status !== 'success') throw new Error('Transaction reverted')
+  return receipt
 }
 ```
 
-```typescript [ENSjs]
-// https://github.com/ensdomains/ensjs/blob/main/docs/wallet/function.setRecords.md
-import { addEnsContracts } from '@ensdomains/ensjs'
-import { setRecords } from '@ensdomains/ensjs/wallet'
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
-
-const wallet = createWalletClient({
-  chain: addEnsContracts(mainnet),
-  transport: custom(window.ethereum),
-})
-const hash = await setRecords(wallet, {
-  name: 'ens.eth',
-  coins: [
-    {
-      coin: 'ETH',
-      value: '0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7',
-    },
-  ],
-  texts: [{ key: 'foo', value: 'bar' }],
-  resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-})
-// 0x...
-```
-
-:::
-
-Note that only the [Manager](/terminology#manager) of a name can set records on the resolver. For unwrapped names, the manager can be found by calling `owner()` on the ENS Registry. For wrapped names, the manager can be found by calling `ownerOf()` on the Name Wrapper. You can find the contract addresses [here](/learn/deployments#mainnet-ensv1).
+For ENSv1, the name's manager or an approved operator can update records on the Public Resolver. For a Permissioned Resolver, the caller needs the relevant resolver role, such as `ROLE_SET_TEXT`, for the key being changed or on the root resource. Owning the name's registry token does not automatically grant resolver roles.
 
 ## Update a User's Resolver
 
-Overwriting a user's resolver involves overwriting the behaviour of their ENS name.
+Changing a resolver changes the source of a name's records. It does not copy records from the old resolver. Obtain the user's consent and prepare the replacement resolver before switching.
 
-To change the resolver of a name, the Manager must call `setResolver()` on either the ENS Registry or the Name Wrapper, depending on whether the name is wrapped or not.
+### Check the Registry State First
 
-To figure out if a name is wrapped, call `owner()` on the ENS Registry. If this returns the address of the Name Wrapper, that indicates the name is wrapped and you should call `ownerOf()` on the Name Wrapper to get the effective owner of the name. You can find the contract addresses [here](/learn/deployments#mainnet-ensv1).
+For a second-level `.eth` name such as `alice.eth`, read `getStatus(uint256(labelhash('alice')))` on the [ENSv2 ETHRegistry](/learn/deployments#mainnet-ensv2). The status values are:
 
-:::code-group
+- `2` (`REGISTERED`): use the ENSv2 path for the active name, whether newly registered or migrated.
+- `1` (`RESERVED`): a reservation is not an owned ENSv2 token. Confirm the name's active ENSv1 ownership before using the v1 path. An expired v1 name may still have a v2 reservation.
+- `0` (`AVAILABLE`): stop and check expiry or registration. Do not infer that the name is writable in ENSv1.
 
-```solidity [Solidity]
-// Both the ENS Registry and the Name Wrapper implement this interface
-interface ENS {
-    function setResolver(bytes32 node, address resolver) external;
+This check is specific to second-level `.eth` names. For subnames and other TLDs, inspect the registry hierarchy and its migration or reservation rules. A missing v2 owner alone does not prove that the v1 path is valid. See [Migration](/ensv2/migration).
+
+### ENSv2 Names
+
+Call `setResolver` on the registry that holds the name. ENSjs's `getNameRegistries` discovers the hierarchy: entry zero is the name's own subregistry, and entry one is the registry holding its label. The wallet action takes that holding registry and the label.
+
+Use this path for registered ENSv2 names. An unmigrated `.eth` name's v2 reservation does not make it an owned v2 name. Use the v1 path below until it migrates. Resolver-only subnames have no individual registry entry to update.
+
+```ts [ENSjs v2]
+import { getNameRegistries, getOwner } from '@ensdomains/ensjs/public/v2'
+import { setResolver } from '@ensdomains/ensjs/wallet/v2'
+import { type Address, zeroAddress } from 'viem'
+import { normalize } from 'viem/ens'
+
+import { account, client, wallet } from './client'
+
+export async function changeV2Resolver(
+  input: string,
+  resolverAddress: Address
+) {
+  const name = normalize(input)
+  const owner = await getOwner(client, { name })
+  if (owner === zeroAddress) {
+    throw new Error('Name has no active ENSv2 owner. Check its registry state.')
+  }
+  const registries = await getNameRegistries(client, { name })
+  const registryAddress = registries[1]
+  if (!registryAddress || registryAddress === zeroAddress) {
+    throw new Error('No registry holds this name')
+  }
+  const hash = await setResolver(wallet, {
+    account,
+    label: name.split('.')[0],
+    registryAddress,
+    resolverAddress,
+  })
+  const receipt = await client.waitForTransactionReceipt({ hash })
+  if (receipt.status !== 'success') throw new Error('Transaction reverted')
+  return receipt
 }
 ```
 
-```typescript [ENSjs]
-// https://github.com/ensdomains/ensjs/blob/main/docs/wallet/function.setResolver.md
-import { addEnsContracts } from '@ensdomains/ensjs'
-import { setResolver } from '@ensdomains/ensjs/wallet'
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+The owner check rejects reserved, expired, and absent entries before sending a transaction. It does not establish the connected account’s permissions. The caller needs `ROLE_SET_RESOLVER` on that name or an applicable root role in its registry.
 
-const wallet = createWalletClient({
-  chain: addEnsContracts(mainnet),
-  transport: custom(window.ethereum),
-})
-const hash = await setResolver(wallet, {
-  name: 'ens.eth',
-  contract: 'registry',
-  resolverAddress: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
-})
-// 0x...
+### Unmigrated ENSv1 Names
+
+For ENSv1 names, ENSjs discovers whether ownership is held through the Name Wrapper and selects the corresponding v1 action target. Use this path only after confirming the name has not migrated.
+
+```ts [ENSjs v1]
+import { getOwner } from '@ensdomains/ensjs/public/v1'
+import { setResolver } from '@ensdomains/ensjs/wallet/v1'
+import { type Address } from 'viem'
+import { normalize } from 'viem/ens'
+
+import { account, client, wallet } from './client'
+
+export async function changeV1Resolver(
+  input: string,
+  resolverAddress: Address
+) {
+  const name = normalize(input)
+  const ownership = await getOwner(client, { name })
+  if (!ownership) throw new Error('Name has no owner')
+
+  const hash = await setResolver(wallet, {
+    account,
+    name,
+    contract:
+      ownership.ownershipLevel === 'nameWrapper' ? 'nameWrapper' : 'registry',
+    resolverAddress,
+  })
+  const receipt = await client.waitForTransactionReceipt({ hash })
+  if (receipt.status !== 'success') throw new Error('Transaction reverted')
+  return receipt
+}
 ```
 
-:::
+The connected account must be authorized by the ENSv1 Registry or Name Wrapper. Wrapper fuses can also prevent changing a resolver.
 
-Please do not change the resolver for a user without their permission. Overwriting the resolver is a destructive action and will overwrite any existing resolution logic.
+## Layer 2 and Offchain Resolvers
 
-## Layer 2 & Offchain Resolvers
-
-At the time of writing this the ecosystem around multichain and "writing" to layer 2 & offchain resolvers has yet to be standardized and is still under active development.
-Please check back at a later date.
+A resolver that reads records through CCIP Read may have a separate write API on another chain or service. Follow that resolver's integration instructions. A successful read through the Universal Resolver does not establish how to write its records.

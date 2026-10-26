@@ -1,8 +1,103 @@
-import { InterfaceDetails } from '../../components/InterfaceDetails'
+import { InterfaceSummary, InterfaceMethodDetails } from '../../components/InterfaceDetails'
 import { resolver_methods } from '../../data/resolver'
 
 # Resolver Interface Standards
 
 This page is a collection of methods that a resolver MAY implement.
 
-<InterfaceDetails methods={resolver_methods} />
+## ENSv2 Permissioned Resolver
+
+The [Permissioned Resolver](/ensv2/permissioned-resolver) reads records through `resolve(bytes,bytes)` (ENSIP-10). The requested profile call, such as `text(bytes32,string)` or `addr(bytes32,uint256)`, is encoded inside that call. The resolver does not expose those legacy getters as direct methods or advertise their individual interface IDs.
+
+Its record setters accept a DNS-encoded name rather than a namehash. The following interface IDs are supported by `supportsInterface`:
+
+| Interface                            | ID           |
+| ------------------------------------ | ------------ |
+| ERC-165: `supportsInterface(bytes4)` | `0x01ffc9a7` |
+| ENSIP-10: `resolve(bytes,bytes)`     | `0x9061b923` |
+| ERC-7996: `supportsFeature(bytes4)`  | `0x582de3e7` |
+| `setABI(bytes,uint256,bytes)`        | `0xd26f550e` |
+| `setAddress(bytes,uint256,bytes)`    | `0xb4436dde` |
+| `setContenthash(bytes,bytes)`        | `0xc5d7badd` |
+| `setData(bytes,string,bytes)`        | `0xeb4b73bb` |
+| `setInterface(bytes,bytes4,address)` | `0x9ce8c375` |
+| `setName(bytes,string)`              | `0x0ce0112a` |
+| `setText(bytes,string,string)`       | `0xc7279f88` |
+
+For example, the v1 `setText(bytes32,string,string)` selector `0x10f13a8c` is not the ENSv2 text setter. An interface check also does not establish write permission. See [Interacting with a Resolver](/resolvers/interacting) for resolver discovery and version-specific writes.
+
+For the complete interfaces, including record linking, multicall, access control, and upgrades, see [PermissionedResolver.sol](https://github.com/ensdomains/contracts-v2/blob/fce23470d9d9cd7cad3da02bb4b447119fdf4c42/contracts/src/resolver/PermissionedResolver.sol) and [AbstractRecordResolver.sol](https://github.com/ensdomains/contracts-v2/blob/fce23470d9d9cd7cad3da02bb4b447119fdf4c42/contracts/src/resolver/AbstractRecordResolver.sol).
+
+## Legacy Resolver Profiles
+
+The signatures below describe the legacy profile interfaces. Their read encodings are also used inside ENSIP-10 calls. Use the ENSv2 setter interfaces above when writing to a Permissioned Resolver.
+
+<InterfaceSummary methods={resolver_methods} />
+
+### Check Interface Support
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x01ffc9a7")} />
+
+### Read Ethereum Address
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x3b3b57de")} />
+
+### Read Multicoin Address
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0xf1cb7e06")} />
+
+### Read Content Hash
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0xbc1c58d1")} />
+
+### Read Text Record
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x59d1d43c")} />
+
+### Read Contract ABI
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x2203ab56")} />
+
+### Read Public Key
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0xc8690233")} />
+
+### Read Name (for reverse records)
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x691f3431")} />
+
+### Wildcard Resolution
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x9061b923")} />
+
+### Write Ethereum Address
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0xd5fa2b00")} />
+
+### Set Multicoin Address
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x8b95dd71")} />
+
+### Write Content Hash
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x304e6ade")} />
+
+### Write Text Record
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x10f13a8c")} />
+
+### Write Contract ABI
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x623195b0")} />
+
+### Write Public Key
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x29cd62ea")} />
+
+### Write Name (for reverse records)
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0x77372213")} />
+
+### Batch Read/Write
+
+<InterfaceMethodDetails method={resolver_methods.find((method) => method.interface === "0xac9650d8")} />

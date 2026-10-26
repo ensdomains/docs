@@ -106,7 +106,7 @@ export function HomePage() {
                 alt="ENSv2"
                 className="h-7 dark:invert"
               />
-              <span className="font-medium">Live on Sepolia</span>
+              <span className="font-medium">ENSv2</span>
             </div>
             <div>
               <div>
@@ -122,12 +122,17 @@ export function HomePage() {
                   For App Developers
                 </a>
               </div>
+              <div>
+                <a className="vocs_Anchor !no-underline" href="/ensv2/subnames">
+                  Issuing Subnames
+                </a>
+              </div>
             </div>
             <div>
               <div>
                 <a
                   className="vocs_Anchor !no-underline"
-                  href="/learn/deployments#sepolia-ensv2"
+                  href="/learn/deployments#mainnet-ensv2"
                 >
                   Deployments
                 </a>
@@ -138,6 +143,11 @@ export function HomePage() {
                   href="/web/ensv2-readiness"
                 >
                   Readiness
+                </a>
+              </div>
+              <div>
+                <a className="vocs_Anchor !no-underline" href="/ensv2/indexing">
+                  Indexing
                 </a>
               </div>
             </div>

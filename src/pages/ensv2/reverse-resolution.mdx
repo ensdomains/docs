@@ -1,5 +1,5 @@
 ---
-description: Primary names and reverse resolution in ENSv2, including multi-chain support and signature-based claims
+description: Primary names at ENSv2 launch and the upcoming multi-chain signature system.
 ---
 
 # Reverse Resolution
@@ -8,22 +8,24 @@ Reverse resolution maps an address back to an ENS name (the "primary name"). ENS
 
 ## At Launch
 
-At launch, the reverse namespace (`addr.reverse`, `default.reverse`) stays on v1 infrastructure. The v2 `ReverseRegistry` holds entries for these names, but resolution is handled by v1 contracts. Existing primary names continue to work without any user action.
+At launch, the reverse namespace stays on v1 infrastructure. The `reverse` TLD is registered in the **RootRegistry** with **ENSV1Resolver** as its resolver. This configuration, called the **ReverseMirror**, lets the ENSv2 Universal Resolver read the existing v1 reverse records. There is no separate `ReverseRegistry` contract. Existing primary names continue to work without any user action.
 
-**`addr.reverse`**: Registered in the `ReverseRegistry` with `ENSV1Resolver` as its resolver. This mirrors resolution through the v1 ENS registry, so existing v1 reverse records are automatically visible in v2. Users update their reverse record via the v1 `ReverseRegistrar.claimForAddr()`.
+**Ethereum primary names (`addr.reverse`)**: The v1 `ReverseRegistrar` remains the write path. Its `setName()` and `setNameForAddr()` methods set the name record. `claimForAddr()` claims the reverse node and sets its owner and resolver, after which an authorized caller can write the name record on that resolver.
 
-**`default.reverse`**: Uses the v1 `DefaultReverseRegistrar`, which stores primary names directly and resolves them via wildcard resolution on-contract. Users set their name via `DefaultReverseRegistrar.setNameForAddr()`.
+**Default primary names**: The v1 `DefaultReverseRegistrar` continues to store default names through `setName()` and `setNameForAddr()`. The ReverseMirror preserves the existing reverse-resolution routing, including fallback to a default primary name.
 
 ### Contract Account Adapters
 
-Contract accounts (multisigs, smart wallets, protocol contracts) can't always interact with the v1 reverse registrars directly, because those contracts authorize via `msg.sender`. Two adapter contracts, added as controllers on the v1 registrars, forward reverse-record updates on behalf of a contract:
+Contract accounts (multisigs, smart wallets, protocol contracts) can use two adapters that are controllers on the v1 registrars. Each adapter accepts an explicit account and checks whether the caller may name it before forwarding the update:
 
-| Adapter | Method | Forwards to |
-|---------|--------|-------------|
-| `ReverseRegistrarAdapter` | `claim(account, resolver)` | `ReverseRegistrar.claimForAddr()` |
-| `DefaultReverseRegistrarAdapter` | `setName(account, name)` | `DefaultReverseRegistrar.setNameForAddr()` |
+| Adapter                          | Method                     | Forwards to                                |
+| -------------------------------- | -------------------------- | ------------------------------------------ |
+| `ReverseRegistrarAdapter`        | `claim(account, resolver)` | `ReverseRegistrar.claimForAddr()`          |
+| `DefaultReverseRegistrarAdapter` | `setName(account, name)`   | `DefaultReverseRegistrar.setNameForAddr()` |
 
 Both adapters authorize the caller with the same "namer" check: the caller must be the account itself, the account's `Ownable` owner, or approved by the account's own `IContractNamer.isContractNamer()` implementation.
+
+`claim(account, resolver)` assigns ownership of the reverse node to the caller. It does not set the name record. The caller must then set that record on the chosen resolver. For examples and deployment addresses, see [Naming Contracts](/web/naming-contracts) and [mainnet deployments](/learn/deployments#mainnet-ensv2).
 
 ### Migration to v2-native
 
@@ -37,11 +39,11 @@ ENSv2 introduces a new `L2ReverseRegistrar` designed to be deployed on each chai
 
 The L2ReverseRegistrar provides four methods for setting a primary name, covering different authorization models:
 
-| Method | Authorization | Use case |
-|--------|--------------|----------|
-| `setName(name)` | `msg.sender` only | EOA setting its own primary name |
-| `setNameForAddr(addr, name)` | Caller is the address, its `Ownable` owner, or approved via the address's `IContractNamer` | Setting from a different caller context |
-| `setNameForAddrWithSignature(claim, signature)` | ERC-191 signature from the address | Gasless or cross-chain claims for EOAs |
+| Method                                                     | Authorization                                                                                                            | Use case                                                   |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `setName(name)`                                            | `msg.sender` only                                                                                                        | EOA setting its own primary name                           |
+| `setNameForAddr(addr, name)`                               | Caller is the address, its `Ownable` owner, or approved via the address's `IContractNamer`                               | Setting from a different caller context                    |
+| `setNameForAddrWithSignature(claim, signature)`            | ERC-191 signature from the address                                                                                       | Gasless or cross-chain claims for EOAs                     |
 | `setNameForContractWithSignature(claim, owner, signature)` | `owner` passes the namer check (Ownable or `IContractNamer`) and provides an ERC-191 signature (ERC-1271/6492 supported) | Contracts owned by smart contract wallets (Safe, ERC-4337) |
 
 ### Signature-Based Claims
@@ -101,12 +103,12 @@ The L2ReverseRegistrar also supports `syncName(addr)` for contracts that impleme
 
 ## Contracts
 
-| Contract | Status | Purpose |
-|----------|--------|---------|
-| `ReverseRegistry` | Deployed at launch | PermissionedRegistry for the `.reverse` TLD |
-| `ENSV1Resolver` | Deployed at launch | Mirrors v1 reverse resolution for `addr.reverse` |
-| `ReverseRegistrarAdapter` | Deployed at launch | Contract-account adapter for `addr.reverse` claims |
-| `DefaultReverseRegistrarAdapter` | Deployed at launch | Contract-account adapter for `default.reverse` name setting |
-| `L2ReverseRegistrar` | Upcoming | Per-chain reverse registrar with signature-based claims |
-| `StandaloneReverseRegistrar` | Upcoming | Abstract base for L2ReverseRegistrar |
-| `L2ReverseRegistrarWithMigration` | Upcoming | Variant supporting migration from older reverse registrar deployments |
+| Contract                          | Status             | Purpose                                                                  |
+| --------------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `RootRegistry`                    | Deployed at launch | Holds the `reverse` TLD entry pointing to ENSV1Resolver                  |
+| `ENSV1Resolver`                   | Deployed at launch | Mirrors the v1 reverse namespace through the ReverseMirror configuration |
+| `ReverseRegistrarAdapter`         | Deployed at launch | Contract-account adapter for `addr.reverse` claims                       |
+| `DefaultReverseRegistrarAdapter`  | Deployed at launch | Contract-account adapter for `default.reverse` name setting              |
+| `L2ReverseRegistrar`              | Upcoming           | Per-chain reverse registrar with signature-based claims                  |
+| `StandaloneReverseRegistrar`      | Upcoming           | Abstract base for L2ReverseRegistrar                                     |
+| `L2ReverseRegistrarWithMigration` | Upcoming           | Variant supporting migration from older reverse registrar deployments    |

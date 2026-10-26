@@ -116,13 +116,13 @@ All permissions are managed through [Enhanced Access Control](/ensv2/enhanced-ac
 | `ROLE_RENEW` | `1 << 16` | root or name | Extend expiry |
 | `ROLE_SET_SUBREGISTRY` | `1 << 20` | root or name | Set subregistry |
 | `ROLE_SET_RESOLVER` | `1 << 24` | root or name | Set resolver |
-| `ROLE_CAN_TRANSFER_ADMIN` | `(1 << 28) << 128` | root or name | Authorize ERC1155 token transfers |
+| `ROLE_CAN_TRANSFER_ADMIN` | `(1 << 28) << 128` | name | Permit the token owner to transfer the token |
 | `ROLE_SET_URI` | `1 << 36` | root | Set metadata URI and renderer |
 | `ROLE_UPGRADE` | `1 << 124` | root | Authorize proxy upgrades |
 
 Each role has a corresponding admin role at `role << 128` (e.g., `ROLE_SET_RESOLVER_ADMIN = (1 << 24) << 128`), except `ROLE_CAN_TRANSFER_ADMIN` which exists only as an admin role. In TypeScript, use `1n << 24n` for the bigint equivalent.
 
-`ROLE_CAN_TRANSFER_ADMIN` has no regular (non-admin) variant and is checked against the token owner, not the operator. See [Transfers](#transfers) for details.
+`ROLE_CAN_TRANSFER_ADMIN` has no regular (non-admin) variant and is checked on the token owner's name-specific resource. Holding it on `ROOT_RESOURCE` does not enable transfers, but does block [emancipation](#emancipation). See [Transfers](#transfers) for details.
 
 "Root" scope means the role only works on `ROOT_RESOURCE`. "Root or name" means it can be granted on either scope, and the two compose: a root grant applies to all names.
 
@@ -280,11 +280,15 @@ A registry has a **locked canonical parent** when it has a canonical parent and 
 A registry is **emancipated** when no account holds a dangerous role on its `ROOT_RESOURCE`. Every registry reports this via `isEmancipated()`.
 </FrenCallout>
 
-Roles in a registry are normally scoped to a single name, but a role granted on [`ROOT_RESOURCE`](/ensv2/enhanced-access-control#resources) applies to every name in the registry. That reach is what makes some roles dangerous: `ROLE_SET_RESOLVER` on `ROOT_RESOURCE` can change the resolver of every name, `ROLE_SET_SUBREGISTRY` can swap any name's subregistry, `ROLE_UNREGISTER` can delete any name, and `ROLE_UPGRADE` can replace the registry implementation entirely. These four roles and their admin counterparts are the **dangerous roles**: `isEmancipated()` returns `true` once none of them has an assignee on `ROOT_RESOURCE`.
+Roles in a registry are normally scoped to a single name, but a role granted on [`ROOT_RESOURCE`](/ensv2/enhanced-access-control#resources) generally applies to every name in the registry. That reach is what makes some roles dangerous: `ROLE_SET_RESOLVER` on `ROOT_RESOURCE` can change the resolver of every name, `ROLE_SET_SUBREGISTRY` can swap any name's subregistry, and `ROLE_UNREGISTER` can delete any name. These roles and their admin counterparts block emancipation while any account holds them on `ROOT_RESOURCE`.
+
+The emancipation check also counts `ROLE_CAN_TRANSFER_ADMIN` on `ROOT_RESOURCE`, although holding it there does not enable transfers. Transfers require this role on the token owner's name-specific resource. The base `isEmancipated()` check returns `true` once none of these roles has an assignee on `ROOT_RESOURCE`.
+
+`UserRegistry` additionally treats `ROLE_UPGRADE` and `ROLE_UPGRADE_ADMIN` as dangerous because upgrades can replace its implementation without an allowlist. These upgrade roles do not block emancipation in the base Permissioned Registry or `WrapperRegistry`. `WrapperRegistry` restricts upgrades to approved implementations.
 
 Operational roles are not dangerous and do not affect emancipation: `ROLE_REGISTRAR` can only register available names and `ROLE_RENEW` only extends expiry. This is how the `.eth` registry works: the [ETH Registrar](/ensv2/eth-registrar) holds both on `ROOT_RESOURCE`, while each name owner holds the roles defined by [`REGISTRATION_ROLE_BITMAP`](/ensv2/eth-registrar#roles-granted-at-registration). Emancipation is irreversible: re-granting a dangerous role requires its admin counterpart, which is itself a dangerous role that no account holds anymore.
 
-To see which roles still block emancipation, inspect the per-role assignee counts with [`roleCount(ROOT_RESOURCE)`](/ensv2/enhanced-access-control#bitmap-layout). And rely on `isEmancipated()` only after [verifying](/ensv2/verifiable-factory#on-chain-verification) which implementation the registry runs: an arbitrary contract can simply always return `true`. The migration-specific `WrapperRegistry` hardcodes the flag to `true`, with its root roles derived at migration time from the name's [Name Wrapper fuses](/ensv2/migration).
+To see which roles still block emancipation, inspect the per-role assignee counts with [`roleCount(ROOT_RESOURCE)`](/ensv2/enhanced-access-control#bitmap-layout). And rely on `isEmancipated()` only after [verifying](/ensv2/verifiable-factory#on-chain-verification) which implementation the registry runs: an arbitrary contract can simply always return `true`. The migration-specific `WrapperRegistry` inherits the base emancipation check, with its root roles derived at migration time from the name's [Name Wrapper fuses](/ensv2/migration).
 
 ### Emancipation Across the Hierarchy
 
