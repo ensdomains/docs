@@ -28,17 +28,6 @@ export default defineConfig({
   logoUrl: '/img/logo-mark.svg',
   baseUrl,
   ogImageUrl: baseUrl ? { '/': `${baseUrl}/api/og?title=%title` } : undefined,
-  banner: {
-    backgroundColor: '#0080BC',
-    textColor: '#ffffff',
-    content: (
-      <p>
-        During ENSv2 activation on Oct 27, new .eth registrations pause. Renewals continue
-        via <a href="/ensv2/migration#renewals">ETHRenewerV1</a>. Updates:{' '}
-        <a href="https://x.com/ensdomains">@ensdomains</a>.
-      </p>
-    ),
-  },
   editLink: {
     pattern: ({ filePath }) => {
       if (filePath?.startsWith('ensip/')) {
