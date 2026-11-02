@@ -1,0 +1,66 @@
+---
+authors:
+  - gov.blockful.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 7.6] [Social] Governor Nexus Update
+
+::authors
+
+:::note
+This was originally published as EP 7.3
+:::
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/22363)                                                                      |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x5bc7802637848e22f47e23615d3dcb2649e10b5feed5033a974eb556cdf3627a) |
+
+**TL;DR:** We propose that the DAO approve the Governor Nexus update, the next version of the ENS governor. It is built on OpenZeppelin v5.6.1 and fixes the risks found in the Governance Security Assessment. If this vote passes, the code goes through an external audit paid by MetaGov, and we then bring the migration proposal to an executable proposal.
+
+## Context
+
+We posted the Governor Nexus RFC in March and the implementation report in August. The code is public at blockful/nexus. The feedback window closed on Sep 2, and none of the questions raised called for a change to the code.
+
+Our Governance Security Assessment placed ENS at Stage 0 under the Anticapture framework. Once Nexus is deployed and its parameters are ratified, ENS moves to Stage 1.
+
+## What changes
+
+- **Voting delay per proposal type.** The migration proposal sets it to 2 days.
+- **Proposal limit.** Each proposer can have at most 2 live proposals, adjustable by vote between 1 and 10. Anyone can cancel a proposal whose proposer dropped below the proposal threshold.
+- **Mutable votes.** A voter can recast a vote before the deadline, which lets them correct a vote cast through a compromised interface.
+- **Late-vote extension.** If a proposal flips from failing to passing in the final 24 hours, voting extends by 48 hours from the original deadline. It fires once per proposal.
+- **Proposal types.** A registry, governed by vote, holds the types. Three come first: Standard (the same rules as today), Optimistic (passes unless 500k ENS oppose, and starts with empty allowlists) and Bond (a 1,000 ENS bond, as ratified in EP 5.15).
+- **Batch voting and contract wallets.** One call can cast votes on several proposals, and Safes and multisigs can sign votes through ERC-1271.
+
+The Timelock is untouched. The risks we accepted are listed in the implementation report.
+
+## External audit
+
+- **Scope:** the code we wrote on top of OpenZeppelin's library, as published in the implementation report.
+- **Quotes:** we requested quotes from three firms, including OpenZeppelin and Trail of Bits. They range from **$14,000 to $25,000**.
+- **Who chooses:** the MetaGov stewards select the firm. This vote does not.
+- **Funding:** MetaGov pays for the audit from the contract audits line of its Term 7 funding request. There is no new funding request to the DAO.
+- **After the audit:** we address every finding and publish the report before the migration proposal.
+
+## Voting
+
+- **For:** approve the Governor Nexus update. MetaGov proceeds with the audit, and we post the migration proposal once the audit clears.
+- **Against:** do not proceed. The current governor stays and MetaGov does not fund the audit.
+- **Abstain:** no position.
+
+## Timeline and next steps
+
+| **Step**                                                                        | **Status**        |
+| ------------------------------------------------------------------------------- | ----------------- |
+| RFC, implementation report and feedback window                                  | ✅ Done           |
+| Audit quotes collected                                                          | ✅ Done           |
+| Snapshot to approve the update                                                  | **⬅ We are here** |
+| Audit firm selected by MetaGov, audit and fixes                                 | Next              |
+| Migration proposal: deployment, parameter ratification, Timelock admin transfer | Pending           |
+
+1. Once this vote passes, MetaGov selects the firm and the audit starts.
+2. Once the audit is done, we publish the report and our fixes.
+3. After that, we post the migration proposal for a vote.
