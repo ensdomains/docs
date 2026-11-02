@@ -23,7 +23,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Install Omnipin
-        run: bun add -g omnipin@3.0.0
+        run: bun add -g omnipin@4.0.1
 
       - name: Build website
         run: bun install && bun run build
