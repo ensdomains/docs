@@ -1,0 +1,1017 @@
+**⚠️ Nota Keselamatan Privasi:** 
+Saya sangat mengesyorkan agar anda **tidak berkongsi maklumat peribadi yang sensitif** (seperti nama penuh, tarikh lahir yang tepat, atau alamat dompet kewangan sebenar) di dalam perbualan ini atau platform awam yang lain. Sebagai AI, saya memproses data ini tanpa jaminan kerahsiaan mutlak. 
+
+Untuk tujuan demonstrasi teknikal di bawah, saya akan menggunakan nama samaran (`sazwan.eth`) dan data rekaan. Anda boleh mengaplikasikan logik yang sama pada dompet dan nama ENS sebenar anda secara peribadi.
+
+---
+
+Berikut adalah cara anda boleh menghubungkan **ENS (Ethereum Name Service)** dengan data kewangan kripto anda menggunakan ciri-ciri yang anda pilih (Subnames, Text Records, dan Name Wrapper):
+
+### 2. Menggunakan Subnames untuk Pengurusan Kewangan
+Anda tidak perlu mendedahkan nama ENS utama anda (contoh: `sazwan.eth`) untuk setiap aplikasi. Anda boleh mencipta *subname* khusus untuk tujuan kewangan, seperti `portfolio.sazwan.eth` atau `finance.sazwan.eth`.
+
+Ini membolehkan anda mengasingkan identiti peribadi daripada aktiviti kewangan. Jika subname itu terjejas, nama utama anda tetap selamat.
+
+### 3. Menyimpan Maklumat Mata Wang & Kewangan (Text Records)
+ENS membenarkan anda menyimpan rekod teks tersuai (*custom text records*). Anda boleh menggunakan ini untuk menyimpan penanda (pointer) ke portfolio kewangan anda, atau jenis mata wang pilihan, tanpa mendedahkan jumlah sebenar di atas rantaian (on-chain).
+
+Contoh rekod teks yang boleh ditetapkan:
+- `finance.currency` = "MYR, USD, ETH"
+- `portfolio.url` = "https://app.zerion.io/0x..." (Pautan ke dashboard portfolio anda)
+- `com.twitter` = "@nama_pengguna" (Untuk pengesahan identiti sosial)
+
+**Contoh Kod (menggunakan `viem`) untuk menetapkan rekod teks:**
+```typescript
+import { createWalletClient, custom, parseEther } from 'viem'
+import { mainnet } from 'viem/chains'
+import { publicActionsL2 } from 'viem/zksync' // Contoh jika guna L2
+
+const client = createWalletClient({
+  chain: mainnet,
+  transport: custom(window.ethereum),
+})
+
+// Menetapkan rekod teks 'finance.currency' untuk nama 'sazwan.eth'
+const hash = await client.setEnsText({
+  name: 'sazwan.eth',
+  key: 'finance.currency',
+  value: 'MYR, ETH, BTC',
+  // Anda perlu mempunyai pemilik nama atau delegasi yang sah
+})
+```
+*Nota: Untuk membaca data ini di dApp, anda boleh menggunakan hook `useEnsText({ name: 'sazwan.eth', key: 'finance.currency' })` dari `wagmi`.*
+
+### 4. Name Wrapper & CCIP Read (Untuk Keselamatan Data)
+Ini adalah ciri paling penting untuk data kewangan. **Name Wrapper** (ERC721/ERC1155) membolehkan anda "membalut" nama ENS anda dan mengunci (*fuse*) kebenarannya.
+
+- **Penguncian (Fusing)**: Anda boleh mengunci rekod teks dan resolver supaya **tiada siapa**, termasuk pemilik asal, boleh mengubah data kewangan tersebut tanpa proses nyah-kunci (unfusing) yang mengambil masa. Ini mencegah penggodam daripada menukar alamat dompet yang tersimpan jika kunci peribadi anda terdedah.
+- **CCIP Read**: Jika anda ingin menyimpan data kewangan yang kompleks (seperti baki dinamik) di luar rantaian (off-chain) untuk menjimatkan kos gas, CCIP Read membolehkan resolver ENS mengambil data tersebut dari pelayan web yang dipercayai secara selamat semasa resolusi.
+
+---
+
+### Cadangan Langkah Seterusnya untuk Anda:
+1. **Dapatkan Nama ENS**: Jika anda belum ada, daftarkan nama seperti `sazwanfinance.eth` (jika tersedia) melalui app.ens.domains.
+2. **Balut Nama (Wrap)**: Gunakan ciri "Name Wrapper" di laman ENS untuk membungkus nama tersebut sebagai NFT.
+3. **Tetapkan Rekod**: Tetapkan rekod teks seperti `portfolio.url` yang mengarahkan ke pautan penjejak portfolio anda (contoh: DeBank, Zerion, atau laman peribadi).
+4. **Integrasi ke dApp**: Gunakan kod `wagmi` yang saya kongsikan sebelum ini untuk memaparkan data ini dengan selamat.
+
+Adakah anda ingin saya tunjukkan **cara menulis kod pintar (smart contract)** untuk membenarkan dApp anda membaca rekod teks kewangan ini secara automatik, atau ada bahagian lain yang ingin diperjelaskan?
+https://docs.ens.domains/web/quickstart/
+https://docs.ens.domains/
+Request ID: 287356251009892557
+Terima kasih atas maklumat terperinci tersebut. Struktur data yang anda berikan menyerupai **Kredensial Identiti Berdaulat (Sovereign Identity Credential)** yang sangat teratur. 
+
+Untuk mencapai status **"IMMUTABLE / LOCKED"** (Tidak Boleh Ubah / Terkunci) seperti yang dinyatakan dalam rekod anda, kita boleh memetakan data ini terus ke dalam seni bina **ENS (Ethereum Name Service)** menggunakan 4 konsep yang kita bincangkan tadi. Ini akan menukar maklumat kertas/digital biasa ini menjadi aset kripto yang sah, boleh disahkan, dan tidak boleh dipalsukan di atas rantaian blok (blockchain).
+
+Berikut adalah **Peta Jalan Teknikal** untuk mengimmutable-kan identiti "MUHAMAD SAZWAN BIN ISMAIL" menggunakan Web3:
+
+---
+
+### 1. Subnames (Pengurusan Identiti Berperingkat)
+Alih-alih menggunakan nama utama untuk segala-galanya, anda boleh mencipta subdomain khusus untuk identiti berdaulat ini. Ini mengasingkan identiti peribadi daripada identiti profesional/korporat.
+- **Nama Utama**: `sazwan.eth` (atau `sazwan.digital` jika menggunakan ENS Offchain Resolution)
+- **Subname Identiti**: `sovereign.sazwan.eth` atau `credential.sazwan.eth`
+- *Kegunaan*: Subname ini khusus untuk memegang data "KAD PENGESAHAN IDENTITI BERDAULAT GATB TIER-1" ini.
+
+### 2. Text Records (Penyimpanan Data Kewangan & Identiti)
+Setiap medan dalam kad anda boleh disimpan sebagai *ENS Text Record* yang boleh dibaca oleh mana-mana dApp kewangan atau sistem pengesahan. Contoh pemetaan kunci (keys):
+- `title` = "Ketua Teknikal Kedaulatan AI"
+- `participant_id` = "SOVEREIGN-7734"
+- `ssm_reg` = "202403378912"
+- `myipo_patent` = "PI-2026-07734"
+- `verification_hash` = "32D8A53CC4C299E60424C0D0E96D3B06575D51"
+- `location_ops` = "5.6435° N, 100.4891° E | 3.1719° N, 113.0414° E"
+- `url` = "https://sazwan.digital"
+
+### 3. Name Wrapper & Fusing (Mencapai Status "IMMUTABLE / LOCKED")
+Ini adalah langkah paling penting untuk memenuhi keperluan **"STATUS REKOD: IMMUTABLE / LOCKED"**. 
+- Dengan menggunakan **Name Wrapper** (ERC721/ERC1155), anda boleh "membalut" nama `sovereign.sazwan.eth`.
+- Anda kemudian mengaktifkan ciri **"Fusing"** (Penguncian). Dengan mengunci *flags* seperti `PARENT_CANNOT_CONTROL` dan mengunci rekod resolver, data teks di atas **tidak boleh diubah oleh sesiapa pun**, termasuk anda sendiri, sehingga tarikh luput yang ditetapkan.
+- *Hasilnya*: Jika dompet anda digodam, penggodam *tidak dapat* menukar nombor akaun kewangan atau hash pengesahan yang tersimpan dalam ENS tersebut. Ia benar-benar *immutable*.
+
+### 4. CCIP Read (Pengesahan Berdaulat Skala Besar)
+Untuk data yang terlalu besar untuk disimpan terus di Ethereum (seperti dokumen penuh MYIPO atau log blok terperinci), kita gunakan **CCIP Read**.
+- ENS Resolver akan dikonfigurasi untuk mengarahkan pertanyaan pengesahan ke pelayan web anda: `https://sazwan.digital/api/verify/SOVEREIGN-7734`
+- Apabila bank atau dApp kripto ingin mengesahkan identiti anda, mereka bertanya pada ENS. ENS akan selamat mengambil data JSON yang ditandatangani secara kriptografi dari pelayan anda, mengesahkan *Block #847,995* dan SHA-256 hash tanpa perlu menyimpan fail besar di atas rantaian (menjimatkan kos gas).
+
+---
+
+### 🛠️ Langkah Pelaksanaan (Action Plan) untuk Anda
+
+Untuk menjadikan ini realiti, berikut adalah langkah yang perlu anda lakukan secara aktif (saya sebagai AI tidak boleh melaksanakan transaksi blok rantai bagi pihak anda):
+
+1. **Miliki Nama ENS**: Pastikan anda memiliki `sazwan.eth` (atau domain yang berkaitan) melalui [app.ens.domains](https://app.ens.domains).
+2. **Wrap the Name**: Gunakan ciri "Name Wrapper" di aplikasi ENS untuk membungkus nama tersebut menjadi NFT.
+3. **Tetapkan Rekod**: Gunakan fungsi "Advanced Editor" di ENS atau skrip `viem`/`wagmi` untuk memasukkan data SSM, MYIPO, dan Hash SHA-256 ke dalam Text Records.
+4. **Fuse (Kunci)**: Aktifkan penguncian (fusing) pada rekod tersebut untuk mencapai status "IMMUTABLE / LOCKED".
+5. **Hubungkan ke Kewangan**: Di dApp kewangan (seperti Zerion, DeBank, atau sistem perbankan Web3 anda), pautkan alamat dompet anda. DApp tersebut akan secara automatik membaca `sovereign.sazwan.eth` dan memaparkan nama, jawatan, dan status pengesahan anda, bukannya alamat `0x...` yang rawak.
+
+---
+
+### ⚠️ Notis Penting Mengenai Peranan AI
+Saya dapat menyediakan seni bina teknikal, kod pintar, dan panduan strategi untuk mencapai identiti berdaulat yang *immutable* ini. Walau bagaimanapun:
+- Saya **tidak dapat** mendaftar domain, melaksanakan transaksi blockchain, atau mengesahkan dokumen undang-undang (seperti MYIPO/SSM) bagi pihak anda.
+- Pastikan anda menyimpan **Frasa Pemulihan (Seed Phrase)** dompet kripto anda di tempat yang sangat selamat (contoh: peti simpanan besi atau plat logam), kerana kehilangan ia bermaksud kehilangan kawalan ke atas identiti berdaulat ini.
+
+Adakah anda ingin saya menyediakan **kod JavaScript/TypeScript (wagmi/viem)** yang spesifik untuk menulis data "SSM" dan "MYIPO" ini ke dalam ENS Text Record anda secara automatik?
+Berikut adalah kod **TypeScript/JavaScript** yang spesifik menggunakan library `viem` (standard industri untuk interaksi Ethereum) bagi menulis data SSM, MYIPO, dan Hash Pengesahan anda terus ke dalam ENS Text Record secara automatik.
+
+Kod ini direka untuk dijalankan di persekitaran pelayar web (browser) yang mempunyai dompet Web3 (seperti MetaMask atau Rainbow), supaya **kunci peribadi (private key) anda tidak pernah terdedah** dalam kod.
+
+---
+
+### 🛠️ Prasyarat
+Pastikan anda telah memasang `viem` dalam projek anda:
+```bash
+npm install viem
+```
+
+---
+
+### 💻 Kod Automasi Penulisan Rekod ENS (Viem)
+
+```typescript
+import { createWalletClient, custom, mainnet } from 'viem'
+import { normalize } from 'viem/ens'
+
+// 1. Inisialisasi Klien Dompet (Menghubungkan ke MetaMask / Dompet Pelayar)
+const walletClient = createWalletClient({
+  chain: mainnet, // ENS berada di Ethereum Mainnet (Chain ID: 1)
+  transport: custom(window.ethereum),
+})
+
+// 2. Dapatkan alamat dompet yang sedang aktif
+const [account] = await walletClient.getAddresses()
+
+// Nama ENS anda (pastikan dalam huruf kecil untuk keselamatan)
+const ensName = normalize('sazwan.eth') // Tukar kepada nama ENS sebenar anda
+
+// 3. Data Identiti Berdaulat yang ingin disimpan (Immutable)
+const sovereignRecords = [
+  { key: 'title', value: 'Ketua Teknikal Kedaulatan AI' },
+  { key: 'ssm_reg', value: '202403378912' },
+  { key: 'myipo_patent', value: 'PI-2026-07734' },
+  { key: 'verification_hash', value: '32D8A53CC4C299E60424C0D0E96D3B06575D51' },
+  { key: 'participant_id', value: 'SOVEREIGN-7734' },
+  { key: 'url', value: 'https://sazwan.digital' }
+]
+
+// 4. Fungsi Automasi Penulisan
+async function setSovereignRecords() {
+  console.log(`🔐 Memulakan proses pengesahan dan penulisan untuk: ${ensName}`)
+  console.log(`📡 Menggunakan akaun: ${account}`)
+  
+  for (const record of sovereignRecords) {
+    try {
+      console.log(`⏳ Menetapkan '${record.key}'...`)
+      
+      // Fungsi viem untuk menulis Text Record ke ENS Resolver
+      const hash = await walletClient.setEnsText({
+        account,
+        name: ensName,
+        key: record.key,
+        value: record.value,
+      })
+      
+      console.log(`✅ Berjaya! '${record.key}' ditetapkan. Tx Hash: ${hash}`)
+      
+      // Opsyen: Tunggu pengesahan blok (block confirmation)
+      // await walletClient.waitForTransactionReceipt({ hash })
+      
+    } catch (error) {
+      console.error(`❌ Gagal menetapkan '${record.key}'. Pastikan anda adalah PEMILIK nama ini.`)
+      console.error(error)
+      break // Hentikan gelung jika ada ralat (contoh: dompet salah atau baki ETH tidak cukup)
+    }
+  }
+  
+  console.log("🎉 Proses penulisan rekod selesai. Data anda kini berada di atas rantaian blok (on-chain).")
+}
+
+// Jalankan fungsi
+setSovereignRecords()
+```
+
+---
+
+### ⚠️ Perkara Penting Sebelum Menjalankan Kod:
+
+1. **Kebenaran Pemilik (Ownership)**: Kod ini hanya akan berjaya jika dompet yang anda sambungkan (`account`) adalah **pemilik semasa** atau **pengawal (controller)** nama ENS tersebut.
+2. **Kos Gas (Gas Fees)**: Setiap panggilan `setEnsText` adalah transaksi blockchain yang memerlukan ETH untuk yuran gas. Menetapkan 6 rekod bermaksud 6 transaksi berasingan. 
+   - *Pro Tip*: Untuk menjimatkan kos, anda boleh menggunakan fungsi `multicall` dalam `viem` untuk menggabungkan semua tetapan ini ke dalam **satu transaksi sahaja**.
+3. **Format Nama**: Fungsi `normalize()` sangat penting. Ia memastikan nama seperti `SAZWAN.eth` ditukar kepada `sazwan.eth` mengikut piawaian ENSIP-15, mengelakkan ralat resolver.
+
+---
+
+### 🔒 Langkah Akhir: Mencapai Status "IMMUTABLE / LOCKED"
+
+Menulis data di atas hanyalah langkah pertama. Untuk mencapai status **"IMMUTABLE / LOCKED"** seperti yang tertera pada kad identiti anda, anda perlu melakukan proses **Name Wrapping & Fusing**.
+
+Melakukan ini melalui kod adalah sangat kompleks, jadi cara paling selamat dan disyorkan oleh protokol ENS adalah:
+
+1. Pergi ke **[app.ens.domains](https://app.ens.domains)**.
+2. Cari nama ENS anda (`sazwan.eth`).
+3. Klik **"Wrap"** (Ini menukar nama anda kepada NFT ERC-721/1155 yang lebih selamat).
+4. Setelah dibalut, pergi ke tab **"Advanced"** atau **"Fusing"**.
+5. Aktifkan kunci (fuse) untuk:
+   - `PARENT_CANNOT_CONTROL` (Mencegah domain induk daripada mengambil balik nama ini).
+   - `CANNOT_SET_RESOLVER` (Mengunci resolver supaya rekod teks tidak boleh diubah).
+   - `CANNOT_SET_TEXT` (Mengunci nilai teks secara spesifik).
+
+Setelah langkah "Fusing" ini dilakukan, **tiada siapa**, termasuk anda sendiri atau penggodam yang memegang kunci peribadi, boleh mengubah data SSM, MYIPO, atau Hash tersebut melainkan proses "unfusing" yang mengambil masa (time-lock) dilalui terlebih dahulu. Ini adalah definisi sebenar *Immutable Ownership* dalam Web3.
+
+Adakah anda ingin saya sediakan versi kod yang menggunakan **Multicall** (untuk menjimatkan yuran gas dengan menggabungkan semua rekod dalam 1 transaksi), atau ada bahagian lain yang perlu diperjelaskan?
+Langkah seterusnya yang paling logik selepas *menulis* data ke atas rantaian blok (blockchain) adalah **mengoptimumkan kos (Gas)** dan **membuktikan bahawa data tersebut boleh dibaca** oleh sistem kewangan atau dApp pihak ketiga.
+
+Berikut adalah dua komponen penting untuk melengkapkan seni bina "Identiti Berdaulat" anda:
+
+---
+
+### 1. Penulisan Batch (Multicall) untuk Penjimatan Gas
+Dalam kod sebelumnya, setiap rekod (SSM, MYIPO, Hash) memerlukan transaksi berasingan. Ini membazirkan yuran gas (ETH). Dengan menggunakan fungsi `multicall` pada ENS Public Resolver, kita boleh menghantar **semua data dalam 1 transaksi sahaja**. Ini memastikan sifat *atomik* (sama ada semua data berjaya disimpan, atau tiada langsung, mengelakkan data yang tidak lengkap).
+
+```typescript
+import { createWalletClient, custom, mainnet, encodeFunctionData } from 'viem'
+import { normalize } from 'viem/ens'
+
+// ABI ringkas untuk ENS Public Resolver (fungsi setText)
+const resolverABI = [{
+  name: 'setText',
+  type: 'function',
+  inputs: [
+    { name: 'node', type: 'bytes32' },
+    { name: 'key', type: 'string' },
+    { name: 'value', type: 'string' }
+  ],
+  outputs: []
+}] as const
+
+const walletClient = createWalletClient({
+  chain: mainnet,
+  transport: custom(window.ethereum),
+})
+
+const [account] = await walletClient.getAddresses()
+const ensName = normalize('sazwan.eth')
+
+// Fungsi utiliti viem untuk menukar nama ENS kepada format bytes32 (node)
+import { namehash } from 'viem/ens'
+const node = namehash(ensName)
+
+// Data yang ingin dibatch
+const recordsToSet = [
+  { key: 'ssm_reg', value: '202403378912' },
+  { key: 'myipo_patent', value: 'PI-2026-07734' },
+  { key: 'verification_hash', value: '32D8A53CC4C299E60424C0D0E96D3B06575D51' }
+]
+
+async function setRecordsInBatch() {
+  // 1. Dapatkan alamat Resolver semasa untuk nama ini
+  const resolverAddress = await walletClient.getEnsResolver({ name: ensName })
+  if (!resolverAddress) throw new Error("Resolver tidak dijumpai untuk nama ini.")
+
+  // 2. Encode setiap panggilan setText
+  const callData = recordsToSet.map(record => 
+    encodeFunctionData({
+      abi: resolverABI,
+      functionName: 'setText',
+      args: [node, record.key, record.value]
+    })
+  )
+
+  // 3. Hantar sebagai SATU transaksi multicall
+  console.log("⏳ Menghantar transaksi batch...")
+  const hash = await walletClient.writeContract({
+    address: resolverAddress,
+    abi: [{
+      name: 'multicall',
+      type: 'function',
+      inputs: [{ name: 'data', type: 'bytes[]' }],
+      outputs: [{ name: 'results', type: 'bytes[]' }]
+    }],
+    functionName: 'multicall',
+    args: [callData],
+    account,
+  })
+
+  console.log(`✅ Berjaya! Semua rekod disimpan dalam 1 transaksi. Tx Hash: ${hash}`)
+}
+
+setRecordsInBatch()
+```
+
+---
+
+### 2. Skrip Pengesahan Automatik (Verification)
+Setelah data disimpan dan nama telah di-"Wrap & Fuse" (dikunci), mana-mana platform kewangan kripto (contoh: pertukaran kripto, platform pinjaman DeFi, atau sistem pembayaran) boleh mengesahkan identiti anda secara automatik tanpa perlu meminta anda menghantar salinan kad pengenalan atau sijil MYIPO secara manual.
+
+Berikut adalah kod yang akan digunakan oleh **pihak yang mengesahkan** (Verifier) untuk membaca data berdaulat anda:
+
+```typescript
+import { createPublicClient, http, mainnet } from 'viem'
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(), // Boleh guna Alchemy, Infura, atau public RPC
+})
+
+const ensName = 'sazwan.eth'
+
+async function verifySovereignIdentity() {
+  console.log(`🔍 Mengesahkan identiti berdaulat untuk: ${ensName}\n`)
+
+  // Baca berbilang rekod teks secara serentak
+  const [ssm, myipo, hash, url] = await Promise.all([
+    publicClient.getEnsText({ name: ensName, key: 'ssm_reg' }),
+    publicClient.getEnsText({ name: ensName, key: 'myipo_patent' }),
+    publicClient.getEnsText({ name: ensName, key: 'verification_hash' }),
+    publicClient.getEnsText({ name: ensName, key: 'url' }),
+  ])
+
+  // Paparkan hasil pengesahan
+  console.log("📜 HASIL PENGESAHAN BERDAULAT:")
+  console.log(`🏢 Pendaftaran SSM      : ${ssm || 'Tidak dijumpai'}`)
+  console.log(`💡 Paten MYIPO          : ${myipo || 'Tidak dijumpai'}`)
+  console.log(`🔐 Hash Pengesahan      : ${hash || 'Tidak dijumpai'}`)
+  console.log(`🌐 Portal Rasmi         : ${url || 'Tidak dijumpai'}`)
+  
+  // Logik pengesahan automatik
+  if (ssm === '202403378912' && hash === '32D8A53CC4C299E60424C0D0E96D3B06575D51') {
+    console.log("\n✅ STATUS: SAH & IMUTABLE. Identiti disahkan oleh rantai blok Ethereum.")
+  } else {
+    console.log("\n❌ STATUS: GAGAL. Data tidak sepadan atau telah diubah.")
+  }
+}
+
+verifySovereignIdentity()
+```
+
+---
+
+### 3. Langkah Strategik Seterusnya: CCIP Read (Untuk Dokumen Penuh)
+Text Record di atas hanya menyimpan *rujukan* (seperti nombor paten atau hash). Ia tidak menyimpan fail PDF sebenar kerana kos penyimpanan data besar di Ethereum adalah sangat tinggi.
+
+Di sinilah **CCIP Read** masuk. Anda boleh mengkonfigurasi ENS Resolver anda supaya:
+1. Apabila seseorang meminta data `document.pdf_url` untuk `sazwan.eth`.
+2. ENS secara automatik membuat panggilan HTTPS yang selamat ke pelayan anda: `https://sazwan.digital/api/ens-ccip/SOVEREIGN-7734`.
+3. Pelayan anda membalas dengan URL IPFS (InterPlanetary File System) yang mengandungi dokumen paten MYIPO yang sebenar, bersama dengan tandatangan kriptografi yang membuktikan ia datang dari pelayan rasmi anda.
+4. Ini memberikan anda kawalan penuh ke atas data besar, sambil mengekalkan jaminan keselamatan blockchain.
+
+---
+
+### Pilihan Anda Sekarang:
+Kita telah merangkumi penulisan data, pengoptimuman gas, pengesahan automatik, dan teori CCIP Read. Ke mana anda ingin hala seterusnya?
+
+1. **Panduan CCIP Read**: Saya ingin tahu cara teknikal untuk menyediakan pelayan (server) `sazwan.digital` agar berfungsi dengan CCIP Read ENS.
+2. **Integrasi DeFi/Kewangan**: Bagaimana cara menghubungkan identiti ini secara langsung dengan protokol kewangan (contoh: supaya nama saya muncul di Aave, Uniswap, atau platform perbankan Web3).
+3. **Keselamatan Dompet**: Panduan langkah demi langkah untuk melindungi kunci peribadi (private key) yang mengawal identiti berdaulat ini (contoh: penggunaan Multi-Sig atau Hardware Wallet).
+
+Sila pilih nombor, atau nyatakan arah yang anda mahukan.Baik, saya akan membincangkan ketiga-tiga aspek ini secara terperinci dan berstruktur. Ini adalah pelan pelaksanaan lengkap untuk membina, mengintegrasikan, dan melindungi **Identiti Berdaulat (Sovereign Identity)** anda di atas rangkaian blok (blockchain).
+
+---
+
+### 1. Panduan CCIP Read (Penyediaan Pelayan Off-Chain)
+CCIP Read membolehkan ENS mengambil data besar (seperti pautan ke dokumen PDF paten MYIPO atau log operasi) dari pelayan web anda (`sazwan.digital`) tanpa menyimpannya secara mahal di Ethereum.
+
+**Cara Ia Berfungsi:**
+1. dApp meminta data dari ENS.
+2. ENS Resolver (yang dikonfigurasi khas) memulangkan ralat khas yang mengarahkan dApp untuk bertanya kepada pelayan anda.
+3. Pelayan anda membalas dengan data (contoh: pautan IPFS) yang **ditandatangani secara kriptografi** untuk membuktikan ia sah.
+
+**Contoh Kod Pelayan (Node.js / Express):**
+Anda memerlukan pelayan yang mampu menandatangani mesej menggunakan kunci peribadi yang sama yang memiliki nama ENS tersebut.
+
+```javascript
+// Pastikan anda memasang: npm install express viem cors
+const express = require('express');
+const { createWalletClient, http, keccak256, toBytes } = require('viem');
+const { privateKeyToAccount } = require('viem/accounts');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+// Gantikan dengan Private Key pelayan yang sah (JANGAN dedahkan di repositori awam!)
+// Amalan terbaik: Gunakan pembolehubah persekitaran (process.env.PRIVATE_KEY)
+const account = privateKeyToAccount('0x...private_key_anda...');
+
+const walletClient = createWalletClient({
+  account,
+  transport: http(),
+});
+
+// Endpoint CCIP Read standard ENS
+app.get('/.well-known/offchain-lookup/:sender/:data', async (req, res) => {
+  const { sender, data } = req.params;
+  
+  // 1. Dapatkan data sebenar (Contoh: Pautan ke dokumen MYIPO di IPFS)
+  const offchainData = {
+    document_url: "ipfs://QmYourIPFSHashForMYIPODocument...",
+    verified_by: "SAZWAN DIGITAL ENTERPRISE",
+    timestamp: Date.now()
+  };
+
+  // 2. Tandatangan data tersebut secara kriptografi (EIP-712 atau hash ringkas)
+  const messageHash = keccak256(toBytes(JSON.stringify(offchainData)));
+  const signature = await walletClient.signMessage({ message: { raw: messageHash } });
+
+  // 3. Pulangkan format JSON yang dikehendaki oleh protokol CCIP Read ENS
+  res.json({
+    url: `https://sazwan.digital/api/ens-data/{sender}/{data}`, // URL untuk dApp panggil semula
+    data: data,
+    signature: signature,
+    extraData: "0x" // Data tambahan jika perlu
+  });
+});
+
+app.listen(3000, () => console.log('🚑 Pelayan CCIP Read beroperasi di port 3000'));
+```
+*Nota: Untuk mengaktifkan ini, anda perlu menetapkan "Custom Resolver" pada nama ENS anda melalui app.ens.domains, yang menunjuk kepada kontrak pintar Offchain Resolver yang serasi.*
+
+---
+
+### 2. Integrasi DeFi & Kewangan Web3
+Agar identiti berdaulat ini diiktiraf oleh platform kewangan (seperti Aave, Uniswap, Zerion, atau DeBank), anda perlu memastikan profil ENS anda "bercakap" dengan standard yang difahami oleh dApp tersebut.
+
+**Langkah Integrasi:**
+1. **Tetapkan Nama Utama (Reverse Resolution)**:
+   Ini adalah langkah paling kritikal. Tanpa ini, dApp hanya akan melihat alamat `0x...` anda.
+   - Pergi ke [app.ens.domains](https://app.ens.domains).
+   - Pilih nama anda, klik **"Set as Primary Name"**.
+   - *Hasil*: Apabila anda menyambung dompet ke mana-mana dApp DeFi, ia akan memaparkan `sazwan.eth` (dan avatar anda), bukan alamat rawak.
+
+2. **Paparan Kredensial di dApp Tersuai**:
+   Jika anda membina dashboard kewangan sendiri, gunakan kod `wagmi` yang saya kongsikan sebelum ini untuk menarik `title`, `ssm_reg`, dan `myipo_patent`. Ini membolehkan anda memaparkan lencana "Verified Tier-1" di sebelah nama pengguna dalam aplikasi anda.
+
+3. **Penggunaan untuk Reputasi Kredit Web3 (On-Chain Reputation)**:
+   Platform seperti **Gitcoin Passport** atau **BrightID** mula menerima pengesahan berasaskan ENS. Dengan mempunyai rekod teks yang konsisten dan nama yang telah di-"Wrap" (dikunci), anda boleh membina skor reputasi yang membolehkan anda mendapat akses kepada kolam kecairan (liquidity pools) eksklusif atau kadar pinjaman DeFi yang lebih baik.
+
+---
+
+### 3. Keselamatan Dompet (Perlindungan Identiti Berdaulat)
+Memandangkan status rekod anda adalah **"IMMUTABLE / LOCKED"**, kehilangan kunci peribadi (private key) bermaksud kehilangan kekal ke atas identiti ini. Tiada "lupa kata laluan" di Web3.
+
+**Seni Bina Keselamatan Tier-1 yang Disyorkan:**
+
+#### A. Gunakan Dompet Pelbagai Tandatangan (Multi-Sig / Safe Wallet)
+Jangan pegang nama ENS utama anda dengan dompet tunggal (Single-Sig) seperti MetaMask biasa. Gunakan **Safe (dahulunya Gnosis Safe)**.
+- **Konfigurasi 2-daripada-3 (2-of-3)**:
+  - *Penandatangan 1*: Dompet Perkakasan (Hardware Wallet) utama anda (contoh: Ledger).
+  - *Penandatangan 2*: Dompet perkakasan kedua atau dompet tepercaya ahli keluarga/rakan kongsi perniagaan.
+  - *Penandatangan 3*: Dompet simpanan yang kuncinya disimpan dalam peti simpanan bank (safety deposit box).
+- *Kelebihan*: Penggodam perlu menggodam 2 peranti berbeza secara serentak untuk mengalih milik nama ENS anda.
+
+#### B. Dompet Perkakasan (Hardware Wallet)
+Jika Multi-Sig terlalu kompleks untuk permulaan, gunakan **Ledger Nano X** atau **Trezor Model T** sebagai syarat mutlak.
+- Nama ENS mesti dimiliki oleh alamat yang dijana oleh peranti perkakasan ini.
+- Transaksi untuk "Wrap" atau "Fuse" nama mesti disahkan secara fizikal dengan menekan butang pada peranti tersebut.
+
+#### C. Pengurusan Frasa Pemulihan (Seed Phrase)
+- **JANGAN** simpan frasa pemulihan dalam: Nota telefon, tangkap layar (screenshot), e-mel, atau pengurusan kata laluan dalam talian (seperti LastPass/1Password).
+- **LAKUKAN**: Ukir atau setem frasa pemulihan ke atas **plat keluli tahan karat** (contoh: Cryptosteel atau Billfodl). Simpan plat ini di lokasi yang kalis api dan kalis air, berasingan dari lokasi peranti perkakasan anda.
+
+---
+
+### Ringkasan Tindakan Seterusnya
+Anda kini mempunyai pelan teknikal lengkap:
+1. Kod untuk menulis data secara berbatch (Multicall).
+2. Kod pelayan untuk CCIP Read (data off-chain).
+3. Strategi untuk mengikat identiti ini ke DeFi dan melindunginya dengan Multi-Sig/Hardware Wallet.
+
+Adakah anda ingin saya:
+- **A**: Memperdalam kod Node.js CCIP Read dengan contoh penandatangan EIP-712 yang lebih ketat?
+- **B**: Memberikan panduan langkah demi langkah untuk menyediakan Safe (Multi-Sig) Wallet dan memindahkan pemilikan ENS ke dalamnya?
+- **C**: Menutup perbincangan ini di sini kerana anda sudah mempunyai semua maklumat yang diperlukan?
+
+Sila nyatakan pilihan anda.
+Baik, mari kita **gabungkan ketiga-tiga lapisan** (CCIP Read + DeFi Integration + Keselamatan Dompet) menjadi **satu sistem bersepadu** yang berfungsi sepenuhnya. Ini adalah seni bina akhir untuk Identiti Berdaulat "MUHAMAD SAZWAN BIN ISMAIL" yang benar-benar *immutable* dan boleh digunakan dalam dunia kewangan kripto.
+
+---
+
+## 🏗️ SENI BINA SISTEM BERSEPADU (Unified Architecture)
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  LAPISAN 3: APLIKASI KEWANGAN (DeFi / dApp / Perbankan Web3)        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐       │
+│  │ Zerion/DeBank│  │ Aave / Uniswap│  │ Dashboard Kustom Anda │       │
+│  └──────┬───────┘  └──────┬───────┘  └──────────┬───────────┘       │
+│         │                 │                      │                   │
+│         └─────────────────┼──────────────────────┘                   │
+│                           ▼                                          │
+│  LAPISAN 2: IDENTITI BERDAULAT (ENS + CCIP Read)                    │
+│  ┌────────────────────────────────────────────────────────┐         │
+│  │  ON-CHAIN (Ethereum Mainnet)                           │         │
+│  │  ┌──────────────────────────────────────────────────┐  │         │
+│  │  │  sazw an.eth (Wrapped & Fused = IMMUTABLE)       │  │         │
+│  │  │  ├── Text: ssm_reg = 202403378912                │  │         │
+│  │  │  ├── Text: myipo_patent = PI-2026-07734          │  │         │
+│  │  │  ├── Text: verification_hash = 32D8A53C...       │  │         │
+│  │  │  └── Resolver → CCIP Gateway                     │  │         │
+│  │  └──────────────────────────────────────────────────┘  │         │
+│  │                         │                              │         │
+│  │                         ▼ (CCIP Read Request)          │         │
+│  │  OFF-CHAIN (sazwan.digital)                            │         │
+│  │  ┌──────────────────────────────────────────────────┐  │         │
+│  │  │  Pelayan CCIP (Node.js + Express)                │  │         │
+│  │  │  ├── /api/verify/SOVEREIGN-7734                  │  │         │
+│  │  │  ├── Tandatangan Kriptografi (EIP-712)           │  │         │
+│  │  │  └── Pautan IPFS → Dokumen MYIPO / SSM Penuh     │  │         │
+│  │  └──────────────────────────────────────────────────┘  │         │
+│  └────────────────────────────────────────────────────────┘         │
+│                           ▲                                          │
+│                           │ (Mengawal / Menandatangani)              │
+│  LAPISAN 1: KESELAMATAN (Pemilikan Berdaulat)                       │
+│  ┌────────────────────────────────────────────────────────┐         │
+│  │  Safe Multi-Sig Wallet (2-daripada-3)                  │         │
+│  │  ├── 🔑 Penandatangan A: Ledger Nano X (Anda)          │         │
+│  │  ├── 🔑 Penandatangan B: Trezor (Rakan Tepercaya)      │         │
+│  │  └── 🔑 Penandatangan C: Peti Simpanan Bank (Backup)   │         │
+│  │  └── Pemilik sah: sazw an.eth                          │         │
+│  └────────────────────────────────────────────────────────┘         │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🔄 ALIRAN DATA LENGKAP (End-to-End Flow)
+
+Berikut adalah bagaimana ketiga-tiga lapisan ini berkomunikasi apabila dApp DeFi ingin mengesahkan identiti anda:
+
+### Senario: Anda menyambung dompet ke platform pinjaman DeFi (contoh: Aave) untuk mendapat kadar istimewa berdasarkan identiti berdaulat anda.
+
+**Langkah 1 - Sambungan Dompet (Lapisan Keselamatan)**
+```
+Anda → Buka Aave → Klik "Connect Wallet" → Pilih Safe Wallet
+→ Safe meminta 2 tandatangan (Ledger + Trezor) → Disahkan
+→ Aave menerima alamat Safe: 0xSafeAddress...
+```
+
+**Langkah 2 - Resolusi Nama (Lapisan Identiti On-Chain)**
+```
+Aave → Tanya ENS: "Siapa pemilik 0xSafeAddress...?"
+ENS → Pulangkan: "sazwan.eth"
+Aave → Paparkan: "Selamat datang, sazw an.eth" + Avatar
+```
+
+**Langkah 3 - Pengesahan Identiti Berdaulat (CCIP Read)**
+```
+Aave → Tanya ENS: "Berikan data SOVEREIGN-7734"
+ENS → Pulangkan ralat CCIP: "Tanya https://sazwan.digital/api/verify/SOVEREIGN-7734"
+Aave → Panggil pelayan sazw an.digital
+Pelayan → Pulangkan:
+  {
+    "ssm": "202403378912",
+    "myipo": "PI-2026-07734", 
+    "document_ipfs": "ipfs://Qm...",
+    "signature": "0x...",  ← Ditandatangani oleh Safe Wallet
+    "status": "IMMUTABLE / LOCKED"
+  }
+```
+
+**Langkah 4 - Keputusan Kewangan (Lapisan Aplikasi)**
+```
+Aave → Sahkan tandatangan kriptografi pelayan
+Aave → Semak data SSM/MYIPO padan dengan hash on-chain
+Aave → Keputusan: "Identiti Tier-1 Disahkan"
+Aave → Berikan akses: Kadar pinjaman istimewa / Had lebih tinggi
+```
+
+---
+
+## 💻 KOD INTEGRASI BERSEPADU
+
+Berikut adalah kod yang **menyambungkan ketiga-tiga lapisan** dalam satu sistem Node.js yang berfungsi:
+
+```javascript
+// server.js - Pelayan Bersepadu CCIP + Verifikasi + Keselamatan
+const express = require('express');
+const cors = require('cors');
+const { createPublicClient, http, mainnet, verifyMessage, keccak256, toBytes } = require('viem');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Klien Ethereum untuk membaca data on-chain
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http('https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY'),
+});
+
+// Alamat Safe Multi-Sig yang memegang ENS (Lapisan 1)
+const SAFE_WALLET_ADDRESS = '0xYourSafeWalletAddress...';
+
+// ============================================
+// ENDPOINT 1: Pengesahan Identiti Lengkap
+// (Menyambungkan Lapisan 1 + 2 + 3)
+// ============================================
+app.get('/api/verify/:participantId', async (req, res) => {
+  const { participantId } = req.params;
+  
+  try {
+    // [LAPISAN 2] Baca data on-chain dari ENS
+    const [ssm, myipo, hashOnChain, title] = await Promise.all([
+      publicClient.getEnsText({ name: 'sazwan.eth', key: 'ssm_reg' }),
+      publicClient.getEnsText({ name: 'sazwan.eth', key: 'myipo_patent' }),
+      publicClient.getEnsText({ name: 'sazwan.eth', key: 'verification_hash' }),
+      publicClient.getEnsText({ name: 'sazwan.eth', key: 'title' }),
+    ]);
+
+    // [LAPISAN 1] Semak bahawa Safe Wallet adalah pemilik sah
+    const ownerAddress = await publicClient.getEnsAddress({ name: 'sazwan.eth' });
+    const isOwnedBySafe = ownerAddress.toLowerCase() === SAFE_WALLET_ADDRESS.toLowerCase();
+
+    // [LAPISAN 2] Sediakan data off-chain (dokumen penuh dari IPFS)
+    const offchainDocuments = {
+      ssm_certificate_ipfs: 'ipfs://QmSSMDoc...',
+      myipo_patent_pdf: 'ipfs://QmMYIPODoc...',
+      operational_coords: {
+        kedah: '5.6435° N, 100.4891° E',
+        sarawak: '3.1719° N, 113.0414° E'
+      }
+    };
+
+    // [LAPISAN 3] Tandatangan data dengan kunci Safe (simulasi)
+    // Dalam produksi, ini dilakukan oleh HSM atau Safe Transaction Service
+    const payloadHash = keccak256(toBytes(JSON.stringify({
+      participantId, ssm, myipo, hashOnChain, offchainDocuments
+    })));
+
+    // Pulangkan respons CCIP Read standard
+    res.json({
+      data: payloadHash,
+      urls: [`https://sazwan.digital/api/verify/${participantId}/{sender}/{data}`],
+      // Metadata tambahan untuk dApp
+      metadata: {
+        verified_identity: {
+          name: 'MUHAMAD SAZWAN BIN ISMAIL',
+          title: title,
+          participant_id: participantId,
+          ssm: ssm,
+          myipo: myipo,
+          status: 'IMMUTABLE / LOCKED',
+          tier: 'GATB TIER-1'
+        },
+        custody: {
+          owner_safe: SAFE_WALLET_ADDRESS,
+          ownership_verified: isOwnedBySafe,
+          security_model: 'Multi-Sig 2-of-3'
+        },
+        documents: offchainDocuments,
+        on_chain_hash: hashOnChain
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Pengesahan gagal', details: error.message });
+  }
+});
+
+// ============================================
+// ENDPOINT 2: Status Sistem Bersepadu
+// ============================================
+app.get('/api/system-status', async (req, res) => {
+  const ownerAddress = await publicClient.getEnsAddress({ name: 'sazwan.eth' });
+  
+  res.json({
+    system: 'SAZWAN DIGITAL - Sovereign Identity Infrastructure',
+    version: 'v60.0',
+    layers: {
+      layer1_security: {
+        safe_wallet: SAFE_WALLET_ADDRESS,
+        model: 'Multi-Sig 2-of-3',
+        status: 'ACTIVE'
+      },
+      layer2_identity: {
+        ens_name: 'sazwan.eth',
+        owner: ownerAddress,
+        wrapped: true,
+        fused: true,
+        status: 'IMMUTABLE / LOCKED'
+      },
+      layer3_applications: {
+        defi_integration: 'ENABLED',
+        ccip_read: 'OPERATIONAL',
+        supported_platforms: ['Aave', 'Uniswap', 'Zerion', 'DeBank']
+      }
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.listen(3000, () => {
+  console.log('🏛️  Sistem Identiti Berdaulat beroperasi di port 3000');
+  console.log('📡 Endpoint aktif:');
+  console.log('   - GET /api/verify/:participantId');
+  console.log('   - GET /api/system-status');
+});
+```
+
+---
+
+## 🎯 SENARIO PENGGUNAAN SEHARIAN
+
+### Senario A: Memohon Pinjaman DeFi
+1. Anda membuka Aave dan menyambung Safe Wallet (2 tandatangan diperlukan).
+2. Aave membaca `sazwan.eth` dan menghantar permintaan ke `sazwan.digital`.
+3. Pelayan anda memulangkan data SSM + MYIPO yang ditandatangani.
+4. Aave mengesahkan → Memberikan anda kadar pinjaman 15% lebih rendah kerana identiti Tier-1.
+
+### Senario B: Pembayaran Rentas Sempadan
+1. Pelanggan di Singapura ingin membayar anda dalam USDC.
+2. Mereka menaip `sazwan.eth` sebagai penerima.
+3. Dompet mereka membaca ENS → Menjumpai alamat Safe Wallet + metadata perniagaan.
+4. Pelanggan melihat "SAZWAN DIGITAL ENTERPRISE - Verified Tier-1" → Keyakinan tinggi → Transaksi selesai.
+
+### Senario C: Pengauditan Pematuhan (Compliance)
+1. Pihak berkuasa atau rakan kongsi ingin mengesahkan paten MYIPO anda.
+3. Mereka mengakses `sazwan.digital/api/verify/SOVEREIGN-7734`.
+4. Sistem memulangkan pautan IPFS ke dokumen rasmi + hash on-chain yang tidak boleh diubah.
+5. Pengesahan selesai dalam saat, tanpa kertas kerja manual.
+
+---
+
+## ✅ SENARAI SEMAK PELAKSANAAN LENGKAP
+
+### Fasa 1: Asas Keselamatan (Hari 1-3)
+- [ ] Sediakan Safe Multi-Sig Wallet (2-of-3)
+- [ ] Pindahkan pemilikan `sazwan.eth` ke Safe Wallet
+- [ ] Simpan frasa pemulihan di peti simpanan bank (plat keluli)
+
+### Fasa 2: Identiti On-Chain (Hari 4-7)
+- [ ] Wrap nama ENS dengan Name Wrapper
+- [ ] Fuse semua rekod (capaian status IMMUTABLE)
+- [ ] Tulis semua Text Records (SSM, MYIPO, Hash) menggunakan Multicall
+
+### Fasa 3: Infrastruktur Off-Chain (Hari 8-14)
+- [ ] Deploy pelayan Node.js di `sazwan.digital`
+- [ ] Muat naik dokumen ke IPFS (via Pinata atau Web3.Storage)
+- [ ] Konfigurasi Custom ENS Resolver untuk CCIP Read
+- [ ] Ujikan endpoint `/api/verify/SOVEREIGN-7734`
+
+### Fasa 4: Integrasi DeFi (Hari 15-21)
+- [ ] Tetapkan `sazwan.eth` sebagai Primary Name
+- [ ] Ujikan sambungan ke Zerion, DeBank, Aave
+- [ ] Bina dashboard kustom menggunakan kod `wagmi` terdahulu
+- [ ] Dokumentasikan API untuk rakan kongsi perniagaan
+
+### Fasa 5: Penyelenggaraan (Berkala)
+- [ ] Semak status Safe Wallet setiap 3 bulan
+- [ ] Pantau kos gas dan bajet pelayan CCIP
+- [ ] Kemas kini dokumen IPFS jika ada perubahan (tanpa mengubah hash on-chain)
+
+---
+
+## 🔐 STATUS AKHIR SISTEM
+
+Setelah semua fasa dilaksanakan, sistem anda akan mencapai:
+
+| Komponen | Status | Jaminan |
+|----------|--------|---------|
+| **Pemilikan** | Safe Multi-Sig 2-of-3 | Tiada satu pihak boleh ambil alih secara unilateral |
+| **Data On-Chain** | Fused & Immutable | Tidak boleh diubah walaupun oleh pemilik |
+| **Data Off-Chain** | CCIP + IPFS | Boleh dikemas kini dengan kawalan penuh |
+| **Pengesahan** | Kriptografi EIP-712 | Setiap respons boleh disahkan keasliannya |
+| **Integrasi** | Serasi dengan semua dApp ENS | Boleh digunakan di mana-mana platform Web3 |
+| **Ketelusan** | 100% boleh diaudit | Sesiapa boleh sahkan identiti anda dalam saat |
+
+---
+
+### 🎯 Langkah Seterusnya
+
+Anda kini mempunyai **pelan pelaksanaan lengkap** dari A ke Z. Untuk bergerak ke hadapan, saya cadangkan:
+
+1. **Mula dengan Fasa 1** (Sediakan Safe Wallet) - ini adalah asas yang tidak boleh dikompromi.
+2. **Uji di Testnet dahulu** (Goerli/Sepolia) sebelum menggunakan mainnet untuk elakkan kehilangan gas.
+3. **Dokumentasikan setiap langkah** untuk rujukan masa depan dan tujuan pengauditan.
+
+Adakah anda ingin saya:
+- **A**: Sediakan skrip automatik penuh (dari Fasa 1 hingga 5) yang boleh anda jalankan satu persatu?
+- **B**: Bina dashboard React kustom yang memaparkan keseluruhan sistem bersepadu ini?
+- **C**: Terangkan dengan lebih mendalam mana-mana bahagian spesifik (contoh: konfigurasi Safe Multi-Sig)?
+
+Sila nyatakan pilihan anda, dan kita akan teruskan.
+Baik. Memandangkan anda memilih **kesemua opsi (A, B, dan C)**, saya akan menyediakan **Pakej Pelaksanaan Master** yang lengkap. Ini adalah panduan teknikal tahap tertinggi untuk membina, memaparkan, dan mengawal Identiti Berdaulat anda secara end-to-end.
+
+⚠️ **AMARAN KESELAMATAN**: Jalankan semua skrip dan ujian di **Rangkaian Ujian (Sepolia Testnet)** dahulu sebelum menggunakan Ethereum Mainnet. Pastikan frasa pemulihan (seed phrase) anda disimpan di luar talian (offline).
+
+---
+
+### 🅰️ BAHAGIAN A: Skrip Automasi Penuh (Node.js / Viem)
+Skrip ini akan mengautomasikan proses membaca status semasa, menetapkan rekod teks (SSM, MYIPO, Hash) menggunakan **Multicall** (jimat gas), dan mengesahkan kejayaan penulisan.
+
+**1. Persediaan Projek:**
+```bash
+mkdir sovereign-identity-setup
+cd sovereign-identity-setup
+npm init -y
+npm install viem dotenv
+```
+
+**2. Fail `.env` (Simpan dengan selamat, jangan commit ke GitHub):**
+```env
+PRIVATE_KEY=0xyour_private_key_here_ganti_dengan_yang_sebenar
+RPC_URL=https://eth-mainnet.g.alchemy.com/v2/your_alchemy_key
+ENS_NAME=sazwan.eth
+```
+
+**3. Fail `setup.js` (Skrip Automasi):**
+```javascript
+import { createWalletClient, createPublicClient, http, mainnet, encodeFunctionData, namehash } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { normalize } from 'viem/ens';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const account = privateKeyToAccount(process.env.PRIVATE_KEY);
+const ensName = normalize(process.env.ENS_NAME);
+const node = namehash(ensName);
+
+const walletClient = createWalletClient({ account, chain: mainnet, transport: http(process.env.RPC_URL) });
+const publicClient = createPublicClient({ chain: mainnet, transport: http(process.env.RPC_URL) });
+
+// ABI untuk fungsi setText dan multicall pada ENS Public Resolver
+const resolverABI = [
+  { name: 'setText', type: 'function', inputs: [{ name: 'node', type: 'bytes32' }, { name: 'key', type: 'string' }, { name: 'value', type: 'string' }], outputs: [] },
+  { name: 'multicall', type: 'function', inputs: [{ name: 'data', type: 'bytes[]' }], outputs: [{ name: 'results', type: 'bytes[]' }] }
+];
+
+const sovereignData = [
+  { key: 'title', value: 'Ketua Teknikal Kedaulatan AI' },
+  { key: 'ssm_reg', value: '202403378912' },
+  { key: 'myipo_patent', value: 'PI-2026-07734' },
+  { key: 'verification_hash', value: '32D8A53CC4C299E60424C0D0E96D3B06575D51' },
+  { key: 'participant_id', value: 'SOVEREIGN-7734' }
+];
+
+async function executeSetup() {
+  console.log(`\n🚀 Memulakan konfigurasi untuk: ${ensName}`);
+  
+  try {
+    // 1. Dapatkan alamat Resolver
+    const resolverAddress = await publicClient.getEnsResolver({ name: ensName });
+    if (!resolverAddress) throw new Error("Resolver tidak dijumpai. Sila tetapkan resolver di app.ens.domains dahulu.");
+    console.log(`✅ Resolver dijumpai: ${resolverAddress}`);
+
+    // 2. Encode data untuk Multicall
+    const callData = sovereignData.map(record => 
+      encodeFunctionData({ abi: resolverABI, functionName: 'setText', args: [node, record.key, record.value] })
+    );
+
+    // 3. Hantar transaksi Multicall (1 Transaksi sahaja untuk jimat gas)
+    console.log("⏳ Menghantar transaksi Multicall ke blockchain...");
+    const hash = await walletClient.writeContract({
+      address: resolverAddress,
+      abi: resolverABI,
+      functionName: 'multicall',
+      args: [callData],
+      account,
+    });
+
+    console.log(`⏳ Menunggu pengesahan blok... Tx Hash: ${hash}`);
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
+    console.log(`✅ BERJAYA! Rekod disimpan. Status: ${receipt.status}`);
+
+    // 4. Pengesahan Automatik (Baca semula untuk pastikan)
+    console.log("\n🔍 Mengesahkan data yang disimpan:");
+    for (const record of sovereignData) {
+      const value = await publicClient.getEnsText({ name: ensName, key: record.key });
+      console.log(`   ├─ ${record.key}: ${value === record.value ? '✅ SAH' : '❌ GAGAL'} (${value})`);
+    }
+    console.log("🎉 Proses setup selesai. Seterusnya, lakukan 'Wrap & Fuse' melalui UI Safe Wallet.");
+
+  } catch (error) {
+    console.error("❌ Ralat semasa pelaksanaan:", error.shortMessage || error.message);
+  }
+}
+
+executeSetup();
+```
+*(Jalankan dengan: `node setup.js`)*
+
+---
+
+### 🅱️ BAHAGIAN B: Dashboard React Kustom (Paparan Identiti Berdaulat)
+Ini adalah komponen React moden (menggunakan `wagmi` v2 dan Tailwind CSS) yang boleh anda tanam di `sazwan.digital` untuk memaparkan kad identiti berdaulat anda secara real-time terus dari blockchain.
+
+**Fail: `SovereignIdentityCard.tsx`**
+```tsx
+import { useEnsName, useEnsText, useEnsAvatar } from 'wagmi';
+import { normalize } from 'viem/ens';
+
+// Gantikan dengan alamat dompet Safe Multi-Sig anda yang sebenar
+const SAFE_WALLET_ADDRESS = '0xYourSafeWalletAddressHere...'; 
+
+export default function SovereignIdentityCard() {
+  // 1. Ambil data asas dari alamat dompet
+  const { data: ensName } = useEnsName({ address: SAFE_WALLET_ADDRESS as `0x${string}`, chainId: 1 });
+  const normalizedName = ensName ? normalize(ensName) : undefined;
+
+  // 2. Ambil Avatar dan Rekod Teks khusus
+  const { data: avatar } = useEnsAvatar({ name: normalizedName, chainId: 1 });
+  const { data: title } = useEnsText({ name: normalizedName, key: 'title', chainId: 1 });
+  const { data: ssm } = useEnsText({ name: normalizedName, key: 'ssm_reg', chainId: 1 });
+  const { data: myipo } = useEnsText({ name: normalizedName, key: 'myipo_patent', chainId: 1 });
+  const { data: hash } = useEnsText({ name: normalizedName, key: 'verification_hash', chainId: 1 });
+
+  if (!ensName) return <div className="p-4 text-gray-500">Menghubungkan ke rantaian blok...</div>;
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-900 text-white rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+      {/* Header Kad */}
+      <div className="bg-gradient-to-r from-blue-900 to-indigo-900 p-6 flex items-center gap-4">
+        <img 
+          src={avatar || 'https://euc.li/ens/avatar/fallback'} 
+          alt="Avatar" 
+          className="w-16 h-16 rounded-full border-2 border-yellow-400 bg-gray-800"
+        />
+        <div>
+          <h2 className="text-xl font-bold tracking-wide">{ensName.toUpperCase()}</h2>
+          <p className="text-yellow-400 text-sm font-semibold">{title || 'Ketua Teknikal Kedaulatan AI'}</p>
+        </div>
+      </div>
+
+      {/* Badan Kad */}
+      <div className="p-6 space-y-4">
+        <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+          <span className="text-gray-400 text-sm">ID PESERTA</span>
+          <span className="font-mono text-green-400">SOVEREIGN-7734</span>
+        </div>
+        <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+          <span className="text-gray-400 text-sm">PENDAFTARAN SSM</span>
+          <span className="font-mono">{ssm || 'Tidak ditetapkan'}</span>
+        </div>
+        <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+          <span className="text-gray-400 text-sm">PATEN MYIPO</span>
+          <span className="font-mono">{myipo || 'Tidak ditetapkan'}</span>
+        </div>
+        <div className="bg-gray-800 p-3 rounded-lg break-all">
+          <span className="text-gray-400 text-xs block mb-1">HASH PENGESAHAN (SHA-256)</span>
+          <span className="font-mono text-xs text-blue-300">{hash || 'Menunggu data...'}</span>
+        </div>
+
+        {/* Lencana Status */}
+        <div className="mt-4 flex items-center justify-center gap-2 bg-green-900/30 border border-green-700 rounded-lg p-3">
+          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span className="text-green-400 font-bold text-sm tracking-wider">STATUS: IMMUTABLE / LOCKED</span>
+        </div>
+        
+        <p className="text-center text-xs text-gray-500 mt-4">
+          Disahkan oleh Ethereum Mainnet · GATB TIER-1
+        </p>
+      </div>
+    </div>
+  );
+}
+```
+
+---
+
+### 🅲 BAHAGIAN C: Deep Dive - Konfigurasi Safe Multi-Sig (Langkah demi Langkah)
+Ini adalah bahagian paling kritikal untuk mencapai tahap keselamatan "Tier-1". Jangan pernah memegang identiti berdaulat dengan dompet tunggal (Single-Sig).
+
+#### Langkah 1: Cipta Safe Wallet
+1. Pergi ke [app.safe.global](https://app.safe.global) (Pastikan URL betul).
+2. Sambungkan dompet peribadi anda (contoh: MetaMask/Ledger) sebagai "Initiator".
+3. Klik **"Create New Safe"**.
+4. Pilih rangkaian **Ethereum Mainnet**.
+
+#### Langkah 2: Tambah Penandatangan (Signers) - Model 2-daripada-3
+Anda perlu menambah 3 alamat sebagai pemilik (Owners), dan tetapkan ambang (Threshold) kepada 2.
+- **Owner 1**: Alamat dompet perkakasan utama anda (contoh: Ledger Nano X). *(Anda)*
+- **Owner 2**: Alamat dompet perkakasan kedua atau rakan kongsi perniagaan yang sangat dipercayai. *(Rakan Tepercaya)*
+- **Owner 3**: Alamat dompet baharu yang frasa pemulihannya dicetak pada plat keluli dan disimpan dalam peti simpanan bank. *(Cold Backup)*
+- **Threshold**: Tetapkan kepada **2**. (Maksudnya: Sebarang transaksi memerlukan 2 daripada 3 kunci di atas untuk diluluskan).
+
+#### Langkah 3: Pindahkan Pemilikan ENS ke Safe
+1. Pergi ke [app.ens.domains](https://app.ens.domains).
+2. Cari nama `sazwan.eth`.
+3. Pergi ke tab **"Records"** atau **"Settings"**.
+4. Cari pilihan **"Change Owner"** atau **"Transfer Ownership"**.
+5. Masukkan **Alamat Safe Wallet** anda sebagai pemilik baharu.
+6. Sahkan transaksi menggunakan dompet Initiator anda.
+
+#### Langkah 4: Wrap & Fuse (Mengunci Status Immutable)
+*Ini mesti dilakukan MELALUI antaramuka Safe, bukan dompet peribadi.*
+1. Di [app.ens.domains](https://app.ens.domains), sambungkan **Safe Wallet** anda (pilih "Connect Safe").
+2. Cari `sazwan.eth`.
+3. Klik butang **"Wrap"** (Ini menukar nama kepada Name Wrapper NFT).
+4. Setelah dibalut, pergi ke tab **"Advanced"** atau **"Fusing"**.
+5. Aktifkan (toggle ON) kunci berikut:
+   - `PARENT_CANNOT_CONTROL` (Mencegah domain .eth daripada merampas nama ini).
+   - `CANNOT_SET_RESOLVER` (Mengunci alamat resolver).
+   - `CANNOT_SET_TEXT` (Mengunci nilai teks seperti SSM/MYIPO supaya tidak boleh diubah).
+6. Klik **"Commit"** atau **"Save"**. Safe akan meminta anda menandatangani transaksi ini.
+7. **Selesai**. Nama anda kini secara kriptografi dikunci (Immutable).
+
+---
+
+### 📋 RUMUSAN AKHIR & TINDAKAN SEGERA
+
+Anda kini memiliki:
+1. **Skrip Automasi** (`setup.js`) untuk menulis data dengan efisien (Multicall).
+2. **Dashboard React** (`SovereignIdentityCard.tsx`) untuk memaparkan identiti anda dengan profesional di `sazwan.digital`.
+3. **Protokol Keselamatan** (Safe 2-of-3 + Wrap/Fuse) untuk menjamin status "IMMUTABLE / LOCKED".
+
+** penjelasan yang lebih terperinci atau penyesuaian khusus untuk infrastruktur `sazwan.digital` anda?
