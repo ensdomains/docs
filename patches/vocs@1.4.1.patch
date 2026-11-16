@@ -1,0 +1,72 @@
+diff --git a/_lib/app/components/SkipLink.js b/_lib/app/components/SkipLink.js
+index dea66b6b5fac695324e823cf7d9bf50c020f917a..6ab8488d1ce1a15ab6884c09a8d86ddabc4ce98e 100644
+--- a/_lib/app/components/SkipLink.js
++++ b/_lib/app/components/SkipLink.js
+@@ -6,6 +6,7 @@ import * as styles from './SkipLink.css.js';
+ export const skipLinkId = 'vocs-content';
+ export function SkipLink() {
+     const { pathname } = useLocation();
+-    return (_jsx("a", { className: clsx(styles.root, visuallyHidden), href: `${pathname}#${skipLinkId}`, children: "Skip to content" }));
++    const path = `/${pathname.replace(/^[/\\]+/, '')}`;
++    return (_jsx("a", { className: clsx(styles.root, visuallyHidden), href: `${path}#${skipLinkId}`, children: "Skip to content" }));
+ }
+ //# sourceMappingURL=SkipLink.js.map
+\ No newline at end of file
+diff --git a/_lib/app/components/mdx/Anchor.js b/_lib/app/components/mdx/Anchor.js
+index f8551b77bae2a70e8b3ccb9a6511d7e8857078a4..0a104226fb271ef67ff55448c00384905bfc3bdf 100644
+--- a/_lib/app/components/mdx/Anchor.js
++++ b/_lib/app/components/mdx/Anchor.js
+@@ -7,6 +7,7 @@ import { Autolink } from './Autolink.js';
+ export function Anchor(props) {
+     const { children, href } = props;
+     const { pathname } = useLocation();
++    const path = `/${pathname.replace(/^[/\\]+/, '')}`;
+     // Heading slug links
+     if (children &&
+         typeof children === 'object' &&
+@@ -15,7 +16,7 @@ export function Anchor(props) {
+         return _jsx(Autolink, { className: clsx(props.className, styles.root), ...props });
+     // ID links
+     if (href?.match(/^#/))
+-        return (_jsx("a", { className: clsx(props.className, styles.root), ...props, href: `${pathname}${href}` }));
++        return (_jsx("a", { className: clsx(props.className, styles.root), ...props, href: `${path}${href}` }));
+     return _jsx(Link, { className: clsx(props.className, styles.root), ...props, hideExternalIcon: true });
+ }
+ //# sourceMappingURL=Anchor.js.map
+\ No newline at end of file
+diff --git a/app/components/SkipLink.tsx b/app/components/SkipLink.tsx
+index 03efe80d77be1b26a81e18777206600f86f0b66c..69520fc37eaf2ab73b1f41c3fc20e48b604728fc 100644
+--- a/app/components/SkipLink.tsx
++++ b/app/components/SkipLink.tsx
+@@ -7,8 +7,9 @@ export const skipLinkId = 'vocs-content'
+ 
+ export function SkipLink() {
+   const { pathname } = useLocation()
++  const path = `/${pathname.replace(/^[/\\]+/, '')}`
+   return (
+-    <a className={clsx(styles.root, visuallyHidden)} href={`${pathname}#${skipLinkId}`}>
++    <a className={clsx(styles.root, visuallyHidden)} href={`${path}#${skipLinkId}`}>
+       Skip to content
+     </a>
+   )
+diff --git a/app/components/mdx/Anchor.tsx b/app/components/mdx/Anchor.tsx
+index 13c1315ad5a2556b30c363f8f426d3eaa7c75e2f..781a871c33fd51c085aff541155a3783972e30f8 100644
+--- a/app/components/mdx/Anchor.tsx
++++ b/app/components/mdx/Anchor.tsx
+@@ -15,6 +15,7 @@ type AnchorProps = {
+ export function Anchor(props: AnchorProps) {
+   const { children, href } = props
+   const { pathname } = useLocation()
++  const path = `/${pathname.replace(/^[/\\]+/, '')}`
+ 
+   // Heading slug links
+   if (
+@@ -28,7 +29,7 @@ export function Anchor(props: AnchorProps) {
+   // ID links
+   if (href?.match(/^#/))
+     return (
+-      <a className={clsx(props.className, styles.root)} {...props} href={`${pathname}${href}`} />
++      <a className={clsx(props.className, styles.root)} {...props} href={`${path}${href}`} />
+     )
+ 
+   return <Link className={clsx(props.className, styles.root)} {...props} hideExternalIcon />
