@@ -1,0 +1,93 @@
+---
+authors:
+  - governance.kpk.eth
+proposal:
+  type: 'social'
+---
+
+# [EP 7.1] [7.4] [Social] IPS Amendment No. 1: Endowment Options Overlay
+
+::authors
+
+| **Status**            | Active                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/)                                                                           |
+| **Votes**             | [Snapshot](https://vote.ensdao.org/#/offchain/0x90961e226c594e9619089c549355502ead999955d2d24c27cd92d96408e5bec9) |
+
+About this Proposal
+This proposal amends the ENS Endowment Investment Policy Statement (IPS v2.0, EP 6.46) to permit covered options writing as part of the Endowment's scheduled rebalancing, within limits written into the policy.
+
+It relaxes one existing constraint: options written in the direction of a required rebalance are treated as ETH/stablecoin rebalancing under Section 5, not as speculative trading. No other constraint is relaxed, and the Minimum Runway and its priority are unchanged.
+
+This vote is a policy change only. It grants no onchain permissions. The Endowment Manager's permissions on any options venue are granted separately through a Permissions Update Request, reviewed by Blockful and moved to execution at the discretion of the ENS Foundation Board.
+For Delegates:
+The discussion, including the 10 November update, is on the forum thread.
+The methodology, backtest and rationale for each limit are in Expanding the Endowment Mandate: Onchain Options. That thread and the amendment thread together form KPK's written rationale under IPS Section 3.
+On passing, the consolidated text will be published as IPS v2.1, pinned to IPFS and shared on the governance forum for record keeping.
+
+Abstract
+The Endowment rebalances between ETH and stablecoins on the schedule in IPS Section 7 and executes every rebalance at spot. KPK proposes executing part of that flow through covered options: a covered call when ETH is overweight, a cash-secured put when ETH is underweight. The Endowment collects a premium for committing to a price on a trade it would make anyway. The overlay takes no directional view beyond the rebalance itself, and assignment at the strike is an intended outcome.
+
+The IPS does not permit options today. This proposal adds covered options writing to Allowed Strategies (Section 6), with these limits written into the policy:
+
+Options cover at most 25% of the total flow a required rebalance needs; the rest trades at spot.
+Written notional, including stablecoin collateral locked for cash-secured puts, is capped at 3% of total Endowment value at any one time, and 2% per venue.
+Tenor is at most 30 days, so every position is reversible by expiry.
+Every position is fully covered and physically settled. No naked, margined or leveraged options.
+Two writing tests protect the Minimum Runway: no new option while Total Reserves cover fewer than 42 months of Operating Expenses, and no new cash-secured put whose collateral would take Available Stablecoins below the Minimum Runway.
+Options activity is reported monthly and writing pauses under defined conditions. ENS DAO, or the ENS Foundation Board as delegated steward of the Endowment, may suspend writing at any time.
+Risks
+Options writing carries risks that spot execution does not. A covered call forgoes any gain above the strike if ETH rallies, and a cash-secured put is assigned at the strike in a falling market, so the Endowment may sell or buy at a worse price than spot at expiry. Positions are exposed to smart contract, venue and oracle risk, including failed or delayed settlement. Premium income is not guaranteed and the overlay may underperform a spot-only rebalance. The limits, monthly reporting and pause triggers below are designed to limit and surface these risks; they do not remove them.
+Relaxation of a Prior Constraint (IPS Section 3 disclosure)
+Section 5 bars speculative trading except ETH/stablecoin rebalancing, and Section 9 defines moderate-risk strategies as non-speculative. This amendment states that covered options written in the direction of a required rebalance are rebalancing for those purposes. No other constraint is relaxed. The Minimum Runway and its priority are unchanged.
+Fees
+Option premium forms part of the Endowment value on which KPK's fee is calculated under the fee structure agreed in December 2025. No separate or additional fee is charged for the options overlay.
+
+IPS Options Amendment (adopted by this vote)
+The following is inserted as the fifth item under IPS Section 6, Allowed Strategies:
+Covered options writing
+The Endowment Manager may write covered options against assets the Endowment already holds: covered calls against owned ETH, and cash-secured puts fully funded by stablecoin collateral set aside for that purpose. Positions must be fully covered by owned inventory or set-aside collateral at all times. Options may be written only in the direction of a required rebalance, and may cover no more than 25% of the total ETH or stablecoin flow that rebalance requires; the remainder is executed at spot.
+
+A "required rebalance" is the trade needed to return the portfolio to the target allocation in Section 7 or to restore the Minimum Runway in Section 6, as determined by the Endowment Manager under Section 7 and its published methodology; the 25% limit applies to that total flow, not to any single tranche.
+
+Options written under this item are ETH/stablecoin rebalancing for the purposes of Section 5 and are not speculative trading. No naked, margined or leveraged options are permitted. Positions are physically settled.
+Limits
+This strategy operates only on assets already eligible under this Policy and introduces no new permitted assets. It is a moderate-risk strategy and counts toward the 10% moderate-risk cap in Section 5. Written notional, measured at the strike and including collateral locked for cash-secured puts, may not exceed 3% of total Endowment value at any one time, and 2% per venue. Option tenor may not exceed 30 days, so every position is reversible within 30 days by expiry. Execution is limited to audited, non-custodial, onchain venues on Ethereum mainnet approved by ENS DAO or the Board through a Permissions Update Request.
+
+In this item, "the Board" means the Board of the ENS Foundation, which holds the Endowment Safe under the ENS DAO proposal "Next Era of ENS DAO: Empowering the ENS Foundation", and a "Permissions Update Request" is a change to the Endowment Manager's Zodiac Roles permissions scheduled by the Board through the Endowment timelock.
+Reporting and suspension
+Options activity is reported in the monthly report under Section 8: open positions, premium received, assignments, and the cumulative net result against a spot-only rebalance after fees, gas and collateral opportunity cost, calculated as set out in the Endowment Manager's published methodology. On request, the Endowment Manager provides the Board with the calculations behind that result.
+
+The Endowment Manager writes no new options, and notifies ENS DAO or the Board:
+
+if that cumulative net result is negative at the end of two consecutive quarters;
+on any venue incident of which the Endowment Manager becomes aware (exploit, contract pause, failed or delayed settlement, or material change to venue contracts or terms); or
+on any oracle incident of which the Endowment Manager becomes aware (halt, material divergence between price sources as reasonably determined by the Endowment Manager, or disputed settlement price).
+
+ENS DAO by Social Proposal, or the Board as delegated steward of the Endowment under "Next Era of ENS DAO: Empowering the ENS Foundation", may suspend the strategy at any time, in the Board's case by written notice to the Endowment Manager. Suspension requires no onchain action; open positions run to expiry. After a pause under this paragraph or a suspension by the Board, writing resumes only on the Board's written confirmation. After a suspension by ENS DAO, writing resumes only on a vote of ENS DAO.
+Writing tests
+(i) No new option is written while Total Reserves cover fewer than 42 months of Operating Expenses.
+
+(ii) No new cash-secured put is written if, after its collateral is set aside, Available Stablecoins would be less than the Minimum Runway in Section 6 (Liquidity Constraint). Covered calls are not subject to test (ii).
+
+(iii) While Available Stablecoins are less than the Minimum Runway, any part of a rebalance covered by a call that expires unexercised is executed at spot promptly after expiry.
+
+For these tests: "Operating Expenses" means one thirty-sixth of the Minimum Runway in force (about $1.37M a month on the 2025 reference), so that both tests move with its annual recalculation; "Total Reserves" means the total value of the Endowment, measured as in the monthly report under Section 8, excluding ENS tokens, open option positions and premium not yet received, with assets held against a written call valued at the lower of market price and strike, and put collateral counted once; and "Available Stablecoins" means US-dollar stablecoins held by the Endowment (excluding EURC), less collateral locked for open cash-secured puts and any approved withdrawal or transfer not yet executed. Both tests are checked before each new position and at each weekly runway check under Section 5, and are shown in the monthly report. A writing test that is not met stops new writing only for as long as it is not met. It is not a pause under "Reporting and suspension", requires no notice to the Board, and writing may resume once the test is met again. These tests apply only to options writing; nothing in them reduces or amends the Minimum Runway or its priority under Sections 6 and 7.
+Effect
+This Amendment takes effect when this proposal passes. If there is any inconsistency between the IPS and the Endowment Manager's options methodology or any other operating document, the IPS prevails.
+
+The Endowment Manager and the Foundation publish the consolidated text as IPS v2.1 and pin it to IPFS, making only non-material corrections (numbering, cross-references, typographical errors). The Endowment Manager's onchain permissions for approved options venues are granted separately by Permissions Update Request #11 or subsequent PURs and only take effect after review and onchain execution.
+
+Permissions (PUR #11)
+If this amendment passes, the ENS Foundation Board may consider PUR #11, which grants the Endowment Manager permissions on the approved options venues. PUR #11 goes through the standard KPK and Blockful review before implementation: Blockful confirms in writing that the payload grants only the permissions listed, on Ethereum mainnet. KPK posts the permissions, payload and simulation on the forum thread once the venue contract addresses are final, before the Board schedules any change. Any further venue is named on the forum thread with its audits, settlement mechanics and permissions, and goes through the same review.
+Proposal Success Criteria
+For this social proposal to pass, the following quorum and voting requirements must be met:
+
+Quorum: The proposal must receive a minimum of 1% of the total supply of $ENS (1 million votes) in the form of "For" and "Abstain" votes combined. "Against" votes do not count towards quorum.
+Approval: Once the quorum is reached, the proposal requires a simple majority (>50%) of "For" votes among the "For" and "Against" votes to pass. "Abstain" votes do not count towards the approval calculation.
+
+If approved, covered options writing is permitted under the IPS on the terms above, Blockful completes its review of PUR #11 and passes it to the Foundation, and KPK includes options activity in its monthly reporting. If not approved, the IPS is unchanged and KPK will reassess based on the feedback received.
+Voting
+For: adopt IPS Amendment No. 1 as set out above.
+Against: do not adopt the amendment; the IPS remains unchanged.
+Abstain: counts toward quorum only.
