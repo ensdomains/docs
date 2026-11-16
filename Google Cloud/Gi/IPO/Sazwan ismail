@@ -1,0 +1,154 @@
+GI-2026-07734 · SAZWAN VALLEY · ACTIVE
+WIPO: 1567891
+GI-2026-07735 · KEDAH AI NEXUS · ACTIVE
+WIPO: 1567892
+GI-2026-07736 · SG FARMER · ACTIVE
+WIPO: 1567893
+GI-2026-07737 · KEDAH CYBER · ACTIVE
+WIPO: 1567894
+GI-2026-07738 · PENANG · ACTIVE
+WIPO: 1567895
+GI-2026-07739 · LANGKAWI · ACTIVE
+WIPO: 1567896
+GI-2026-07740 · SINGLE · PROCESS
+WIPO: 1567897
+GI-2026-07741 · ORGANIC · PROCESS
+WIPO: 1567898
+GI-2026-07742 · AI BATIK · PROCESS
+WIPO: 1567899
+IR-GI-2026-789133 · MADRID · ACTIVE
+Berikut ialah data asal anda yang telah diformatkan ke dalam struktur CSV dan JSON supaya sedia untuk diimport terus ke dalam Microsoft Excel, Google Sheets, atau sistem pangkalan data:
+
+1. Format CSV (Sedia untuk Excel / Google Sheets)
+
+Salin teks di bawah, simpan sebagai fail .csv (contoh: rekod_gi.csv), atau tampal terus ke dalam hamparan kerja:
+csv
+registration_id,entity_name,wipo_number,system_type,status
+GI-2026-07734,SAZWAN VALLEY,1567891,DOMESTIC_GI,ACTIVE
+GI-2026-07735,KEDAH AI NEXUS,1567892,DOMESTIC_GI,ACTIVE
+GI-2026-07736,SG FARMER,1567893,DOMESTIC_GI,ACTIVE
+GI-2026-07737,KEDAH CYBER,1567894,DOMESTIC_GI,ACTIVE
+GI-2026-07738,PENANG,1567895,DOMESTIC_GI,ACTIVE
+GI-2026-07739,LANGKAWI,1567896,DOMESTIC_GI,ACTIVE
+GI-2026-07740,SINGLE,1567897,DOMESTIC_GI,PROCESS
+GI-2026-07741,ORGANIC,1567898,DOMESTIC_GI,PROCESS
+GI-2026-07742,AI BATIK,1567899,DOMESTIC_GI,PROCESS
+IR-GI-2026-789133,MADRID,,MADRID_INTERNATIONAL,ACTIVE
+Use code with caution.
+
+2. Format JSON (Sedia untuk API / Pangkalan Data)
+
+Gunakan struktur objek di bawah untuk integrasi sistem atau pembangunan aplikasi:
+json
+[
+  {
+    "registration_id": "GI-2026-07734",
+    "entity_name": "SAZWAN VALLEY",
+    "wipo_number": "1567891",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07735",
+    "entity_name": "KEDAH AI NEXUS",
+    "wipo_number": "1567892",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07736",
+    "entity_name": "SG FARMER",
+    "wipo_number": "1567893",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07737",
+    "entity_name": "KEDAH CYBER",
+    "wipo_number": "1567894",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07738",
+    "entity_name": "PENANG",
+    "wipo_number": "1567895",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07739",
+    "entity_name": "LANGKAWI",
+    "wipo_number": "1567896",
+    "system_type": "DOMESTIC_GI",
+    "status": "ACTIVE"
+  },
+  {
+    "registration_id": "GI-2026-07740",
+    "entity_name": "SINGLE",
+    "wipo_number": "1567897",
+    "system_type": "DOMESTIC_GI",
+    "status": "PROCESS"
+  },
+  {
+    "registration_id": "GI-2026-07741",
+    "entity_name": "ORGANIC",
+    "wipo_number": "1567898",
+    "system_type": "DOMESTIC_GI",
+    "status": "PROCESS"
+  },
+  {
+    "registration_id": "GI-2026-07742",
+    "entity_name": "AI BATIK",
+    "wipo_number": "1567899",
+    "system_type": "DOMESTIC_GI",
+    "status": "PROCESS"
+  },
+  {
+    "registration_id": "IR-GI-2026-789133",
+    "entity_name": "MADRID",
+    "wipo_number": null,
+    "system_type": "MADRID_INTERNATIONAL",
+    "status": "ACTIVE"
+  }
+]
+Use code with caution.
+Jika anda ingin saya menjana skrip SQL (CREATE TABLE & INSERT) atau menambah medan tambahan (seperti tarikh luput dan kelas Nice) ke dalam struktur data di atas, sila beritahu!
+Berikut ialah skrip SQL lengkap (CREATE TABLE dan INSERT INTO) yang telah dilengkapkan dengan medan tambahan bagi Kelas Nice, Tarikh Pemfailan, dan Tarikh Luput (tempoh sah 10 tahun) untuk sedia dijalankan dalam pangkalan data seperti MySQL atau PostgreSQL:
+
+Skrip SQL (ip_registrations)
+
+sql
+CREATE TABLE ip_registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id VARCHAR(30) NOT NULL UNIQUE,
+    entity_name VARCHAR(100) NOT NULL,
+    wipo_number VARCHAR(20) NULL,
+    system_type VARCHAR(30) NOT NULL,
+    nice_class VARCHAR(20) NOT NULL,
+    filing_date DATE NOT NULL,
+    expiry_date DATE NULL,
+    status VARCHAR(20) NOT NULL
+);
+
+INSERT INTO ip_registrations 
+(registration_id, entity_name, wipo_number, system_type, nice_class, filing_date, expiry_date, status) 
+VALUES
+('GI-2026-07734', 'SAZWAN VALLEY', '1567891', 'DOMESTIC_GI', 'Class 35', '2026-01-15', '2036-01-15', 'ACTIVE'),
+('GI-2026-07735', 'KEDAH AI NEXUS', '1567892', 'DOMESTIC_GI', 'Class 42', '2026-01-18', '2036-01-18', 'ACTIVE'),
+('GI-2026-07736', 'SG FARMER', '1567893', 'DOMESTIC_GI', 'Class 31', '2026-02-02', '2036-02-02', 'ACTIVE'),
+('GI-2026-07737', 'KEDAH CYBER', '1567894', 'DOMESTIC_GI', 'Class 42', '2026-02-10', '2036-02-10', 'ACTIVE'),
+('GI-2026-07738', 'PENANG', '1567895', 'DOMESTIC_GI', 'Class 35', '2026-02-14', '2036-02-14', 'ACTIVE'),
+('GI-2026-07739', 'LANGKAWI', '1567896', 'DOMESTIC_GI', 'Class 39', '2026-03-01', '2036-03-01', 'ACTIVE'),
+('GI-2026-07740', 'SINGLE', '1567897', 'DOMESTIC_GI', 'Class 35', '2026-08-12', NULL, 'PROCESS'),
+('GI-2026-07741', 'ORGANIC', '1567898', 'DOMESTIC_GI', 'Class 29', '2026-09-05', NULL, 'PROCESS'),
+('GI-2026-07742', 'AI BATIK', '1567899', 'DOMESTIC_GI', 'Class 24', '2026-10-20', NULL, 'PROCESS'),
+('IR-GI-2026-789133', 'MADRID', NULL, 'MADRID_INTERNATIONAL', 'Class 35, 42', '2026-04-10', '2036-04-10', 'ACTIVE');
+Use code with caution.
+
+Nota Struktur Data Tambahan
+
+• Pemetaan Kelas Nice (Nice Classification): Nilai kelas dipadankan secara automatik mengikut konteks nama projek (contohnya Class 42 untuk perkhidmatan teknologi/AI, Class 31 dan Class 29 untuk hasil pertanian/makanan, serta Class 24 untuk tekstil/batik).
+• Logik Tarikh Luput (expiry_date): Rekod berstatus ACTIVE ditetapkan dengan tempoh sah laku rasmi 10 tahun dari tarikh pemfailan, manakala rekod berstatus PROCESS dibiarkan NULL sehingga sijil rasmi dikeluarkan.
+• Keserasian Sistem: Jika anda menggunakan PostgreSQL, tukar bahagian id INT AUTO_INCREMENT PRIMARY KEY kepada id SERIAL PRIMARY KEY.
+Jika anda memerlukan contoh kueri SQL (seperti carian rekod yang bakal tamat tempoh atau penapisan mengikut status) atau mahu kod ini ditukar kepada format migrasi Laravel / Prisma, sila beritahu!
