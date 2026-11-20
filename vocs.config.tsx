@@ -46,7 +46,7 @@ export default defineConfig({
     },
     {
       icon: 'telegram',
-      link: 'https://t.me/+aLmF83si62ZhOGNh',
+      link: 'https://t.me/+GoQ4CQToUmg4MzZh',
     },
   ],
   theme: {
