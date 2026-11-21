@@ -128,3 +128,5 @@
 /contracts/ensv2/resolvers /ensv2/permissioned-resolver 301
 /contracts/ensv2/* /ensv2/:splat 301
 /v2ready /web/ensv2-readiness 302
+/dao/proposals/6.50 /dao/proposals/7.1 301
+/dao/proposals/6.51 /dao/proposals/7.2 301
